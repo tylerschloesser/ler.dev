@@ -1,7 +1,13 @@
 import { Certificate } from '@aws-cdk/aws-certificatemanager'
 import { Distribution, ViewerProtocolPolicy } from '@aws-cdk/aws-cloudfront'
 import { S3Origin } from '@aws-cdk/aws-cloudfront-origins'
-import { PublicHostedZone, TxtRecord } from '@aws-cdk/aws-route53'
+import {
+  ARecord,
+  PublicHostedZone,
+  RecordTarget,
+  TxtRecord,
+} from '@aws-cdk/aws-route53'
+import { CloudFrontTarget } from '@aws-cdk/aws-route53-targets'
 import { Bucket } from '@aws-cdk/aws-s3'
 import * as cdk from '@aws-cdk/core'
 
@@ -30,13 +36,24 @@ export class CdkStack extends cdk.Stack {
       'arn:aws:acm:us-east-1:063257577013:certificate/05fe35b3-5051-485f-9fd8-8a1cc74e75db',
     )
 
-    new Distribution(this, 'PublicAssetDistribution', {
-      defaultBehavior: {
-        origin: new S3Origin(publicAssetBucket),
-        viewerProtocolPolicy: ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+    const publicAssetDistribution = new Distribution(
+      this,
+      'PublicAssetDistribution',
+      {
+        defaultBehavior: {
+          origin: new S3Origin(publicAssetBucket),
+          viewerProtocolPolicy: ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+        },
+        domainNames: ['ler.dev'],
+        certificate,
       },
-      domainNames: ['ler.dev'],
-      certificate,
+    )
+
+    new ARecord(this, 'LerDevAliasRecord', {
+      zone,
+      target: RecordTarget.fromAlias(
+        new CloudFrontTarget(publicAssetDistribution),
+      ),
     })
   }
 
