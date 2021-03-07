@@ -53,7 +53,7 @@ export class CdkStack extends cdk.Stack {
           viewerProtocolPolicy: ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
         },
         defaultRootObject: 'index.html',
-        domainNames: ['ler.dev'],
+        domainNames: ['ler.dev', 'ty.ler.dev'],
         certificate,
       },
     )
