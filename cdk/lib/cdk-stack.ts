@@ -4,7 +4,9 @@ import { S3Origin } from '@aws-cdk/aws-cloudfront-origins'
 import {
   ARecord,
   PublicHostedZone,
+  RecordSet,
   RecordTarget,
+  RecordType,
   TxtRecord,
 } from '@aws-cdk/aws-route53'
 import { CloudFrontTarget } from '@aws-cdk/aws-route53-targets'
@@ -15,13 +17,24 @@ export class CdkStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props)
 
-    const zone = new PublicHostedZone(this, 'PublicHostedZone', {
+    const rootZone = new PublicHostedZone(this, 'PublicHostedZone', {
       zoneName: 'ler.dev',
+    })
+
+    const tyZone = new PublicHostedZone(this, 'TyLerDevPublicHostedZone', {
+      zoneName: 'ty.ler.dev',
+    })
+
+    new RecordSet(this, 'TyLerDevNsRecord', {
+      recordName: tyZone.zoneName,
+      recordType: RecordType.NS,
+      target: RecordTarget.fromValues(...tyZone.hostedZoneNameServers!),
+      zone: rootZone,
     })
 
     new TxtRecord(this, 'TestTxtRecord', {
       values: ['meow'],
-      zone,
+      zone: rootZone,
     })
 
     const publicAssetBucket = new Bucket(this, 'PublicAssetBucket', {
@@ -44,13 +57,14 @@ export class CdkStack extends cdk.Stack {
           origin: new S3Origin(publicAssetBucket),
           viewerProtocolPolicy: ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
         },
+        defaultRootObject: 'index.html',
         domainNames: ['ler.dev'],
         certificate,
       },
     )
 
     new ARecord(this, 'LerDevAliasRecord', {
-      zone,
+      zone: rootZone,
       target: RecordTarget.fromAlias(
         new CloudFrontTarget(publicAssetDistribution),
       ),
