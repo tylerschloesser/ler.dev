@@ -3,6 +3,7 @@ import { Distribution, ViewerProtocolPolicy } from '@aws-cdk/aws-cloudfront'
 import { S3Origin } from '@aws-cdk/aws-cloudfront-origins'
 import {
   ARecord,
+  CnameRecord,
   PublicHostedZone,
   RecordSet,
   RecordTarget,
@@ -59,6 +60,13 @@ export class CdkStack extends cdk.Stack {
 
     new ARecord(this, 'LerDevAliasRecord', {
       zone: rootZone,
+      target: RecordTarget.fromAlias(
+        new CloudFrontTarget(publicAssetDistribution),
+      ),
+    })
+
+    new ARecord(this, 'TyLerDevAliasRecord', {
+      zone: tyZone,
       target: RecordTarget.fromAlias(
         new CloudFrontTarget(publicAssetDistribution),
       ),
