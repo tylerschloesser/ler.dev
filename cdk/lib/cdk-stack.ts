@@ -7,7 +7,6 @@ import {
   RecordSet,
   RecordTarget,
   RecordType,
-  TxtRecord,
 } from '@aws-cdk/aws-route53'
 import { CloudFrontTarget } from '@aws-cdk/aws-route53-targets'
 import { Bucket } from '@aws-cdk/aws-s3'
@@ -29,11 +28,6 @@ export class CdkStack extends cdk.Stack {
       recordName: tyZone.zoneName,
       recordType: RecordType.NS,
       target: RecordTarget.fromValues(...tyZone.hostedZoneNameServers!),
-      zone: rootZone,
-    })
-
-    new TxtRecord(this, 'TestTxtRecord', {
-      values: ['meow'],
       zone: rootZone,
     })
 
