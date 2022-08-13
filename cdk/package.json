@@ -12,6 +12,7 @@
     "typescript": "~3.9.7"
   },
   "dependencies": {
+    "@trivago/prettier-plugin-sort-imports": "^3.3.0",
     "aws-cdk": "^2.37.1",
     "aws-cdk-lib": "^2.37.1",
     "constructs": "^10.1.74",
