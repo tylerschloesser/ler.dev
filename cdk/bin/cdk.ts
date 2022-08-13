@@ -3,4 +3,4 @@ import 'source-map-support/register'
 import { CdkStack } from '../lib/cdk-stack'
 
 const app = new App()
-new CdkStack(app, 'ler-dev-cdk')
+new CdkStack(app, 'LerDev')

@@ -1,5 +1,5 @@
-import { CfnElement, Stack, StackProps } from 'aws-cdk-lib'
-import { Certificate } from 'aws-cdk-lib/aws-certificatemanager'
+import { Stack, StackProps } from 'aws-cdk-lib'
+import { DnsValidatedCertificate } from 'aws-cdk-lib/aws-certificatemanager'
 import { Distribution, ViewerProtocolPolicy } from 'aws-cdk-lib/aws-cloudfront'
 import { S3Origin } from 'aws-cdk-lib/aws-cloudfront-origins'
 import {
@@ -35,16 +35,16 @@ export class CdkStack extends Stack {
     })
 
     const publicAssetBucket = new Bucket(this, 'PublicAssetBucket', {
-      bucketName: 'ler-dev-public-assets-prod',
+      bucketName: 'ler.dev',
       publicReadAccess: true,
     })
 
-    // cert must be in us-east-1, so I created it manually
-    const certificate = Certificate.fromCertificateArn(
-      this,
-      'Certificate',
-      'arn:aws:acm:us-east-1:063257577013:certificate/05fe35b3-5051-485f-9fd8-8a1cc74e75db',
-    )
+    const certificate = new DnsValidatedCertificate(this, 'Certificate', {
+      domainName: 'ler.dev',
+      subjectAlternativeNames: ['*.ler.dev'],
+      hostedZone: rootZone,
+      region: 'us-east-1',
+    })
 
     const publicAssetDistribution = new Distribution(
       this,
