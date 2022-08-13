@@ -11,7 +11,9 @@ import {
 } from 'aws-cdk-lib/aws-route53'
 import { CloudFrontTarget } from 'aws-cdk-lib/aws-route53-targets'
 import { Bucket } from 'aws-cdk-lib/aws-s3'
+import { BucketDeployment, Source } from 'aws-cdk-lib/aws-s3-deployment'
 import { Construct } from 'constructs'
+import * as path from 'path'
 
 export class CdkStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
@@ -58,6 +60,13 @@ export class CdkStack extends Stack {
       },
     )
 
+    new BucketDeployment(this, 'PublicAssetBucketDeployment', {
+      sources: [Source.asset(path.join(__dirname, '../../ty'))],
+      destinationBucket: publicAssetBucket,
+      distribution: publicAssetDistribution,
+      distributionPaths: ['/index.html'],
+    })
+
     new ARecord(this, 'LerDevAliasRecord', {
       zone: rootZone,
       target: RecordTarget.fromAlias(
@@ -71,23 +80,5 @@ export class CdkStack extends Stack {
         new CloudFrontTarget(publicAssetDistribution),
       ),
     })
-  }
-
-  protected allocateLogicalId(cfnElement: CfnElement): string {
-    const tokens = cfnElement.logicalId.split('.')
-    const id = tokens[1]
-    console.debug(tokens.join('.'))
-
-    // for auto generated s3 bucket policies
-    if (tokens[2] === 'Policy') {
-      return `${id}${tokens[2]}`
-    }
-
-    // for auto generated cloudfront distribution origins
-    if (tokens[2].startsWith('Origin')) {
-      return `${id}${tokens[2]}`
-    }
-
-    return id
   }
 }
