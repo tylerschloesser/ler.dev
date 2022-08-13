@@ -1,20 +1,20 @@
-import { Certificate } from '@aws-cdk/aws-certificatemanager'
-import { Distribution, ViewerProtocolPolicy } from '@aws-cdk/aws-cloudfront'
-import { S3Origin } from '@aws-cdk/aws-cloudfront-origins'
+import { CfnElement, Stack, StackProps } from 'aws-cdk-lib'
+import { Certificate } from 'aws-cdk-lib/aws-certificatemanager'
+import { Distribution, ViewerProtocolPolicy } from 'aws-cdk-lib/aws-cloudfront'
+import { S3Origin } from 'aws-cdk-lib/aws-cloudfront-origins'
 import {
   ARecord,
-  CnameRecord,
   PublicHostedZone,
   RecordSet,
   RecordTarget,
   RecordType,
-} from '@aws-cdk/aws-route53'
-import { CloudFrontTarget } from '@aws-cdk/aws-route53-targets'
-import { Bucket } from '@aws-cdk/aws-s3'
-import * as cdk from '@aws-cdk/core'
+} from 'aws-cdk-lib/aws-route53'
+import { CloudFrontTarget } from 'aws-cdk-lib/aws-route53-targets'
+import { Bucket } from 'aws-cdk-lib/aws-s3'
+import { Construct } from 'constructs'
 
-export class CdkStack extends cdk.Stack {
-  constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
+export class CdkStack extends Stack {
+  constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props)
 
     const rootZone = new PublicHostedZone(this, 'PublicHostedZone', {
@@ -73,7 +73,7 @@ export class CdkStack extends cdk.Stack {
     })
   }
 
-  protected allocateLogicalId(cfnElement: cdk.CfnElement): string {
+  protected allocateLogicalId(cfnElement: CfnElement): string {
     const tokens = cfnElement.logicalId.split('.')
     const id = tokens[1]
     console.debug(tokens.join('.'))
