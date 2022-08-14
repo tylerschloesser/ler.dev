@@ -61,7 +61,7 @@ export class CdkStack extends Stack {
     )
 
     new BucketDeployment(this, 'PublicAssetBucketDeployment', {
-      sources: [Source.asset(path.join(__dirname, '../../ty'))],
+      sources: [Source.asset(path.join(__dirname, '../../ty/dist'))],
       destinationBucket: publicAssetBucket,
       distribution: publicAssetDistribution,
       distributionPaths: ['/index.html'],
