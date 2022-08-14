@@ -13,7 +13,7 @@ import { CloudFrontTarget } from 'aws-cdk-lib/aws-route53-targets'
 import { Bucket } from 'aws-cdk-lib/aws-s3'
 import { BucketDeployment, Source } from 'aws-cdk-lib/aws-s3-deployment'
 import { Construct } from 'constructs'
-import { getAssetPath } from './util'
+import { getAssetPath, getDefaultRootObject } from './util'
 
 export class CdkStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
@@ -54,17 +54,16 @@ export class CdkStack extends Stack {
           origin: new S3Origin(publicAssetBucket),
           viewerProtocolPolicy: ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
         },
-        defaultRootObject: 'index.html',
+        defaultRootObject: getDefaultRootObject(),
         domainNames: ['ler.dev', 'ty.ler.dev'],
         certificate,
       },
     )
 
+    // TODO don't deploy manifest.json
     new BucketDeployment(this, 'PublicAssetBucketDeployment', {
       sources: [Source.asset(getAssetPath())],
       destinationBucket: publicAssetBucket,
-      distribution: publicAssetDistribution,
-      distributionPaths: ['/index.html'],
     })
 
     new ARecord(this, 'LerDevAliasRecord', {
