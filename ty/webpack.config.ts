@@ -1,3 +1,4 @@
+import CopyPlugin from 'copy-webpack-plugin'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
 import { Configuration } from 'webpack'
 import { WebpackManifestPlugin } from 'webpack-manifest-plugin'
@@ -31,6 +32,10 @@ const config: Configuration = {
       template: './src/index.html',
     }),
     new WebpackManifestPlugin({}),
+    // TODO move these to webpack imports
+    new CopyPlugin({
+      patterns: [{ from: 'public' }],
+    }),
   ],
 }
 
