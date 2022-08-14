@@ -13,7 +13,7 @@ import { CloudFrontTarget } from 'aws-cdk-lib/aws-route53-targets'
 import { Bucket } from 'aws-cdk-lib/aws-s3'
 import { BucketDeployment, Source } from 'aws-cdk-lib/aws-s3-deployment'
 import { Construct } from 'constructs'
-import * as path from 'path'
+import { getAssetPath } from './util'
 
 export class CdkStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
@@ -61,7 +61,7 @@ export class CdkStack extends Stack {
     )
 
     new BucketDeployment(this, 'PublicAssetBucketDeployment', {
-      sources: [Source.asset(path.join(__dirname, '../../ty/dist'))],
+      sources: [Source.asset(getAssetPath())],
       destinationBucket: publicAssetBucket,
       distribution: publicAssetDistribution,
       distributionPaths: ['/index.html'],
