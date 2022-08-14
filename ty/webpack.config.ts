@@ -1,6 +1,7 @@
 import CopyPlugin from 'copy-webpack-plugin'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
 import { Configuration } from 'webpack'
+import type { Configuration as DevServerConfiguration } from 'webpack-dev-server'
 import { WebpackManifestPlugin } from 'webpack-manifest-plugin'
 
 const dev = Boolean(process.env.WEBPACK_SERVE)
@@ -39,6 +40,9 @@ const config: Configuration = {
       patterns: [{ from: 'public' }],
     }),
   ],
+  devServer: {
+    historyApiFallback: true,
+  },
 }
 
 export default config
