@@ -4,6 +4,7 @@ import { Configuration } from 'webpack'
 const config: Configuration = {
   mode: 'development',
   entry: './src/index.tsx',
+  devtool: 'eval-cheap-module-source-map',
   output: {
     path: __dirname + '/dist',
     filename: 'bundle.js',
