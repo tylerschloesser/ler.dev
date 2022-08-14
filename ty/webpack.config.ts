@@ -11,6 +11,7 @@ const config: Configuration = {
     path: __dirname + '/dist',
     filename: 'index.[contenthash].js',
     clean: true,
+    publicPath: '',
   },
   module: {
     rules: [
