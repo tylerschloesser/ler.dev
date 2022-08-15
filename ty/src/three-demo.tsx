@@ -27,7 +27,7 @@ function Box(props: MeshProps) {
 
 export function ThreeDemo() {
   return (
-    <Canvas>
+    <Canvas dpr={window.devicePixelRatio}>
       <ambientLight />
       <pointLight position={[10, 10, 10]} />
       <Box position={[-1.2, 0, 0]} />
