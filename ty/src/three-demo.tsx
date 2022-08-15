@@ -1,6 +1,7 @@
 import { Canvas, useFrame, MeshProps, ThreeElements } from '@react-three/fiber'
 import React, { useEffect, useRef, useState } from 'react'
 import * as THREE from 'three'
+import { Matrix4 } from 'three'
 
 function Box(props: MeshProps) {
   // This reference gives us direct access to the THREE.Mesh object
@@ -35,6 +36,12 @@ interface Dot {
   p: Vec2
 }
 
+interface Dots {
+  width: number
+  height: number
+  values: Dot[]
+}
+
 function times(n: number) {
   const arr: number[] = []
   for (let i = 0; i < n; i++) {
@@ -43,11 +50,11 @@ function times(n: number) {
   return arr
 }
 
-function getDots({ width, height }: { width: number; height: number }): Dot[] {
+function getDots({ width, height }: { width: number; height: number }): Dots {
   const dots: Dot[] = []
   const padding = Math.min(width, height) * 0.1
-  const numCols = 10,
-    numRows = 10
+  const numCols = 10
+  const numRows = 10
   times(numRows).forEach((y) => {
     times(numCols).forEach((x) => {
       dots.push({
@@ -58,19 +65,57 @@ function getDots({ width, height }: { width: number; height: number }): Dot[] {
       })
     })
   })
-  return dots
+  return { values: dots, width, height }
 }
 
-function Scene() {
-  const mesh = useRef<THREE.InstancedMesh>(null)
+function Scene({ dots }: { dots: Dots }) {
+  const [mesh, setMesh] = useState<THREE.InstancedMesh | null>(null)
 
-  useFrame(() => {})
-  return <instancedMesh ref={mesh}></instancedMesh>
+  let i = 0
+  const matrix = new Matrix4()
+  const color = new THREE.Color(0.5, 0.5, 0.5)
+  //const color = new THREE.Color('rgba(87, 135, 255, 1)')
+
+  useFrame(() => {
+    if (!mesh) {
+      return
+    }
+    for (i = 0; i < dots.values.length; i++) {
+      mesh.setColorAt(i, color)
+      if (!mesh.instanceColor) {
+        throw Error('no instance color?')
+      }
+      mesh.instanceColor.needsUpdate = true
+
+      matrix.setPosition(
+        dots.values[i].p.x * 2 - dots.width,
+        dots.values[i].p.y * 2 - dots.height,
+        2,
+      )
+
+      mesh.setMatrixAt(i, matrix)
+      mesh.instanceMatrix.needsUpdate = true
+    }
+  })
+
+  useEffect(() => {
+    console.log('we got the mesh')
+  }, [mesh])
+
+  return (
+    <instancedMesh
+      ref={setMesh}
+      args={[undefined, undefined, dots.values.length]}
+    >
+      <circleGeometry attach="geometry" args={[2]} />
+      <meshStandardMaterial attach="material" color={color} />
+    </instancedMesh>
+  )
 }
 
 export function ThreeDemo() {
   const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null)
-  const [dots, setDots] = useState<Dot[] | null>(null)
+  const [dots, setDots] = useState<Dots | null>(null)
   useEffect(() => {
     if (!canvas) {
       return
@@ -87,8 +132,10 @@ export function ThreeDemo() {
   }, [dots])
 
   return (
-    <Canvas dpr={window.devicePixelRatio} ref={setCanvas}>
-      <Scene />
+    <Canvas orthographic={true} dpr={window.devicePixelRatio} ref={setCanvas}>
+      {dots && <Scene dots={dots} />}
+      <ambientLight color={0xfff} intensity={1} />
+      <color attach="background" args={['#aaa']} />
     </Canvas>
   )
 }
