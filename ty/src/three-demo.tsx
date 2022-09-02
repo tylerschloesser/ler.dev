@@ -51,7 +51,8 @@ interface SceneProps {
   canvas?: HTMLCanvasElement
 }
 
-function Scene({ dots }: SceneProps) {
+function Scene({ dots, canvas }: SceneProps) {
+  console.log(canvas?.getBoundingClientRect())
   const [mesh, setMesh] = useState<THREE.InstancedMesh | null>(null)
 
   let i = 0
@@ -118,7 +119,7 @@ export function ThreeDemo() {
 
   return (
     <Canvas orthographic={true} dpr={window.devicePixelRatio} ref={setCanvas}>
-      {dots && <Scene dots={dots} />}
+      {dots && <Scene dots={dots} canvas={canvas ?? undefined} />}
       <ambientLight color={0xfff} intensity={1} />
       <color attach="background" args={['#aaa']} />
     </Canvas>
