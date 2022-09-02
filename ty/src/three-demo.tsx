@@ -28,12 +28,12 @@ function getDots({ width, height }: { width: number; height: number }): Dots {
   const padding = Math.min(width, height) * 0.1
   const numCols = 10
   const numRows = 10
-  times(numRows).forEach((y) => {
-    times(numCols).forEach((x) => {
+  times(numRows).forEach((row) => {
+    times(numCols).forEach((col) => {
       dots.push({
         p: new THREE.Vector2(
-          padding + ((width - padding) / numCols) * x,
-          padding + ((height - padding) / numRows) * y,
+          padding + ((width - padding) / numCols) * col,
+          padding + ((height - padding) / numRows) * row,
         ),
       })
     })
