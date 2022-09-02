@@ -65,11 +65,7 @@ function Scene({ dots }: { dots: Dots }) {
       }
       mesh.instanceColor.needsUpdate = true
 
-      matrix.setPosition(
-        dots.values[i].p.x * 2 - dots.width,
-        dots.values[i].p.y * 2 - dots.height,
-        2,
-      )
+      matrix.setPosition(dots.values[i].p.x, dots.values[i].p.y, 0)
 
       mesh.setMatrixAt(i, matrix)
       mesh.instanceMatrix.needsUpdate = true
