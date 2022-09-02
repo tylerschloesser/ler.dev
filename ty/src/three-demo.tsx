@@ -70,6 +70,7 @@ function Scene({ dots }: SceneProps) {
       const dot = dots.values[i]
 
       let color = baseColor
+      let pos = dot.p
 
       if (pointer.length() > 0) {
         const dp = Math.abs(dot.sp.distanceTo(pointer))
@@ -87,7 +88,7 @@ function Scene({ dots }: SceneProps) {
       }
       mesh.instanceColor.needsUpdate = true
 
-      matrix.setPosition(dot.p.x, dot.p.y, 0)
+      matrix.setPosition(pos.x, pos.y, 0)
 
       mesh.setMatrixAt(i, matrix)
       mesh.instanceMatrix.needsUpdate = true
