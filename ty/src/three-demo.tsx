@@ -27,8 +27,8 @@ function times(n: number) {
 
 function getDots({ width, height }: { width: number; height: number }): Dots {
   const dots: Dot[] = []
-  const numCols = 15
-  const numRows = 15
+  const numCols = Math.floor(width / 50)
+  const numRows = Math.floor(height / 50)
   times(numRows).forEach((row) => {
     times(numCols).forEach((col) => {
       const x = (width / numCols) * col + width / numCols / 2
