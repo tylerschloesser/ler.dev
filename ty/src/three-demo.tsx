@@ -3,6 +3,8 @@ import React, { useEffect, useState } from 'react'
 import * as THREE from 'three'
 import { Matrix4 } from 'three'
 
+// Inspired by https://www.twingate.com/
+
 interface Vec2 {
   x: number
   y: number
