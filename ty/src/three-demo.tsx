@@ -63,14 +63,17 @@ function Scene({ dots }: SceneProps) {
     if (!mesh) {
       return
     }
+
     for (i = 0; i < dots.values.length; i++) {
+      const dot = dots.values[i]
+
       mesh.setColorAt(i, color)
       if (!mesh.instanceColor) {
         throw Error('no instance color?')
       }
       mesh.instanceColor.needsUpdate = true
 
-      matrix.setPosition(dots.values[i].p.x, dots.values[i].p.y, 0)
+      matrix.setPosition(dot.p.x, dot.p.y, 0)
 
       mesh.setMatrixAt(i, matrix)
       mesh.instanceMatrix.needsUpdate = true
