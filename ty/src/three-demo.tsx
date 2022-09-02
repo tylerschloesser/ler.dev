@@ -30,11 +30,10 @@ function getDots({ width, height }: { width: number; height: number }): Dots {
   const numRows = 10
   times(numRows).forEach((row) => {
     times(numCols).forEach((col) => {
+      const x = padding + ((width - padding) / numCols) * col
+      const y = padding + ((height - padding) / numRows) * row
       dots.push({
-        p: new THREE.Vector2(
-          padding + ((width - padding) / numCols) * col,
-          padding + ((height - padding) / numRows) * row,
-        ),
+        p: new THREE.Vector2(x, y),
       })
     })
   })
