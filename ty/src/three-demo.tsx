@@ -46,7 +46,12 @@ function getDots({ width, height }: { width: number; height: number }): Dots {
   return { values: dots, width, height }
 }
 
-function Scene({ dots }: { dots: Dots }) {
+interface SceneProps {
+  dots: Dots
+  canvas?: HTMLCanvasElement
+}
+
+function Scene({ dots }: SceneProps) {
   const [mesh, setMesh] = useState<THREE.InstancedMesh | null>(null)
 
   let i = 0
@@ -94,8 +99,14 @@ export function ThreeDemo() {
     if (!canvas) {
       return
     }
+    console.log('devicePixelRatio', window.devicePixelRatio)
     const rect = canvas.getBoundingClientRect()
-    setDots(getDots(rect))
+    const scaledRect = {
+      width: rect.width * window.devicePixelRatio,
+      height: rect.height * window.devicePixelRatio,
+    }
+    console.log('scaledRect', scaledRect)
+    setDots(getDots(scaledRect))
   }, [canvas])
 
   useEffect(() => {
