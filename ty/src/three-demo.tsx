@@ -37,12 +37,18 @@ function getDots({ width, height }: { width: number; height: number }): Dots {
     times(numCols).forEach((x) => {
       dots.push({
         p: {
-          x: padding + ((width - padding * 2) / numCols) * x,
-          y: padding + ((height - padding * 2) / numRows) * y,
+          x: padding + ((width - padding) / numCols) * x,
+          y: padding + ((height - padding) / numRows) * y,
         },
       })
     })
   })
+
+  dots.forEach((dot) => {
+    dot.p.x -= width / 2
+    dot.p.y -= height / 2
+  })
+
   return { values: dots, width, height }
 }
 
