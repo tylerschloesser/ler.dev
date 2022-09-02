@@ -1,5 +1,5 @@
 import { Canvas, useFrame } from '@react-three/fiber'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import * as THREE from 'three'
 import { Matrix4 } from 'three'
 
@@ -52,7 +52,6 @@ interface SceneProps {
 }
 
 function Scene({ dots, canvas }: SceneProps) {
-  console.log(canvas?.getBoundingClientRect())
   const [mesh, setMesh] = useState<THREE.InstancedMesh | null>(null)
 
   let i = 0
@@ -78,10 +77,6 @@ function Scene({ dots, canvas }: SceneProps) {
     }
   })
 
-  useEffect(() => {
-    console.log('we got the mesh')
-  }, [mesh])
-
   return (
     <instancedMesh
       ref={setMesh}
@@ -98,27 +93,14 @@ interface InnerProps {
 }
 
 function Inner({ canvas }: InnerProps) {
-  const [dots, setDots] = useState<Dots | null>(null)
-  useEffect(() => {
-    if (!canvas) {
-      return
-    }
-    console.log('devicePixelRatio', window.devicePixelRatio)
-    const rect = canvas.getBoundingClientRect()
-    const scaledRect = {
-      width: rect.width * window.devicePixelRatio,
-      height: rect.height * window.devicePixelRatio,
-    }
-    console.log('scaledRect', scaledRect)
-    setDots(getDots(scaledRect))
-  }, [canvas])
+  const { width, height } = canvas.getBoundingClientRect()
+  const dots = useMemo<Dots>(() => {
+    return getDots({
+      width: width * window.devicePixelRatio,
+      height: height * window.devicePixelRatio,
+    })
+  }, [width, height])
 
-  useEffect(() => {
-    if (!dots) {
-      return
-    }
-    console.log(dots)
-  }, [dots])
   return (
     <>
       {dots && <Scene dots={dots} canvas={canvas ?? undefined} />}
