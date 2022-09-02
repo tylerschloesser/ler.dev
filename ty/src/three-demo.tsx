@@ -5,13 +5,8 @@ import { Matrix4 } from 'three'
 
 // Inspired by https://www.twingate.com/
 
-interface Vec2 {
-  x: number
-  y: number
-}
-
 interface Dot {
-  p: Vec2
+  p: THREE.Vector2
 }
 
 interface Dots {
@@ -36,10 +31,10 @@ function getDots({ width, height }: { width: number; height: number }): Dots {
   times(numRows).forEach((y) => {
     times(numCols).forEach((x) => {
       dots.push({
-        p: {
-          x: padding + ((width - padding) / numCols) * x,
-          y: padding + ((height - padding) / numRows) * y,
-        },
+        p: new THREE.Vector2(
+          padding + ((width - padding) / numCols) * x,
+          padding + ((height - padding) / numRows) * y,
+        ),
       })
     })
   })
@@ -64,7 +59,7 @@ function Scene({ dots }: SceneProps) {
   const color = new THREE.Color(0.5, 0.5, 0.5)
   //const color = new THREE.Color('rgba(87, 135, 255, 1)')
 
-  useFrame(() => {
+  useFrame(({ pointer }) => {
     if (!mesh) {
       return
     }
