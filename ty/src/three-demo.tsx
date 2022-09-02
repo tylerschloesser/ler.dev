@@ -82,12 +82,14 @@ function Scene({ dots, width, height }: SceneProps) {
         if (i === 0) {
           log(spointer, pos, dp)
         }
-        const threshold = Math.min(width, height) * 0.2
+        const threshold = 128
         if (dp < threshold) {
           color = new THREE.Color(color).lerp(
             new THREE.Color(1, 0, 1),
             1 - dp / threshold,
           )
+
+          pos.lerp(spointer, (1 - dp / threshold) * 0.2)
         }
       }
 
