@@ -70,7 +70,7 @@ function Scene({ dots }: SceneProps) {
       const dot = dots.values[i]
 
       let color = baseColor
-      let pos = dot.p
+      let pos = new THREE.Vector2(dot.p.x, dot.p.y)
 
       if (pointer.length() > 0) {
         const dp = Math.abs(dot.sp.distanceTo(pointer))
@@ -79,6 +79,13 @@ function Scene({ dots }: SceneProps) {
             new THREE.Color(1, 0, 1),
             1 - dp * 4,
           )
+
+          const scale = new THREE.Vector2(dot.p.x, dot.p.y)
+          scale.divide(new THREE.Vector2(dot.sp.x, dot.sp.y))
+
+          pos = new THREE.Vector2(dot.sp.x, dot.sp.y)
+          pos.lerp(pointer, 0.33 - dp)
+          pos.multiply(scale)
         }
       }
 
