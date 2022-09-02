@@ -27,8 +27,8 @@ function times(n: number) {
 
 function getDots({ width, height }: { width: number; height: number }): Dots {
   const dots: Dot[] = []
-  const numCols = 20
-  const numRows = 20
+  const numCols = 15
+  const numRows = 15
   times(numRows).forEach((row) => {
     times(numCols).forEach((col) => {
       const x = (width / numCols) * col + width / numCols / 2
@@ -99,7 +99,7 @@ function Scene({ dots }: SceneProps) {
       ref={setMesh}
       args={[undefined, undefined, dots.values.length]}
     >
-      <circleGeometry attach="geometry" args={[2]} />
+      <circleGeometry attach="geometry" args={[3]} />
       <meshStandardMaterial attach="material" />
     </instancedMesh>
   )
