@@ -1,4 +1,5 @@
 import { Canvas, useFrame } from '@react-three/fiber'
+import { throttle } from 'lodash'
 import React, { useEffect, useMemo, useState } from 'react'
 import * as THREE from 'three'
 import { Matrix4 } from 'three'
@@ -27,15 +28,15 @@ function times(n: number) {
 function getDots({ width, height }: { width: number; height: number }): Dots {
   const dots: Dot[] = []
   const padding = Math.min(width, height) * 0.1
-  const numCols = 10
-  const numRows = 10
+  const numCols = 20
+  const numRows = 20
   times(numRows).forEach((row) => {
     times(numCols).forEach((col) => {
       const x = padding + ((width - padding) / numCols) * col
       const y = padding + ((height - padding) / numRows) * row
       dots.push({
         p: new THREE.Vector2(x, y),
-        sp: new THREE.Vector2(x / width, y / height),
+        sp: new THREE.Vector2((x / width) * 2 - 1, (y / height) * 2 - 1),
       })
     })
   })
@@ -57,8 +58,11 @@ function Scene({ dots }: SceneProps) {
 
   let i = 0
   const matrix = new Matrix4()
-  const color = new THREE.Color(0.5, 0.5, 0.5)
-  //const color = new THREE.Color('rgba(87, 135, 255, 1)')
+  const baseColor = new THREE.Color(0.5, 0.5, 0.5)
+
+  const log = throttle<(message: string) => void>((message) => {
+    console.log(message)
+  }, 100)
 
   useFrame(({ pointer }) => {
     if (!mesh) {
@@ -67,6 +71,21 @@ function Scene({ dots }: SceneProps) {
 
     for (i = 0; i < dots.values.length; i++) {
       const dot = dots.values[i]
+
+      let color = baseColor
+
+      if (pointer.length() > 0) {
+        const dp = Math.abs(dot.sp.distanceTo(pointer))
+        if (i === 0) {
+          log(`${dp}`)
+        }
+        if (dp < 0.33) {
+          color = new THREE.Color(color).lerp(
+            new THREE.Color(1, 0, 1),
+            1 - dp * 4,
+          )
+        }
+      }
 
       mesh.setColorAt(i, color)
       if (!mesh.instanceColor) {
@@ -87,7 +106,7 @@ function Scene({ dots }: SceneProps) {
       args={[undefined, undefined, dots.values.length]}
     >
       <circleGeometry attach="geometry" args={[2]} />
-      <meshStandardMaterial attach="material" color={color} />
+      <meshStandardMaterial attach="material" />
     </instancedMesh>
   )
 }
@@ -112,8 +131,8 @@ function Inner({ canvas }: InnerProps) {
   return (
     <>
       {dots && <Scene dots={dots} />}
-      <ambientLight color={0xfff} intensity={1} />
-      <color attach="background" args={['#aaa']} />
+      <ambientLight color={0xffffff} intensity={1} />
+      <color attach="background" args={['#111']} />
     </>
   )
 }
