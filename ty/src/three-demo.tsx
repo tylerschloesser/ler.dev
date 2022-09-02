@@ -93,8 +93,11 @@ function Scene({ dots, canvas }: SceneProps) {
   )
 }
 
-export function ThreeDemo() {
-  const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null)
+interface InnerProps {
+  canvas: HTMLCanvasElement
+}
+
+function Inner({ canvas }: InnerProps) {
   const [dots, setDots] = useState<Dots | null>(null)
   useEffect(() => {
     if (!canvas) {
@@ -116,12 +119,21 @@ export function ThreeDemo() {
     }
     console.log(dots)
   }, [dots])
-
   return (
-    <Canvas orthographic={true} dpr={window.devicePixelRatio} ref={setCanvas}>
+    <>
       {dots && <Scene dots={dots} canvas={canvas ?? undefined} />}
       <ambientLight color={0xfff} intensity={1} />
       <color attach="background" args={['#aaa']} />
+    </>
+  )
+}
+
+export function ThreeDemo() {
+  const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null)
+
+  return (
+    <Canvas orthographic={true} dpr={window.devicePixelRatio} ref={setCanvas}>
+      {canvas && <Inner canvas={canvas} />}
     </Canvas>
   )
 }
