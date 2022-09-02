@@ -60,9 +60,7 @@ function Scene({ dots }: SceneProps) {
   const matrix = new Matrix4()
   const baseColor = new THREE.Color(0.5, 0.5, 0.5)
 
-  const log = throttle<(message: string) => void>((message) => {
-    console.log(message)
-  }, 100)
+  const log = throttle<typeof console.log>(console.log, 100)
 
   useFrame(({ pointer }) => {
     if (!mesh) {
