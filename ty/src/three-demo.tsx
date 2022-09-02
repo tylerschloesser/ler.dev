@@ -7,6 +7,7 @@ import { Matrix4 } from 'three'
 
 interface Dot {
   p: THREE.Vector2
+  sp: THREE.Vector2
 }
 
 interface Dots {
@@ -34,6 +35,7 @@ function getDots({ width, height }: { width: number; height: number }): Dots {
       const y = padding + ((height - padding) / numRows) * row
       dots.push({
         p: new THREE.Vector2(x, y),
+        sp: new THREE.Vector2(x / width, y / height),
       })
     })
   })
@@ -102,6 +104,10 @@ function Inner({ canvas }: InnerProps) {
       height: height * window.devicePixelRatio,
     })
   }, [width, height])
+
+  useEffect(() => {
+    console.log('dots', dots)
+  }, [dots])
 
   return (
     <>
