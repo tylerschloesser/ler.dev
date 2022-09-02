@@ -21,10 +21,6 @@ const Main = styled.div`
 function Layout() {
   return (
     <Page>
-      <Nav>
-        <Link to="/">Home</Link>
-        <Link to="/three-demo">ThreeDemo</Link>
-      </Nav>
       <Main>
         <Outlet />
       </Main>
@@ -37,8 +33,7 @@ export const App = () => {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Layout />}>
-          <Route index />
-          <Route path="three-demo" element={<ThreeDemo />} />
+          <Route index element={<ThreeDemo />} />
         </Route>
       </Routes>
     </BrowserRouter>
