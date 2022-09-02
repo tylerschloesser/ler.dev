@@ -68,26 +68,26 @@ function Scene({ dots, width, height }: SceneProps) {
       return
     }
 
+    const spointer = new THREE.Vector2(pointer.x, pointer.y)
+    spointer.multiply(new THREE.Vector2(width / 2, height / 2))
+
     for (i = 0; i < dots.values.length; i++) {
       const dot = dots.values[i]
 
       let color = baseColor
       let pos = new THREE.Vector2(dot.p.x, dot.p.y)
 
-      if (pointer.length() > 0) {
-        const dp = Math.abs(dot.sp.distanceTo(pointer))
-        if (dp < 0.33) {
+      if (spointer.length() > 0) {
+        const dp = Math.abs(pos.distanceTo(spointer))
+        if (i === 0) {
+          log(spointer, pos, dp)
+        }
+        const threshold = Math.min(width, height) * 0.2
+        if (dp < threshold) {
           color = new THREE.Color(color).lerp(
             new THREE.Color(1, 0, 1),
-            1 - dp * 4,
+            1 - dp / threshold,
           )
-
-          const scale = new THREE.Vector2(dot.p.x, dot.p.y)
-          scale.divide(new THREE.Vector2(dot.sp.x, dot.sp.y))
-
-          pos = new THREE.Vector2(dot.sp.x, dot.sp.y)
-          pos.lerp(pointer, 0.33 - dp)
-          pos.multiply(scale)
         }
       }
 
