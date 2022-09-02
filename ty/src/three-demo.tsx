@@ -27,13 +27,12 @@ function times(n: number) {
 
 function getDots({ width, height }: { width: number; height: number }): Dots {
   const dots: Dot[] = []
-  const padding = Math.min(width, height) * 0.1
   const numCols = 20
   const numRows = 20
   times(numRows).forEach((row) => {
     times(numCols).forEach((col) => {
-      const x = padding + ((width - padding) / numCols) * col
-      const y = padding + ((height - padding) / numRows) * row
+      const x = (width / numCols) * col + width / numCols / 2
+      const y = (height / numRows) * row + height / numRows / 2
       dots.push({
         p: new THREE.Vector2(x, y),
         sp: new THREE.Vector2((x / width) * 2 - 1, (y / height) * 2 - 1),
@@ -74,9 +73,6 @@ function Scene({ dots }: SceneProps) {
 
       if (pointer.length() > 0) {
         const dp = Math.abs(dot.sp.distanceTo(pointer))
-        if (i === 0) {
-          log(`${dp}`)
-        }
         if (dp < 0.33) {
           color = new THREE.Color(color).lerp(
             new THREE.Color(1, 0, 1),
