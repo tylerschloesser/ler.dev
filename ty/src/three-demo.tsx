@@ -50,9 +50,11 @@ function getDots({ width, height }: { width: number; height: number }): Dots {
 
 interface SceneProps {
   dots: Dots
+  width: number
+  height: number
 }
 
-function Scene({ dots }: SceneProps) {
+function Scene({ dots, width, height }: SceneProps) {
   const [mesh, setMesh] = useState<THREE.InstancedMesh | null>(null)
 
   let i = 0
@@ -132,7 +134,7 @@ function Inner({ canvas }: InnerProps) {
 
   return (
     <>
-      {dots && <Scene dots={dots} />}
+      {dots && <Scene dots={dots} width={width} height={height} />}
       <ambientLight color={0xffffff} intensity={1} />
       <color attach="background" args={['#111']} />
     </>
