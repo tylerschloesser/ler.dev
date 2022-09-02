@@ -59,7 +59,7 @@ function Scene({ dots, width, height }: SceneProps) {
 
   let i = 0
   const matrix = new Matrix4()
-  const baseColor = new THREE.Color(0.5, 0.5, 0.5)
+  const baseColor = new THREE.Color(1, 1, 1)
 
   const log = throttle<typeof console.log>(console.log, 100)
 
@@ -74,7 +74,9 @@ function Scene({ dots, width, height }: SceneProps) {
     for (i = 0; i < dots.values.length; i++) {
       const dot = dots.values[i]
 
-      let color = baseColor
+      let color = new THREE.Color(baseColor)
+      color.multiplyScalar(0.1)
+
       let pos = new THREE.Vector2(dot.p.x, dot.p.y)
 
       if (spointer.length() > 0) {
@@ -82,7 +84,7 @@ function Scene({ dots, width, height }: SceneProps) {
         const threshold = 128
         if (dp < threshold) {
           color = new THREE.Color(color).lerp(
-            new THREE.Color(1, 0, 1),
+            new THREE.Color(0.2, 0.8, 0.2),
             1 - dp / threshold,
           )
 
