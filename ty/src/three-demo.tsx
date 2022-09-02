@@ -106,15 +106,6 @@ function Inner({ canvas }: InnerProps) {
     })
   }, [width, height])
 
-  useEffect(() => {
-    const onpointermove = (ev: PointerEvent) => {
-      const x = Math.round(ev.x)
-      const y = Math.round(ev.y)
-    }
-    canvas.addEventListener('pointermove', onpointermove)
-    return () => canvas.removeEventListener('pointermove', onpointermove)
-  }, [canvas])
-
   return (
     <>
       {dots && <Scene dots={dots} />}
