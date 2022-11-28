@@ -15,15 +15,14 @@ const HomeTitle = styled.h1`
   font-weight: 700;
   color: rgb(200, 200, 200, 0.9);
   position: fixed;
-  font-size: min(8vh, 8vw);
+  font-size: 2rem;
   bottom: 0;
   right: 0;
-  pointer-events: none;
-  padding: min(4vh, 4vw);
+  padding: 2rem;
 `
 
 const Period = styled.span`
-  margin: 0 calc(min(1vh, 1vw) * -1);
+  margin: 0 -0.2rem;
 `
 
 export function Home() {
