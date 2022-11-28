@@ -1,12 +1,9 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import styled from 'styled-components'
-import { ThreeDemo } from './three-demo'
+import { PATHS } from './paths'
 
 const HomeContainer = styled.div`
-  position: relative;
-`
-
-const HomeBackground = styled.div`
   position: relative;
 `
 
@@ -25,15 +22,19 @@ const Period = styled.span`
   margin: 0 -0.2rem;
 `
 
+const List = styled.ol``
+
 export function Home() {
   return (
     <HomeContainer>
-      <HomeBackground>
-        <ThreeDemo />
-      </HomeBackground>
       <HomeTitle>
         ty<Period>.</Period>ler<Period>.</Period>dev
       </HomeTitle>
+      <List>
+        <li>
+          <Link to={PATHS.dots}>DOTS</Link>
+        </li>
+      </List>
     </HomeContainer>
   )
 }

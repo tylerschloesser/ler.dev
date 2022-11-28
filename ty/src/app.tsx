@@ -2,6 +2,8 @@ import React from 'react'
 import { BrowserRouter, Outlet, Route, Routes } from 'react-router-dom'
 import styled from 'styled-components'
 import { Home } from './home'
+import { PATHS } from './paths'
+import { ThreeDemo } from './three-demo'
 
 const Page = styled.div`
   height: 100vh;
@@ -27,8 +29,9 @@ export const App = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Layout />}>
+        <Route element={<Layout />}>
           <Route index element={<Home />} />
+          <Route path={PATHS.dots} element={<ThreeDemo />} />
         </Route>
       </Routes>
     </BrowserRouter>
