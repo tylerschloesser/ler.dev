@@ -2,6 +2,7 @@ import React from 'react'
 import { BrowserRouter, Outlet, Route, Routes } from 'react-router-dom'
 import styled from 'styled-components'
 import { Home } from './home'
+import { Menu } from './menu'
 import { PATHS } from './paths'
 import { ThreeDemo } from './three-demo'
 
@@ -32,6 +33,7 @@ export const App = () => {
         <Route element={<Layout />}>
           <Route index element={<Home />} />
           <Route path={PATHS.dots} element={<ThreeDemo />} />
+          <Route path={PATHS.menu} element={<Menu />} />
         </Route>
       </Routes>
     </BrowserRouter>

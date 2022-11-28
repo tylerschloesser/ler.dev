@@ -4,7 +4,11 @@ import styled from 'styled-components'
 import { PATHS } from './paths'
 
 const HomeContainer = styled.div`
-  position: relative;
+  height: 100%;
+  background-color: black;
+  background-image: url('cat.jpg');
+  background-size: cover;
+  background-position: 50%;
 `
 
 const HomeTitle = styled.h1`
@@ -33,6 +37,7 @@ export function Home() {
       <List>
         <li>
           <Link to={PATHS.dots}>DOTS</Link>
+          <Link to={PATHS.menu}>MENU</Link>
         </li>
       </List>
     </HomeContainer>
