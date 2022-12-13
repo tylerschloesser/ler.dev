@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from 'react'
 
 function initCanvas(canvas: HTMLCanvasElement) {
-  console.log('todo init canvas')
+  const context = canvas.getContext('2d')!
+  const w = window.innerWidth
+  const h = window.innerHeight
+  context.clearRect(0, 0, w, h)
+  context.fillStyle = 'grey'
+  context.fillRect(0, 0, w, h)
 }
 
 export function Games() {
