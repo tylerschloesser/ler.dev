@@ -47,14 +47,26 @@ function renderDrag({ context }: RenderArgs) {
   }
 }
 
+function moveBall(elapsed: number) {
+  if (ball) {
+    ball.p = ball.p.add(ball.v.mul(elapsed))
+  }
+}
+
 function buildRender(args: RenderArgs) {
-  return function render() {
+  let last: null | number = null
+  return function render(time: number) {
+    let elapsed = (last ? time - last : 0) / 1000
+    last = time
+
     const { context } = args
     const w = window.innerWidth
     const h = window.innerHeight
     context.clearRect(0, 0, w, h)
     context.fillStyle = 'grey'
     context.fillRect(0, 0, w, h)
+
+    moveBall(elapsed)
 
     renderGrid(args)
     renderBall(args)
@@ -67,7 +79,7 @@ function buildRender(args: RenderArgs) {
 function initBall() {
   ball = {
     p: new Vec2(window.innerWidth / 2, window.innerHeight / 2),
-    v: new Vec2(),
+    v: new Vec2(10, -5),
   }
 }
 
@@ -91,6 +103,14 @@ class Vec2 {
   constructor(x: number = 0, y: number = 0) {
     this.x = x
     this.y = y
+  }
+
+  add(v: Vec2): Vec2 {
+    return new Vec2(this.x + v.x, this.y + v.y)
+  }
+
+  mul(s: number): Vec2 {
+    return new Vec2(this.x * s, this.y * s)
   }
 }
 
