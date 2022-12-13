@@ -1,12 +1,70 @@
 import React, { useEffect, useState } from 'react'
 
+let drag: null | { a: Vec2; b?: Vec2 }
+
+interface RenderArgs {
+  context: CanvasRenderingContext2D
+}
+
+function buildRender(args: RenderArgs) {
+  return function render() {
+    const { context } = args
+    const w = window.innerWidth
+    const h = window.innerHeight
+    context.clearRect(0, 0, w, h)
+    context.fillStyle = 'grey'
+    context.fillRect(0, 0, w, h)
+
+    if (drag?.b) {
+      context.strokeStyle = 'blue'
+      context.lineWidth = 2
+      context.beginPath()
+      context.moveTo(drag.a.x, drag.a.y)
+      context.lineTo(drag.b.x, drag.b.y)
+      context.stroke()
+      context.closePath()
+    }
+
+    window.requestAnimationFrame(render)
+  }
+}
+
 function initCanvas(canvas: HTMLCanvasElement) {
   const context = canvas.getContext('2d')!
-  const w = window.innerWidth
-  const h = window.innerHeight
-  context.clearRect(0, 0, w, h)
-  context.fillStyle = 'grey'
-  context.fillRect(0, 0, w, h)
+  initInput(canvas)
+
+  window.requestAnimationFrame(buildRender({ context }))
+}
+
+class Vec2 {
+  x: number
+  y: number
+
+  constructor(x: number = 0, y: number = 0) {
+    this.x = x
+    this.y = y
+  }
+}
+
+function initInput(canvas: HTMLCanvasElement) {
+  canvas.addEventListener('pointerdown', (e) => {
+    drag = {
+      a: new Vec2(e.clientX, e.clientY),
+    }
+  })
+
+  canvas.addEventListener('pointermove', (e) => {
+    if (drag) {
+      drag.b = new Vec2(e.clientX, e.clientY)
+    }
+  })
+
+  canvas.addEventListener('pointerup', () => {
+    drag = null
+  })
+  canvas.addEventListener('pointerleave', () => {
+    drag = null
+  })
 }
 
 export function Games() {
