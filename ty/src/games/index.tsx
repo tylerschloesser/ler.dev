@@ -8,6 +8,45 @@ interface RenderArgs {
   context: CanvasRenderingContext2D
 }
 
+function renderGrid({ context }: RenderArgs) {
+  context.beginPath()
+  context.strokeStyle = 'lightgrey'
+  context.lineWidth = 1
+  const s = Math.min(window.innerHeight, window.innerWidth) * 0.1
+  for (let i = 0; i < 100; i++) {
+    for (let j = 0; j < 100; j++) {
+      context.moveTo(i * s, 0)
+      context.lineTo(i * s, 100 * s)
+
+      context.moveTo(0, j * s)
+      context.lineTo(100 * s, j * s)
+    }
+  }
+  context.stroke()
+  context.closePath()
+}
+
+function renderBall({ context }: RenderArgs) {
+  if (ball) {
+    context.fillStyle = 'red'
+    const radius = Math.min(window.innerHeight, window.innerWidth) * 0.05
+    context.arc(ball.p.x, ball.p.y, radius, 0, Math.PI * 2)
+    context.fill()
+  }
+}
+
+function renderDrag({ context }: RenderArgs) {
+  if (drag?.b) {
+    context.strokeStyle = 'blue'
+    context.lineWidth = 2
+    context.beginPath()
+    context.moveTo(drag.a.x, drag.a.y)
+    context.lineTo(drag.b.x, drag.b.y)
+    context.stroke()
+    context.closePath()
+  }
+}
+
 function buildRender(args: RenderArgs) {
   return function render() {
     const { context } = args
@@ -17,37 +56,9 @@ function buildRender(args: RenderArgs) {
     context.fillStyle = 'grey'
     context.fillRect(0, 0, w, h)
 
-    context.beginPath()
-    context.strokeStyle = 'lightgrey'
-    context.lineWidth = 1
-    const s = Math.min(window.innerHeight, window.innerWidth) * 0.1
-    for (let i = 0; i < 100; i++) {
-      for (let j = 0; j < 100; j++) {
-        context.moveTo(i * s, 0)
-        context.lineTo(i * s, 100 * s)
-
-        context.moveTo(0, j * s)
-        context.lineTo(100 * s, j * s)
-      }
-    }
-    context.stroke()
-    context.closePath()
-
-    if (ball) {
-      context.fillStyle = 'red'
-      const radius = Math.min(window.innerHeight, window.innerWidth) * 0.05
-      context.arc(ball.p.x, ball.p.y, radius, 0, Math.PI * 2)
-      context.fill()
-    }
-    if (drag?.b) {
-      context.strokeStyle = 'blue'
-      context.lineWidth = 2
-      context.beginPath()
-      context.moveTo(drag.a.x, drag.a.y)
-      context.lineTo(drag.b.x, drag.b.y)
-      context.stroke()
-      context.closePath()
-    }
+    renderGrid(args)
+    renderBall(args)
+    renderDrag(args)
 
     window.requestAnimationFrame(render)
   }
