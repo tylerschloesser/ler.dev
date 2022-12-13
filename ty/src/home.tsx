@@ -36,8 +36,11 @@ export function Home() {
       </HomeTitle>
       <List>
         <li>
-          <Link to={PATHS.dots}>DOTS</Link>
-          <Link to={PATHS.menu}>MENU</Link>
+          {Object.entries(PATHS).map(([key, to]) => (
+            <Link key={key} to={to}>
+              {to.toUpperCase()}
+            </Link>
+          ))}
         </li>
       </List>
     </HomeContainer>

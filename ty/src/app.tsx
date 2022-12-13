@@ -1,6 +1,7 @@
 import React from 'react'
 import { BrowserRouter, Outlet, Route, Routes } from 'react-router-dom'
 import styled from 'styled-components'
+import { Games } from './games'
 import { Home } from './home'
 import { Menu } from './menu'
 import { PATHS } from './paths'
@@ -34,6 +35,7 @@ export const App = () => {
           <Route index element={<Home />} />
           <Route path={PATHS.dots} element={<ThreeDemo />} />
           <Route path={PATHS.menu} element={<Menu />} />
+          <Route path={PATHS.games} element={<Games />} />
         </Route>
       </Routes>
     </BrowserRouter>
