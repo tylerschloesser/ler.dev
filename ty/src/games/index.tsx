@@ -10,7 +10,7 @@ interface RenderArgs {
 
 function renderGrid({ context }: RenderArgs) {
   context.beginPath()
-  context.strokeStyle = 'lightgrey'
+  context.strokeStyle = 'hsl(0, 0%, 30%)'
   context.lineWidth = 1
   const s = Math.min(window.innerHeight, window.innerWidth) * 0.1
   for (let i = 0; i < 100; i++) {
@@ -28,7 +28,7 @@ function renderGrid({ context }: RenderArgs) {
 
 function renderBall({ context }: RenderArgs) {
   if (ball) {
-    context.fillStyle = 'red'
+    context.fillStyle = 'hsl(0, 60%, 50%)'
     const radius = Math.min(window.innerHeight, window.innerWidth) * 0.05
     //context.arc(ball.p.x, ball.p.y, radius, 0, Math.PI * 2)
     context.arc(
@@ -44,7 +44,7 @@ function renderBall({ context }: RenderArgs) {
 
 function renderDrag({ context }: RenderArgs) {
   if (drag?.b) {
-    context.strokeStyle = 'blue'
+    context.strokeStyle = 'hsl(240, 60%, 80%)'
     context.lineWidth = 2
     context.beginPath()
     context.moveTo(drag.a.x, drag.a.y)
@@ -70,7 +70,7 @@ function buildRender(args: RenderArgs) {
     const w = window.innerWidth
     const h = window.innerHeight
     context.clearRect(0, 0, w, h)
-    context.fillStyle = 'grey'
+    context.fillStyle = 'hsl(0, 0%, 20%)'
     context.fillRect(0, 0, w, h)
 
     moveBall(elapsed)
