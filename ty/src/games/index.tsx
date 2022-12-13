@@ -18,9 +18,19 @@ function buildRender(args: RenderArgs) {
     context.fillRect(0, 0, w, h)
 
     context.beginPath()
+    context.strokeStyle = 'lightgrey'
+    context.lineWidth = 1
+    const s = Math.min(window.innerHeight, window.innerWidth) * 0.1
     for (let i = 0; i < 100; i++) {
-      for (let j = 0; j < 100; j++) {}
+      for (let j = 0; j < 100; j++) {
+        context.moveTo(i * s, 0)
+        context.lineTo(i * s, 100 * s)
+
+        context.moveTo(0, j * s)
+        context.lineTo(100 * s, j * s)
+      }
     }
+    context.stroke()
     context.closePath()
 
     if (ball) {
