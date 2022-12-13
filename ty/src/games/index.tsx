@@ -30,7 +30,14 @@ function renderBall({ context }: RenderArgs) {
   if (ball) {
     context.fillStyle = 'red'
     const radius = Math.min(window.innerHeight, window.innerWidth) * 0.05
-    context.arc(ball.p.x, ball.p.y, radius, 0, Math.PI * 2)
+    //context.arc(ball.p.x, ball.p.y, radius, 0, Math.PI * 2)
+    context.arc(
+      window.innerWidth / 2,
+      window.innerHeight / 2,
+      radius,
+      0,
+      Math.PI * 2,
+    )
     context.fill()
   }
 }
@@ -68,7 +75,10 @@ function buildRender(args: RenderArgs) {
 
     moveBall(elapsed)
 
+    context.translate(-(ball?.p.x ?? 0), -(ball?.p.y ?? 0))
     renderGrid(args)
+    context.resetTransform()
+
     renderBall(args)
     renderDrag(args)
 
