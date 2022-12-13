@@ -17,6 +17,18 @@ function buildRender(args: RenderArgs) {
     context.fillStyle = 'grey'
     context.fillRect(0, 0, w, h)
 
+    context.beginPath()
+    for (let i = 0; i < 100; i++) {
+      for (let j = 0; j < 100; j++) {}
+    }
+    context.closePath()
+
+    if (ball) {
+      context.fillStyle = 'red'
+      const radius = Math.min(window.innerHeight, window.innerWidth) * 0.05
+      context.arc(ball.p.x, ball.p.y, radius, 0, Math.PI * 2)
+      context.fill()
+    }
     if (drag?.b) {
       context.strokeStyle = 'blue'
       context.lineWidth = 2
