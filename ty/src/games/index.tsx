@@ -61,7 +61,12 @@ function initBall() {
 }
 
 function initCanvas(canvas: HTMLCanvasElement) {
+  const dpr = window.devicePixelRatio
+  canvas.width = window.innerWidth * dpr
+  canvas.height = window.innerHeight * dpr
+
   const context = canvas.getContext('2d')!
+
   initInput(canvas)
   initBall()
 
@@ -106,11 +111,7 @@ export function Games() {
   }, [canvas])
   return (
     <div>
-      <canvas
-        ref={setCanvas}
-        width={window.innerWidth}
-        height={window.innerHeight}
-      />
+      <canvas ref={setCanvas} />
     </div>
   )
 }
