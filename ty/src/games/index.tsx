@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react'
 
-let drag: null | { a: Vec2; b?: Vec2 }
+let drag: null | { a: Vec2; b?: Vec2 } = null
+
+let ball: null | { p: Vec2; v: Vec2 } = null
 
 interface RenderArgs {
   context: CanvasRenderingContext2D
@@ -29,9 +31,17 @@ function buildRender(args: RenderArgs) {
   }
 }
 
+function initBall() {
+  ball = {
+    p: new Vec2(window.innerWidth / 2, window.innerHeight / 2),
+    v: new Vec2(),
+  }
+}
+
 function initCanvas(canvas: HTMLCanvasElement) {
   const context = canvas.getContext('2d')!
   initInput(canvas)
+  initBall()
 
   window.requestAnimationFrame(buildRender({ context }))
 }
