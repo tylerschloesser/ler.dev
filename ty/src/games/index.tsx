@@ -69,9 +69,10 @@ const state: State = {
 interface RenderArgs {
   context: CanvasRenderingContext2D
   scale: number
+  translate: Vec2
 }
 
-function renderWorld({ context, scale }: RenderArgs) {
+function renderWorld({ context, scale, translate }: RenderArgs) {
   context.beginPath()
 
   context.strokeStyle = 'hsl(0, 0%, 30%)'
@@ -79,23 +80,27 @@ function renderWorld({ context, scale }: RenderArgs) {
 
   const { world } = state
 
-  context.moveTo(0 * scale, 0 * scale)
-  context.lineTo(world.w * scale, 0 * scale)
-  context.lineTo(world.w * scale, world.h * scale)
-  context.lineTo(0 * scale, world.h * scale)
-  context.lineTo(0 * scale, 0 * scale)
+  context.moveTo(translate.x, translate.y)
+  ;[
+    [world.w, 0],
+    [world.w, world.h],
+    [0, world.h],
+    [0, 0],
+  ].forEach(([x, y]) => {
+    context.lineTo(x * scale + translate.x, y * scale + translate.y)
+  })
 
   context.stroke()
   context.closePath()
 }
 
-function renderBall({ context, scale }: RenderArgs) {
+function renderBall({ context, scale, translate }: RenderArgs) {
   if (state.ball) {
     context.beginPath()
     context.fillStyle = 'hsl(0, 60%, 50%)'
     context.arc(
-      state.ball.p.x * scale,
-      state.ball.p.y * scale,
+      state.ball.p.x * scale + translate.x,
+      state.ball.p.y * scale + translate.y,
       state.ball.r * scale,
       0,
       Math.PI * 2,
@@ -173,7 +178,9 @@ function initCanvas(canvas: HTMLCanvasElement) {
 
   initInput(canvas)
 
-  window.requestAnimationFrame(buildRender({ context, scale: 2.5 }))
+  window.requestAnimationFrame(
+    buildRender({ context, scale: 2.5, translate: new Vec2(100, 100) }),
+  )
 }
 
 function initInput(canvas: HTMLCanvasElement) {
