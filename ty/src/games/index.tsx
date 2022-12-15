@@ -68,9 +68,10 @@ const state: State = {
 
 interface RenderArgs {
   context: CanvasRenderingContext2D
+  scale: number
 }
 
-function renderWorld({ context }: RenderArgs) {
+function renderWorld({ context, scale }: RenderArgs) {
   context.beginPath()
 
   context.strokeStyle = 'hsl(0, 0%, 30%)'
@@ -78,21 +79,27 @@ function renderWorld({ context }: RenderArgs) {
 
   const { world } = state
 
-  context.moveTo(0, 0)
-  context.lineTo(world.w, 0)
-  context.lineTo(world.w, world.h)
-  context.lineTo(0, world.h)
-  context.lineTo(0, 0)
+  context.moveTo(0 * scale, 0 * scale)
+  context.lineTo(world.w * scale, 0 * scale)
+  context.lineTo(world.w * scale, world.h * scale)
+  context.lineTo(0 * scale, world.h * scale)
+  context.lineTo(0 * scale, 0 * scale)
 
   context.stroke()
   context.closePath()
 }
 
-function renderBall({ context }: RenderArgs) {
+function renderBall({ context, scale }: RenderArgs) {
   if (state.ball) {
     context.beginPath()
     context.fillStyle = 'hsl(0, 60%, 50%)'
-    context.arc(state.ball.p.x, state.ball.p.y, state.ball.r, 0, Math.PI * 2)
+    context.arc(
+      state.ball.p.x * scale,
+      state.ball.p.y * scale,
+      state.ball.r * scale,
+      0,
+      Math.PI * 2,
+    )
     context.fill()
     context.closePath()
   }
@@ -150,7 +157,6 @@ function buildRender(args: RenderArgs) {
     moveBall(elapsed)
 
     renderWorld(args)
-
     renderBall(args)
     renderDrag(args)
 
@@ -167,7 +173,7 @@ function initCanvas(canvas: HTMLCanvasElement) {
 
   initInput(canvas)
 
-  window.requestAnimationFrame(buildRender({ context }))
+  window.requestAnimationFrame(buildRender({ context, scale: 2.5 }))
 }
 
 function initInput(canvas: HTMLCanvasElement) {
