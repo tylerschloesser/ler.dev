@@ -32,12 +32,27 @@ interface Ball {
   v: Vec2
 }
 
-interface State {
-  ball?: Ball
-  drag?: Drag
+interface World {
+  w: number
+  h: number
 }
 
-const state: State = {}
+interface State {
+  ball: Ball
+  drag?: Drag
+  world: World
+}
+
+const state: State = {
+  world: {
+    w: 100,
+    h: 100,
+  },
+  ball: {
+    p: new Vec2(50, 50),
+    v: new Vec2(1, 1),
+  },
+}
 
 interface RenderArgs {
   context: CanvasRenderingContext2D
@@ -91,9 +106,7 @@ function renderDrag({ context }: RenderArgs) {
 
 function moveBall(elapsed: number) {
   const { ball } = state
-  if (ball) {
-    ball.p = ball.p.add(ball.v.mul(elapsed))
-  }
+  ball.p = ball.p.add(ball.v.mul(elapsed))
 }
 
 function buildRender(args: RenderArgs) {
@@ -123,13 +136,6 @@ function buildRender(args: RenderArgs) {
   }
 }
 
-function initBall() {
-  state.ball = {
-    p: new Vec2(window.innerWidth / 2, window.innerHeight / 2),
-    v: new Vec2(10, -5),
-  }
-}
-
 function initCanvas(canvas: HTMLCanvasElement) {
   const dpr = window.devicePixelRatio
   canvas.width = window.innerWidth * dpr
@@ -138,7 +144,6 @@ function initCanvas(canvas: HTMLCanvasElement) {
   const context = canvas.getContext('2d')!
 
   initInput(canvas)
-  initBall()
 
   window.requestAnimationFrame(buildRender({ context }))
 }
@@ -157,7 +162,7 @@ function initInput(canvas: HTMLCanvasElement) {
   })
 
   canvas.addEventListener('pointerup', (e) => {
-    if (state.drag && state.ball) {
+    if (state.drag) {
       state.drag.b = new Vec2(e.clientX, e.clientY)
       state.ball.v = state.drag.a.sub(state.drag.b!)
       delete state.drag
