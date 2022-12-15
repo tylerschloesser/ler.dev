@@ -165,10 +165,14 @@ function buildRender(context: CanvasRenderingContext2D) {
 
     moveBall(elapsed)
 
-    const scale = 2
+    const padding = Math.min(state.world.w, state.world.h) * 0.1
+    const scale = Math.min(
+      viewport.w / (state.world.w + padding),
+      viewport.h / (state.world.h + padding),
+    )
     const translate = new Vec2(
-      viewport.w / 2 - state.world.w / 2,
-      viewport.h / 2 - state.world.h / 2,
+      viewport.w / 2 - (state.world.w * scale) / 2,
+      viewport.h / 2 - (state.world.h * scale) / 2,
     )
     const transform = {
       x: (x1: number) => x1 * scale + translate.x,
