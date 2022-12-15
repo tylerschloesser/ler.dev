@@ -75,6 +75,7 @@ function minScale() {
 }
 
 let scale = minScale()
+let translate: Vec2 = new Vec2(0, 0)
 
 function adjustScale(dy: number) {
   scale = Math.max(minScale(), scale + dy * 0.001)
@@ -192,10 +193,6 @@ function buildRender(context: CanvasRenderingContext2D) {
 
     moveBall(elapsed)
 
-    const translate = new Vec2(
-      viewport.w / 2 - (state.world.w * scale) / 2,
-      viewport.h / 2 - (state.world.h * scale) / 2,
-    )
     const transform = {
       x: (x1: number) => x1 * scale + translate.x,
       y: (y1: number) => y1 * scale + translate.y,
@@ -218,6 +215,10 @@ function handleResize(canvas: HTMLCanvasElement) {
     w: window.innerWidth,
     h: window.innerHeight,
   }
+  translate = new Vec2(
+    viewport.w / 2 - (state.world.w * scale) / 2,
+    viewport.h / 2 - (state.world.h * scale) / 2,
+  )
 
   canvas.width = viewport.w
   canvas.height = viewport.h
@@ -226,6 +227,11 @@ function handleResize(canvas: HTMLCanvasElement) {
 function initCanvas(canvas: HTMLCanvasElement) {
   canvas.width = viewport.w
   canvas.height = viewport.h
+
+  translate = new Vec2(
+    viewport.w / 2 - (state.world.w * scale) / 2,
+    viewport.h / 2 - (state.world.h * scale) / 2,
+  )
 
   const context = canvas.getContext('2d')!
 
