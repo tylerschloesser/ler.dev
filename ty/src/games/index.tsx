@@ -20,6 +20,10 @@ class Vec2 {
   mul(s: number): Vec2 {
     return new Vec2(this.x * s, this.y * s)
   }
+
+  div(s: number): Vec2 {
+    return this.mul(1 / s)
+  }
 }
 
 interface Viewport {
