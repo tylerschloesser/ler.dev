@@ -71,9 +71,13 @@ interface RenderArgs {
   context: CanvasRenderingContext2D
   scale: number
   translate: Vec2
+  transform: {
+    x(x1: number): number
+    y(y1: number): number
+  }
 }
 
-function renderWorld({ context, scale, translate }: RenderArgs) {
+function renderWorld({ context, transform }: RenderArgs) {
   context.beginPath()
 
   context.strokeStyle = 'hsl(0, 0%, 30%)'
@@ -81,27 +85,27 @@ function renderWorld({ context, scale, translate }: RenderArgs) {
 
   const { world } = state
 
-  context.moveTo(translate.x, translate.y)
+  context.moveTo(transform.x(0), transform.y(0))
   ;[
     [world.w, 0],
     [world.w, world.h],
     [0, world.h],
     [0, 0],
   ].forEach(([x, y]) => {
-    context.lineTo(x * scale + translate.x, y * scale + translate.y)
+    context.lineTo(transform.x(x), transform.y(y))
   })
 
   context.stroke()
   context.closePath()
 }
 
-function renderBall({ context, scale, translate }: RenderArgs) {
+function renderBall({ context, scale, transform }: RenderArgs) {
   if (state.ball) {
     context.beginPath()
     context.fillStyle = 'hsl(0, 60%, 50%)'
     context.arc(
-      state.ball.p.x * scale + translate.x,
-      state.ball.p.y * scale + translate.y,
+      transform.x(state.ball.p.x),
+      transform.y(state.ball.p.y),
       state.ball.r * scale,
       0,
       Math.PI * 2,
@@ -166,10 +170,15 @@ function buildRender(context: CanvasRenderingContext2D) {
       viewport.w / 2 - state.world.w / 2,
       viewport.h / 2 - state.world.h / 2,
     )
+    const transform = {
+      x: (x1: number) => x1 * scale + translate.x,
+      y: (y1: number) => y1 * scale + translate.y,
+    }
     const args: RenderArgs = {
       context,
       scale,
       translate,
+      transform,
     }
 
     renderWorld(args)
