@@ -22,6 +22,16 @@ class Vec2 {
   }
 }
 
+interface Viewport {
+  w: number
+  h: number
+}
+
+let viewport: Viewport = {
+  w: window.innerWidth,
+  h: window.innerHeight,
+}
+
 interface Drag {
   a: Vec2
   b?: Vec2
@@ -30,6 +40,7 @@ interface Drag {
 interface Ball {
   p: Vec2
   v: Vec2
+  r(viewport: Viewport): number
 }
 
 interface World {
@@ -51,6 +62,9 @@ const state: State = {
   ball: {
     p: new Vec2(50, 50),
     v: new Vec2(1, 1),
+    r({ w, h }: Viewport) {
+      return Math.min(h, w) * 0.05
+    },
   },
 }
 
@@ -80,7 +94,7 @@ function renderBall({ context }: RenderArgs) {
   if (state.ball) {
     context.beginPath()
     context.fillStyle = 'hsl(0, 60%, 50%)'
-    const radius = Math.min(window.innerHeight, window.innerWidth) * 0.05
+    const radius = state.ball.r(viewport)
     context.arc(state.ball.p.x, state.ball.p.y, radius, 0, Math.PI * 2)
     context.fill()
     context.closePath()
@@ -131,8 +145,7 @@ function buildRender(args: RenderArgs) {
     last = time
 
     const { context } = args
-    const w = window.innerWidth
-    const h = window.innerHeight
+    const { w, h } = viewport
     context.clearRect(0, 0, w, h)
     context.fillStyle = 'hsl(0, 0%, 20%)'
     context.fillRect(0, 0, w, h)
@@ -150,8 +163,8 @@ function buildRender(args: RenderArgs) {
 
 function initCanvas(canvas: HTMLCanvasElement) {
   const dpr = window.devicePixelRatio
-  canvas.width = window.innerWidth * dpr
-  canvas.height = window.innerHeight * dpr
+  canvas.width = viewport.w * dpr
+  canvas.height = viewport.h * dpr
 
   const context = canvas.getContext('2d')!
 
