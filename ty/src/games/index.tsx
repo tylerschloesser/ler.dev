@@ -66,15 +66,22 @@ const state: State = {
   },
 }
 
-let padding = Math.min(state.world.w, state.world.h) * 0.1
-let scale = Math.min(
-  viewport.w / (state.world.w + padding),
-  viewport.h / (state.world.h + padding),
-)
+function minScale() {
+  let padding = Math.min(state.world.w, state.world.h) * 0.1
+  return Math.min(
+    viewport.w / (state.world.w + padding),
+    viewport.h / (state.world.h + padding),
+  )
+}
+
+let scale = minScale()
+
+function adjustScale(dy: number) {
+  scale = Math.max(minScale(), scale + dy * 0.001)
+}
 
 interface RenderArgs {
   context: CanvasRenderingContext2D
-  translate: Vec2
   transform: {
     x(x1: number): number
     y(y1: number): number
@@ -195,7 +202,6 @@ function buildRender(context: CanvasRenderingContext2D) {
     }
     const args: RenderArgs = {
       context,
-      translate,
       transform,
     }
 
@@ -253,7 +259,7 @@ function initInput(canvas: HTMLCanvasElement) {
   })
 
   canvas.addEventListener('wheel', (e) => {
-    console.log('wheel', e.deltaY)
+    adjustScale(-e.deltaY)
   })
 }
 
