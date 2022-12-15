@@ -77,25 +77,41 @@ interface RenderArgs {
 }
 
 function renderWorld({ context, transform }: RenderArgs) {
-  context.beginPath()
-
-  context.strokeStyle = 'hsl(0, 0%, 30%)'
-  context.lineWidth = 1
-
   const { world } = state
 
-  context.moveTo(transform.x(0), transform.y(0))
-  ;[
-    [world.w, 0],
-    [world.w, world.h],
-    [0, world.h],
-    [0, 0],
-  ].forEach(([x, y]) => {
-    context.lineTo(transform.x(x), transform.y(y))
-  })
+  {
+    context.beginPath()
+    context.strokeStyle = 'hsl(0, 0%, 30%)'
+    context.lineWidth = 1
+    const size = 100
+    for (let i = 1; i < world.w / size; i++) {
+      context.moveTo(transform.x(i * size), transform.y(0))
+      context.lineTo(transform.x(i * size), transform.y(world.h))
 
-  context.stroke()
-  context.closePath()
+      context.moveTo(transform.x(0), transform.y(i * size))
+      context.lineTo(transform.x(world.w), transform.y(i * size))
+    }
+
+    context.stroke()
+    context.closePath()
+  }
+
+  {
+    context.beginPath()
+    context.strokeStyle = 'hsl(0, 0%, 70%)'
+    context.lineWidth = 1
+    context.moveTo(transform.x(0), transform.y(0))
+    ;[
+      [world.w, 0],
+      [world.w, world.h],
+      [0, world.h],
+      [0, 0],
+    ].forEach(([x, y]) => {
+      context.lineTo(transform.x(x), transform.y(y))
+    })
+    context.stroke()
+    context.closePath()
+  }
 }
 
 function renderBall({ context, scale, transform }: RenderArgs) {
