@@ -1,3 +1,4 @@
+import { words } from 'lodash'
 import React, { useEffect, useState } from 'react'
 
 class Vec2 {
@@ -147,19 +148,29 @@ function moveBall(elapsed: number) {
   ball.p = p2
 }
 
-function buildRender(args: RenderArgs) {
+function buildRender(context: CanvasRenderingContext2D) {
   let last: null | number = null
   return function render(time: number) {
     let elapsed = (last ? time - last : 0) / 1000
     last = time
 
-    const { context } = args
     const { w, h } = viewport
     context.clearRect(0, 0, w, h)
     context.fillStyle = 'hsl(0, 0%, 20%)'
     context.fillRect(0, 0, w, h)
 
     moveBall(elapsed)
+
+    const scale = 2
+    const translate = new Vec2(
+      viewport.w / 2 - state.world.w / 2,
+      viewport.h / 2 - state.world.h / 2,
+    )
+    const args: RenderArgs = {
+      context,
+      scale,
+      translate,
+    }
 
     renderWorld(args)
     renderBall(args)
@@ -178,9 +189,7 @@ function initCanvas(canvas: HTMLCanvasElement) {
 
   initInput(canvas)
 
-  window.requestAnimationFrame(
-    buildRender({ context, scale: 2.5, translate: new Vec2(100, 100) }),
-  )
+  window.requestAnimationFrame(buildRender(context))
 }
 
 function initInput(canvas: HTMLCanvasElement) {
