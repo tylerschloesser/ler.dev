@@ -40,7 +40,7 @@ interface Drag {
 interface Ball {
   p: Vec2
   v: Vec2
-  r(viewport: Viewport): number
+  r: number
 }
 
 interface World {
@@ -62,9 +62,7 @@ const state: State = {
   ball: {
     p: new Vec2(50, 50),
     v: new Vec2(1, 1),
-    r({ w, h }: Viewport) {
-      return Math.min(h, w) * 0.05
-    },
+    r: 5,
   },
 }
 
@@ -94,8 +92,7 @@ function renderBall({ context }: RenderArgs) {
   if (state.ball) {
     context.beginPath()
     context.fillStyle = 'hsl(0, 60%, 50%)'
-    const radius = state.ball.r(viewport)
-    context.arc(state.ball.p.x, state.ball.p.y, radius, 0, Math.PI * 2)
+    context.arc(state.ball.p.x, state.ball.p.y, state.ball.r, 0, Math.PI * 2)
     context.fill()
     context.closePath()
   }
@@ -119,19 +116,19 @@ function moveBall(elapsed: number) {
 
   const p2 = ball.p.add(ball.v.mul(elapsed))
 
-  if (p2.x < 0) {
-    p2.x *= -1
+  if (p2.x - ball.r < 0) {
+    p2.x = (p2.x - ball.r) * -1 + ball.r
     ball.v.x *= -1
-  } else if (p2.x > state.world.w) {
-    p2.x -= p2.x - state.world.w
+  } else if (p2.x + ball.r > state.world.w) {
+    p2.x -= p2.x + ball.r - state.world.w
     ball.v.x *= -1
   }
 
-  if (p2.y < 0) {
-    p2.y *= -1
+  if (p2.y - ball.r < 0) {
+    p2.y = (p2.y - ball.r) * -1 + ball.r
     ball.v.y *= -1
-  } else if (p2.y > state.world.h) {
-    p2.y -= p2.y - state.world.h
+  } else if (p2.y + ball.r > state.world.h) {
+    p2.y -= p2.y + ball.r - state.world.h
     ball.v.y *= -1
   }
 
