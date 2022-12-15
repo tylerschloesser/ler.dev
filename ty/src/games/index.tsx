@@ -1,5 +1,27 @@
 import React, { useEffect, useState } from 'react'
 
+class Vec2 {
+  x: number
+  y: number
+
+  constructor(x: number = 0, y: number = 0) {
+    this.x = x
+    this.y = y
+  }
+
+  add(v: Vec2): Vec2 {
+    return new Vec2(this.x + v.x, this.y + v.y)
+  }
+
+  sub(v: Vec2): Vec2 {
+    return this.add(v.mul(-1))
+  }
+
+  mul(s: number): Vec2 {
+    return new Vec2(this.x * s, this.y * s)
+  }
+}
+
 interface Drag {
   a: Vec2
   b?: Vec2
@@ -43,7 +65,6 @@ function renderBall({ context }: RenderArgs) {
   if (state.ball) {
     context.fillStyle = 'hsl(0, 60%, 50%)'
     const radius = Math.min(window.innerHeight, window.innerWidth) * 0.05
-    //context.arc(ball.p.x, ball.p.y, radius, 0, Math.PI * 2)
     context.arc(
       window.innerWidth / 2,
       window.innerHeight / 2,
@@ -120,28 +141,6 @@ function initCanvas(canvas: HTMLCanvasElement) {
   initBall()
 
   window.requestAnimationFrame(buildRender({ context }))
-}
-
-class Vec2 {
-  x: number
-  y: number
-
-  constructor(x: number = 0, y: number = 0) {
-    this.x = x
-    this.y = y
-  }
-
-  add(v: Vec2): Vec2 {
-    return new Vec2(this.x + v.x, this.y + v.y)
-  }
-
-  sub(v: Vec2): Vec2 {
-    return this.add(v.mul(-1))
-  }
-
-  mul(s: number): Vec2 {
-    return new Vec2(this.x * s, this.y * s)
-  }
 }
 
 function initInput(canvas: HTMLCanvasElement) {
