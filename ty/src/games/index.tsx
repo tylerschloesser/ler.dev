@@ -64,7 +64,7 @@ const state: State = {
     h: 1000,
   },
   ball: {
-    p: new Vec2(50, 50),
+    p: new Vec2(500, 500),
     v: new Vec2(1, 1),
     r: 5,
   },
@@ -197,9 +197,14 @@ function buildRender(context: CanvasRenderingContext2D) {
     moveBall(elapsed)
 
     const translate = new Vec2(
-      viewport.w / 2 - (state.world.w * scale) / 2,
-      viewport.h / 2 - (state.world.h * scale) / 2,
+      viewport.w / 2 -
+        (state.world.w * scale) / 2 +
+        (state.world.w / 2 - state.ball.p.x) * scale,
+      viewport.h / 2 -
+        (state.world.h * scale) / 2 +
+        (state.world.h / 2 - state.ball.p.y) * scale,
     )
+
     const transform = {
       x: (x1: number) => x1 * scale + translate.x,
       y: (y1: number) => y1 * scale + translate.y,
@@ -254,7 +259,7 @@ function initInput(canvas: HTMLCanvasElement) {
   canvas.addEventListener('pointerup', (e) => {
     if (state.drag) {
       state.drag.b = new Vec2(e.clientX, e.clientY)
-      state.ball.v = state.drag.a.sub(state.drag.b!)
+      state.ball.v = state.drag.a.sub(state.drag.b!).mul(2)
       delete state.drag
     }
   })
