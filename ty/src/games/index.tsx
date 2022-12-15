@@ -1,4 +1,3 @@
-import { words } from 'lodash'
 import React, { useEffect, useState } from 'react'
 
 class Vec2 {
@@ -194,9 +193,8 @@ function buildRender(context: CanvasRenderingContext2D) {
 }
 
 function initCanvas(canvas: HTMLCanvasElement) {
-  const dpr = window.devicePixelRatio
-  canvas.width = viewport.w * dpr
-  canvas.height = viewport.h * dpr
+  canvas.width = viewport.w
+  canvas.height = viewport.h
 
   const context = canvas.getContext('2d')!
 
@@ -234,6 +232,12 @@ export function Games() {
   const [canvas, setCanvas] = useState<HTMLCanvasElement | null>()
   useEffect(() => {
     canvas && initCanvas(canvas)
+
+    // prevent scroll
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.body.style.overflow = ''
+    }
   }, [canvas])
   return (
     <div>
