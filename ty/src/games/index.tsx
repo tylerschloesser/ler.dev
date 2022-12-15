@@ -1,4 +1,3 @@
-import { words } from 'lodash'
 import React, { useEffect, useState } from 'react'
 
 class Vec2 {
