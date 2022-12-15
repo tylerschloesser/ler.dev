@@ -58,36 +58,32 @@ interface RenderArgs {
   context: CanvasRenderingContext2D
 }
 
-function renderGrid({ context }: RenderArgs) {
+function renderWorld({ context }: RenderArgs) {
   context.beginPath()
+
   context.strokeStyle = 'hsl(0, 0%, 30%)'
   context.lineWidth = 1
-  const s = Math.min(window.innerHeight, window.innerWidth) * 0.1
-  for (let i = 0; i < 100; i++) {
-    for (let j = 0; j < 100; j++) {
-      context.moveTo(i * s, 0)
-      context.lineTo(i * s, 100 * s)
 
-      context.moveTo(0, j * s)
-      context.lineTo(100 * s, j * s)
-    }
-  }
+  const { world } = state
+
+  context.moveTo(0, 0)
+  context.lineTo(world.w, 0)
+  context.lineTo(world.w, world.h)
+  context.lineTo(0, world.h)
+  context.lineTo(0, 0)
+
   context.stroke()
   context.closePath()
 }
 
 function renderBall({ context }: RenderArgs) {
   if (state.ball) {
+    context.beginPath()
     context.fillStyle = 'hsl(0, 60%, 50%)'
     const radius = Math.min(window.innerHeight, window.innerWidth) * 0.05
-    context.arc(
-      window.innerWidth / 2,
-      window.innerHeight / 2,
-      radius,
-      0,
-      Math.PI * 2,
-    )
+    context.arc(state.ball.p.x, state.ball.p.y, radius, 0, Math.PI * 2)
     context.fill()
+    context.closePath()
   }
 }
 
@@ -124,10 +120,7 @@ function buildRender(args: RenderArgs) {
 
     moveBall(elapsed)
 
-    const { ball } = state
-    context.translate(-(ball?.p.x ?? 0), -(ball?.p.y ?? 0))
-    renderGrid(args)
-    context.resetTransform()
+    renderWorld(args)
 
     renderBall(args)
     renderDrag(args)
