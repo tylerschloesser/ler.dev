@@ -66,9 +66,14 @@ const state: State = {
   },
 }
 
+let padding = Math.min(state.world.w, state.world.h) * 0.1
+let scale = Math.min(
+  viewport.w / (state.world.w + padding),
+  viewport.h / (state.world.h + padding),
+)
+
 interface RenderArgs {
   context: CanvasRenderingContext2D
-  scale: number
   translate: Vec2
   transform: {
     x(x1: number): number
@@ -114,7 +119,7 @@ function renderWorld({ context, transform }: RenderArgs) {
   }
 }
 
-function renderBall({ context, scale, transform }: RenderArgs) {
+function renderBall({ context, transform }: RenderArgs) {
   if (state.ball) {
     context.beginPath()
     context.fillStyle = 'hsl(0, 60%, 50%)'
@@ -180,11 +185,6 @@ function buildRender(context: CanvasRenderingContext2D) {
 
     moveBall(elapsed)
 
-    const padding = Math.min(state.world.w, state.world.h) * 0.1
-    const scale = Math.min(
-      viewport.w / (state.world.w + padding),
-      viewport.h / (state.world.h + padding),
-    )
     const translate = new Vec2(
       viewport.w / 2 - (state.world.w * scale) / 2,
       viewport.h / 2 - (state.world.h * scale) / 2,
@@ -195,7 +195,6 @@ function buildRender(context: CanvasRenderingContext2D) {
     }
     const args: RenderArgs = {
       context,
-      scale,
       translate,
       transform,
     }
@@ -251,6 +250,10 @@ function initInput(canvas: HTMLCanvasElement) {
   })
   canvas.addEventListener('pointerleave', () => {
     delete state.drag
+  })
+
+  canvas.addEventListener('wheel', (e) => {
+    console.log('wheel', e.deltaY)
   })
 }
 
