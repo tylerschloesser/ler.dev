@@ -1,8 +1,21 @@
 import React, { useEffect, useState } from 'react'
 
-let drag: null | { a: Vec2; b?: Vec2 } = null
+interface Drag {
+  a: Vec2
+  b?: Vec2
+}
 
-let ball: null | { p: Vec2; v: Vec2 } = null
+interface Ball {
+  p: Vec2
+  v: Vec2
+}
+
+interface State {
+  ball?: Ball
+  drag?: Drag
+}
+
+const state: State = {}
 
 interface RenderArgs {
   context: CanvasRenderingContext2D
@@ -27,7 +40,7 @@ function renderGrid({ context }: RenderArgs) {
 }
 
 function renderBall({ context }: RenderArgs) {
-  if (ball) {
+  if (state.ball) {
     context.fillStyle = 'hsl(0, 60%, 50%)'
     const radius = Math.min(window.innerHeight, window.innerWidth) * 0.05
     //context.arc(ball.p.x, ball.p.y, radius, 0, Math.PI * 2)
@@ -43,6 +56,7 @@ function renderBall({ context }: RenderArgs) {
 }
 
 function renderDrag({ context }: RenderArgs) {
+  const { drag } = state
   if (drag?.b) {
     context.strokeStyle = 'hsl(240, 60%, 80%)'
     context.lineWidth = 2
@@ -55,6 +69,7 @@ function renderDrag({ context }: RenderArgs) {
 }
 
 function moveBall(elapsed: number) {
+  const { ball } = state
   if (ball) {
     ball.p = ball.p.add(ball.v.mul(elapsed))
   }
@@ -75,6 +90,7 @@ function buildRender(args: RenderArgs) {
 
     moveBall(elapsed)
 
+    const { ball } = state
     context.translate(-(ball?.p.x ?? 0), -(ball?.p.y ?? 0))
     renderGrid(args)
     context.resetTransform()
@@ -87,7 +103,7 @@ function buildRender(args: RenderArgs) {
 }
 
 function initBall() {
-  ball = {
+  state.ball = {
     p: new Vec2(window.innerWidth / 2, window.innerHeight / 2),
     v: new Vec2(10, -5),
   }
@@ -130,26 +146,26 @@ class Vec2 {
 
 function initInput(canvas: HTMLCanvasElement) {
   canvas.addEventListener('pointerdown', (e) => {
-    drag = {
+    state.drag = {
       a: new Vec2(e.clientX, e.clientY),
     }
   })
 
   canvas.addEventListener('pointermove', (e) => {
-    if (drag) {
-      drag.b = new Vec2(e.clientX, e.clientY)
+    if (state.drag) {
+      state.drag.b = new Vec2(e.clientX, e.clientY)
     }
   })
 
   canvas.addEventListener('pointerup', (e) => {
-    if (drag && ball) {
-      drag.b = new Vec2(e.clientX, e.clientY)
-      ball.v = drag.a.sub(drag.b!)
-      drag = null
+    if (state.drag && state.ball) {
+      state.drag.b = new Vec2(e.clientX, e.clientY)
+      state.ball.v = state.drag.a.sub(state.drag.b!)
+      delete state.drag
     }
   })
   canvas.addEventListener('pointerleave', () => {
-    drag = null
+    delete state.drag
   })
 }
 
