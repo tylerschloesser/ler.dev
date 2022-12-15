@@ -56,8 +56,8 @@ interface State {
 
 const state: State = {
   world: {
-    w: 100,
-    h: 100,
+    w: 1000,
+    h: 1000,
   },
   ball: {
     p: new Vec2(50, 50),
