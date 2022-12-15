@@ -1,3 +1,4 @@
+import { words } from 'lodash'
 import React, { useEffect, useState } from 'react'
 
 class Vec2 {
@@ -102,7 +103,26 @@ function renderDrag({ context }: RenderArgs) {
 
 function moveBall(elapsed: number) {
   const { ball } = state
-  ball.p = ball.p.add(ball.v.mul(elapsed))
+
+  const p2 = ball.p.add(ball.v.mul(elapsed))
+
+  if (p2.x < 0) {
+    p2.x *= -1
+    ball.v.x *= -1
+  } else if (p2.x > state.world.w) {
+    p2.x -= p2.x - state.world.w
+    ball.v.x *= -1
+  }
+
+  if (p2.y < 0) {
+    p2.y *= -1
+    ball.v.y *= -1
+  } else if (p2.y > state.world.h) {
+    p2.y -= p2.y - state.world.h
+    ball.v.y *= -1
+  }
+
+  ball.p = p2
 }
 
 function buildRender(args: RenderArgs) {
