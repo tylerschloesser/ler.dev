@@ -220,7 +220,7 @@ function detectCollisions() {
   for (const target of state.targets) {
     const dist = target.p.sub(state.ball.p).length()
     if (dist - target.r - state.ball.r < 0) {
-      // remove it
+      addTarget(targets2)
     } else {
       targets2.push(target)
     }
@@ -319,7 +319,7 @@ function initInput(canvas: HTMLCanvasElement) {
   })
 }
 
-function addTarget() {
+function addTarget(targets: Target[]) {
   let p: Vec2
   const padding = Math.min(state.world.w, state.world.h) * 0.1
   while (true) {
@@ -338,11 +338,11 @@ function addTarget() {
     }
   }
 
-  state.targets.push({ p, r: 10 })
+  targets.push({ p, r: 10 })
 }
 
 function initTargets() {
-  addTarget()
+  addTarget(state.targets)
 }
 
 export function Games() {
