@@ -1,4 +1,3 @@
-import { pad } from 'lodash'
 import React, { useEffect, useState } from 'react'
 
 class Vec2 {
@@ -80,8 +79,8 @@ const state: State = {
   },
   ball: {
     p: new Vec2(500, 500),
-    v: new Vec2(1, 1),
-    r: 5,
+    v: new Vec2(0, 0),
+    r: 20,
   },
   targets: [],
 }
@@ -338,7 +337,7 @@ function addTarget(targets: Target[]) {
     }
   }
 
-  targets.push({ p, r: 10 })
+  targets.push({ p, r: 20 })
 }
 
 function initTargets() {
