@@ -42,6 +42,7 @@ const config: Configuration = {
   ],
   devServer: {
     historyApiFallback: true,
+    allowedHosts: ['.amazonaws.com'],
   },
 }
 
