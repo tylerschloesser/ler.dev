@@ -1,3 +1,4 @@
+import { pad } from 'lodash'
 import React, { useEffect, useState } from 'react'
 
 class Vec2 {
@@ -23,6 +24,10 @@ class Vec2 {
 
   div(s: number): Vec2 {
     return this.mul(1 / s)
+  }
+
+  length(): number {
+    return Math.sqrt(this.x * this.x + this.y - this.y)
   }
 }
 
@@ -52,10 +57,16 @@ interface World {
   h: number
 }
 
+interface Target {
+  p: Vec2
+  r: number
+}
+
 interface State {
   ball: Ball
   drag?: Drag
   world: World
+  targets: Target[]
 }
 
 const state: State = {
@@ -68,6 +79,7 @@ const state: State = {
     v: new Vec2(1, 1),
     r: 5,
   },
+  targets: [],
 }
 
 function minScale() {
@@ -146,6 +158,22 @@ function renderBall({ context, transform }: RenderArgs) {
   }
 }
 
+function renderTargets({ context, transform }: RenderArgs) {
+  for (const target of state.targets) {
+    context.beginPath()
+    context.fillStyle = 'hsl(120, 60%, 50%)'
+    context.arc(
+      transform.x(target.p.x),
+      transform.y(target.p.y),
+      target.r * scale,
+      0,
+      Math.PI * 2,
+    )
+    context.fill()
+    context.closePath()
+  }
+}
+
 function renderDrag({ context }: RenderArgs) {
   const { drag } = state
   if (drag?.b) {
@@ -215,6 +243,7 @@ function buildRender(context: CanvasRenderingContext2D) {
     }
 
     renderWorld(args)
+    renderTargets(args)
     renderBall(args)
     renderDrag(args)
 
@@ -272,10 +301,38 @@ function initInput(canvas: HTMLCanvasElement) {
   })
 }
 
+function addTarget() {
+  let p: Vec2
+  const padding = Math.min(state.world.w, state.world.h) * 0.1
+  while (true) {
+    p = new Vec2(Math.random() * state.world.w, Math.random() * state.world.h)
+    if (
+      p.x < padding ||
+      state.world.w - p.x < padding ||
+      p.y < padding ||
+      state.world.h - p.y < padding
+    ) {
+      continue
+    }
+    const dist = state.ball.p.sub(p).length()
+    if (dist > padding) {
+      break
+    }
+  }
+
+  state.targets.push({ p, r: 10 })
+}
+
+function initTargets() {
+  addTarget()
+  addTarget()
+}
+
 export function Games() {
   const [canvas, setCanvas] = useState<HTMLCanvasElement | null>()
   useEffect(() => {
     if (canvas) {
+      initTargets()
       initCanvas(canvas)
       const ro: ResizeObserver = new ResizeObserver(() => {
         handleResize(canvas)
