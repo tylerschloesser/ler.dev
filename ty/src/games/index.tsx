@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react'
 
+// IDEAS
+// two balls, input controls both balls
+
 class Vec2 {
   x: number
   y: number
