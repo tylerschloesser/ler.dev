@@ -15,7 +15,7 @@ class Vec2 {
   }
 
   sub(v: Vec2): Vec2 {
-    return this.add(v.mul(-1))
+    return new Vec2(this.x - v.x, this.y - v.y)
   }
 
   mul(s: number): Vec2 {
@@ -23,11 +23,15 @@ class Vec2 {
   }
 
   div(s: number): Vec2 {
-    return this.mul(1 / s)
+    return new Vec2(this.x / s, this.y / s)
   }
 
   length(): number {
-    return Math.sqrt(this.x * this.x + this.y - this.y)
+    return Math.sqrt(this.x * this.x + this.y * this.y)
+  }
+
+  toString(): string {
+    return `[${Math.round(this.x)},${Math.round(this.y)}]`
   }
 }
 
@@ -211,6 +215,19 @@ function moveBall(elapsed: number) {
   ball.p = p2
 }
 
+function detectCollisions() {
+  const targets2: Target[] = []
+  for (const target of state.targets) {
+    const dist = target.p.sub(state.ball.p).length()
+    if (dist - target.r - state.ball.r < 0) {
+      // remove it
+    } else {
+      targets2.push(target)
+    }
+  }
+  state.targets = targets2
+}
+
 function buildRender(context: CanvasRenderingContext2D) {
   let last: null | number = null
   return function render(time: number) {
@@ -223,6 +240,7 @@ function buildRender(context: CanvasRenderingContext2D) {
     context.fillRect(0, 0, w, h)
 
     moveBall(elapsed)
+    detectCollisions()
 
     const translate = new Vec2(
       viewport.w / 2 -
@@ -324,7 +342,6 @@ function addTarget() {
 }
 
 function initTargets() {
-  addTarget()
   addTarget()
 }
 
