@@ -343,6 +343,7 @@ function addTarget(targets: Target[]) {
 
 function initTargets() {
   addTarget(state.targets)
+  addTarget(state.targets)
 }
 
 export function Games() {
