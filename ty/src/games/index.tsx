@@ -133,7 +133,20 @@ function renderBall({ context, transform }: RenderArgs) {
 }
 
 function renderTargets({ context, transform }: RenderArgs) {
-  for (const target of state.targets) {
+  for (let i = 0; i < state.targets.length; i++) {
+    const target = state.targets[i]
+
+    if (i < state.targets.length - 1) {
+      const next = state.targets[i + 1]
+      context.beginPath()
+      context.strokeStyle = 'hsl(120, 60%, 20%)'
+      context.lineWidth = 4
+      context.moveTo(transform.x(target.p.x), transform.y(target.p.y))
+      context.lineTo(transform.x(next.p.x), transform.y(next.p.y))
+      context.stroke()
+      context.closePath()
+    }
+
     context.beginPath()
     context.fillStyle = 'hsl(120, 60%, 50%)'
     if (target.hit) {
