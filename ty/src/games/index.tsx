@@ -169,20 +169,32 @@ function moveBall(elapsed: number) {
 
   const p2 = ball.p.add(ball.v.mul(elapsed))
 
+  let hit = false
+
   if (p2.x - ball.r < 0) {
     p2.x = (p2.x - ball.r) * -1 + ball.r
     ball.v.x *= -1
+    hit = true
   } else if (p2.x + ball.r > state.world.w) {
     p2.x -= p2.x + ball.r - state.world.w
     ball.v.x *= -1
+    hit = true
   }
 
   if (p2.y - ball.r < 0) {
     p2.y = (p2.y - ball.r) * -1 + ball.r
     ball.v.y *= -1
+    hit = true
   } else if (p2.y + ball.r > state.world.h) {
     p2.y -= p2.y + ball.r - state.world.h
     ball.v.y *= -1
+    hit = true
+  }
+
+  if (hit) {
+    state.targets.forEach((target) => {
+      target.hit = false
+    })
   }
 
   ball.p = p2
@@ -295,6 +307,9 @@ function initInput(canvas: HTMLCanvasElement) {
     if (state.drag) {
       state.drag.b = new Vec2(e.clientX, e.clientY)
       state.ball.v = state.drag.a.sub(state.drag.b!).mul(2)
+      state.targets.forEach((target) => {
+        target.hit = false
+      })
       delete state.drag
     }
   })
