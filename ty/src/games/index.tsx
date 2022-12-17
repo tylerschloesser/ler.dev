@@ -1,3 +1,4 @@
+import { pad } from 'lodash'
 import React, { useEffect, useState } from 'react'
 import { Vec2 } from './vec2'
 
@@ -301,6 +302,16 @@ function addTarget(targets: Target[]) {
     ) {
       continue
     }
+
+    // ensure it's not too close to other targets
+    if (
+      targets.some((other) => {
+        return other.p.sub(p).length() < padding
+      })
+    ) {
+      continue
+    }
+
     const dist = state.ball.p.sub(p).length()
     if (dist > padding) {
       break
