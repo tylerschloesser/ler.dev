@@ -189,12 +189,22 @@ function moveBall(elapsed: number) {
 }
 
 function detectCollisions() {
-  const targets2: Target[] = []
+  let targets2: Target[] = []
+
   for (const target of state.targets) {
     const dist = target.p.sub(state.ball.p).length()
     if (dist - target.r - state.ball.r < 0) {
       if (!target.hit) {
-        addTarget(targets2)
+        if (
+          state.targets.every((other) => {
+            return other === target || other.hit
+          })
+        ) {
+          targets2 = []
+          addTarget(targets2)
+          addTarget(targets2)
+          break
+        }
       }
 
       target.hit = true
