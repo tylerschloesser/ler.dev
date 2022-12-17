@@ -1,4 +1,3 @@
-import { pad } from 'lodash'
 import React, { useEffect, useState } from 'react'
 import { Vec2 } from './vec2'
 
@@ -34,6 +33,7 @@ interface World {
 interface Target {
   p: Vec2
   r: number
+  hit: boolean
 }
 
 interface State {
@@ -136,6 +136,9 @@ function renderTargets({ context, transform }: RenderArgs) {
   for (const target of state.targets) {
     context.beginPath()
     context.fillStyle = 'hsl(120, 60%, 50%)'
+    if (target.hit) {
+      context.fillStyle = 'hsl(120, 60%, 20%)'
+    }
     context.arc(
       transform.x(target.p.x),
       transform.y(target.p.y),
@@ -190,7 +193,12 @@ function detectCollisions() {
   for (const target of state.targets) {
     const dist = target.p.sub(state.ball.p).length()
     if (dist - target.r - state.ball.r < 0) {
-      addTarget(targets2)
+      if (!target.hit) {
+        addTarget(targets2)
+      }
+
+      target.hit = true
+      targets2.push(target)
     } else {
       targets2.push(target)
     }
@@ -318,7 +326,7 @@ function addTarget(targets: Target[]) {
     }
   }
 
-  targets.push({ p, r: 20 })
+  targets.push({ p, r: 20, hit: false })
 }
 
 function initTargets() {
