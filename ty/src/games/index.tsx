@@ -17,9 +17,12 @@ function initCanvas(canvas: HTMLCanvasElement) {
   window.requestAnimationFrame(buildRender(context))
 }
 
+const TARGET_PAIRS = 5
+
 function initTargets() {
-  addTargetPair(state.targets)
-  addTargetPair(state.targets)
+  for (let i = 0; i < TARGET_PAIRS; i++) {
+    addTargetPair(state.targets)
+  }
 }
 
 export function Games() {
