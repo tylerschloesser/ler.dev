@@ -12,29 +12,29 @@ export function moveBall(elapsed: number) {
 
   const p2 = ball.p.add(ball.v.mul(elapsed))
 
-  let hit = false
+  let hitWall = false
 
   if (p2.x - ball.r < 0) {
     p2.x = (p2.x - ball.r) * -1 + ball.r
     ball.v.x *= -1
-    hit = true
+    hitWall = true
   } else if (p2.x + ball.r > state.world.w) {
     p2.x -= p2.x + ball.r - state.world.w
     ball.v.x *= -1
-    hit = true
+    hitWall = true
   }
 
   if (p2.y - ball.r < 0) {
     p2.y = (p2.y - ball.r) * -1 + ball.r
     ball.v.y *= -1
-    hit = true
+    hitWall = true
   } else if (p2.y + ball.r > state.world.h) {
     p2.y -= p2.y + ball.r - state.world.h
     ball.v.y *= -1
-    hit = true
+    hitWall = true
   }
 
-  if (hit) {
+  if (hitWall) {
     state.targets.forEach((pair) => {
       pair[0].hit = false
       pair[1].hit = false
