@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { initInput } from './input'
+import { initInput, initResizeObserver } from './input'
 import { detectCollisions, moveBall } from './physics'
 import {
   RenderArgs,
@@ -55,16 +55,6 @@ function buildRender(context: CanvasRenderingContext2D) {
   }
 }
 
-function handleResize(canvas: HTMLCanvasElement) {
-  updateViewport({
-    w: window.innerWidth,
-    h: window.innerHeight,
-  })
-
-  canvas.width = viewport.w
-  canvas.height = viewport.h
-}
-
 function initCanvas(canvas: HTMLCanvasElement) {
   canvas.width = viewport.w
   canvas.height = viewport.h
@@ -84,19 +74,18 @@ function initTargets() {
 export function Games() {
   const [canvas, setCanvas] = useState<HTMLCanvasElement | null>()
   useEffect(() => {
+    let cleanup: () => void | undefined
     if (canvas) {
       initTargets()
       initCanvas(canvas)
-      const ro: ResizeObserver = new ResizeObserver(() => {
-        handleResize(canvas)
-      })
-      ro.observe(document.body)
+      cleanup = initResizeObserver(canvas)
     }
 
     // prevent scroll
     document.body.style.overflow = 'hidden'
     return () => {
       document.body.style.overflow = ''
+      cleanup?.()
     }
   }, [canvas])
   return (
