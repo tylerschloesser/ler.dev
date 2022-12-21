@@ -69,3 +69,35 @@ export let scale = minScale()
 export function adjustScale(dy: number) {
   scale = Math.max(minScale(), scale + dy * 0.001)
 }
+
+export function addTarget(targets: Target[]) {
+  let p: Vec2
+  const padding = Math.min(state.world.w, state.world.h) * 0.1
+  while (true) {
+    p = new Vec2(Math.random() * state.world.w, Math.random() * state.world.h)
+    if (
+      p.x < padding ||
+      state.world.w - p.x < padding ||
+      p.y < padding ||
+      state.world.h - p.y < padding
+    ) {
+      continue
+    }
+
+    // ensure it's not too close to other targets
+    if (
+      targets.some((other) => {
+        return other.p.sub(p).length() < padding
+      })
+    ) {
+      continue
+    }
+
+    const dist = state.ball.p.sub(p).length()
+    if (dist > padding) {
+      break
+    }
+  }
+
+  targets.push({ p, r: 20, hit: false })
+}

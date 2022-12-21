@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { detectCollisions, moveBall } from './physics'
 import {
   RenderArgs,
   renderBall,
@@ -7,10 +8,10 @@ import {
   renderWorld,
 } from './render'
 import {
+  addTarget,
   adjustScale,
   scale,
   state,
-  Target,
   updateViewport,
   viewport,
 } from './state'
@@ -18,70 +19,6 @@ import { Vec2 } from './vec2'
 
 // IDEAS
 // two balls, input controls both balls
-
-function moveBall(elapsed: number) {
-  const { ball } = state
-
-  const p2 = ball.p.add(ball.v.mul(elapsed))
-
-  let hit = false
-
-  if (p2.x - ball.r < 0) {
-    p2.x = (p2.x - ball.r) * -1 + ball.r
-    ball.v.x *= -1
-    hit = true
-  } else if (p2.x + ball.r > state.world.w) {
-    p2.x -= p2.x + ball.r - state.world.w
-    ball.v.x *= -1
-    hit = true
-  }
-
-  if (p2.y - ball.r < 0) {
-    p2.y = (p2.y - ball.r) * -1 + ball.r
-    ball.v.y *= -1
-    hit = true
-  } else if (p2.y + ball.r > state.world.h) {
-    p2.y -= p2.y + ball.r - state.world.h
-    ball.v.y *= -1
-    hit = true
-  }
-
-  if (hit) {
-    state.targets.forEach((target) => {
-      target.hit = false
-    })
-  }
-
-  ball.p = p2
-}
-
-function detectCollisions() {
-  let targets2: Target[] = []
-
-  for (const target of state.targets) {
-    const dist = target.p.sub(state.ball.p).length()
-    if (dist - target.r - state.ball.r < 0) {
-      if (!target.hit) {
-        if (
-          state.targets.every((other) => {
-            return other === target || other.hit
-          })
-        ) {
-          targets2 = []
-          addTarget(targets2)
-          addTarget(targets2)
-          break
-        }
-      }
-
-      target.hit = true
-      targets2.push(target)
-    } else {
-      targets2.push(target)
-    }
-  }
-  state.targets = targets2
-}
 
 function buildRender(context: CanvasRenderingContext2D) {
   let last: null | number = null
@@ -175,38 +112,6 @@ function initInput(canvas: HTMLCanvasElement) {
   canvas.addEventListener('wheel', (e) => {
     adjustScale(-e.deltaY)
   })
-}
-
-function addTarget(targets: Target[]) {
-  let p: Vec2
-  const padding = Math.min(state.world.w, state.world.h) * 0.1
-  while (true) {
-    p = new Vec2(Math.random() * state.world.w, Math.random() * state.world.h)
-    if (
-      p.x < padding ||
-      state.world.w - p.x < padding ||
-      p.y < padding ||
-      state.world.h - p.y < padding
-    ) {
-      continue
-    }
-
-    // ensure it's not too close to other targets
-    if (
-      targets.some((other) => {
-        return other.p.sub(p).length() < padding
-      })
-    ) {
-      continue
-    }
-
-    const dist = state.ball.p.sub(p).length()
-    if (dist > padding) {
-      break
-    }
-  }
-
-  targets.push({ p, r: 20, hit: false })
 }
 
 function initTargets() {
