@@ -1,4 +1,4 @@
-import { addTarget, state, Target } from './state'
+import { addTargetPair, state, Target } from './state'
 
 export function moveBall(elapsed: number) {
   const { ball } = state
@@ -28,8 +28,9 @@ export function moveBall(elapsed: number) {
   }
 
   if (hit) {
-    state.targets.forEach((target) => {
-      target.hit = false
+    state.targets.forEach((pair) => {
+      pair[0].hit = false
+      pair[1].hit = false
     })
   }
 
@@ -37,28 +38,19 @@ export function moveBall(elapsed: number) {
 }
 
 export function detectCollisions() {
-  let targets2: Target[] = []
+  let targets2: [Target, Target][] = []
 
-  for (const target of state.targets) {
-    const dist = target.p.sub(state.ball.p).length()
-    if (dist - target.r - state.ball.r < 0) {
-      if (!target.hit) {
-        if (
-          state.targets.every((other) => {
-            return other === target || other.hit
-          })
-        ) {
-          targets2 = []
-          addTarget(targets2)
-          addTarget(targets2)
-          break
-        }
+  for (const pair of state.targets) {
+    pair.forEach((target) => {
+      let dist = target.p.sub(state.ball.p).length()
+      if (dist - target.r - state.ball.r < 0) {
+        target.hit = true
       }
-
-      target.hit = true
-      targets2.push(target)
+    })
+    if (pair.every((target) => target.hit)) {
+      addTargetPair(targets2)
     } else {
-      targets2.push(target)
+      targets2.push(pair)
     }
   }
   state.targets = targets2

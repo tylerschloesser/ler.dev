@@ -66,33 +66,34 @@ export function renderBall({ context, transform }: RenderArgs) {
 
 export function renderTargets({ context, transform }: RenderArgs) {
   for (let i = 0; i < state.targets.length; i++) {
-    const target = state.targets[i]
-
-    if (i < state.targets.length - 1) {
-      const next = state.targets[i + 1]
-      context.beginPath()
-      context.strokeStyle = 'hsl(120, 60%, 20%)'
-      context.lineWidth = 4
-      context.moveTo(transform.x(target.p.x), transform.y(target.p.y))
-      context.lineTo(transform.x(next.p.x), transform.y(next.p.y))
-      context.stroke()
-      context.closePath()
-    }
+    const pair = state.targets[i]
 
     context.beginPath()
-    context.fillStyle = 'hsl(120, 60%, 50%)'
-    if (target.hit) {
-      context.fillStyle = 'hsl(120, 60%, 20%)'
-    }
-    context.arc(
-      transform.x(target.p.x),
-      transform.y(target.p.y),
-      target.r * scale,
-      0,
-      Math.PI * 2,
-    )
-    context.fill()
+    context.strokeStyle = 'hsl(120, 60%, 20%)'
+    context.lineWidth = 4
+    context.moveTo(transform.x(pair[0].p.x), transform.y(pair[0].p.y))
+    context.lineTo(transform.x(pair[1].p.x), transform.y(pair[1].p.y))
+    context.stroke()
     context.closePath()
+
+    pair.forEach((target) => {
+      context.beginPath()
+      context.fillStyle = 'hsl(120, 60%, 50%)'
+
+      if (target.hit) {
+        context.fillStyle = 'hsl(120, 60%, 20%)'
+      }
+
+      context.arc(
+        transform.x(target.p.x),
+        transform.y(target.p.y),
+        target.r * scale,
+        0,
+        Math.PI * 2,
+      )
+      context.fill()
+      context.closePath()
+    })
   }
 }
 

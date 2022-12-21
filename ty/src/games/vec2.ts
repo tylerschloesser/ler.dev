@@ -30,4 +30,11 @@ export class Vec2 {
   toString(): string {
     return `[${Math.round(this.x)},${Math.round(this.y)}]`
   }
+
+  rotate(angle: number): Vec2 {
+    return new Vec2(
+      this.x * Math.cos(angle) - this.y * Math.sin(angle),
+      this.x * Math.sin(angle) + this.y * Math.cos(angle),
+    )
+  }
 }

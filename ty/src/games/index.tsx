@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { initInput, initResizeObserver } from './input'
 import { buildRender } from './render'
-import { addTarget, state, viewport } from './state'
+import { addTargetPair, state, viewport } from './state'
 
 // IDEAS
 // two balls, input controls both balls
@@ -18,8 +18,8 @@ function initCanvas(canvas: HTMLCanvasElement) {
 }
 
 function initTargets() {
-  addTarget(state.targets)
-  addTarget(state.targets)
+  addTargetPair(state.targets)
+  addTargetPair(state.targets)
 }
 
 export function Games() {

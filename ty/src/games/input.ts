@@ -18,8 +18,9 @@ export function initInput(canvas: HTMLCanvasElement) {
     if (state.drag) {
       state.drag.b = new Vec2(e.clientX, e.clientY)
       state.ball.v = state.drag.a.sub(state.drag.b!).mul(2)
-      state.targets.forEach((target) => {
-        target.hit = false
+      state.targets.forEach((pair) => {
+        pair[0].hit = false
+        pair[1].hit = false
       })
       delete state.drag
     }

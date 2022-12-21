@@ -1,3 +1,4 @@
+import { range } from 'lodash'
 import { Vec2 } from './vec2'
 
 export interface Drag {
@@ -26,16 +27,18 @@ export interface State {
   ball: Ball
   drag?: Drag
   world: World
-  targets: Target[]
+  targets: [Target, Target][]
 }
+
+const size = 1_000
 
 export const state: State = {
   world: {
-    w: 10_000,
-    h: 10_000,
+    w: size,
+    h: size,
   },
   ball: {
-    p: new Vec2(5_000, 5_000),
+    p: new Vec2(size / 2, size / 2),
     v: new Vec2(0, 0),
     r: 20,
   },
@@ -63,34 +66,48 @@ export function adjustScale(dy: number) {
   scale = Math.max(scale, 0.2)
 }
 
-export function addTarget(targets: Target[]) {
-  let p: Vec2
+export function addTargetPair(targets: [Target, Target][]) {
+  let a: Vec2
+
   const padding = Math.min(state.world.w, state.world.h) * 0.1
-  while (true) {
-    p = new Vec2(Math.random() * state.world.w, Math.random() * state.world.h)
+  const isValid = (v: Vec2) => {
     if (
-      p.x < padding ||
-      state.world.w - p.x < padding ||
-      p.y < padding ||
-      state.world.h - p.y < padding
+      v.x < padding ||
+      state.world.w - v.x < padding ||
+      v.y < padding ||
+      state.world.h - v.y < padding
     ) {
-      continue
+      return false
     }
 
-    // ensure it's not too close to other targets
-    if (
-      targets.some((other) => {
-        return other.p.sub(p).length() < padding
-      })
-    ) {
-      continue
-    }
-
-    const dist = state.ball.p.sub(p).length()
+    const dist = state.ball.p.sub(a).length()
     if (dist > padding) {
+      return true
+    }
+
+    return false
+  }
+
+  while (true) {
+    a = new Vec2(Math.random() * state.world.w, Math.random() * state.world.h)
+
+    if (isValid(a)) {
       break
     }
   }
 
-  targets.push({ p, r: 20, hit: false })
+  let b: Vec2
+  while (true) {
+    b = new Vec2(0, 1).rotate(Math.random() * 2 * Math.PI)
+    b = a.add(b.mul(100 + Math.random() * 200))
+
+    if (isValid(b)) {
+      break
+    }
+  }
+
+  targets.push([
+    { p: a, r: 20, hit: false },
+    { p: b, r: 20, hit: false },
+  ])
 }
