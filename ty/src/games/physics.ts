@@ -1,8 +1,40 @@
 import { addTargetPair, state, Target } from './state'
+import { Vec2 } from './vec2'
+
+function handleWallCollision(
+  p2: Vec2,
+  obj: {
+    v: Vec2
+    r: number
+  },
+) {
+  let hit = false
+  if (p2.x - obj.r < 0) {
+    p2.x = (p2.x - obj.r) * -1 + obj.r
+    obj.v.x *= -1
+    hit = true
+  } else if (p2.x + obj.r > state.world.w) {
+    p2.x -= p2.x + obj.r - state.world.w
+    obj.v.x *= -1
+    hit = true
+  }
+
+  if (p2.y - obj.r < 0) {
+    p2.y = (p2.y - obj.r) * -1 + obj.r
+    obj.v.y *= -1
+    hit = true
+  } else if (p2.y + obj.r > state.world.h) {
+    p2.y -= p2.y + obj.r - state.world.h
+    obj.v.y *= -1
+    hit = true
+  }
+  return hit
+}
 
 export function moveTargets(elapsed: number) {
   state.targets.flat().forEach((target) => {
     const p2 = target.p.add(target.v.mul(elapsed))
+    handleWallCollision(p2, target)
     target.p = p2
   })
 }
@@ -12,27 +44,7 @@ export function moveBall(elapsed: number) {
 
   const p2 = ball.p.add(ball.v.mul(elapsed))
 
-  let hitWall = false
-
-  if (p2.x - ball.r < 0) {
-    p2.x = (p2.x - ball.r) * -1 + ball.r
-    ball.v.x *= -1
-    hitWall = true
-  } else if (p2.x + ball.r > state.world.w) {
-    p2.x -= p2.x + ball.r - state.world.w
-    ball.v.x *= -1
-    hitWall = true
-  }
-
-  if (p2.y - ball.r < 0) {
-    p2.y = (p2.y - ball.r) * -1 + ball.r
-    ball.v.y *= -1
-    hitWall = true
-  } else if (p2.y + ball.r > state.world.h) {
-    p2.y -= p2.y + ball.r - state.world.h
-    ball.v.y *= -1
-    hitWall = true
-  }
+  let hitWall = handleWallCollision(p2, ball)
 
   if (hitWall) {
     state.targets.forEach((pair) => {
