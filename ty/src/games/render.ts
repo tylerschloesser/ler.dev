@@ -96,14 +96,15 @@ export function renderTargets({ context, transform }: RenderArgs) {
   }
 }
 
-export function renderDrag({ context }: RenderArgs) {
+export function renderDrag({ context, transform }: RenderArgs) {
   const { drag } = state
   if (drag?.b) {
     context.strokeStyle = 'hsl(240, 60%, 80%)'
     context.lineWidth = 2
     context.beginPath()
-    context.moveTo(drag.a.x, drag.a.y)
-    context.lineTo(drag.b.x, drag.b.y)
+    const end = state.ball.p.add(drag.b.sub(drag.a).mul(-1))
+    context.moveTo(transform.x(state.ball.p.x), transform.y(state.ball.p.y))
+    context.lineTo(transform.x(end.x), transform.y(end.y))
     context.stroke()
     context.closePath()
   }
