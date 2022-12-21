@@ -41,3 +41,31 @@ export const state: State = {
   },
   targets: [],
 }
+
+export interface Viewport {
+  w: number
+  h: number
+}
+
+export let viewport: Viewport = {
+  w: window.innerWidth,
+  h: window.innerHeight,
+}
+
+export function updateViewport(next: Viewport) {
+  viewport = next
+}
+
+export function minScale() {
+  let padding = Math.min(state.world.w, state.world.h) * 0.1
+  return Math.min(
+    viewport.w / (state.world.w + padding),
+    viewport.h / (state.world.h + padding),
+  )
+}
+
+export let scale = minScale()
+
+export function adjustScale(dy: number) {
+  scale = Math.max(minScale(), scale + dy * 0.001)
+}
