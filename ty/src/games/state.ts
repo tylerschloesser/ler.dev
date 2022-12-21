@@ -117,7 +117,21 @@ export function addTargetPair(targets: [Target, Target][]) {
   }
 
   targets.push([
-    { p: a, v: new Vec2(0, 0), r: 20, hit: false },
-    { p: b, v: new Vec2(0, 0), r: 20, hit: false },
+    {
+      p: a,
+      v: new Vec2(0, 1)
+        .rotate(Math.random() * 2 * Math.PI)
+        .mul(10 + Math.random() * 20),
+      r: 20,
+      hit: false,
+    },
+    {
+      p: b,
+      v: new Vec2(0, 1)
+        .rotate(Math.random() * 2 * Math.PI)
+        .mul(10 + Math.random() * 20),
+      r: 20,
+      hit: false,
+    },
   ])
 }
