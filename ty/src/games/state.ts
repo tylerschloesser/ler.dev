@@ -1,4 +1,3 @@
-import { range } from 'lodash'
 import { Vec2 } from './vec2'
 
 export interface Drag {
