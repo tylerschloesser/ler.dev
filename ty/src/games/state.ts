@@ -31,11 +31,11 @@ export interface State {
 
 export const state: State = {
   world: {
-    w: 1000,
-    h: 1000,
+    w: 10_000,
+    h: 10_000,
   },
   ball: {
-    p: new Vec2(500, 500),
+    p: new Vec2(5_000, 5_000),
     v: new Vec2(0, 0),
     r: 20,
   },
