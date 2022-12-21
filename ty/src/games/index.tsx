@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { state, Target } from './state'
 import { Vec2 } from './vec2'
 
 // IDEAS
@@ -12,48 +13,6 @@ interface Viewport {
 let viewport: Viewport = {
   w: window.innerWidth,
   h: window.innerHeight,
-}
-
-interface Drag {
-  a: Vec2
-  b?: Vec2
-}
-
-interface Ball {
-  p: Vec2
-  v: Vec2
-  r: number
-}
-
-interface World {
-  w: number
-  h: number
-}
-
-interface Target {
-  p: Vec2
-  r: number
-  hit: boolean
-}
-
-interface State {
-  ball: Ball
-  drag?: Drag
-  world: World
-  targets: Target[]
-}
-
-const state: State = {
-  world: {
-    w: 1000,
-    h: 1000,
-  },
-  ball: {
-    p: new Vec2(500, 500),
-    v: new Vec2(0, 0),
-    r: 20,
-  },
-  targets: [],
 }
 
 function minScale() {
