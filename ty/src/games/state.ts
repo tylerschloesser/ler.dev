@@ -60,6 +60,7 @@ export let scale = 1
 
 export function adjustScale(dy: number) {
   scale += dy * 0.001
+  scale = Math.max(scale, 0.2)
 }
 
 export function addTarget(targets: Target[]) {
