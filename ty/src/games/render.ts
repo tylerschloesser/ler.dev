@@ -1,4 +1,6 @@
-import { scale, state } from './state'
+import { detectCollisions, moveBall } from './physics'
+import { scale, state, viewport } from './state'
+import { Vec2 } from './vec2'
 
 export interface RenderArgs {
   context: CanvasRenderingContext2D
@@ -104,5 +106,46 @@ export function renderDrag({ context }: RenderArgs) {
     context.lineTo(drag.b.x, drag.b.y)
     context.stroke()
     context.closePath()
+  }
+}
+
+export function buildRender(context: CanvasRenderingContext2D) {
+  let last: null | number = null
+  return function render(time: number) {
+    let elapsed = (last ? time - last : 0) / 1000
+    last = time
+
+    const { w, h } = viewport
+    context.clearRect(0, 0, w, h)
+    context.fillStyle = 'hsl(0, 0%, 20%)'
+    context.fillRect(0, 0, w, h)
+
+    moveBall(elapsed)
+    detectCollisions()
+
+    const translate = new Vec2(
+      viewport.w / 2 -
+        (state.world.w * scale) / 2 +
+        (state.world.w / 2 - state.ball.p.x) * scale,
+      viewport.h / 2 -
+        (state.world.h * scale) / 2 +
+        (state.world.h / 2 - state.ball.p.y) * scale,
+    )
+
+    const transform = {
+      x: (x1: number) => x1 * scale + translate.x,
+      y: (y1: number) => y1 * scale + translate.y,
+    }
+    const args: RenderArgs = {
+      context,
+      transform,
+    }
+
+    renderWorld(args)
+    renderTargets(args)
+    renderBall(args)
+    renderDrag(args)
+
+    window.requestAnimationFrame(render)
   }
 }
