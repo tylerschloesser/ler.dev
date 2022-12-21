@@ -17,7 +17,7 @@ function initCanvas(canvas: HTMLCanvasElement) {
   window.requestAnimationFrame(buildRender(context))
 }
 
-const TARGET_PAIRS = 5
+const TARGET_PAIRS = 100
 
 function initTargets() {
   for (let i = 0; i < TARGET_PAIRS; i++) {

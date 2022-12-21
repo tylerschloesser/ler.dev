@@ -29,7 +29,7 @@ export interface State {
   targets: [Target, Target][]
 }
 
-const WORLD_SIZE = 1_000
+const WORLD_SIZE = 10_000
 
 export const state: State = {
   world: {
