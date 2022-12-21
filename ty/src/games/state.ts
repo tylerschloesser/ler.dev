@@ -29,15 +29,15 @@ export interface State {
   targets: [Target, Target][]
 }
 
-const size = 1_000
+const WORLD_SIZE = 1_000
 
 export const state: State = {
   world: {
-    w: size,
-    h: size,
+    w: WORLD_SIZE,
+    h: WORLD_SIZE,
   },
   ball: {
-    p: new Vec2(size / 2, size / 2),
+    p: new Vec2(WORLD_SIZE / 2, WORLD_SIZE / 2),
     v: new Vec2(0, 0),
     r: 20,
   },
