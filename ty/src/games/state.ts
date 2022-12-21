@@ -56,18 +56,10 @@ export function updateViewport(next: Viewport) {
   viewport = next
 }
 
-export function minScale() {
-  let padding = Math.min(state.world.w, state.world.h) * 0.1
-  return Math.min(
-    viewport.w / (state.world.w + padding),
-    viewport.h / (state.world.h + padding),
-  )
-}
-
-export let scale = minScale()
+export let scale = 1
 
 export function adjustScale(dy: number) {
-  scale = Math.max(minScale(), scale + dy * 0.001)
+  scale += dy * 0.001
 }
 
 export function addTarget(targets: Target[]) {
