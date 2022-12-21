@@ -18,6 +18,7 @@ export interface World {
 
 export interface Target {
   p: Vec2
+  v: Vec2
   r: number
   hit: boolean
 }
@@ -116,7 +117,7 @@ export function addTargetPair(targets: [Target, Target][]) {
   }
 
   targets.push([
-    { p: a, r: 20, hit: false },
-    { p: b, r: 20, hit: false },
+    { p: a, v: new Vec2(0, 0), r: 20, hit: false },
+    { p: b, v: new Vec2(0, 0), r: 20, hit: false },
   ])
 }
