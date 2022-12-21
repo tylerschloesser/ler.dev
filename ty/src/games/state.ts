@@ -88,14 +88,20 @@ export function addTargetPair(targets: [Target, Target][]) {
     return false
   }
 
+  let attempts = 0
   while (true) {
     a = new Vec2(Math.random() * state.world.w, Math.random() * state.world.h)
 
     if (isValid(a)) {
       break
     }
+
+    if (++attempts > 10) {
+      throw Error('Exceeded 10 attempts while generating target pair')
+    }
   }
 
+  attempts = 0
   let b: Vec2
   while (true) {
     b = new Vec2(0, 1).rotate(Math.random() * 2 * Math.PI)
@@ -103,6 +109,10 @@ export function addTargetPair(targets: [Target, Target][]) {
 
     if (isValid(b)) {
       break
+    }
+
+    if (++attempts > 10) {
+      throw Error('Exceeded 10 attempts while generating target pair')
     }
   }
 
