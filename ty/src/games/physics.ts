@@ -1,5 +1,12 @@
 import { addTargetPair, state, Target } from './state'
 
+export function moveTargets(elapsed: number) {
+  state.targets.flat().forEach((target) => {
+    const p2 = target.p.add(target.v.mul(elapsed))
+    target.p = p2
+  })
+}
+
 export function moveBall(elapsed: number) {
   const { ball } = state
 

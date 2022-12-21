@@ -1,4 +1,4 @@
-import { detectCollisions, moveBall } from './physics'
+import { detectCollisions, moveBall, moveTargets } from './physics'
 import { scale, state, viewport } from './state'
 import { Vec2 } from './vec2'
 
@@ -122,6 +122,7 @@ export function buildRender(context: CanvasRenderingContext2D) {
     context.fillStyle = 'hsl(0, 0%, 20%)'
     context.fillRect(0, 0, w, h)
 
+    moveTargets(elapsed)
     moveBall(elapsed)
     detectCollisions()
 
