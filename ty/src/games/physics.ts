@@ -37,6 +37,17 @@ export function moveTargets(elapsed: number) {
     handleWallCollision(p2, target)
     target.p = p2
   })
+
+  state.targets.forEach((pair) => {
+    if (pair[0].p.sub(pair[1].p).length() > 300) {
+      // randomly reverse one of the targets
+      const target = pair[Math.floor(Math.random() * 2)]
+      target.v = target.v.mul(-1)
+      const p2 = target.p.add(target.v.mul(elapsed * 2))
+      handleWallCollision(p2, target)
+      target.p = p2
+    }
+  })
 }
 
 export function moveBall(elapsed: number) {
