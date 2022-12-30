@@ -26,7 +26,12 @@ const Period = styled.span`
   margin: 0 -0.2rem;
 `
 
-const List = styled.ol``
+const List = styled.ol`
+  display: flex;
+  flex-direction: column;
+`
+
+const ListItem = styled.li``
 
 export function Home() {
   return (
@@ -35,13 +40,11 @@ export function Home() {
         ty<Period>.</Period>ler<Period>.</Period>dev
       </HomeTitle>
       <List>
-        <li>
-          {Object.entries(PATHS).map(([key, to]) => (
-            <Link key={key} to={to}>
-              {to.toUpperCase()}
-            </Link>
-          ))}
-        </li>
+        {Object.entries(PATHS).map(([key, to]) => (
+          <ListItem key={key}>
+            <Link to={to}>{to.toUpperCase()}</Link>
+          </ListItem>
+        ))}
       </List>
     </HomeContainer>
   )
