@@ -9,12 +9,14 @@ const HomeContainer = styled.div`
   background-image: url('cat.jpg');
   background-size: cover;
   background-position: 50%;
+
+  font-family: 'Space Mono', monospace;
+  --color-text: hsl(0, 0%, 80%);
 `
 
 const HomeTitle = styled.h1`
-  font-family: 'Space Mono', monospace;
   font-weight: 700;
-  color: rgb(200, 200, 200, 0.9);
+  color: var(--color-text);
   position: fixed;
   font-size: 2rem;
   bottom: 0;
@@ -29,9 +31,16 @@ const Period = styled.span`
 const List = styled.ol`
   display: flex;
   flex-direction: column;
+  font-size: 1.25rem;
 `
 
 const ListItem = styled.li``
+
+const StyledLink = styled(Link)`
+  display: block;
+  padding: 0.5rem;
+  color: var(--color-text);
+`
 
 export function Home() {
   return (
@@ -42,7 +51,7 @@ export function Home() {
       <List>
         {Object.entries(PATHS).map(([key, to]) => (
           <ListItem key={key}>
-            <Link to={to}>{to.toUpperCase()}</Link>
+            <StyledLink to={to}>{to.toUpperCase()}</StyledLink>
           </ListItem>
         ))}
       </List>
