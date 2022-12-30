@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 
 const Container = styled.div`
@@ -7,5 +7,6 @@ const Container = styled.div`
 `
 
 export function Cal() {
-  return <Container>Cal</Container>
+  const [container, setContainer] = useState<HTMLDivElement | null>()
+  return <Container ref={setContainer}>Cal</Container>
 }
