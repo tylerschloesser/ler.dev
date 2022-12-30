@@ -49,9 +49,9 @@ export function Home() {
         ty<Period>.</Period>ler<Period>.</Period>dev
       </HomeTitle>
       <List>
-        {Object.entries(PATHS).map(([key, to]) => (
-          <ListItem key={key}>
-            <StyledLink to={to}>{to.toUpperCase()}</StyledLink>
+        {PATHS.map(({ path }) => (
+          <ListItem key={path}>
+            <StyledLink to={path}>{path.toUpperCase()}</StyledLink>
           </ListItem>
         ))}
       </List>

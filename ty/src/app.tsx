@@ -33,9 +33,9 @@ export const App = () => {
       <Routes>
         <Route element={<Layout />}>
           <Route index element={<Home />} />
-          <Route path={PATHS.dots} element={<ThreeDemo />} />
-          <Route path={PATHS.menu} element={<Menu />} />
-          <Route path={PATHS.games} element={<Games />} />
+          {PATHS.map(({ path, Component }) => (
+            <Route key={path} path={path} element={<Component />} />
+          ))}
         </Route>
       </Routes>
     </BrowserRouter>
