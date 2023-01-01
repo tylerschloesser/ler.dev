@@ -10,16 +10,22 @@ function init(canvas: HTMLCanvasElement) {
   const context = canvas.getContext('2d')!
 
   {
-    const x = canvas.width / 2
-    const y = canvas.height / 2
     context.fillStyle = 'hsl(0, 0%, 80%)'
-    context.arc(
-      x,
-      y,
-      Math.min(canvas.width, canvas.height) * 0.1,
-      0,
-      Math.PI * 2,
-    )
+
+    const translate = {
+      x: canvas.width / 2,
+      y: canvas.height / 2,
+    }
+
+    context.moveTo(translate.x + 0, translate.y + 0)
+
+    const radius = Math.min(canvas.width, canvas.height) * 0.1
+    for (let i = 0; i <= 10; i++) {
+      const theta = ((Math.PI * 2) / 10) * i
+      const x = Math.sin(theta) * radius
+      const y = Math.cos(theta) * radius
+      context.lineTo(translate.x + x, translate.y + y)
+    }
     context.fill()
   }
 }
