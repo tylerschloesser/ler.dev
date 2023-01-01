@@ -20,8 +20,10 @@ function init(canvas: HTMLCanvasElement) {
     context.moveTo(translate.x + 0, translate.y + 0)
 
     const radius = Math.min(canvas.width, canvas.height) * 0.1
-    for (let i = 0; i <= 10; i++) {
-      const theta = ((Math.PI * 2) / 10) * i
+
+    const parts = 10
+    for (let i = 0; i <= parts; i++) {
+      const theta = ((Math.PI * 2) / parts) * i
       const x = Math.sin(theta) * radius
       const y = Math.cos(theta) * radius
       context.lineTo(translate.x + x, translate.y + y)
