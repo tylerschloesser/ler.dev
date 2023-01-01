@@ -1,9 +1,9 @@
 import { curry } from 'lodash/fp'
 import React, { useEffect, useState } from 'react'
-import { createNoise2D } from 'simplex-noise'
+import { createNoise3D } from 'simplex-noise'
 import styled from 'styled-components'
 
-const noise = createNoise2D()
+const noise = createNoise3D()
 
 const render = curry(
   (
@@ -11,6 +11,8 @@ const render = curry(
     context: CanvasRenderingContext2D,
     timestamp: number,
   ) => {
+    context.clearRect(0, 0, canvas.width, canvas.height)
+
     {
       context.fillStyle = 'hsl(0, 0%, 80%)'
 
@@ -19,9 +21,10 @@ const render = curry(
         y: canvas.height / 2,
       }
 
+      context.beginPath()
       context.moveTo(translate.x + 0, translate.y + 0)
 
-      const parts = 7
+      const parts = 100
       for (let i = 0; i <= parts; i++) {
         const theta = ((Math.PI * 2) / parts) * i
 
@@ -29,7 +32,7 @@ const render = curry(
         let y = Math.cos(theta)
 
         let radius = Math.min(canvas.width, canvas.height) * 0.1
-        radius += ((noise(x, y) + 1) / 2) * radius
+        radius += ((noise(x, y, timestamp / 10000) + 1) / 2) * radius
 
         x *= radius
         y *= radius
@@ -37,6 +40,7 @@ const render = curry(
         context.lineTo(translate.x + x, translate.y + y)
       }
       context.fill()
+      context.closePath()
     }
 
     window.requestAnimationFrame(render(canvas, context))
