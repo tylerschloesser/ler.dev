@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { createNoise2D } from 'simplex-noise'
 import styled from 'styled-components'
 
 function init(canvas: HTMLCanvasElement) {
@@ -8,6 +9,8 @@ function init(canvas: HTMLCanvasElement) {
     canvas.height = rect.height
   }
   const context = canvas.getContext('2d')!
+
+  const noise = createNoise2D()
 
   {
     context.fillStyle = 'hsl(0, 0%, 80%)'
@@ -19,13 +22,19 @@ function init(canvas: HTMLCanvasElement) {
 
     context.moveTo(translate.x + 0, translate.y + 0)
 
-    const radius = Math.min(canvas.width, canvas.height) * 0.1
-
-    const parts = 10
+    const parts = 7
     for (let i = 0; i <= parts; i++) {
       const theta = ((Math.PI * 2) / parts) * i
-      const x = Math.sin(theta) * radius
-      const y = Math.cos(theta) * radius
+
+      let x = Math.sin(theta)
+      let y = Math.cos(theta)
+
+      let radius = Math.min(canvas.width, canvas.height) * 0.1
+      radius += ((noise(x, y) + 1) / 2) * radius
+
+      x *= radius
+      y *= radius
+
       context.lineTo(translate.x + x, translate.y + y)
     }
     context.fill()
