@@ -81,9 +81,9 @@ export function Blob() {
   const [canvas, setCanvas] = useState<HTMLCanvasElement | null>()
   const [config, setConfig] = useState<Config>({
     parts: 600,
-    xScale: 10.9,
-    yScale: 10.9,
-    zScale: 0.00025,
+    xScale: 1,
+    yScale: 1,
+    zScale: 0.0005,
   })
   const configRef = useRef(config)
 
@@ -118,13 +118,28 @@ export function Blob() {
           <input
             type="range"
             min={0.1}
-            max={20}
+            max={10}
             step="0.05"
             value={config.xScale}
             onChange={(e) =>
               setConfig({
                 xScale: parseFloat(e.target.value),
                 yScale: parseFloat(e.target.value),
+              } as Config)
+            }
+          />
+        </label>
+        <label>
+          z scale:
+          <input
+            type="range"
+            min={0}
+            max={0.002}
+            step="0.00005"
+            value={config.zScale}
+            onChange={(e) =>
+              setConfig({
+                zScale: parseFloat(e.target.value),
               } as Config)
             }
           />
