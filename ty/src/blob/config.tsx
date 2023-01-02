@@ -1,6 +1,6 @@
 export enum RenderMethod {
-  Simple,
-  Bezier,
+  Simple = 'simple',
+  Bezier = 'bezier',
 }
 
 export interface Config {

@@ -1,11 +1,12 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import { Blob } from './blob'
-import { Config } from './config'
+import { Config, RenderMethod } from './config'
 
 const Controls = styled.div`
   position: fixed;
   display: flex;
+  flex-direction: column;
 `
 
 const Label = styled.label`
@@ -19,6 +20,7 @@ export function Demo() {
     xScale: 1,
     yScale: 1,
     zScale: 0.0005,
+    renderMethod: RenderMethod.Simple,
   })
 
   const sliders = [
@@ -69,6 +71,25 @@ export function Demo() {
             />
           </Label>
         ))}
+        <fieldset>
+          <legend>render method</legend>
+          {Object.values(RenderMethod).map((renderMethod) => (
+            <label key={renderMethod}>
+              {renderMethod}
+              <input
+                type="radio"
+                value={renderMethod}
+                checked={config.renderMethod === renderMethod}
+                onChange={(e) =>
+                  setConfig((prev) => ({
+                    ...prev,
+                    renderMethod: e.target.value as RenderMethod,
+                  }))
+                }
+              />
+            </label>
+          ))}
+        </fieldset>
       </Controls>
       <Blob config={config} />
     </>
