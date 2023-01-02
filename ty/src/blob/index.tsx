@@ -7,6 +7,9 @@ const noise = createNoise3D()
 
 const config = {
   parts: 600,
+  xScale: 10.9,
+  yScale: 10.9,
+  zScale: 0.00025,
 }
 
 const render = curry(
@@ -28,7 +31,7 @@ const render = curry(
       context.beginPath()
       context.moveTo(translate.x + 0, translate.y + 0)
 
-      const { parts } = config
+      const { parts, xScale, yScale, zScale } = config
       for (let i = 0; i <= parts; i++) {
         const theta = ((Math.PI * 2) / parts) * i
 
@@ -37,7 +40,7 @@ const render = curry(
 
         let radius = Math.min(canvas.width, canvas.height) * 0.15
         radius +=
-          ((noise(x * 10.9, y * 10.9, timestamp / 4_000) + 1) / 2) *
+          ((noise(x * xScale, y * yScale, timestamp * zScale) + 1) / 2) *
           (radius / 1)
 
         x *= radius
