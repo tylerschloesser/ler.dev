@@ -47,6 +47,7 @@ export function Demo() {
       toConfig: (value: number) => ({ zScale: value }),
     },
   ]
+  console.log(sliders)
 
   return (
     <>
@@ -61,7 +62,10 @@ export function Demo() {
               step={step}
               value={value}
               onChange={(e) =>
-                setConfig(toConfig(parseFloat(e.target.value)) as Config)
+                setConfig((prev) => ({
+                  ...prev,
+                  ...toConfig(parseFloat(e.target.value)),
+                }))
               }
             />
           </Label>
