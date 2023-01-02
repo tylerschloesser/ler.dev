@@ -5,11 +5,6 @@ import { PATHS } from './paths'
 
 const HomeContainer = styled.div`
   height: 100%;
-  background-color: black;
-  background-image: url('cat.jpg');
-  background-size: cover;
-  background-position: 50%;
-
   --color-text: hsl(0, 0%, 80%);
 `
 
