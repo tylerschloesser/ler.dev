@@ -24,15 +24,17 @@ const render = curry(
       context.beginPath()
       context.moveTo(translate.x + 0, translate.y + 0)
 
-      const parts = 100
+      const parts = 600
       for (let i = 0; i <= parts; i++) {
         const theta = ((Math.PI * 2) / parts) * i
 
         let x = Math.sin(theta)
         let y = Math.cos(theta)
 
-        let radius = Math.min(canvas.width, canvas.height) * 0.1
-        radius += ((noise(x, y, timestamp / 10000) + 1) / 2) * radius
+        let radius = Math.min(canvas.width, canvas.height) * 0.15
+        radius +=
+          ((noise(x * 10.9, y * 10.9, timestamp / 4_000) + 1) / 2) *
+          (radius / 1)
 
         x *= radius
         y *= radius
