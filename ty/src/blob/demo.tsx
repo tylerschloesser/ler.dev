@@ -38,9 +38,7 @@ const storage = {
 
 export function Demo() {
   const [config, setConfig] = useState<Config>(storage.getOrDefault())
-  useEffect(() => {
-    storage.put(config)
-  }, [config])
+  useEffect(() => storage.put(config), [config])
 
   const sliders = [
     {

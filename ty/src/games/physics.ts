@@ -1,5 +1,5 @@
+import { Vec2 } from '../common/vec2'
 import { addTargetPair, state, Target } from './state'
-import { Vec2 } from './vec2'
 
 function handleWallCollision(
   p2: Vec2,

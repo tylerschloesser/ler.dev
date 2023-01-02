@@ -1,6 +1,6 @@
+import { Vec2 } from '../common/vec2'
 import { detectCollisions, moveBall, moveTargets } from './physics'
 import { scale, state, viewport } from './state'
-import { Vec2 } from './vec2'
 
 export interface RenderArgs {
   context: CanvasRenderingContext2D
