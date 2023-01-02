@@ -1,3 +1,4 @@
+import { times } from 'lodash'
 import { createNoise3D } from 'simplex-noise'
 import { Vec2 } from '../common/vec2'
 import { RenderFn } from './config'
@@ -11,15 +12,13 @@ export const renderBezier: RenderFn = (canvas, context, config, timestamp) => {
   const translate = new Vec2(canvas.width / 2, canvas.height / 2)
 
   context.beginPath()
-  context.moveTo(translate.x + 0, translate.y + 0)
-
-  let previous = new Vec2(translate.x + 0, translate.y + 0)
 
   const { parts, xScale, yScale, zScale } = config
 
-  for (let i = 0; i <= parts; i++) {
-    const theta = ((Math.PI * 2) / parts) * i
+  const controlPoints: Vec2[] = []
 
+  const points: Vec2[] = times(parts, (i) => {
+    const theta = ((Math.PI * 2) / parts) * i
     let p = new Vec2(Math.sin(theta), Math.cos(theta))
 
     let radius = Math.min(canvas.width, canvas.height) * 0.15
@@ -28,9 +27,43 @@ export const renderBezier: RenderFn = (canvas, context, config, timestamp) => {
       (radius / 1)
 
     p = p.mul(radius)
+    p = translate.add(p)
 
-    context.bezierCurveTo(previous.x, previous.y, p.x, p.y, p.x, p.y)
+    return p
+  })
+
+  context.moveTo(points[0].x, points[0].y)
+  for (let i = 1; i < points.length + 1; i++) {
+    const prev = points[(i - 1) % parts]
+    const p = points[i % parts]
+    const cp1 = (() => {
+      const a = points[i % parts]
+      const b = points[(i - 2 + parts) % parts]
+      return prev.sub(b.sub(a).div(4))
+    })()
+    const cp2 = (() => {
+      const a = points[(i - 1) % parts]
+      const b = points[(i + 1) % parts]
+      return p.sub(b.sub(a).div(4))
+    })()
+    context.bezierCurveTo(cp1.x, cp1.y, cp2.x, cp2.y, p.x, p.y)
+
+    controlPoints.push(cp1, cp2)
   }
   context.fill()
   context.closePath()
+
+  context.fillStyle = 'red'
+  controlPoints.forEach((cp) => {
+    context.beginPath()
+    context.arc(cp.x, cp.y, 5, 0, 2 * Math.PI)
+    context.fill()
+  })
+
+  context.fillStyle = 'blue'
+  points.forEach((p) => {
+    context.beginPath()
+    context.arc(p.x, p.y, 5, 0, 2 * Math.PI)
+    context.fill()
+  })
 }
