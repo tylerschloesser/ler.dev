@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { Blob } from './blob'
 import { Config, RenderMethod } from './config'
@@ -14,14 +14,33 @@ const Label = styled.label`
   align-items: center;
 `
 
+const storage = {
+  getOrDefault() {
+    const config: Partial<Config> = JSON.parse(
+      localStorage.getItem('config') || '{}',
+    )
+    const defaultConfig: Config = {
+      parts: 600,
+      xScale: 1,
+      yScale: 1,
+      zScale: 0.0005,
+      renderMethod: RenderMethod.Simple,
+    }
+    return {
+      ...defaultConfig,
+      ...config,
+    }
+  },
+  put(config: Config) {
+    localStorage.setItem('config', JSON.stringify(config, null, 2))
+  },
+}
+
 export function Demo() {
-  const [config, setConfig] = useState<Config>({
-    parts: 600,
-    xScale: 1,
-    yScale: 1,
-    zScale: 0.0005,
-    renderMethod: RenderMethod.Simple,
-  })
+  const [config, setConfig] = useState<Config>(storage.getOrDefault())
+  useEffect(() => {
+    storage.put(config)
+  }, [config])
 
   const sliders = [
     {
