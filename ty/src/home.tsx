@@ -10,7 +10,6 @@ const HomeContainer = styled.div`
   background-size: cover;
   background-position: 50%;
 
-  font-family: 'Space Mono', monospace;
   --color-text: hsl(0, 0%, 80%);
 `
 
