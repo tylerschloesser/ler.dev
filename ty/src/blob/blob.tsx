@@ -2,13 +2,14 @@ import { curry } from 'lodash/fp'
 import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { Config, RenderFn, RenderMethod } from './config'
+import { renderBezier } from './render-bezier'
 import { renderSimple } from './render-simple'
 
 const render: RenderFn = (canvas, context, config, timestamp) => {
   const { renderMethod = RenderMethod.Simple } = config
   const renderFn = {
     [RenderMethod.Simple]: renderSimple,
-    [RenderMethod.Bezier]: renderSimple,
+    [RenderMethod.Bezier]: renderBezier,
   }[renderMethod]
   renderFn(canvas, context, config, timestamp)
   window.requestAnimationFrame(curry(render)(canvas, context, config))
