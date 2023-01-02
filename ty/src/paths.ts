@@ -1,4 +1,4 @@
-import { Blob } from './blob'
+import { Demo } from './blob'
 import { Cal } from './cal'
 import { Games } from './games'
 import { Menu } from './menu'
@@ -28,6 +28,6 @@ export const PATHS: PathInfo[] = [
   },
   {
     path: 'blob',
-    Component: Blob,
+    Component: Demo,
   },
 ]

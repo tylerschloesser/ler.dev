@@ -83,7 +83,7 @@ const Label = styled.label`
   align-items: center;
 `
 
-export function Blob() {
+export function Demo() {
   const [canvas, setCanvas] = useState<HTMLCanvasElement | null>()
   const [config, setConfig] = useState<Config>({
     parts: 600,
