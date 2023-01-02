@@ -83,23 +83,29 @@ const Label = styled.label`
   align-items: center;
 `
 
-export function Demo() {
+interface BlobProps {
+  config: Config
+}
+
+export function Blob({ config }: BlobProps) {
   const [canvas, setCanvas] = useState<HTMLCanvasElement | null>()
+  const configRef = useRef(config)
+  useEffect(() => {
+    Object.assign(configRef.current, config)
+  }, [config])
+  useEffect(() => {
+    canvas && init(canvas, configRef.current)
+  }, [canvas])
+  return <Canvas ref={setCanvas} />
+}
+
+export function Demo() {
   const [config, setConfig] = useState<Config>({
     parts: 600,
     xScale: 1,
     yScale: 1,
     zScale: 0.0005,
   })
-  const configRef = useRef(config)
-
-  useEffect(() => {
-    Object.assign(configRef.current, config)
-  }, [config])
-
-  useEffect(() => {
-    canvas && init(canvas, configRef.current)
-  }, [canvas])
 
   const sliders = [
     {
@@ -147,7 +153,7 @@ export function Demo() {
           </Label>
         ))}
       </Controls>
-      <Canvas ref={setCanvas} />
+      <Blob config={config} />
     </>
   )
 }
