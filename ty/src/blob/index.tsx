@@ -5,6 +5,10 @@ import styled from 'styled-components'
 
 const noise = createNoise3D()
 
+const config = {
+  parts: 600,
+}
+
 const render = curry(
   (
     canvas: HTMLCanvasElement,
@@ -24,7 +28,7 @@ const render = curry(
       context.beginPath()
       context.moveTo(translate.x + 0, translate.y + 0)
 
-      const parts = 600
+      const { parts } = config
       for (let i = 0; i <= parts; i++) {
         const theta = ((Math.PI * 2) / parts) * i
 
