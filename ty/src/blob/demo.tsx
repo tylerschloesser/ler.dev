@@ -47,7 +47,6 @@ export function Demo() {
       toConfig: (value: number) => ({ zScale: value }),
     },
   ]
-  console.log(sliders)
 
   return (
     <>
