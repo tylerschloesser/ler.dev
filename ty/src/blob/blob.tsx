@@ -2,7 +2,7 @@ import { curry } from 'lodash/fp'
 import React, { useEffect, useRef, useState } from 'react'
 import { createNoise3D } from 'simplex-noise'
 import styled from 'styled-components'
-import { Config } from './config'
+import { Config, RenderMethod } from './config'
 
 const noise = createNoise3D()
 
@@ -13,7 +13,7 @@ type RenderFn = (
   timestamp: number,
 ) => void
 
-const render: RenderFn = (canvas, context, config, timestamp) => {
+const renderSimple: RenderFn = (canvas, context, config, timestamp) => {
   context.clearRect(0, 0, canvas.width, canvas.height)
 
   {
@@ -49,6 +49,15 @@ const render: RenderFn = (canvas, context, config, timestamp) => {
   }
 
   window.requestAnimationFrame(curry(render)(canvas, context, config))
+}
+
+const render: RenderFn = (canvas, context, config, timestamp) => {
+  const { renderMethod = RenderMethod.Simple } = config
+  const renderFn = {
+    [RenderMethod.Simple]: renderSimple,
+    [RenderMethod.Bezier]: renderSimple,
+  }[renderMethod]
+  renderFn(canvas, context, config, timestamp)
 }
 
 function init(canvas: HTMLCanvasElement, config: Config) {
