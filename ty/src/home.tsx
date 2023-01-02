@@ -1,6 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
+import { Blob } from './blob'
 import { PATHS } from './paths'
 
 const HomeContainer = styled.div`
@@ -36,19 +37,41 @@ const StyledLink = styled(Link)`
   color: var(--color-text);
 `
 
+const HomeBackground = styled.div`
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+`
+
+const HomeForeground = styled.div`
+  position: relative;
+`
+
 export function Home() {
   return (
     <HomeContainer>
-      <HomeTitle>
-        ty<Period>.</Period>ler<Period>.</Period>dev
-      </HomeTitle>
-      <List>
-        {PATHS.map(({ path }) => (
-          <ListItem key={path}>
-            <StyledLink to={path}>{path.toUpperCase()}</StyledLink>
-          </ListItem>
-        ))}
-      </List>
+      <HomeBackground>
+        <Blob
+          config={{
+            parts: 500,
+            xScale: 0.6,
+            yScale: 0.6,
+            zScale: 1 / 5_000,
+          }}
+        />
+      </HomeBackground>
+      <HomeForeground>
+        <HomeTitle>
+          ty<Period>.</Period>ler<Period>.</Period>dev
+        </HomeTitle>
+        <List>
+          {PATHS.map(({ path }) => (
+            <ListItem key={path}>
+              <StyledLink to={path}>{path.toUpperCase()}</StyledLink>
+            </ListItem>
+          ))}
+        </List>
+      </HomeForeground>
     </HomeContainer>
   )
 }
