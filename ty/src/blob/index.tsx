@@ -75,6 +75,12 @@ const Canvas = styled.canvas`
 
 const Controls = styled.div`
   position: fixed;
+  display: flex;
+`
+
+const Label = styled.label`
+  display: flex;
+  align-items: center;
 `
 
 export function Blob() {
@@ -126,7 +132,7 @@ export function Blob() {
     <>
       <Controls>
         {sliders.map(({ name, min, max, step, value, toConfig }) => (
-          <label key={name}>
+          <Label key={name}>
             {name}
             <input
               type="range"
@@ -138,7 +144,7 @@ export function Blob() {
                 setConfig(toConfig(parseFloat(e.target.value)) as Config)
               }
             />
-          </label>
+          </Label>
         ))}
       </Controls>
       <Canvas ref={setCanvas} />
