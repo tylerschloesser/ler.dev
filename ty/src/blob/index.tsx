@@ -95,54 +95,51 @@ export function Blob() {
     canvas && init(canvas, configRef.current)
   }, [canvas])
 
+  const sliders = [
+    {
+      name: 'parts',
+      min: 3,
+      max: 1000,
+      step: 1,
+      value: config.parts,
+      toConfig: (value: number) => ({ parts: value }),
+    },
+    {
+      name: 'xy scale',
+      min: 0.1,
+      max: 10,
+      step: 0.05,
+      value: config.xScale,
+      toConfig: (value: number) => ({ xScale: value, yScale: value }),
+    },
+    {
+      name: 'z scale',
+      min: 0,
+      max: 0.002,
+      step: 0.00005,
+      value: config.zScale,
+      toConfig: (value: number) => ({ zScale: value }),
+    },
+  ]
+
   return (
     <>
       <Controls>
-        <label>
-          parts:
-          <input
-            type="range"
-            min={3}
-            max={1000}
-            value={config.parts}
-            onChange={(e) =>
-              setConfig({
-                parts: parseInt(e.target.value),
-              } as Config)
-            }
-          />
-        </label>
-        <label>
-          xy scale:
-          <input
-            type="range"
-            min={0.1}
-            max={10}
-            step="0.05"
-            value={config.xScale}
-            onChange={(e) =>
-              setConfig({
-                xScale: parseFloat(e.target.value),
-                yScale: parseFloat(e.target.value),
-              } as Config)
-            }
-          />
-        </label>
-        <label>
-          z scale:
-          <input
-            type="range"
-            min={0}
-            max={0.002}
-            step="0.00005"
-            value={config.zScale}
-            onChange={(e) =>
-              setConfig({
-                zScale: parseFloat(e.target.value),
-              } as Config)
-            }
-          />
-        </label>
+        {sliders.map(({ name, min, max, step, value, toConfig }) => (
+          <label key={name}>
+            {name}
+            <input
+              type="range"
+              min={min}
+              max={max}
+              step={step}
+              value={value}
+              onChange={(e) =>
+                setConfig(toConfig(parseFloat(e.target.value)) as Config)
+              }
+            />
+          </label>
+        ))}
       </Controls>
       <Canvas ref={setCanvas} />
     </>
