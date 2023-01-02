@@ -10,3 +10,10 @@ export interface Config {
   zScale: number
   renderMethod?: RenderMethod
 }
+
+export type RenderFn = (
+  canvas: HTMLCanvasElement,
+  context: CanvasRenderingContext2D,
+  config: Config,
+  timestamp: number,
+) => void
