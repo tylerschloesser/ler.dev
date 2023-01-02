@@ -39,12 +39,16 @@ export const renderBezier: RenderFn = (canvas, context, config, timestamp) => {
     const cp1 = (() => {
       const a = points[i % parts]
       const b = points[(i - 2 + parts) % parts]
-      return prev.sub(b.sub(a).div(4))
+      const dir = b.sub(a).norm()
+      const dist = a.sub(points[i - 1]).length()
+      return prev.sub(dir.mul(dist / Math.PI))
     })()
     const cp2 = (() => {
       const a = points[(i - 1) % parts]
       const b = points[(i + 1) % parts]
-      return p.sub(b.sub(a).div(4))
+      const dir = b.sub(a).norm()
+      const dist = p.sub(points[i - 1]).length()
+      return p.sub(dir.mul(dist / Math.PI))
     })()
     context.bezierCurveTo(cp1.x, cp1.y, cp2.x, cp2.y, p.x, p.y)
 
@@ -53,17 +57,19 @@ export const renderBezier: RenderFn = (canvas, context, config, timestamp) => {
   context.fill()
   context.closePath()
 
-  context.fillStyle = 'red'
-  controlPoints.forEach((cp) => {
-    context.beginPath()
-    context.arc(cp.x, cp.y, 5, 0, 2 * Math.PI)
-    context.fill()
-  })
+  if (config.debug) {
+    context.fillStyle = 'red'
+    controlPoints.forEach((cp) => {
+      context.beginPath()
+      context.arc(cp.x, cp.y, 5, 0, 2 * Math.PI)
+      context.fill()
+    })
 
-  context.fillStyle = 'blue'
-  points.forEach((p) => {
-    context.beginPath()
-    context.arc(p.x, p.y, 5, 0, 2 * Math.PI)
-    context.fill()
-  })
+    context.fillStyle = 'blue'
+    points.forEach((p) => {
+      context.beginPath()
+      context.arc(p.x, p.y, 5, 0, 2 * Math.PI)
+      context.fill()
+    })
+  }
 }

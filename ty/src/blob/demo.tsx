@@ -25,6 +25,7 @@ const storage = {
       yScale: 1,
       zScale: 0.0005,
       renderMethod: RenderMethod.Simple,
+      debug: false,
     }
     return {
       ...defaultConfig,
@@ -107,6 +108,16 @@ export function Demo() {
             </label>
           ))}
         </fieldset>
+        <label>
+          debug
+          <input
+            type="checkbox"
+            checked={config.debug}
+            onChange={(e) =>
+              setConfig((prev) => ({ ...prev, debug: e.target.checked }))
+            }
+          />
+        </label>
       </Controls>
       <Blob config={config} />
     </>

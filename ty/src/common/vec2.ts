@@ -37,4 +37,9 @@ export class Vec2 {
       this.x * Math.sin(angle) + this.y * Math.cos(angle),
     )
   }
+
+  norm(): Vec2 {
+    const length = this.length()
+    return new Vec2(this.x / length, this.y / length)
+  }
 }

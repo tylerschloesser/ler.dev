@@ -9,6 +9,7 @@ export interface Config {
   yScale: number
   zScale: number
   renderMethod?: RenderMethod
+  debug?: boolean
 }
 
 export type RenderFn = (
