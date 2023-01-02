@@ -6,12 +6,14 @@ import { Config } from './config'
 
 const noise = createNoise3D()
 
-const render = (
+type RenderFn = (
   canvas: HTMLCanvasElement,
   context: CanvasRenderingContext2D,
   config: Config,
   timestamp: number,
-) => {
+) => void
+
+const render: RenderFn = (canvas, context, config, timestamp) => {
   context.clearRect(0, 0, canvas.width, canvas.height)
 
   {
