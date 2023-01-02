@@ -89,7 +89,6 @@ export function Blob() {
 
   useEffect(() => {
     Object.assign(configRef.current, config)
-    console.log(configRef.current)
   }, [config])
 
   useEffect(() => {
