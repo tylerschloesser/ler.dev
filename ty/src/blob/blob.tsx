@@ -6,50 +6,48 @@ import { Config } from './config'
 
 const noise = createNoise3D()
 
-const render = curry(
-  (
-    canvas: HTMLCanvasElement,
-    context: CanvasRenderingContext2D,
-    config: Config,
-    timestamp: number,
-  ) => {
-    context.clearRect(0, 0, canvas.width, canvas.height)
+const render = (
+  canvas: HTMLCanvasElement,
+  context: CanvasRenderingContext2D,
+  config: Config,
+  timestamp: number,
+) => {
+  context.clearRect(0, 0, canvas.width, canvas.height)
 
-    {
-      context.fillStyle = 'hsl(0, 0%, 80%)'
+  {
+    context.fillStyle = 'hsl(0, 0%, 80%)'
 
-      const translate = {
-        x: canvas.width / 2,
-        y: canvas.height / 2,
-      }
-
-      context.beginPath()
-      context.moveTo(translate.x + 0, translate.y + 0)
-
-      const { parts, xScale, yScale, zScale } = config
-      for (let i = 0; i <= parts; i++) {
-        const theta = ((Math.PI * 2) / parts) * i
-
-        let x = Math.sin(theta)
-        let y = Math.cos(theta)
-
-        let radius = Math.min(canvas.width, canvas.height) * 0.15
-        radius +=
-          ((noise(x * xScale, y * yScale, timestamp * zScale) + 1) / 2) *
-          (radius / 1)
-
-        x *= radius
-        y *= radius
-
-        context.lineTo(translate.x + x, translate.y + y)
-      }
-      context.fill()
-      context.closePath()
+    const translate = {
+      x: canvas.width / 2,
+      y: canvas.height / 2,
     }
 
-    window.requestAnimationFrame(render(canvas, context, config))
-  },
-)
+    context.beginPath()
+    context.moveTo(translate.x + 0, translate.y + 0)
+
+    const { parts, xScale, yScale, zScale } = config
+    for (let i = 0; i <= parts; i++) {
+      const theta = ((Math.PI * 2) / parts) * i
+
+      let x = Math.sin(theta)
+      let y = Math.cos(theta)
+
+      let radius = Math.min(canvas.width, canvas.height) * 0.15
+      radius +=
+        ((noise(x * xScale, y * yScale, timestamp * zScale) + 1) / 2) *
+        (radius / 1)
+
+      x *= radius
+      y *= radius
+
+      context.lineTo(translate.x + x, translate.y + y)
+    }
+    context.fill()
+    context.closePath()
+  }
+
+  window.requestAnimationFrame(curry(render)(canvas, context, config))
+}
 
 function init(canvas: HTMLCanvasElement, config: Config) {
   {
@@ -58,7 +56,7 @@ function init(canvas: HTMLCanvasElement, config: Config) {
     canvas.height = rect.height
   }
   const context = canvas.getContext('2d')!
-  window.requestAnimationFrame(render(canvas, context, config))
+  window.requestAnimationFrame(curry(render)(canvas, context, config))
 }
 
 const Canvas = styled.canvas`
