@@ -1,50 +1,32 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
+import { Engine, InitFn } from '../common/engine'
 import { initInput, initResizeObserver } from './input'
 import { buildRender } from './render'
 import { addTargetPair, state, viewport } from './state'
 
-// IDEAS
-// two balls, input controls both balls
+const TARGET_PAIRS = 100
 
-function initCanvas(canvas: HTMLCanvasElement) {
+const init: InitFn = (canvas, context) => {
+  initInput(canvas)
+
+  for (let i = 0; i < TARGET_PAIRS; i++) {
+    addTargetPair(state.targets)
+  }
+
   canvas.width = viewport.w
   canvas.height = viewport.h
 
-  const context = canvas.getContext('2d')!
-
-  initInput(canvas)
-
   window.requestAnimationFrame(buildRender(context))
-}
 
-const TARGET_PAIRS = 100
+  const cleanupResizeObserver = initResizeObserver(canvas)
 
-function initTargets() {
-  for (let i = 0; i < TARGET_PAIRS; i++) {
-    addTargetPair(state.targets)
+  return {
+    cleanup() {
+      cleanupResizeObserver()
+    },
   }
 }
 
 export function Ball1() {
-  const [canvas, setCanvas] = useState<HTMLCanvasElement | null>()
-  useEffect(() => {
-    let cleanup: () => void | undefined
-    if (canvas) {
-      initTargets()
-      initCanvas(canvas)
-      cleanup = initResizeObserver(canvas)
-    }
-
-    // prevent scroll
-    document.body.style.overflow = 'hidden'
-    return () => {
-      document.body.style.overflow = ''
-      cleanup?.()
-    }
-  }, [canvas])
-  return (
-    <div>
-      <canvas ref={setCanvas} />
-    </div>
-  )
+  return <Engine init={init} />
 }
