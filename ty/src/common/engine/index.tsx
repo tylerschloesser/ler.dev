@@ -1,5 +1,24 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { initResizeObserver } from '../../ball1/input'
+
+function handleResize(canvas: HTMLCanvasElement) {
+  updateViewport({
+    w: window.innerWidth,
+    h: window.innerHeight,
+  })
+
+  canvas.width = viewport.w
+  canvas.height = viewport.h
+}
+
+export function initResizeObserver(canvas: HTMLCanvasElement): () => void {
+  const ro: ResizeObserver = new ResizeObserver(() => {
+    handleResize(canvas)
+  })
+  ro.observe(document.body)
+  return () => {
+    ro.disconnect()
+  }
+}
 
 export type InitFn = (args: {
   canvas: HTMLCanvasElement

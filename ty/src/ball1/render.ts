@@ -112,7 +112,7 @@ export function renderDrag({ context, transform }: RenderArgs) {
   }
 }
 
-export const render: RenderFn = (canvas, context, timestamp, elapsed) => {
+export const render: RenderFn = ({ context, elapsed }) => {
   const { w, h } = viewport
   context.clearRect(0, 0, w, h)
   context.fillStyle = 'hsl(0, 0%, 20%)'
