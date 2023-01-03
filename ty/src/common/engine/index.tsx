@@ -1,21 +1,63 @@
-import React, { useEffect, useState } from 'react'
+import { templateSettings } from 'lodash'
+import React, { useEffect, useRef, useState } from 'react'
+import { initResizeObserver } from '../../ball1/input'
 
 export type InitFn = (
   canvas: HTMLCanvasElement,
   context: CanvasRenderingContext2D,
-) => { cleanup(): void }
+) => void
+
+export type RenderFn = (
+  canvas: HTMLCanvasElement,
+  context: CanvasRenderingContext2D,
+  timestamp: number,
+  elapsed: number,
+) => void
 
 export interface EngineProps {
   init: InitFn
+  render: RenderFn
 }
 
-export function Engine({ init }: EngineProps) {
+export interface Viewport {
+  w: number
+  h: number
+}
+
+export let viewport: Viewport = {
+  w: window.innerWidth,
+  h: window.innerHeight,
+}
+
+export function updateViewport(next: Viewport) {
+  viewport = next
+}
+
+export function Engine({ init, render }: EngineProps) {
   const [canvas, setCanvas] = useState<HTMLCanvasElement | null>()
+  const initialized = useRef(false)
+
   useEffect(() => {
     let cleanup: () => void | undefined
-    if (canvas) {
+    if (canvas && !initialized.current) {
+      initialized.current = true
+
+      canvas.width = viewport.w
+      canvas.height = viewport.h
+
       const context = canvas.getContext('2d')!
-      cleanup = init(canvas, context).cleanup
+      cleanup = initResizeObserver(canvas)
+
+      init(canvas, context)
+
+      let last: null | number = null
+      function wrap(timestamp: number) {
+        let elapsed = (last ? timestamp - last : 0) / 1000
+        last = timestamp
+        render(canvas!, context, timestamp, elapsed)
+        window.requestAnimationFrame(wrap)
+      }
+      window.requestAnimationFrame(wrap)
     }
 
     // prevent scroll

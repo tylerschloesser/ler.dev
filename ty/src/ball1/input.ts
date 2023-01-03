@@ -1,5 +1,6 @@
+import { updateViewport, viewport } from '../common/engine'
 import { Vec2 } from '../common/vec2'
-import { adjustScale, state, updateViewport, viewport } from './state'
+import { adjustScale, state } from './state'
 
 export function initInput(canvas: HTMLCanvasElement) {
   canvas.addEventListener('pointerdown', (e) => {

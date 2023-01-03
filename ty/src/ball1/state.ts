@@ -45,20 +45,6 @@ export const state: State = {
   targets: [],
 }
 
-export interface Viewport {
-  w: number
-  h: number
-}
-
-export let viewport: Viewport = {
-  w: window.innerWidth,
-  h: window.innerHeight,
-}
-
-export function updateViewport(next: Viewport) {
-  viewport = next
-}
-
 export let scale = 1
 
 export function adjustScale(dy: number) {
