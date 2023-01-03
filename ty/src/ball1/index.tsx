@@ -6,7 +6,7 @@ import { addTargetPair, state } from './state'
 
 const TARGET_PAIRS = 100
 
-const init: InitFn = (canvas, context) => {
+const init: InitFn = ({ canvas }) => {
   initInput(canvas)
 
   for (let i = 0; i < TARGET_PAIRS; i++) {

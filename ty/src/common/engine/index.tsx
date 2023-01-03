@@ -1,18 +1,17 @@
-import { templateSettings } from 'lodash'
 import React, { useEffect, useRef, useState } from 'react'
 import { initResizeObserver } from '../../ball1/input'
 
-export type InitFn = (
-  canvas: HTMLCanvasElement,
-  context: CanvasRenderingContext2D,
-) => void
+export type InitFn = (args: {
+  canvas: HTMLCanvasElement
+  context: CanvasRenderingContext2D
+}) => void
 
-export type RenderFn = (
-  canvas: HTMLCanvasElement,
-  context: CanvasRenderingContext2D,
-  timestamp: number,
-  elapsed: number,
-) => void
+export type RenderFn = (args: {
+  canvas: HTMLCanvasElement
+  context: CanvasRenderingContext2D
+  timestamp: number
+  elapsed: number
+}) => void
 
 export interface EngineProps {
   init: InitFn
@@ -48,13 +47,13 @@ export function Engine({ init, render }: EngineProps) {
       const context = canvas.getContext('2d')!
       cleanup = initResizeObserver(canvas)
 
-      init(canvas, context)
+      init({ canvas, context })
 
       let last: null | number = null
       function wrap(timestamp: number) {
         let elapsed = (last ? timestamp - last : 0) / 1000
         last = timestamp
-        render(canvas!, context, timestamp, elapsed)
+        render({ canvas: canvas!, context, timestamp, elapsed })
         window.requestAnimationFrame(wrap)
       }
       window.requestAnimationFrame(wrap)
