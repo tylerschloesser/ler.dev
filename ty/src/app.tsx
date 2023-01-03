@@ -1,11 +1,8 @@
 import React from 'react'
 import { BrowserRouter, Outlet, Route, Routes } from 'react-router-dom'
 import styled from 'styled-components'
-import { Games } from './games'
 import { Home } from './home'
-import { Menu } from './menu'
 import { PATHS } from './paths'
-import { ThreeDemo } from './three-demo'
 
 const Page = styled.div`
   height: 100vh;

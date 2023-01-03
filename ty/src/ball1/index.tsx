@@ -25,7 +25,7 @@ function initTargets() {
   }
 }
 
-export function Games() {
+export function Ball1() {
   const [canvas, setCanvas] = useState<HTMLCanvasElement | null>()
   useEffect(() => {
     let cleanup: () => void | undefined
