@@ -1,4 +1,3 @@
-import { updateViewport, viewport } from '../common/engine'
 import { Vec2 } from '../common/vec2'
 import { adjustScale, state } from './state'
 
