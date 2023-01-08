@@ -1,6 +1,7 @@
-import { F } from 'lodash/fp'
 import React, { useState } from 'react'
 import styled from 'styled-components'
+
+const DEBUG: boolean = false
 
 const ButtonContainer = styled.button`
   --size: var(--size);
@@ -9,7 +10,6 @@ const ButtonContainer = styled.button`
   position: relative;
   width: 100px;
   height: 100px;
-  background: white;
 `
 
 const ButtonText = styled.svg`
@@ -33,7 +33,6 @@ const ButtonIcon = styled.span`
 
 function Button() {
   const [ref, setRef] = useState<HTMLButtonElement | null>(null)
-  const size = 100
   // const size = (() => {
   //   try {
   //     return parseInt(
@@ -72,15 +71,24 @@ function Button() {
     ].join(' ')
   }
 
+  const size = 100
+
+  // TODO had to find this manually. Can we calculate?
+  const rotate = 90 - 22
+
   return (
     <ButtonContainer ref={setRef}>
-      <ButtonText viewBox="0 0 100 100">
+      <ButtonText viewBox={`0 0 ${size} ${size}`} overflow="visible">
         <path
           id="circle"
           fill="none"
-          stroke="blue"
+          {...(DEBUG
+            ? {
+                stroke: 'white',
+              }
+            : {})}
           d={[
-            `M ${size / 2},${size}`,
+            `M 0,${size / 2}`,
             arc({
               rx: size / 2,
               ry: size / 2,
@@ -101,8 +109,10 @@ function Button() {
             }),
           ].join('')}
         />
-        <text>
-          <textPath href="#circle">Menu</textPath>
+        <text transform={`rotate(${rotate}, ${size / 2}, ${size / 2})`}>
+          <textPath fill="white" href="#circle">
+            Menu
+          </textPath>
         </text>
       </ButtonText>
       <ButtonIcon />
@@ -110,10 +120,18 @@ function Button() {
   )
 }
 
+const MenuContainer = styled.div`
+  display: flex;
+  height: 100%;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+`
+
 export function Menu() {
   return (
-    <>
+    <MenuContainer>
       <Button />
-    </>
+    </MenuContainer>
   )
 }
