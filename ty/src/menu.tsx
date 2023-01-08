@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React, { CSSProperties, useMemo, useState } from 'react'
 import styled from 'styled-components'
 
 const DEBUG: boolean = false
@@ -20,12 +20,13 @@ const ButtonText = styled.svg`
 `
 
 const ButtonIcon = styled.span`
+  --padding: 0.8;
   position: absolute;
   display: block;
-  width: var(--size);
-  height: var(--size);
-  top: calc(var(--size) / 2);
-  left: calc(var(--size) / 2);
+  width: calc(var(--size) * var(--padding));
+  height: calc(var(--size) * var(--padding));
+  top: calc(var(--size) * (1 - var(--padding)) / 2);
+  left: calc(var(--size) * (1 - var(--padding)) / 2);
   background-color: pink;
   border-radius: 100%;
 `
@@ -73,7 +74,14 @@ function Button() {
   console.log(size)
 
   return (
-    <ButtonContainer ref={setRef}>
+    <ButtonContainer
+      ref={setRef}
+      style={
+        {
+          '--size': `${size}px`,
+        } as CSSProperties
+      }
+    >
       {size && (
         <ButtonText viewBox={`0 0 ${size} ${size}`} overflow="visible">
           <path
