@@ -1,7 +1,7 @@
 import { Ball1 } from './ball1'
-import { Demo } from './blob'
+import { Demo as BlobDemo } from './blob'
 import { Cal } from './cal'
-import { Menu } from './menu'
+import { Demo as MenuDemo } from './menu'
 import { ThreeDemo } from './three-demo'
 
 interface PathInfo {
@@ -16,7 +16,7 @@ export const PATHS: PathInfo[] = [
   },
   {
     path: 'menu',
-    Component: Menu,
+    Component: MenuDemo,
   },
   {
     path: 'ball1',
@@ -28,6 +28,6 @@ export const PATHS: PathInfo[] = [
   },
   {
     path: 'blob',
-    Component: Demo,
+    Component: BlobDemo,
   },
 ]
