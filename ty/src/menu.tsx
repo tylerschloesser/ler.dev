@@ -1,3 +1,4 @@
+import { F } from 'lodash/fp'
 import React, { useState } from 'react'
 import styled from 'styled-components'
 
@@ -8,6 +9,7 @@ const ButtonContainer = styled.button`
   position: relative;
   width: 100px;
   height: 100px;
+  background: white;
 `
 
 const ButtonText = styled.svg`
@@ -31,19 +33,44 @@ const ButtonIcon = styled.span`
 
 function Button() {
   const [ref, setRef] = useState<HTMLButtonElement | null>(null)
-  const size = (() => {
-    try {
-      return parseInt(
-        window
-          .getComputedStyle(ref!)
-          .getPropertyValue('--size')
-          .replace(/px/, ''),
-      )
-    } catch {
-      return 0
-    }
-  })()
-  console.log(size)
+  const size = 100
+  // const size = (() => {
+  //   try {
+  //     return parseInt(
+  //       window
+  //         .getComputedStyle(ref!)
+  //         .getPropertyValue('--size')
+  //         .replace(/px/, ''),
+  //     )
+  //   } catch {
+  //     return 0
+  //   }
+  // })()
+  // console.log(size)
+
+  interface ArcProps {
+    rx: number
+    ry: number
+    angle: number
+    'large-arc-flag': 0 | 1
+    'sweep-flag': 0 | 1
+    dx: number
+    dy: number
+  }
+
+  // https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/d#elliptical_arc_curve
+  function arc(p: ArcProps) {
+    return [
+      'a',
+      p.rx,
+      p.ry,
+      p.angle,
+      p['large-arc-flag'],
+      p['sweep-flag'],
+      p.dx,
+      p.dy,
+    ].join(' ')
+  }
 
   return (
     <ButtonContainer ref={setRef}>
@@ -51,10 +78,28 @@ function Button() {
         <path
           id="circle"
           fill="none"
-          stroke="none"
-          d={`M ${size / 2}, ${size} a ${size / 2},${
-            size / 2
-          } 0 1,1 ${size},0 a ${size / 2},${size / 2} 0 1,1 -${size},0`}
+          stroke="blue"
+          d={[
+            `M ${size / 2},${size}`,
+            arc({
+              rx: size / 2,
+              ry: size / 2,
+              angle: 0,
+              'large-arc-flag': 1,
+              'sweep-flag': 1,
+              dx: size,
+              dy: 0,
+            }),
+            arc({
+              rx: size / 2,
+              ry: size / 2,
+              angle: 0,
+              'large-arc-flag': 1,
+              'sweep-flag': 1,
+              dx: -size,
+              dy: 0,
+            }),
+          ].join('')}
         />
         <text>
           <textPath href="#circle">Menu</textPath>
