@@ -9,6 +9,13 @@ const ButtonContainer = styled.button`
   position: relative;
   width: 100px;
   height: 100px;
+  cursor: pointer;
+
+  transition: transform 1s;
+
+  &:hover {
+    transform: scale(1.1);
+  }
 `
 
 const ButtonText = styled.svg`
@@ -20,7 +27,7 @@ const ButtonText = styled.svg`
 `
 
 const ButtonIcon = styled.span`
-  --padding: 0.8;
+  --padding: 0.9;
   position: absolute;
   display: block;
   width: calc(var(--size) * var(--padding));
