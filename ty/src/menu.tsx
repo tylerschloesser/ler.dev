@@ -1,10 +1,9 @@
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import styled from 'styled-components'
 
 const DEBUG: boolean = false
 
 const ButtonContainer = styled.button`
-  --size: var(--size);
   all: unset;
   display: block;
   position: relative;
@@ -33,19 +32,17 @@ const ButtonIcon = styled.span`
 
 function Button() {
   const [ref, setRef] = useState<HTMLButtonElement | null>(null)
-  // const size = (() => {
-  //   try {
-  //     return parseInt(
-  //       window
-  //         .getComputedStyle(ref!)
-  //         .getPropertyValue('--size')
-  //         .replace(/px/, ''),
-  //     )
-  //   } catch {
-  //     return 0
-  //   }
-  // })()
-  // console.log(size)
+
+  const size = useMemo<null | number>(() => {
+    if (!ref) {
+      return null
+    }
+    const rect = ref.getBoundingClientRect()
+    if (rect.width !== rect.height) {
+      throw Error('width !== height')
+    }
+    return rect.width
+  }, [ref])
 
   interface ArcProps {
     rx: number
@@ -71,50 +68,51 @@ function Button() {
     ].join(' ')
   }
 
-  const size = 100
-
   // TODO had to find this manually. Can we calculate?
   const rotate = 90 - 22
+  console.log(size)
 
   return (
     <ButtonContainer ref={setRef}>
-      <ButtonText viewBox={`0 0 ${size} ${size}`} overflow="visible">
-        <path
-          id="circle"
-          fill="none"
-          {...(DEBUG
-            ? {
-                stroke: 'white',
-              }
-            : {})}
-          d={[
-            `M 0,${size / 2}`,
-            arc({
-              rx: size / 2,
-              ry: size / 2,
-              angle: 0,
-              'large-arc-flag': 1,
-              'sweep-flag': 1,
-              dx: size,
-              dy: 0,
-            }),
-            arc({
-              rx: size / 2,
-              ry: size / 2,
-              angle: 0,
-              'large-arc-flag': 1,
-              'sweep-flag': 1,
-              dx: -size,
-              dy: 0,
-            }),
-          ].join('')}
-        />
-        <text transform={`rotate(${rotate}, ${size / 2}, ${size / 2})`}>
-          <textPath fill="white" href="#circle">
-            Menu
-          </textPath>
-        </text>
-      </ButtonText>
+      {size && (
+        <ButtonText viewBox={`0 0 ${size} ${size}`} overflow="visible">
+          <path
+            id="circle"
+            fill="none"
+            {...(DEBUG
+              ? {
+                  stroke: 'white',
+                }
+              : {})}
+            d={[
+              `M 0,${size / 2}`,
+              arc({
+                rx: size / 2,
+                ry: size / 2,
+                angle: 0,
+                'large-arc-flag': 1,
+                'sweep-flag': 1,
+                dx: size,
+                dy: 0,
+              }),
+              arc({
+                rx: size / 2,
+                ry: size / 2,
+                angle: 0,
+                'large-arc-flag': 1,
+                'sweep-flag': 1,
+                dx: -size,
+                dy: 0,
+              }),
+            ].join('')}
+          />
+          <text transform={`rotate(${rotate}, ${size / 2}, ${size / 2})`}>
+            <textPath fill="white" href="#circle">
+              Menu
+            </textPath>
+          </text>
+        </ButtonText>
+      )}
       <ButtonIcon />
     </ButtonContainer>
   )
