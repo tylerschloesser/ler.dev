@@ -134,10 +134,12 @@ function Button() {
 }
 
 const MenuContainer = styled.div`
+  box-sizing: border-box;
+  padding: 1rem;
   display: flex;
   height: 100%;
   width: 100%;
-  align-items: center;
+  align-items: end;
   justify-content: center;
 `
 
