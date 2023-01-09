@@ -35,18 +35,14 @@ const Title = styled.div`
 
 const TitleLine = styled.div``
 
+const images = shuffle(times(5)).map((i) => ({ src: `menu-demo-${i + 1}.jpg` }))
+
 export function Demo() {
   const [open, setOpen] = useState(false)
 
   useEffect(() => {
     console.log({ open })
   }, [open])
-
-  const images = shuffle(times(5)).map((i) => (
-    <ImageListItem key={i}>
-      <Image src={`menu-demo-${i + 1}.jpg`} />
-    </ImageListItem>
-  ))
 
   return (
     <>
@@ -60,7 +56,13 @@ export function Demo() {
           setOpen((prev) => !prev)
         }}
       />
-      <ImageList>{images}</ImageList>
+      <ImageList>
+        {images.map(({ src }) => (
+          <ImageListItem key={src}>
+            <Image src={src} />
+          </ImageListItem>
+        ))}
+      </ImageList>
     </>
   )
 }
