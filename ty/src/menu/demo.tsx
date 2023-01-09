@@ -1,5 +1,5 @@
 import { shuffle, times } from 'lodash'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { Menu } from './menu'
 
@@ -36,9 +36,15 @@ const Title = styled.div`
 const TitleLine = styled.div``
 
 export function Demo() {
+  const [open, setOpen] = useState(false)
+
+  useEffect(() => {
+    console.log({ open })
+  }, [open])
+
   const images = shuffle(times(5)).map((i) => (
-    <ImageListItem>
-      <Image key={i} src={`menu-demo-${i + 1}.jpg`} />
+    <ImageListItem key={i}>
+      <Image src={`menu-demo-${i + 1}.jpg`} />
     </ImageListItem>
   ))
 
@@ -49,7 +55,11 @@ export function Demo() {
           <TitleLine key={line}>{line}</TitleLine>
         ))}
       </Title>
-      <Menu />
+      <Menu
+        onClick={() => {
+          setOpen((prev) => !prev)
+        }}
+      />
       <ImageList>{images}</ImageList>
     </>
   )

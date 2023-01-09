@@ -38,7 +38,11 @@ const ButtonIcon = styled.span`
   border-radius: 100%;
 `
 
-function Button() {
+interface ButtonProps {
+  onClick(): void
+}
+
+function Button({ onClick }: ButtonProps) {
   const [ref, setRef] = useState<HTMLButtonElement | null>(null)
 
   const size = useMemo<null | number>(() => {
@@ -81,6 +85,7 @@ function Button() {
 
   return (
     <ButtonContainer
+      onClick={onClick}
       ref={setRef}
       style={
         {
@@ -143,10 +148,14 @@ const MenuContainer = styled.div`
   justify-content: center;
 `
 
-export function Menu() {
+interface MenuProps {
+  onClick(): void
+}
+
+export function Menu({ onClick }: MenuProps) {
   return (
     <MenuContainer>
-      <Button />
+      <Button onClick={onClick} />
     </MenuContainer>
   )
 }
