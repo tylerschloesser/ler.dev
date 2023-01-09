@@ -35,6 +35,15 @@ const Title = styled.div`
 
 const TitleLine = styled.div``
 
+const MainContainer = styled.div`
+  height: 100vh;
+  transition: transform 0.5s;
+  &.menu-open {
+    transition: transform 0.5s;
+    transform: translateY(-80vh);
+  }
+`
+
 const images = shuffle(times(5)).map((i) => ({ src: `menu-demo-${i + 1}.jpg` }))
 
 export function Demo() {
@@ -46,23 +55,25 @@ export function Demo() {
 
   return (
     <>
-      <Title>
-        {'The future is futuristic'.split(' ').map((line) => (
-          <TitleLine key={line}>{line}</TitleLine>
-        ))}
-      </Title>
+      <MainContainer className={open ? 'menu-open' : undefined}>
+        <Title>
+          {'The future is futuristic'.split(' ').map((line) => (
+            <TitleLine key={line}>{line}</TitleLine>
+          ))}
+        </Title>
+        <ImageList>
+          {images.map(({ src }) => (
+            <ImageListItem key={src}>
+              <Image src={src} />
+            </ImageListItem>
+          ))}
+        </ImageList>
+      </MainContainer>
       <Menu
         onClick={() => {
           setOpen((prev) => !prev)
         }}
       />
-      <ImageList>
-        {images.map(({ src }) => (
-          <ImageListItem key={src}>
-            <Image src={src} />
-          </ImageListItem>
-        ))}
-      </ImageList>
     </>
   )
 }
