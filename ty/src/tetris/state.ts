@@ -10,6 +10,7 @@ function createEmptyBoard() {
   for (let i = 0; i < board.length; i++) {
     board[i] = new Array(NUM_COLS).fill(false)
   }
+  board[2][3] = true
   return board
 }
 
