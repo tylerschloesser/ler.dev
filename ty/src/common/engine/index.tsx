@@ -24,8 +24,8 @@ export interface Viewport {
   h: number
 }
 
-function resize(canvas: HTMLCanvasElement) {
-  const rect = canvas.getBoundingClientRect()
+function resize(container: HTMLDivElement, canvas: HTMLCanvasElement) {
+  const rect = container.getBoundingClientRect()
   canvas.width = rect.width
   canvas.height = rect.height
 }
@@ -36,22 +36,29 @@ const Canvas = styled.canvas`
   height: 100%;
 `
 
+const Container = styled.div`
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+`
+
 export function Engine({ init, render }: EngineProps) {
   const [canvas, setCanvas] = useState<HTMLCanvasElement | null>()
+  const [container, setContainer] = useState<HTMLDivElement | null>()
   const initialized = useRef(false)
 
   useEffect(() => {
-    if (!canvas || initialized.current) {
+    if (!canvas || !container || initialized.current) {
       return
     }
 
     initialized.current = true
 
-    resize(canvas)
+    resize(container, canvas)
     const ro = new ResizeObserver(() => {
-      resize(canvas)
+      resize(container, canvas)
     })
-    ro.observe(canvas)
+    ro.observe(container)
 
     const controller = new AbortController()
     const context = canvas.getContext('2d')!
@@ -98,5 +105,9 @@ export function Engine({ init, render }: EngineProps) {
     }
   }, [])
 
-  return <Canvas ref={setCanvas} />
+  return (
+    <Container ref={setContainer}>
+      <Canvas ref={setCanvas} />
+    </Container>
+  )
 }

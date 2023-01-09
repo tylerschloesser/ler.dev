@@ -1,4 +1,5 @@
 import React from 'react'
+import styled from 'styled-components'
 import { Engine, InitFn, RenderFn } from '../common/engine'
 
 interface State {
@@ -26,15 +27,20 @@ const init: InitFn = () => {
 const render: RenderFn = ({ context, viewport }) => {
   const { board } = state
 
+  context.clearRect(0, 0, viewport.w, viewport.h)
+
   context.translate(10, 10)
   context.strokeStyle = 'white'
   context.beginPath()
+
+  const size = Math.min(viewport.w / NUM_COLS, viewport.h / NUM_ROWS)
+
   for (let row = 0; row < board.length; row++) {
     for (let col = 0; col < board[0].length; col++) {
-      const x = col * 20
-      const y = row * 20
-      const w = 20
-      const h = 20
+      const x = col * size
+      const y = row * size
+      const w = size
+      const h = size
       context.strokeRect(x, y, w, h)
     }
   }
@@ -42,6 +48,14 @@ const render: RenderFn = ({ context, viewport }) => {
   context.resetTransform()
 }
 
+const Container = styled.div`
+  height: 100vh;
+`
+
 export function Tetris() {
-  return <Engine init={init} render={render} />
+  return (
+    <Container>
+      <Engine init={init} render={render} />
+    </Container>
+  )
 }
