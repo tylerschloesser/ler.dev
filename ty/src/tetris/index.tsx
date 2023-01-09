@@ -23,7 +23,24 @@ const init: InitFn = () => {
   console.log(state)
 }
 
-const render: RenderFn = () => {}
+const render: RenderFn = ({ context, viewport }) => {
+  const { board } = state
+
+  context.translate(10, 10)
+  context.strokeStyle = 'white'
+  context.beginPath()
+  for (let row = 0; row < board.length; row++) {
+    for (let col = 0; col < board[0].length; col++) {
+      const x = col * 20
+      const y = row * 20
+      const w = 20
+      const h = 20
+      context.strokeRect(x, y, w, h)
+    }
+  }
+  context.closePath()
+  context.resetTransform()
+}
 
 export function Tetris() {
   return <Engine init={init} render={render} />
