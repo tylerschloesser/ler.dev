@@ -1,10 +1,16 @@
+type Piece = [number, number][]
+
 export interface State {
-  piece: [number, number][]
+  piece: Piece
   board: boolean[][]
 }
 
 export const NUM_ROWS = 20
 export const NUM_COLS = 10
+
+function createRandomPiece(): Piece {
+  return [[0, 3]]
+}
 
 function createEmptyBoard() {
   const board: boolean[][] = new Array(NUM_ROWS).fill(null)
@@ -16,7 +22,7 @@ function createEmptyBoard() {
 
 export const state: State = (() => {
   return {
-    piece: [[0, 3]],
+    piece: createRandomPiece(),
     board: createEmptyBoard(),
   }
 })()
