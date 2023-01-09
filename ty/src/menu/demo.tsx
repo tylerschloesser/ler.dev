@@ -1,6 +1,7 @@
 import { shuffle, times } from 'lodash'
 import React from 'react'
 import styled from 'styled-components'
+import { Menu } from './menu'
 
 const ImageList = styled.ol`
   display: flex;
@@ -48,6 +49,7 @@ export function Demo() {
           <TitleLine key={line}>{line}</TitleLine>
         ))}
       </Title>
+      <Menu />
       <ImageList>{images}</ImageList>
     </>
   )

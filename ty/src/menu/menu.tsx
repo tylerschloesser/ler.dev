@@ -77,8 +77,7 @@ function Button() {
   }
 
   // TODO had to find this manually. Can we calculate?
-  const rotate = 90 - 22
-  console.log(size)
+  const rotate = 180 - 22
 
   return (
     <ButtonContainer
@@ -134,10 +133,11 @@ function Button() {
 }
 
 const MenuContainer = styled.div`
+  position: fixed;
+  bottom: 0;
   box-sizing: border-box;
   padding: 1rem;
   display: flex;
-  height: 100%;
   width: 100%;
   align-items: end;
   justify-content: center;
