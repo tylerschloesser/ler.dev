@@ -1,4 +1,5 @@
 export interface State {
+  piece: [number, number][]
   board: boolean[][]
 }
 
@@ -10,12 +11,12 @@ function createEmptyBoard() {
   for (let i = 0; i < board.length; i++) {
     board[i] = new Array(NUM_COLS).fill(false)
   }
-  board[2][3] = true
   return board
 }
 
 export const state: State = (() => {
   return {
+    piece: [[0, 3]],
     board: createEmptyBoard(),
   }
 })()

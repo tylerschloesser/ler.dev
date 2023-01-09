@@ -1,8 +1,13 @@
+import { cloneDeep } from 'lodash'
 import { RenderFn } from '../common/engine'
 import { NUM_COLS, NUM_ROWS, state } from './state'
 
 export const render: RenderFn = ({ context, viewport }) => {
-  const { board } = state
+  const board = cloneDeep(state.board)
+
+  state.piece.forEach(([row, col]) => {
+    board[row][col] = true
+  })
 
   context.clearRect(0, 0, viewport.w, viewport.h)
 
