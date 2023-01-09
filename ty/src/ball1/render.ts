@@ -1,4 +1,4 @@
-import { RenderFn, viewport } from '../common/engine'
+import { RenderFn } from '../common/engine'
 import { Vec2 } from '../common/vec2'
 import { detectCollisions, moveBall, moveTargets } from './physics'
 import { scale, state } from './state'
@@ -112,7 +112,7 @@ export function renderDrag({ context, transform }: RenderArgs) {
   }
 }
 
-export const render: RenderFn = ({ context, elapsed }) => {
+export const render: RenderFn = ({ context, viewport, elapsed }) => {
   const { w, h } = viewport
   context.clearRect(0, 0, w, h)
   context.fillStyle = 'hsl(0, 0%, 20%)'

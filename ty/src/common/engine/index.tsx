@@ -1,24 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-
-function handleResize(canvas: HTMLCanvasElement) {
-  updateViewport({
-    w: window.innerWidth,
-    h: window.innerHeight,
-  })
-
-  canvas.width = viewport.w
-  canvas.height = viewport.h
-}
-
-export function initResizeObserver(canvas: HTMLCanvasElement): () => void {
-  const ro: ResizeObserver = new ResizeObserver(() => {
-    handleResize(canvas)
-  })
-  ro.observe(document.body)
-  return () => {
-    ro.disconnect()
-  }
-}
+import styled from 'styled-components'
 
 export type InitFn = (args: {
   canvas: HTMLCanvasElement
@@ -28,6 +9,7 @@ export type InitFn = (args: {
 export type RenderFn = (args: {
   canvas: HTMLCanvasElement
   context: CanvasRenderingContext2D
+  viewport: Viewport
   timestamp: number
   elapsed: number
 }) => void
@@ -42,53 +24,79 @@ export interface Viewport {
   h: number
 }
 
-export let viewport: Viewport = {
-  w: window.innerWidth,
-  h: window.innerHeight,
+function resize(canvas: HTMLCanvasElement) {
+  const rect = canvas.getBoundingClientRect()
+  canvas.width = rect.width
+  canvas.height = rect.height
 }
 
-export function updateViewport(next: Viewport) {
-  viewport = next
-}
+const Canvas = styled.canvas`
+  display: block;
+  width: 100%;
+  height: 100%;
+`
 
 export function Engine({ init, render }: EngineProps) {
   const [canvas, setCanvas] = useState<HTMLCanvasElement | null>()
   const initialized = useRef(false)
 
   useEffect(() => {
-    let cleanup: () => void | undefined
-    if (canvas && !initialized.current) {
-      initialized.current = true
-
-      canvas.width = viewport.w
-      canvas.height = viewport.h
-
-      const context = canvas.getContext('2d')!
-      cleanup = initResizeObserver(canvas)
-
-      init({ canvas, context })
-
-      let last: null | number = null
-      function wrap(timestamp: number) {
-        let elapsed = (last ? timestamp - last : 0) / 1000
-        last = timestamp
-        render({ canvas: canvas!, context, timestamp, elapsed })
-        window.requestAnimationFrame(wrap)
-      }
-      window.requestAnimationFrame(wrap)
+    if (!canvas || initialized.current) {
+      return
     }
 
+    initialized.current = true
+
+    resize(canvas)
+    const ro = new ResizeObserver(() => {
+      resize(canvas)
+    })
+    ro.observe(canvas)
+
+    const controller = new AbortController()
+    const context = canvas.getContext('2d')!
+
+    init({ canvas, context })
+
+    let last: null | number = null
+    function wrap(timestamp: number) {
+      if (!canvas) {
+        console.error('<canvas> no longer available')
+        return
+      }
+
+      let elapsed = (last ? timestamp - last : 0) / 1000
+      last = timestamp
+      const viewport: Viewport = {
+        w: canvas.width,
+        h: canvas.height,
+      }
+      render({
+        canvas,
+        context,
+        viewport,
+        timestamp,
+        elapsed,
+      })
+      if (!controller.signal.aborted) {
+        window.requestAnimationFrame(wrap)
+      }
+    }
+    window.requestAnimationFrame(wrap)
+
+    return () => {
+      ro.disconnect()
+      controller.abort()
+    }
+  }, [canvas])
+
+  useEffect(() => {
     // prevent scroll
     document.body.style.overflow = 'hidden'
     return () => {
       document.body.style.overflow = ''
-      cleanup?.()
     }
-  }, [canvas])
+  }, [])
 
-  return (
-    <div>
-      <canvas ref={setCanvas} />
-    </div>
-  )
+  return <Canvas ref={setCanvas} />
 }
