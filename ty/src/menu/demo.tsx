@@ -22,6 +22,18 @@ const Image = styled.img`
   width: 100%;
 `
 
+const Title = styled.div`
+  position: fixed;
+  left: 50vw;
+  bottom: 50vh;
+  text-transform: uppercase;
+  padding-bottom: 0.25rem;
+  padding-right: 0.5rem;
+  border-bottom: 2px solid hsl(0, 0%, 90%);
+`
+
+const TitleLine = styled.div``
+
 export function Demo() {
   const images = shuffle(times(5)).map((i) => (
     <ImageListItem>
@@ -31,6 +43,11 @@ export function Demo() {
 
   return (
     <>
+      <Title>
+        {'The future is futuristic'.split(' ').map((line) => (
+          <TitleLine key={line}>{line}</TitleLine>
+        ))}
+      </Title>
       <ImageList>{images}</ImageList>
     </>
   )
