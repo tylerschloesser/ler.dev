@@ -15,14 +15,26 @@ const render: RenderFn = (canvas, context, config, timestamp) => {
   window.requestAnimationFrame(curry(render)(canvas, context, config))
 }
 
-function init(canvas: HTMLCanvasElement, config: Config) {
-  {
-    const rect = canvas.getBoundingClientRect()
-    canvas.width = rect.width
-    canvas.height = rect.height
-  }
+function resize(canvas: HTMLCanvasElement) {
+  const rect = canvas.getBoundingClientRect()
+  canvas.width = rect.width
+  canvas.height = rect.height
+}
+
+function init(canvas: HTMLCanvasElement, config: Config): { cleanup(): void } {
+  resize(canvas)
+  const ro = new ResizeObserver(() => {
+    resize(canvas)
+  })
+  ro.observe(canvas)
   const context = canvas.getContext('2d')!
   window.requestAnimationFrame(curry(render)(canvas, context, config))
+
+  return {
+    cleanup: () => {
+      ro.disconnect()
+    },
+  }
 }
 
 const Canvas = styled.canvas`
@@ -42,7 +54,9 @@ export function Blob({ config }: BlobProps) {
     Object.assign(configRef.current, config)
   }, [config])
   useEffect(() => {
-    canvas && init(canvas, configRef.current)
+    if (canvas) {
+      return init(canvas, configRef.current).cleanup
+    }
   }, [canvas])
   return <Canvas ref={setCanvas} />
 }
