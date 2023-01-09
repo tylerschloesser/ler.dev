@@ -2,10 +2,24 @@ import { cloneDeep } from 'lodash'
 import { RenderFn } from '../common/engine'
 import { NUM_COLS, NUM_ROWS, state } from './state'
 
-export const render: RenderFn = ({ context, viewport }) => {
+function update(timestamp: number) {
+  if (state.piece.lastDrop === 0) {
+    state.piece.lastDrop = timestamp
+  }
+
+  if (timestamp - state.piece.lastDrop > 1_000) {
+    state.piece.lastDrop += 1_000
+    state.piece.cells.forEach((cell) => {
+      cell[0] = Math.min(cell[0] + 1, NUM_ROWS - 1)
+    })
+  }
+}
+
+export const render: RenderFn = ({ context, viewport, timestamp }) => {
+  update(timestamp)
   const board = cloneDeep(state.board)
 
-  state.piece.forEach(([row, col]) => {
+  state.piece.cells.forEach(([row, col]) => {
     board[row][col] = true
   })
 

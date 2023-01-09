@@ -1,4 +1,7 @@
-type Piece = [number, number][]
+interface Piece {
+  cells: [number, number][]
+  lastDrop: number
+}
 
 export interface State {
   piece: Piece
@@ -9,7 +12,10 @@ export const NUM_ROWS = 20
 export const NUM_COLS = 10
 
 function createRandomPiece(): Piece {
-  return [[0, 3]]
+  return {
+    cells: [[0, 3]],
+    lastDrop: 0,
+  }
 }
 
 function createEmptyBoard() {
