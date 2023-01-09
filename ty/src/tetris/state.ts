@@ -1,4 +1,4 @@
-interface Piece {
+export interface Piece {
   cells: [number, number][]
   lastDrop: number
 }
@@ -11,7 +11,7 @@ export interface State {
 export const NUM_ROWS = 20
 export const NUM_COLS = 10
 
-function createRandomPiece(): Piece {
+export function createRandomPiece(): Piece {
   return {
     cells: [[0, 3]],
     lastDrop: 0,
