@@ -1,34 +1,10 @@
 import { cloneDeep } from 'lodash'
 import { RenderFn } from '../common/engine'
-import { createRandomPiece, NUM_COLS, NUM_ROWS, Piece, state } from './state'
-
-function update(timestamp: number) {
-  if (state.piece.lastDrop === 0) {
-    state.piece.lastDrop = timestamp
-  }
-
-  if (timestamp - state.piece.lastDrop > 1_000) {
-    state.piece.lastDrop += 1_000
-
-    const next: Piece = cloneDeep(state.piece)
-    next.cells.forEach((cell) => {
-      cell[0] = Math.min(cell[0] + 1, NUM_ROWS - 1)
-    })
-
-    // TODO fix case where piece hits bottom
-    if (next.cells.some(([row, col]) => state.board[row][col])) {
-      state.piece.cells.forEach(([row, col]) => {
-        state.board[row][col] = true
-      })
-      state.piece = createRandomPiece()
-    } else {
-      state.piece = next
-    }
-  }
-}
+import { NUM_COLS, NUM_ROWS, state, updateState } from './state'
 
 export const render: RenderFn = ({ context, viewport, timestamp }) => {
-  update(timestamp)
+  updateState(timestamp)
+
   const board = cloneDeep(state.board)
 
   state.piece.cells.forEach(([row, col]) => {
