@@ -69,7 +69,17 @@ function movePiece(direction: 'left' | 'right' | 'down') {
 }
 
 export function handleInput(input: Input) {
-  console.log('todo handle', input)
+  switch (input) {
+    case Input.MoveLeft:
+    case Input.MoveRight: {
+      const direction = input === Input.MoveLeft ? 'left' : 'right'
+      const { next, valid } = movePiece(direction)
+      if (valid) {
+        state.piece = next
+      }
+      break
+    }
+  }
 }
 
 export function updateState(timestamp: number) {
