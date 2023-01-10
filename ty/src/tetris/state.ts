@@ -13,11 +13,11 @@ export interface State {
 }
 
 export const NUM_ROWS = 20
-export const NUM_COLS = 10
+export const NUM_COLS = 3
 
 export function createRandomPiece(): Piece {
   return {
-    cells: [[0, 3]],
+    cells: [[0, 1]],
     lastDrop: 0,
   }
 }
@@ -55,6 +55,18 @@ export enum Input {
   MoveDown = 'move-down',
 }
 
+function checkBoard() {
+  const next: boolean[][] = []
+  for (let row = 0; row < NUM_ROWS; row++) {
+    if (state.board[row].every((cell) => cell)) {
+      next.unshift(new Array(NUM_COLS).fill(false))
+    } else {
+      next.push(state.board[row])
+    }
+  }
+  state.board = next
+}
+
 function movePiece(direction: 'left' | 'right' | 'down') {
   let [dRow, dCol] = {
     left: [0, -1],
@@ -69,6 +81,7 @@ function movePiece(direction: 'left' | 'right' | 'down') {
     state.piece.cells.forEach(([row, col]) => {
       state.board[row][col] = true
     })
+    checkBoard()
     state.piece = createRandomPiece()
   }
 }
