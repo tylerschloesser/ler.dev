@@ -51,6 +51,7 @@ function isValid(cell: Cell): boolean {
 export enum Input {
   MoveLeft = 'move-left',
   MoveRight = 'move-right',
+  MoveDown = 'move-down',
 }
 
 function movePiece(direction: 'left' | 'right' | 'down') {
@@ -74,9 +75,13 @@ function movePiece(direction: 'left' | 'right' | 'down') {
 export function handleInput(input: Input) {
   switch (input) {
     case Input.MoveLeft:
-    case Input.MoveRight: {
-      const direction = input === Input.MoveLeft ? 'left' : 'right'
-      movePiece(direction)
+      movePiece('left')
+      break
+    case Input.MoveRight:
+      movePiece('right')
+      break
+    case Input.MoveDown: {
+      movePiece('down')
       break
     }
   }

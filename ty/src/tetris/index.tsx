@@ -22,6 +22,7 @@ export function Tetris() {
         const input = {
           ArrowRight: Input.MoveRight,
           ArrowLeft: Input.MoveLeft,
+          ArrowDown: Input.MoveDown,
         }[ev.key]
         input && handleInput(input)
       },
