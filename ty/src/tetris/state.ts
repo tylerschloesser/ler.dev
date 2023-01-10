@@ -66,10 +66,13 @@ const PIECES: Cell[][] = [
 ]
 
 export function createRandomPiece(): Piece {
-  return {
+  const piece: Piece = {
     cells: cloneDeep(PIECES[random(PIECES.length - 1)]),
     lastDrop: 0,
   }
+  // move to center, assuming piece is either 3 or 4 cols
+  piece.cells = piece.cells.map(([row, col]) => [row, col + NUM_COLS / 2 - 2])
+  return piece
 }
 
 function createEmptyBoard() {
