@@ -53,6 +53,21 @@ export enum Input {
   MoveRight = 'move-right',
 }
 
+function movePiece(direction: 'left' | 'right' | 'down') {
+  let [dRow, dCol] = {
+    left: [0, -1],
+    right: [0, 1],
+    down: [1, 0],
+  }[direction]
+  const next = cloneDeep(state.piece)
+  next.cells = next.cells.map(([row, col]) => [row + dRow, col + dCol])
+
+  return {
+    next,
+    valid: next.cells.every(isValid),
+  }
+}
+
 export function handleInput(input: Input) {
   console.log('todo handle', input)
 }
@@ -65,12 +80,9 @@ export function updateState(timestamp: number) {
   if (timestamp - state.piece.lastDrop > 1_000) {
     state.piece.lastDrop += 1_000
 
-    const next: Piece = {
-      ...state.piece,
-      cells: state.piece.cells.map(([row, col]) => [row + 1, col]),
-    }
+    const { next, valid } = movePiece('down')
 
-    if (next.cells.every(isValid)) {
+    if (valid) {
       state.piece = next
     } else {
       state.piece.cells.forEach(([row, col]) => {
