@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import styled from 'styled-components'
 import { Engine, InitFn } from '../common/engine'
 import { render } from './render'
@@ -23,6 +23,7 @@ export function Tetris() {
           ArrowRight: Input.MoveRight,
           ArrowLeft: Input.MoveLeft,
           ArrowDown: Input.MoveDown,
+          ArrowUp: Input.Rotate,
         }[ev.key]
         input && handleInput(input)
       },

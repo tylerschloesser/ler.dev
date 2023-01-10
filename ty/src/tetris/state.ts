@@ -106,6 +106,7 @@ export enum Input {
   MoveLeft = 'move-left',
   MoveRight = 'move-right',
   MoveDown = 'move-down',
+  Rotate = 'rotate',
 }
 
 function checkBoard() {
@@ -139,6 +140,10 @@ function movePiece(direction: 'left' | 'right' | 'down') {
   }
 }
 
+function rotatePiece() {
+  console.log('todo rotate')
+}
+
 export function handleInput(input: Input) {
   switch (input) {
     case Input.MoveLeft:
@@ -149,6 +154,10 @@ export function handleInput(input: Input) {
       break
     case Input.MoveDown: {
       movePiece('down')
+      break
+    }
+    case Input.Rotate: {
+      rotatePiece()
       break
     }
   }
