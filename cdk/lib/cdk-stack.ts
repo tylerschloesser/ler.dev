@@ -57,6 +57,13 @@ export class CdkStack extends Stack {
         defaultRootObject: getDefaultRootObject(),
         domainNames: ['ler.dev', 'ty.ler.dev'],
         certificate,
+        errorResponses: [
+          {
+            httpStatus: 403,
+            responseHttpStatus: 200,
+            responsePagePath: getDefaultRootObject(),
+          },
+        ],
       },
     )
 
