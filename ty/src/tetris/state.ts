@@ -1,4 +1,4 @@
-import { cloneDeep } from 'lodash'
+import { cloneDeep, random } from 'lodash'
 
 type Cell = [number, number]
 
@@ -13,11 +13,61 @@ export interface State {
 }
 
 export const NUM_ROWS = 20
-export const NUM_COLS = 3
+export const NUM_COLS = 10
+
+const PIECES: Cell[][] = [
+  // ▢▢▢
+  //  ▢
+  [
+    [0, 0],
+    [0, 1],
+    [0, 2],
+    [1, 1],
+  ],
+  // ▢▢▢
+  //   ▢
+  [
+    [0, 0],
+    [0, 1],
+    [0, 2],
+    [1, 2],
+  ],
+  // ▢▢▢
+  // ▢
+  [
+    [0, 0],
+    [0, 1],
+    [0, 2],
+    [1, 0],
+  ],
+  //  ▢▢
+  // ▢▢
+  [
+    [0, 1],
+    [0, 2],
+    [1, 0],
+    [1, 1],
+  ],
+  // ▢▢
+  //  ▢▢
+  [
+    [0, 0],
+    [0, 1],
+    [1, 1],
+    [1, 2],
+  ],
+  // ▢▢▢▢
+  [
+    [0, 0],
+    [0, 1],
+    [0, 2],
+    [0, 3],
+  ],
+]
 
 export function createRandomPiece(): Piece {
   return {
-    cells: [[0, 1]],
+    cells: cloneDeep(PIECES[random(PIECES.length - 1)]),
     lastDrop: 0,
   }
 }
