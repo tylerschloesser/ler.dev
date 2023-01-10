@@ -61,7 +61,7 @@ export class CdkStack extends Stack {
           {
             httpStatus: 403,
             responseHttpStatus: 200,
-            responsePagePath: getDefaultRootObject(),
+            responsePagePath: `/${getDefaultRootObject()}`,
           },
         ],
       },
