@@ -61,10 +61,13 @@ function movePiece(direction: 'left' | 'right' | 'down') {
   }[direction]
   const next = cloneDeep(state.piece)
   next.cells = next.cells.map(([row, col]) => [row + dRow, col + dCol])
-
-  return {
-    next,
-    valid: next.cells.every(isValid),
+  if (next.cells.every(isValid)) {
+    state.piece = next
+  } else if (direction === 'down') {
+    state.piece.cells.forEach(([row, col]) => {
+      state.board[row][col] = true
+    })
+    state.piece = createRandomPiece()
   }
 }
 
@@ -73,10 +76,7 @@ export function handleInput(input: Input) {
     case Input.MoveLeft:
     case Input.MoveRight: {
       const direction = input === Input.MoveLeft ? 'left' : 'right'
-      const { next, valid } = movePiece(direction)
-      if (valid) {
-        state.piece = next
-      }
+      movePiece(direction)
       break
     }
   }
@@ -89,16 +89,6 @@ export function updateState(timestamp: number) {
 
   if (timestamp - state.piece.lastDrop > 1_000) {
     state.piece.lastDrop += 1_000
-
-    const { next, valid } = movePiece('down')
-
-    if (valid) {
-      state.piece = next
-    } else {
-      state.piece.cells.forEach(([row, col]) => {
-        state.board[row][col] = true
-      })
-      state.piece = createRandomPiece()
-    }
+    movePiece('down')
   }
 }
