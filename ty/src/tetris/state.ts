@@ -37,15 +37,16 @@ export const state: State = (() => {
   }
 })()
 
-function isValid(cell: Cell): boolean {
-  const [row, col] = cell
-  if (row < 0 || row >= NUM_ROWS || col < 0 || col >= NUM_COLS) {
-    return false
-  }
-  if (state.board[row][col] === true) {
-    return false
-  }
-  return true
+function isValid(piece: Piece): boolean {
+  return piece.cells.every(([row, col]) => {
+    if (row < 0 || row >= NUM_ROWS || col < 0 || col >= NUM_COLS) {
+      return false
+    }
+    if (state.board[row][col] === true) {
+      return false
+    }
+    return true
+  })
 }
 
 export enum Input {
@@ -62,7 +63,7 @@ function movePiece(direction: 'left' | 'right' | 'down') {
   }[direction]
   const next = cloneDeep(state.piece)
   next.cells = next.cells.map(([row, col]) => [row + dRow, col + dCol])
-  if (next.cells.every(isValid)) {
+  if (isValid(next)) {
     state.piece = next
   } else if (direction === 'down') {
     state.piece.cells.forEach(([row, col]) => {
