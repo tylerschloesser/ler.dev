@@ -1,7 +1,9 @@
 import { cloneDeep } from 'lodash'
 
+type Cell = [number, number]
+
 export interface Piece {
-  cells: [number, number][]
+  cells: Cell[]
   lastDrop: number
 }
 
@@ -35,6 +37,26 @@ export const state: State = (() => {
   }
 })()
 
+function isValid(cell: Cell): boolean {
+  const [row, col] = cell
+  if (row < 0 || row >= NUM_ROWS || col < 0 || col >= NUM_COLS) {
+    return false
+  }
+  if (state.board[row][col] === true) {
+    return false
+  }
+  return true
+}
+
+export enum Input {
+  MoveLeft = 'move-left',
+  MoveRight = 'move-right',
+}
+
+export function handleInput(input: Input) {
+  console.log('todo handle', input)
+}
+
 export function updateState(timestamp: number) {
   if (state.piece.lastDrop === 0) {
     state.piece.lastDrop = timestamp
@@ -43,19 +65,18 @@ export function updateState(timestamp: number) {
   if (timestamp - state.piece.lastDrop > 1_000) {
     state.piece.lastDrop += 1_000
 
-    const next: Piece = cloneDeep(state.piece)
-    next.cells.forEach((cell) => {
-      cell[0] = Math.min(cell[0] + 1, NUM_ROWS - 1)
-    })
+    const next: Piece = {
+      ...state.piece,
+      cells: state.piece.cells.map(([row, col]) => [row + 1, col]),
+    }
 
-    // TODO fix case where piece hits bottom
-    if (next.cells.some(([row, col]) => state.board[row][col])) {
+    if (next.cells.every(isValid)) {
+      state.piece = next
+    } else {
       state.piece.cells.forEach(([row, col]) => {
         state.board[row][col] = true
       })
       state.piece = createRandomPiece()
-    } else {
-      state.piece = next
     }
   }
 }
