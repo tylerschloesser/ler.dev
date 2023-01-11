@@ -7,9 +7,14 @@ export const render: RenderFn = ({ context, viewport, timestamp }) => {
 
   const board = cloneDeep(state.board)
 
-  state.piece.cells.forEach(([row, col]) => {
-    board[row][col] = true
-  })
+  state.piece.cells
+    .map(([row, col]) => [
+      row + state.piece.position.row,
+      col + state.piece.position.col,
+    ])
+    .forEach(([row, col]) => {
+      board[row][col] = true
+    })
 
   context.clearRect(0, 0, viewport.w, viewport.h)
 

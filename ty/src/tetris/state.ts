@@ -4,6 +4,7 @@ type Cell = [number, number]
 
 export interface Piece {
   cells: Cell[]
+  position: { row: number; col: number }
   lastDrop: number
 }
 
@@ -68,10 +69,13 @@ const PIECES: Cell[][] = [
 export function createRandomPiece(): Piece {
   const piece: Piece = {
     cells: cloneDeep(PIECES[random(PIECES.length - 1)]),
+    position: {
+      row: 0,
+      // move to center, assuming piece is either 3 or 4 cols
+      col: NUM_COLS / 2 - 2,
+    },
     lastDrop: 0,
   }
-  // move to center, assuming piece is either 3 or 4 cols
-  piece.cells = piece.cells.map(([row, col]) => [row, col + NUM_COLS / 2 - 2])
   return piece
 }
 
@@ -91,15 +95,17 @@ export const state: State = (() => {
 })()
 
 function isValid(piece: Piece): boolean {
-  return piece.cells.every(([row, col]) => {
-    if (row < 0 || row >= NUM_ROWS || col < 0 || col >= NUM_COLS) {
-      return false
-    }
-    if (state.board[row][col] === true) {
-      return false
-    }
-    return true
-  })
+  return piece.cells
+    .map(([row, col]) => [row + piece.position.row, col + piece.position.col])
+    .every(([row, col]) => {
+      if (row < 0 || row >= NUM_ROWS || col < 0 || col >= NUM_COLS) {
+        return false
+      }
+      if (state.board[row][col] === true) {
+        return false
+      }
+      return true
+    })
 }
 
 export enum Input {
@@ -127,14 +133,22 @@ function movePiece(direction: 'left' | 'right' | 'down') {
     right: [0, 1],
     down: [1, 0],
   }[direction]
+
   const next = cloneDeep(state.piece)
-  next.cells = next.cells.map(([row, col]) => [row + dRow, col + dCol])
+  next.position.col += dCol
+  next.position.row += dRow
+
   if (isValid(next)) {
     state.piece = next
   } else if (direction === 'down') {
-    state.piece.cells.forEach(([row, col]) => {
-      state.board[row][col] = true
-    })
+    state.piece.cells
+      .map(([row, col]) => [
+        row + state.piece.position.row,
+        col + state.piece.position.col,
+      ])
+      .forEach(([row, col]) => {
+        state.board[row][col] = true
+      })
     checkBoard()
     state.piece = createRandomPiece()
   }
