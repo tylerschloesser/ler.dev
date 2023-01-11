@@ -19,6 +19,10 @@ export function Tetris() {
     document.addEventListener(
       'keydown',
       (ev) => {
+        if (ev.key === ' ') {
+          debugger
+          return
+        }
         const input = {
           ArrowRight: Input.MoveRight,
           ArrowLeft: Input.MoveLeft,
