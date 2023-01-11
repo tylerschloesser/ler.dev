@@ -155,7 +155,13 @@ function movePiece(direction: 'left' | 'right' | 'down') {
 }
 
 function rotatePiece() {
-  console.log('todo rotate')
+  const next = cloneDeep(state.piece)
+  next.cells = next.cells.map(([row, col]) => [col, 2 - row])
+  if (isValid(next)) {
+    state.piece = next
+  } else {
+    // TODO try to move the piece so we can rotate?
+  }
 }
 
 export function handleInput(input: Input) {
