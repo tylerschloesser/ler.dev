@@ -183,13 +183,10 @@ export function handleInput(input: Input) {
   }
 }
 
-export function updateState(timestamp: number) {
-  if (state.piece.lastDrop === 0) {
-    state.piece.lastDrop = timestamp
-  }
-
-  if (timestamp - state.piece.lastDrop > 1_000) {
-    state.piece.lastDrop += 1_000
+export function updateState({ elapsed }: { elapsed: number }) {
+  state.piece.lastDrop += elapsed
+  if (state.piece.lastDrop >= 1_000) {
+    state.piece.lastDrop -= 1_000
     movePiece('down')
   }
 }

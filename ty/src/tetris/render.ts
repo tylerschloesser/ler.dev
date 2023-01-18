@@ -2,8 +2,8 @@ import { cloneDeep } from 'lodash'
 import { RenderFn } from '../common/engine'
 import { NUM_COLS, NUM_ROWS, state, updateState } from './state'
 
-export const render: RenderFn = ({ context, viewport, timestamp }) => {
-  updateState(timestamp)
+export const render: RenderFn = ({ context, viewport, elapsed }) => {
+  updateState({ elapsed })
 
   const board = cloneDeep(state.board)
 

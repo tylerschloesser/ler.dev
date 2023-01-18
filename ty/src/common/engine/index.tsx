@@ -65,7 +65,7 @@ export function Engine({ init, render }: EngineProps) {
         return
       }
 
-      let elapsed = (last ? timestamp - last : 0) / 1000
+      let elapsed = last ? timestamp - last : 0
       last = timestamp
       const viewport: Viewport = {
         w: canvas.width,
