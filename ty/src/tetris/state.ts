@@ -2,6 +2,13 @@ import { cloneDeep, random } from 'lodash'
 
 type Cell = [number, number]
 
+export enum Input {
+  MoveLeft = 'move-left',
+  MoveRight = 'move-right',
+  MoveDown = 'move-down',
+  Rotate = 'rotate',
+}
+
 export interface Piece {
   cells: Cell[]
   position: { row: number; col: number }
@@ -11,6 +18,11 @@ export interface Piece {
 export interface State {
   piece: Piece
   board: boolean[][]
+  hold: {
+    [Input.MoveDown]: number | null
+    [Input.MoveLeft]: number | null
+    [Input.MoveRight]: number | null
+  }
 }
 
 export const NUM_ROWS = 20
@@ -91,6 +103,11 @@ export const state: State = (() => {
   return {
     piece: createRandomPiece(),
     board: createEmptyBoard(),
+    hold: {
+      [Input.MoveDown]: null,
+      [Input.MoveLeft]: null,
+      [Input.MoveRight]: null,
+    },
   }
 })()
 
@@ -106,13 +123,6 @@ function isValid(piece: Piece): boolean {
       }
       return true
     })
-}
-
-export enum Input {
-  MoveLeft = 'move-left',
-  MoveRight = 'move-right',
-  MoveDown = 'move-down',
-  Rotate = 'rotate',
 }
 
 function checkBoard() {
