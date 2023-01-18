@@ -1,3 +1,4 @@
+import { curry } from 'lodash/fp'
 import React, { useEffect } from 'react'
 import styled from 'styled-components'
 import { Engine, InitFn } from '../common/engine'
@@ -16,23 +17,29 @@ export function Tetris() {
   useEffect(() => {
     const controller = new AbortController()
     const { signal } = controller
-    document.addEventListener(
-      'keydown',
-      (ev) => {
-        if (ev.key === ' ') {
-          debugger
-          return
-        }
-        const input = {
-          ArrowRight: Input.MoveRight,
-          ArrowLeft: Input.MoveLeft,
-          ArrowDown: Input.MoveDown,
-          ArrowUp: Input.Rotate,
-        }[ev.key]
-        input && handleInput(input)
-      },
-      { signal },
-    )
+
+    function listener(type: 'keydown' | 'keyup', ev: KeyboardEvent) {
+      if (type === 'keydown' && ev.key === ' ') {
+        debugger
+        return
+      }
+
+      const input = {
+        ArrowRight: Input.MoveRight,
+        ArrowLeft: Input.MoveLeft,
+        ArrowDown: Input.MoveDown,
+        ArrowUp: Input.Rotate,
+      }[ev.key]
+      input && handleInput(input)
+    }
+
+    // TODO arrayify this with typescript somehow
+    document.addEventListener('keydown', curry(listener)('keydown'), {
+      signal,
+    })
+    document.addEventListener('keyup', curry(listener)('keyup'), {
+      signal,
+    })
     return () => {
       controller.abort()
     }
