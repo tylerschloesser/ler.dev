@@ -40,6 +40,17 @@ export const NUM_ROWS = 20
 export const NUM_COLS = 10
 
 const PIECES: { cells: Cell[]; color: Color }[] = [
+  // ▢▢
+  // ▢▢
+  {
+    color: Color.Green,
+    cells: [
+      [0, 0],
+      [0, 1],
+      [1, 0],
+      [1, 1],
+    ],
+  },
   // ▢▢▢
   //  ▢
   {
