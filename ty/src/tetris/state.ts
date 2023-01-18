@@ -188,7 +188,7 @@ export function handleInput(input: Input, type: 'keyup' | 'keydown') {
       break
     }
     case Input.Rotate: {
-      if (type === 'keyup') {
+      if (type === 'keydown') {
         rotatePiece()
       }
       break
