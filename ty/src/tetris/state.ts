@@ -9,8 +9,19 @@ export enum Input {
   Rotate = 'rotate',
 }
 
+export enum Color {
+  Purple = 'hsl(266, 80.4, 90)',
+  Green = 'hsl(266, 80.4, 90)',
+  Red = 'hsl(266, 80.4, 90)',
+  Blue = 'hsl(266, 80.4, 90)',
+  Orange = 'hsl(266, 80.4, 90)',
+  Yellow = 'hsl(266, 80.4, 90)',
+  Cyan = 'hsl(266, 80.4, 90)',
+}
+
 export interface Piece {
   cells: Cell[]
+  color: Color
   position: { row: number; col: number }
   lastDrop: number
 }
@@ -28,59 +39,77 @@ export interface State {
 export const NUM_ROWS = 20
 export const NUM_COLS = 10
 
-const PIECES: Cell[][] = [
+const PIECES: { cells: Cell[]; color: Color }[] = [
   // ▢▢▢
   //  ▢
-  [
-    [0, 0],
-    [0, 1],
-    [0, 2],
-    [1, 1],
-  ],
+  {
+    color: Color.Purple,
+    cells: [
+      [0, 0],
+      [0, 1],
+      [0, 2],
+      [1, 1],
+    ],
+  },
   // ▢▢▢
   //   ▢
-  [
-    [0, 0],
-    [0, 1],
-    [0, 2],
-    [1, 2],
-  ],
+  {
+    color: Color.Blue,
+    cells: [
+      [0, 0],
+      [0, 1],
+      [0, 2],
+      [1, 2],
+    ],
+  },
   // ▢▢▢
   // ▢
-  [
-    [0, 0],
-    [0, 1],
-    [0, 2],
-    [1, 0],
-  ],
+  {
+    color: Color.Orange,
+    cells: [
+      [0, 0],
+      [0, 1],
+      [0, 2],
+      [1, 0],
+    ],
+  },
   //  ▢▢
   // ▢▢
-  [
-    [0, 1],
-    [0, 2],
-    [1, 0],
-    [1, 1],
-  ],
+  {
+    color: Color.Yellow,
+    cells: [
+      [0, 1],
+      [0, 2],
+      [1, 0],
+      [1, 1],
+    ],
+  },
   // ▢▢
   //  ▢▢
-  [
-    [0, 0],
-    [0, 1],
-    [1, 1],
-    [1, 2],
-  ],
+  {
+    color: Color.Red,
+    cells: [
+      [0, 0],
+      [0, 1],
+      [1, 1],
+      [1, 2],
+    ],
+  },
   // ▢▢▢▢
-  [
-    [0, 0],
-    [0, 1],
-    [0, 2],
-    [0, 3],
-  ],
+  {
+    color: Color.Cyan,
+    cells: [
+      [0, 0],
+      [0, 1],
+      [0, 2],
+      [0, 3],
+    ],
+  },
 ]
 
 export function createRandomPiece(): Piece {
   const piece: Piece = {
-    cells: cloneDeep(PIECES[random(PIECES.length - 1)]),
+    ...cloneDeep(PIECES[random(PIECES.length - 1)]),
     position: {
       row: 0,
       // move to center, assuming piece is either 3 or 4 cols
