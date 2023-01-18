@@ -13,13 +13,12 @@ export const render: RenderFn = ({ context, viewport, elapsed }) => {
       col + state.piece.position.col,
     ])
     .forEach(([row, col]) => {
-      board[row][col] = true
+      board[row][col] = state.piece.color
     })
 
   context.clearRect(0, 0, viewport.w, viewport.h)
 
   context.strokeStyle = 'white'
-  context.fillStyle = 'white'
   context.beginPath()
 
   const padding = Math.min(viewport.w, viewport.h) * 0.05
@@ -37,12 +36,13 @@ export const render: RenderFn = ({ context, viewport, elapsed }) => {
 
   for (let row = 0; row < board.length; row++) {
     for (let col = 0; col < board[0].length; col++) {
-      const value = board[row][col]
+      const color = board[row][col]
       const x = col * size
       const y = row * size
       const w = size
       const h = size
-      if (value) {
+      if (color) {
+        context.fillStyle = color
         context.fillRect(x, y, w, h)
       } else {
         context.strokeRect(x, y, w, h)

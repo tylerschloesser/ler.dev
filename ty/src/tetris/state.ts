@@ -10,13 +10,13 @@ export enum Input {
 }
 
 export enum Color {
-  Purple = 'hsl(266, 80.4, 90)',
-  Green = 'hsl(266, 80.4, 90)',
-  Red = 'hsl(266, 80.4, 90)',
-  Blue = 'hsl(266, 80.4, 90)',
-  Orange = 'hsl(266, 80.4, 90)',
-  Yellow = 'hsl(266, 80.4, 90)',
-  Cyan = 'hsl(266, 80.4, 90)',
+  Purple = 'hsl(275, 81.6%, 51%)',
+  Green = 'hsl(106, 82.1%, 60.6%)',
+  Red = 'hsl(5, 73.9%, 49.6%)',
+  Blue = 'hsl(240, 100%, 45.5%)',
+  Orange = 'hsl(30, 73.8%, 53.5%)',
+  Yellow = 'hsl(55, 90.3%, 63.5%)',
+  Cyan = 'hsl(181, 82.4%, 68.8%)',
 }
 
 export interface Piece {
@@ -28,7 +28,7 @@ export interface Piece {
 
 export interface State {
   piece: Piece
-  board: boolean[][]
+  board: (Color | null)[][]
   hold: {
     [Input.MoveDown]: number | null
     [Input.MoveLeft]: number | null
@@ -121,9 +121,9 @@ export function createRandomPiece(): Piece {
 }
 
 function createEmptyBoard() {
-  const board: boolean[][] = new Array(NUM_ROWS).fill(null)
+  const board: null[][] = new Array(NUM_ROWS).fill(null)
   for (let i = 0; i < board.length; i++) {
-    board[i] = new Array(NUM_COLS).fill(false)
+    board[i] = new Array(NUM_COLS).fill(null)
   }
   return board
 }
@@ -147,7 +147,7 @@ function isValid(piece: Piece): boolean {
       if (row < 0 || row >= NUM_ROWS || col < 0 || col >= NUM_COLS) {
         return false
       }
-      if (state.board[row][col] === true) {
+      if (state.board[row][col]) {
         return false
       }
       return true
@@ -155,7 +155,7 @@ function isValid(piece: Piece): boolean {
 }
 
 function checkBoard() {
-  const next: boolean[][] = []
+  const next: (Color | null)[][] = []
   for (let row = 0; row < NUM_ROWS; row++) {
     if (state.board[row].every((cell) => cell)) {
       next.unshift(new Array(NUM_COLS).fill(false))
@@ -186,7 +186,7 @@ function movePiece(direction: 'left' | 'right' | 'down') {
         col + state.piece.position.col,
       ])
       .forEach(([row, col]) => {
-        state.board[row][col] = true
+        state.board[row][col] = state.piece.color
       })
     checkBoard()
     state.piece = createRandomPiece()
