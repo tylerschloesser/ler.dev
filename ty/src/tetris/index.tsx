@@ -30,7 +30,7 @@ export function Tetris() {
         ArrowDown: Input.MoveDown,
         ArrowUp: Input.Rotate,
       }[ev.key]
-      input && handleInput(input)
+      input && handleInput(input, type)
     }
 
     // TODO arrayify this with typescript somehow

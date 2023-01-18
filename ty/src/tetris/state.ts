@@ -174,20 +174,23 @@ function rotatePiece() {
   }
 }
 
-export function handleInput(input: Input) {
+export function handleInput(input: Input, type: 'keyup' | 'keydown') {
   switch (input) {
     case Input.MoveLeft:
-      movePiece('left')
-      break
     case Input.MoveRight:
-      movePiece('right')
-      break
     case Input.MoveDown: {
-      movePiece('down')
+      if (type === 'keyup') {
+        state.hold[input] = null
+      } else {
+        // keydown
+        state.hold[input] = state.hold[input] ?? 0
+      }
       break
     }
     case Input.Rotate: {
-      rotatePiece()
+      if (type === 'keyup') {
+        rotatePiece()
+      }
       break
     }
   }
@@ -195,8 +198,45 @@ export function handleInput(input: Input) {
 
 export function updateState({ elapsed }: { elapsed: number }) {
   state.piece.lastDrop += elapsed
+
+  // TODO refactor to not need this
+  let movedDown = false
+
+  Object.entries(state.hold).forEach(([input, value]) => {
+    if (value === null) {
+      return
+    }
+
+    const next = value + elapsed
+
+    if (input === Input.MoveLeft || input === Input.MoveRight) {
+      const direction = input === Input.MoveLeft ? 'left' : 'right'
+      if (value === 0) {
+        movePiece(direction)
+      } else if (value < 200 && next >= 200) {
+        movePiece(direction)
+      } else if (
+        value >= 200 &&
+        Math.floor(value / 50) !== Math.floor(next / 50)
+      ) {
+        movePiece(direction)
+      }
+    } else if (input === Input.MoveDown) {
+      if (Math.floor(value / 50) !== Math.floor(next / 50)) {
+        movePiece('down')
+        movedDown = true
+      }
+    }
+
+    // TODO remove any hack
+    ;(state.hold as any)[input] = next
+  })
+
   if (state.piece.lastDrop >= 1_000) {
     state.piece.lastDrop -= 1_000
-    movePiece('down')
+    if (!movedDown) {
+      movePiece('down')
+      movedDown = true
+    }
   }
 }
