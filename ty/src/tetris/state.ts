@@ -209,14 +209,14 @@ export function updateState({ elapsed }: { elapsed: number }) {
 
     const next = value + elapsed
 
+    // move piece immediately, then wait Xms before moving every Yms
+    // aka manual debounce
     if (input === Input.MoveLeft || input === Input.MoveRight) {
       const direction = input === Input.MoveLeft ? 'left' : 'right'
       if (value === 0) {
         movePiece(direction)
-      } else if (value < 200 && next >= 200) {
-        movePiece(direction)
       } else if (
-        value >= 200 &&
+        next >= 200 &&
         Math.floor(value / 50) !== Math.floor(next / 50)
       ) {
         movePiece(direction)
