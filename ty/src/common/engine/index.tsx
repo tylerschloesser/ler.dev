@@ -39,6 +39,7 @@ const Canvas = styled.canvas`
 export function Engine({ init, render }: EngineProps) {
   const [canvas, setCanvas] = useState<HTMLCanvasElement | null>()
   const initialized = useRef(false)
+  const controllerRef = useRef(new AbortController())
 
   useEffect(() => {
     if (!canvas || initialized.current) {
@@ -53,7 +54,6 @@ export function Engine({ init, render }: EngineProps) {
     })
     ro.observe(canvas)
 
-    const controller = new AbortController()
     const context = canvas.getContext('2d')!
 
     init({ canvas, context })
@@ -78,17 +78,28 @@ export function Engine({ init, render }: EngineProps) {
         timestamp,
         elapsed,
       })
-      if (!controller.signal.aborted) {
+      if (!controllerRef.current.signal.aborted) {
         window.requestAnimationFrame(wrap)
       }
     }
     window.requestAnimationFrame(wrap)
 
     return () => {
+      console.debug('unmounting engine')
       ro.disconnect()
-      controller.abort()
+      controllerRef.current.abort()
     }
   }, [canvas])
+
+  useEffect(() => {
+    if (controllerRef.current.signal.aborted) {
+      controllerRef.current = new AbortController()
+    }
+    return () => {
+      console.debug('aborting')
+      controllerRef.current.abort()
+    }
+  }, [])
 
   useEffect(() => {
     // prevent scroll
