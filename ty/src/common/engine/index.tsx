@@ -85,9 +85,7 @@ export function Engine({ init, render }: EngineProps) {
     window.requestAnimationFrame(wrap)
 
     return () => {
-      console.debug('unmounting engine')
       ro.disconnect()
-      controllerRef.current.abort()
     }
   }, [canvas])
 
@@ -98,6 +96,7 @@ export function Engine({ init, render }: EngineProps) {
     return () => {
       console.debug('aborting')
       controllerRef.current.abort()
+      initialized.current = false
     }
   }, [])
 
