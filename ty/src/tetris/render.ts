@@ -34,6 +34,9 @@ export const render: RenderFn = ({ context, viewport, elapsed }) => {
     Math.max((viewport.h - size * NUM_ROWS - padding * 2) / 2, 0),
   )
 
+  context.fillStyle = 'hsl(0, 0%, 20%)'
+  context.fillRect(0, 0, size * NUM_COLS, size * NUM_ROWS)
+
   for (let row = 0; row < board.length; row++) {
     for (let col = 0; col < board[0].length; col++) {
       const color = board[row][col]
@@ -45,7 +48,7 @@ export const render: RenderFn = ({ context, viewport, elapsed }) => {
         context.fillStyle = color
         context.fillRect(x, y, w, h)
       } else {
-        context.strokeRect(x, y, w, h)
+        //context.strokeRect(x, y, w, h)
       }
     }
   }
