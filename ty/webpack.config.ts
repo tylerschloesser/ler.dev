@@ -4,13 +4,13 @@ import { Configuration } from 'webpack'
 import type { Configuration as DevServerConfiguration } from 'webpack-dev-server'
 import { WebpackManifestPlugin } from 'webpack-manifest-plugin'
 
-const dev = Boolean(process.env.WEBPACK_SERVE)
+const prod = !Boolean(process.env.WEBPACK_SERVE)
 
 const config: Configuration = {
   stats: 'minimal',
-  mode: 'development',
+  mode: prod ? 'production' : 'development',
   entry: './src/index.tsx',
-  devtool: 'eval-cheap-module-source-map',
+  devtool: prod ? 'source-map' : 'eval-cheap-module-source-map',
   output: {
     path: __dirname + '/dist',
     filename: 'index.[contenthash].js',
@@ -31,7 +31,7 @@ const config: Configuration = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      filename: dev ? 'index.html' : 'index.[contenthash].html',
+      filename: prod ? 'index.[contenthash].html' : 'index.html',
       template: './src/index.html',
     }),
     new WebpackManifestPlugin({}),
