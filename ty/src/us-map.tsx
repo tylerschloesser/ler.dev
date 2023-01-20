@@ -44,6 +44,26 @@ export function UsMap() {
     }
   }, [container, svg])
 
+  useEffect(() => {
+    if (!svg) return
+    const controller = new AbortController()
+    const { signal } = controller
+    svg.querySelectorAll('path').forEach((path) => {
+      path.addEventListener(
+        'mouseover',
+        () => {
+          console.log(path.id)
+        },
+        {
+          signal,
+        },
+      )
+    })
+    return () => {
+      controller.abort()
+    }
+  }, [svg])
+
   return (
     <Container
       ref={setContainer}
