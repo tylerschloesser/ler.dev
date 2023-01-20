@@ -18,10 +18,6 @@ const HomeTitle = styled.h1`
   padding: 0.5rem;
 `
 
-const Period = styled.span`
-  margin: 0 -0.2rem;
-`
-
 const List = styled.ol`
   display: flex;
   flex-direction: column;
@@ -168,7 +164,9 @@ const RACES: Race[] = [
 ]
 
 const RaceContainer = styled.div`
-  background-color: hsl(0, 100%, 80%);
+  background-color: hsl(100, 22%, 80%);
+  color: hsl(0, 0%, 10%);
+  min-height: 100vh;
 `
 
 export function Home() {
@@ -201,9 +199,7 @@ export function Home() {
             </ListItem>
           ))}
         </List>
-        <HomeTitle>
-          ty<Period>.</Period>ler<Period>.</Period>dev
-        </HomeTitle>
+        <HomeTitle>ty.ler.dev</HomeTitle>
       </Hero>
       <RaceContainer>
         <UsMap coloredStates={coloredStates} />
