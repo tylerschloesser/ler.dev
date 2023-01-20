@@ -5,18 +5,16 @@ import { Blob } from './blob'
 import { PATHS } from './paths'
 
 const HomeContainer = styled.div`
-  height: 100%;
   --color-text: hsl(0, 0%, 80%);
 `
 
 const HomeTitle = styled.h1`
+  display: flex;
+  justify-content: flex-end;
   font-weight: 700;
   color: var(--color-text);
-  position: fixed;
-  font-size: 2rem;
-  bottom: 0;
-  right: 0;
-  padding: 2rem;
+  font-size: 1.25rem;
+  padding: 0.5rem;
 `
 
 const Period = styled.span`
@@ -37,20 +35,25 @@ const StyledLink = styled(Link)`
   color: var(--color-text);
 `
 
-const HomeBackground = styled.div`
+const BlobContainer = styled.div`
   position: fixed;
   width: 100vw;
   height: 100vh;
 `
 
-const HomeForeground = styled.div`
+const Hero = styled.div`
   position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  justify-content: space-between;
+  margin-bottom: 100vh;
 `
 
 export function Home() {
   return (
     <HomeContainer>
-      <HomeBackground>
+      <BlobContainer>
         <Blob
           config={{
             parts: 500,
@@ -59,11 +62,8 @@ export function Home() {
             zScale: 1 / 5_000,
           }}
         />
-      </HomeBackground>
-      <HomeForeground>
-        <HomeTitle>
-          ty<Period>.</Period>ler<Period>.</Period>dev
-        </HomeTitle>
+      </BlobContainer>
+      <Hero>
         <List>
           {PATHS.map(({ path }) => (
             <ListItem key={path}>
@@ -71,7 +71,10 @@ export function Home() {
             </ListItem>
           ))}
         </List>
-      </HomeForeground>
+        <HomeTitle>
+          ty<Period>.</Period>ler<Period>.</Period>dev
+        </HomeTitle>
+      </Hero>
     </HomeContainer>
   )
 }
