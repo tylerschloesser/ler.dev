@@ -1,3 +1,4 @@
+import Color from 'color'
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 
@@ -19,10 +20,10 @@ const Container = styled.div`
   transform: scale(var(--scale));
 `
 const COLOR_NUMBER_TO_COLOR: Record<number, string> = {
-  1: 'blue',
-  2: 'green',
-  3: 'yellow',
-  4: 'red',
+  1: 'hsl(240, 100%, 50%)',
+  2: 'hsl(120, 100%, 50%)',
+  3: 'hsl(60, 100%, 50%)',
+  4: 'hsl(0, 100%, 50%)',
 }
 
 const STATE_TO_COLOR_NUMBER: Record<string, number> = {
@@ -131,10 +132,10 @@ export function UsMap({ coloredStates }: UsMapProps) {
     if (!svg) return
     svg.querySelectorAll('path').forEach((path) => {
       const state = path.dataset['id'] as string
-      let fill = ''
-      if (coloredStates.has(state)) {
-        const colorNumber = STATE_TO_COLOR_NUMBER[state]
-        fill = COLOR_NUMBER_TO_COLOR[colorNumber]
+      const colorNumber = STATE_TO_COLOR_NUMBER[state]
+      let fill = COLOR_NUMBER_TO_COLOR[colorNumber]
+      if (!coloredStates.has(state)) {
+        fill = Color(fill).lighten(0.95).string()
       }
       path.style.fill = fill
     })
