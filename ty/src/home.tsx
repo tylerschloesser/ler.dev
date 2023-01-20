@@ -169,6 +169,26 @@ const RaceContainer = styled.div`
   min-height: 100vh;
 `
 
+const RaceProgress = styled.div`
+  display: flex;
+  justify-content: center;
+  font-size: 4rem;
+  padding: 2rem;
+`
+
+const TableContainer = styled.div`
+  display: flex;
+  justify-content: center;
+`
+
+const TableData = styled.td`
+  padding: 0.5rem;
+`
+
+const TableHeader = styled.th`
+  padding: 0.5rem;
+`
+
 export function Home() {
   const marathons = RACES.filter(
     ({ type }) => type === RaceType.Marathon,
@@ -202,27 +222,38 @@ export function Home() {
         <HomeTitle>ty.ler.dev</HomeTitle>
       </Hero>
       <RaceContainer>
+        <RaceProgress>
+          {
+            marathons
+              .map(({ state }) => state)
+              .reduce<Set<string>>((acc, state) => acc.add(state), new Set())
+              .size
+          }{' '}
+          / 50
+        </RaceProgress>
         <UsMap coloredStates={coloredStates} />
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Date</th>
-              <th>Time</th>
-              <th>State</th>
-            </tr>
-          </thead>
-          <tbody>
-            {marathons.map(({ name, date, time, state }, i) => (
-              <tr key={i}>
-                <td>{name} Marathon</td>
-                <td>{date}</td>
-                <td>{time}</td>
-                <td>{state}</td>
+        <TableContainer>
+          <table>
+            <thead>
+              <tr>
+                <TableHeader>Name</TableHeader>
+                <TableHeader>Date</TableHeader>
+                <TableHeader>Time</TableHeader>
+                <TableHeader>State</TableHeader>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {marathons.map(({ name, date, time, state }, i) => (
+                <tr key={i}>
+                  <TableData>{name} Marathon</TableData>
+                  <TableData>{date}</TableData>
+                  <TableData>{time}</TableData>
+                  <TableData>{state}</TableData>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </TableContainer>
       </RaceContainer>
     </HomeContainer>
   )
