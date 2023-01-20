@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 import { Blob } from './blob'
 import { PATHS } from './paths'
+import { UsMap } from './us-map'
 
 const HomeContainer = styled.div`
   --color-text: hsl(0, 0%, 80%);
@@ -209,6 +210,7 @@ export function Home() {
           ty<Period>.</Period>ler<Period>.</Period>dev
         </HomeTitle>
       </Hero>
+      <UsMap />
       <table>
         <thead>
           <tr>
