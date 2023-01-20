@@ -19,6 +19,64 @@ const Container = styled.div`
   transform: scale(var(--scale));
 `
 
+const COLOR_1 = 'blue'
+const COLOR_2 = 'green'
+const COLOR_3 = 'yellow'
+const COLOR_4 = 'red'
+
+const STATE_TO_COLOR: Record<string, string> = {
+  AL: 'green',
+  AK: 'blue',
+  AZ: 'green',
+  AR: 'red',
+  CA: 'yellow',
+  CO: 'yellow',
+  CT: 'red',
+  DE: 'blue',
+  FL: 'blue',
+  GA: 'yellow',
+  HI: 'green',
+  ID: 'yellow',
+  IL: 'blue',
+  IN: 'green',
+  IA: 'red',
+  KS: 'green',
+  KY: 'red',
+  LA: 'green',
+  ME: 'yellow',
+  MD: 'yellow',
+  MA: 'yellow',
+  MI: 'red',
+  MN: 'blue',
+  MS: 'yellow',
+  MO: 'yellow',
+  MT: 'blue',
+  NE: 'blue',
+  NV: 'red',
+  NH: 'blue',
+  NJ: 'yellow',
+  NM: 'red',
+  NY: 'green',
+  NC: 'red',
+  ND: 'yellow',
+  OH: 'yellow',
+  OK: 'blue',
+  OR: 'green',
+  PA: 'red',
+  RI: 'green',
+  SC: 'green',
+  SD: 'green',
+  TN: 'blue',
+  TX: 'yellow',
+  UT: 'blue',
+  VT: 'red',
+  VA: 'yellow',
+  WA: 'blue',
+  WV: 'blue',
+  WI: 'green',
+  WY: 'red',
+}
+
 export function UsMap() {
   const size = {
     w: 1000,
@@ -62,6 +120,14 @@ export function UsMap() {
     return () => {
       controller.abort()
     }
+  }, [svg])
+
+  useEffect(() => {
+    if (!svg) return
+    svg.querySelectorAll('path').forEach((path) => {
+      const state = path.dataset['id'] as string
+      path.style.fill = STATE_TO_COLOR[state]
+    })
   }, [svg])
 
   return (
