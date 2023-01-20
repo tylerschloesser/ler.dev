@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 import { Blob } from './blob'
@@ -172,6 +172,15 @@ const RaceContainer = styled.div`
 `
 
 export function Home() {
+  const marathons = RACES.filter(
+    ({ type }) => type === RaceType.Marathon,
+  ).filter(({ time }) => !time.startsWith('dnf'))
+
+  const coloredStates = marathons.reduce<Set<string>>(
+    (acc, { state }) => acc.add(state),
+    new Set(),
+  )
+
   return (
     <HomeContainer>
       <BlobContainer>
@@ -197,7 +206,7 @@ export function Home() {
         </HomeTitle>
       </Hero>
       <RaceContainer>
-        <UsMap />
+        <UsMap coloredStates={coloredStates} />
         <table>
           <thead>
             <tr>
@@ -208,16 +217,14 @@ export function Home() {
             </tr>
           </thead>
           <tbody>
-            {RACES.filter(({ type }) => type === RaceType.Marathon)
-              .filter(({ time }) => !time.startsWith('dnf'))
-              .map(({ name, date, time, state }, i) => (
-                <tr key={i}>
-                  <td>{name} Marathon</td>
-                  <td>{date}</td>
-                  <td>{time}</td>
-                  <td>{state}</td>
-                </tr>
-              ))}
+            {marathons.map(({ name, date, time, state }, i) => (
+              <tr key={i}>
+                <td>{name} Marathon</td>
+                <td>{date}</td>
+                <td>{time}</td>
+                <td>{state}</td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </RaceContainer>

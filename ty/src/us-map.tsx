@@ -77,7 +77,11 @@ const STATE_TO_COLOR: Record<string, string> = {
   WY: 'red',
 }
 
-export function UsMap() {
+interface UsMapProps {
+  coloredStates: Set<string>
+}
+
+export function UsMap({ coloredStates }: UsMapProps) {
   const size = {
     w: 1000,
     h: 589,
@@ -126,9 +130,10 @@ export function UsMap() {
     if (!svg) return
     svg.querySelectorAll('path').forEach((path) => {
       const state = path.dataset['id'] as string
-      path.style.fill = STATE_TO_COLOR[state]
+      const fill = coloredStates.has(state) ? STATE_TO_COLOR[state] : ''
+      path.style.fill = fill
     })
-  }, [svg])
+  }, [svg, coloredStates])
 
   return (
     <Container
