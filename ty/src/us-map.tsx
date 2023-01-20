@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import sc from 'styled-components'
 
 // https://simplemaps.com/resources/svg-us
@@ -20,8 +20,14 @@ export function UsMap() {
     w: 1000,
     h: 589,
   }
+  const [svg, setSvg] = useState<SVGElement | null>(null)
+  useEffect(() => {
+    if (!svg) return
+    console.log(svg)
+  }, [svg])
   return (
     <Svg
+      ref={setSvg}
       xmlns="http://www.w3.org/2000/svg"
       width={size.w}
       height={size.h}
