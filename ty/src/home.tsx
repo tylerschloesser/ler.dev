@@ -167,6 +167,10 @@ const RACES: Race[] = [
   },
 ]
 
+const RaceContainer = styled.div`
+  background-color: hsl(0, 100%, 80%);
+`
+
 export function Home() {
   return (
     <HomeContainer>
@@ -192,29 +196,31 @@ export function Home() {
           ty<Period>.</Period>ler<Period>.</Period>dev
         </HomeTitle>
       </Hero>
-      <UsMap />
-      <table>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Date</th>
-            <th>Time</th>
-            <th>State</th>
-          </tr>
-        </thead>
-        <tbody>
-          {RACES.filter(({ type }) => type === RaceType.Marathon)
-            .filter(({ time }) => !time.startsWith('dnf'))
-            .map(({ name, date, time, state }, i) => (
-              <tr key={i}>
-                <td>{name} Marathon</td>
-                <td>{date}</td>
-                <td>{time}</td>
-                <td>{state}</td>
-              </tr>
-            ))}
-        </tbody>
-      </table>
+      <RaceContainer>
+        <UsMap />
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Date</th>
+              <th>Time</th>
+              <th>State</th>
+            </tr>
+          </thead>
+          <tbody>
+            {RACES.filter(({ type }) => type === RaceType.Marathon)
+              .filter(({ time }) => !time.startsWith('dnf'))
+              .map(({ name, date, time, state }, i) => (
+                <tr key={i}>
+                  <td>{name} Marathon</td>
+                  <td>{date}</td>
+                  <td>{time}</td>
+                  <td>{state}</td>
+                </tr>
+              ))}
+          </tbody>
+        </table>
+      </RaceContainer>
     </HomeContainer>
   )
 }
