@@ -47,8 +47,10 @@ export const render: RenderFn = ({ context, viewport, elapsed }) => {
       if (color) {
         context.fillStyle = color
         context.fillRect(x, y, w, h)
-      } else {
-        //context.strokeRect(x, y, w, h)
+
+        context.strokeStyle = 'black'
+        context.lineWidth = 2
+        context.strokeRect(x, y, w, h)
       }
     }
   }
