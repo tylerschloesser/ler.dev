@@ -112,7 +112,10 @@ export function renderDrag({ context, transform }: RenderArgs) {
   }
 }
 
-export const render: RenderFn = ({ context, viewport, elapsed }) => {
+export const render: RenderFn = ({ context, viewport, ...props }) => {
+  // TODO clean this up. This code was written before collapsed was refactored to be ms
+  const elapsed = props.elapsed / 1000
+
   const { w, h } = viewport
   context.clearRect(0, 0, w, h)
   context.fillStyle = 'hsl(0, 0%, 20%)'
