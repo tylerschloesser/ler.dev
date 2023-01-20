@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 import { Blob } from './blob'
@@ -37,11 +37,9 @@ const StyledLink = styled(Link)`
 `
 
 const BlobContainer = styled.div`
-  position: fixed;
+  position: absolute;
   width: 100vw;
   height: 100vh;
-  opacity: var(--opacity);
-  transition: opacity 100ms linear;
 `
 
 const Hero = styled.div`
@@ -50,12 +48,7 @@ const Hero = styled.div`
   flex-direction: column;
   height: 100vh;
   justify-content: space-between;
-  margin-bottom: 200vh;
 `
-
-const MarathonList = styled.ol``
-
-const MarathonListItem = styled.li``
 
 enum RaceType {
   Marathon = 'marathon',
@@ -175,19 +168,8 @@ const RACES: Race[] = [
 ]
 
 export function Home() {
-  const [container, setContainer] = useState<HTMLDivElement | null>(null)
-
-  useEffect(() => {
-    if (!container) return
-    window.addEventListener('scroll', () => {
-      const rect = container.getBoundingClientRect()
-      const opacity = Math.max(1 - window.scrollY / rect.height, 0)
-      container!.style.setProperty('--opacity', `${opacity}`)
-    })
-  }, [container])
-
   return (
-    <HomeContainer ref={setContainer}>
+    <HomeContainer>
       <BlobContainer>
         <Blob
           config={{
