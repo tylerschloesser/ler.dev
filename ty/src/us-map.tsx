@@ -16,12 +16,16 @@ const Svg = sc.svg`
 `
 
 export function UsMap() {
+  const size = {
+    w: 1000,
+    h: 589,
+  }
   return (
     <Svg
       xmlns="http://www.w3.org/2000/svg"
-      height="589"
+      width={size.w}
+      height={size.h}
       version="1.1"
-      width="1000"
       id="svg"
     >
       <path
