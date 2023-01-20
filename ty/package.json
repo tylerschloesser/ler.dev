@@ -28,5 +28,6 @@
     "webpack-cli": "^4.10.0",
     "webpack-dev-server": "^4.10.0",
     "webpack-manifest-plugin": "^5.0.0"
-  }
+  },
+  "sideEffects": false
 }
