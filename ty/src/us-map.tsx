@@ -18,63 +18,64 @@ const Container = styled.div`
   transform-origin: 0 0;
   transform: scale(var(--scale));
 `
+const COLOR_NUMBER_TO_COLOR: Record<number, string> = {
+  1: 'blue',
+  2: 'green',
+  3: 'yellow',
+  4: 'red',
+}
 
-const COLOR_1 = 'blue'
-const COLOR_2 = 'green'
-const COLOR_3 = 'yellow'
-const COLOR_4 = 'red'
-
-const STATE_TO_COLOR: Record<string, string> = {
-  AL: 'green',
-  AK: 'blue',
-  AZ: 'green',
-  AR: 'red',
-  CA: 'yellow',
-  CO: 'yellow',
-  CT: 'red',
-  DE: 'blue',
-  FL: 'blue',
-  GA: 'yellow',
-  HI: 'green',
-  ID: 'yellow',
-  IL: 'blue',
-  IN: 'green',
-  IA: 'red',
-  KS: 'green',
-  KY: 'red',
-  LA: 'green',
-  ME: 'yellow',
-  MD: 'yellow',
-  MA: 'yellow',
-  MI: 'red',
-  MN: 'blue',
-  MS: 'yellow',
-  MO: 'yellow',
-  MT: 'blue',
-  NE: 'blue',
-  NV: 'red',
-  NH: 'blue',
-  NJ: 'yellow',
-  NM: 'red',
-  NY: 'green',
-  NC: 'red',
-  ND: 'yellow',
-  OH: 'yellow',
-  OK: 'blue',
-  OR: 'green',
-  PA: 'red',
-  RI: 'green',
-  SC: 'green',
-  SD: 'green',
-  TN: 'blue',
-  TX: 'yellow',
-  UT: 'blue',
-  VT: 'red',
-  VA: 'yellow',
-  WA: 'blue',
-  WV: 'blue',
-  WI: 'green',
-  WY: 'red',
+const STATE_TO_COLOR_NUMBER: Record<string, number> = {
+  AL: 2,
+  AK: 1,
+  AZ: 2,
+  AR: 4,
+  CA: 3,
+  CO: 3,
+  CT: 4,
+  DE: 1,
+  FL: 1,
+  GA: 3,
+  HI: 2,
+  ID: 3,
+  IL: 1,
+  IN: 2,
+  IA: 4,
+  KS: 2,
+  KY: 4,
+  LA: 2,
+  ME: 3,
+  MD: 3,
+  MA: 3,
+  MI: 4,
+  MN: 1,
+  MS: 3,
+  MO: 3,
+  MT: 1,
+  NE: 1,
+  NV: 4,
+  NH: 1,
+  NJ: 3,
+  NM: 4,
+  NY: 2,
+  NC: 4,
+  ND: 3,
+  OH: 3,
+  OK: 1,
+  OR: 2,
+  PA: 4,
+  RI: 2,
+  SC: 2,
+  SD: 2,
+  TN: 1,
+  TX: 3,
+  UT: 1,
+  VT: 4,
+  VA: 3,
+  WA: 1,
+  WV: 1,
+  WI: 2,
+  WY: 4,
 }
 
 interface UsMapProps {
@@ -130,7 +131,11 @@ export function UsMap({ coloredStates }: UsMapProps) {
     if (!svg) return
     svg.querySelectorAll('path').forEach((path) => {
       const state = path.dataset['id'] as string
-      const fill = coloredStates.has(state) ? STATE_TO_COLOR[state] : ''
+      let fill = ''
+      if (coloredStates.has(state)) {
+        const colorNumber = STATE_TO_COLOR_NUMBER[state]
+        fill = COLOR_NUMBER_TO_COLOR[colorNumber]
+      }
       path.style.fill = fill
     })
   }, [svg, coloredStates])
