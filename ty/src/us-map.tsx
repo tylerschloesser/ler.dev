@@ -39,6 +39,9 @@ export function UsMap() {
       )
     })
     ro.observe(container)
+    return () => {
+      ro.disconnect()
+    }
   }, [container, svg])
 
   return (
