@@ -1,10 +1,11 @@
 import CopyPlugin from 'copy-webpack-plugin'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
 import { Configuration } from 'webpack'
-import type { Configuration as DevServerConfiguration } from 'webpack-dev-server'
+import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer'
+import { Configuration as DevServerConfiguration } from 'webpack-dev-server'
 import { WebpackManifestPlugin } from 'webpack-manifest-plugin'
 
-const prod = !Boolean(process.env.WEBPACK_SERVE)
+const prod = Boolean(process.env.PROD) || !Boolean(process.env.WEBPACK_SERVE)
 
 const config: Configuration = {
   stats: 'minimal',
@@ -14,6 +15,7 @@ const config: Configuration = {
   output: {
     path: __dirname + '/dist',
     filename: 'index.[contenthash].js',
+    chunkFilename: '[name].[contenthash].chunk.js',
     clean: true,
     publicPath: '',
   },
@@ -39,6 +41,7 @@ const config: Configuration = {
     new CopyPlugin({
       patterns: [{ from: 'public' }],
     }),
+    ...(Boolean(process.env.ANALYZE) ? [new BundleAnalyzerPlugin()] : []),
   ],
   devServer: {
     historyApiFallback: true,

@@ -1,9 +1,9 @@
+import { lazy } from 'react'
 import { Ball1 } from './ball1'
 import { Demo as BlobDemo } from './blob'
 import { Cal } from './cal'
 import { Demo as MenuDemo } from './menu'
 import { Tetris } from './tetris'
-import { ThreeDemo } from './three-demo'
 
 interface PathInfo {
   path: string
@@ -13,7 +13,7 @@ interface PathInfo {
 export const PATHS: PathInfo[] = [
   {
     path: 'dots',
-    Component: ThreeDemo,
+    Component: lazy(() => import('./three-demo')),
   },
   {
     path: 'menu',

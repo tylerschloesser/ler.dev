@@ -142,7 +142,7 @@ function Inner({ canvas }: InnerProps) {
   )
 }
 
-export function ThreeDemo() {
+export default function ThreeDemo() {
   const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null)
 
   return (
