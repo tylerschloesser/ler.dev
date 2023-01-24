@@ -47,6 +47,15 @@ const config: Configuration = {
     historyApiFallback: true,
     allowedHosts: ['.amazonaws.com'],
   },
+  ...(prod
+    ? {
+        optimization: {
+          splitChunks: {
+            chunks: 'all',
+          },
+        },
+      }
+    : {}),
 }
 
 export default config
