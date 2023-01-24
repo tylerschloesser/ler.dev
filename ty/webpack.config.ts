@@ -14,7 +14,7 @@ const config: Configuration = {
   devtool: prod ? 'source-map' : 'eval-cheap-module-source-map',
   output: {
     path: __dirname + '/dist',
-    filename: 'index.[contenthash].js',
+    filename: '[name].[contenthash].js',
     chunkFilename: '[name].[contenthash].chunk.js',
     clean: true,
     publicPath: '',

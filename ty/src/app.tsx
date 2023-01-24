@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { lazy, Suspense } from 'react'
 import { BrowserRouter, Outlet, Route, Routes } from 'react-router-dom'
 import styled from 'styled-components'
 import { Home } from './home'
@@ -24,17 +24,22 @@ function Layout() {
   )
 }
 
+const Dots = lazy(() => import('./three-demo'))
+
 export const App = () => {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route element={<Layout />}>
-          <Route index element={<Home />} />
-          {PATHS.map(({ path, Component }) => (
-            <Route key={path} path={path} element={<Component />} />
-          ))}
-        </Route>
-      </Routes>
+      <Suspense fallback={<div>loading</div>}>
+        <Routes>
+          <Route element={<Layout />}>
+            <Route index element={<Home />} />
+            {PATHS.map(({ path, Component }) => (
+              <Route key={path} path={path} element={<Component />} />
+            ))}
+            <Route path="dots" element={<Dots />} />
+          </Route>
+        </Routes>
+      </Suspense>
     </BrowserRouter>
   )
 }

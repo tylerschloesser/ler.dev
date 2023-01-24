@@ -11,10 +11,10 @@ interface PathInfo {
 }
 
 export const PATHS: PathInfo[] = [
-  {
-    path: 'dots',
-    Component: lazy(() => import('./three-demo')),
-  },
+  // {
+  //   path: 'dots',
+  //   Component: lazy(() => import('./three-demo')),
+  // },
   {
     path: 'menu',
     Component: MenuDemo,
