@@ -59,6 +59,8 @@ export class CdkStack extends Stack {
         certificate,
         errorResponses: [
           {
+            // HACK support paths by converting S3 403s to 200s
+            // and always serving the root index.html
             httpStatus: 403,
             responseHttpStatus: 200,
             responsePagePath: `/${getDefaultRootObject()}`,
