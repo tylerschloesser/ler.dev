@@ -32,8 +32,16 @@ const init: InitFn = ({ canvas, signal }) => {
     'pointermove',
     (e) => {
       pointer = new Vec2(e.offsetX, e.offsetY)
-      const cell = pointerToCell()
-      console.log(cell)
+
+      if (e.pressure > 0) {
+        const cell = pointerToCell()
+        const { x: col, y: row } = cell
+
+        // TODO should not need this check
+        if (grid?.[row]?.[col]) {
+          grid[row][col] = 'white'
+        }
+      }
     },
     { signal },
   )
