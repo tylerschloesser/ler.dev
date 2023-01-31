@@ -5,6 +5,8 @@ import * as state from './state'
 
 let pointer: Vec2 | null = null
 let pause = false
+let position: Vec2 = new Vec2(0, 0)
+let velocity: Vec2 = new Vec2(100, 33)
 
 const init: InitFn = ({ canvas, signal, updateConfig }) => {
   canvas.addEventListener(
@@ -27,9 +29,6 @@ const init: InitFn = ({ canvas, signal, updateConfig }) => {
     }
   })
 }
-
-let position: Vec2 = new Vec2(0, 0)
-let velocity: Vec2 = new Vec2(100, 33)
 
 function toSeconds(ms: Milliseconds): number {
   return ms / 1000
