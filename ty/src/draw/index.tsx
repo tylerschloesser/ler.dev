@@ -14,7 +14,12 @@ const init: InitFn = ({ canvas, viewport, signal, updateConfig }) => {
     (e) => {
       pointer = new Vec2(e.clientX, e.clientY)
       const center = new Vec2(viewport.w / 2, viewport.h / 2)
-      velocity = pointer.sub(center).norm().mul(100)
+      const speed =
+        pointer.sub(center).length() / Math.min(viewport.w, viewport.h)
+      velocity = pointer
+        .sub(center)
+        .norm()
+        .mul(speed * 1000)
     },
     { signal },
   )
