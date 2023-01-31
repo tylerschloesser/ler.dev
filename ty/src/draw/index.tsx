@@ -58,7 +58,6 @@ const render: RenderFn = ({ context, viewport, debug, elapsed }) => {
       debug('numCols', numCols.toString())
       debug('numRows', numRows.toString())
 
-      // TODO make sure this works with negative numbers
       const firstCol = Math.floor(Math.round(position.x) / cellSize)
       const firstRow = Math.floor(Math.round(position.y) / cellSize)
       debug('firstCol', firstCol.toString())
@@ -66,9 +65,10 @@ const render: RenderFn = ({ context, viewport, debug, elapsed }) => {
 
       const offset = new Vec2(firstCol * cellSize, firstRow * cellSize)
         .add(
+          // double mod to handle negative numbers
           new Vec2(
-            Math.round(position.x) % cellSize,
-            Math.round(position.y) % cellSize,
+            ((Math.round(position.x) % cellSize) + cellSize) % cellSize,
+            ((Math.round(position.y) % cellSize) + cellSize) % cellSize,
           ),
         )
         .mul(-1)
