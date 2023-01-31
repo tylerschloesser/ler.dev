@@ -4,7 +4,18 @@ import styled from 'styled-components'
 import { Engine, InitFn, RenderFn } from '../common/engine'
 import { Vec2 } from '../common/vec2'
 
+const NUM_ROWS = 50
+const NUM_COLS = 50
 let pointer: null | Vec2 = null
+
+const grid = times(NUM_ROWS, () =>
+  times(NUM_COLS, () => {
+    const hue = 0
+    const saturation = 50
+    const lightness = 20 + Math.random() * 10
+    return `hsl(${hue}, ${saturation}%, ${lightness}%)`
+  }),
+)
 
 const init: InitFn = ({ canvas, signal }) => {
   canvas.addEventListener(
@@ -15,18 +26,6 @@ const init: InitFn = ({ canvas, signal }) => {
     { signal },
   )
 }
-
-const NUM_ROWS = 50
-const NUM_COLS = 50
-
-const grid = times(NUM_ROWS, () =>
-  times(NUM_COLS, () => {
-    const hue = 0
-    const saturation = 50
-    const lightness = 20 + Math.random() * 10
-    return `hsl(${hue}, ${saturation}%, ${lightness}%)`
-  }),
-)
 
 const render: RenderFn = ({ context, viewport }) => {
   context.clearRect(0, 0, viewport.w, viewport.h)
