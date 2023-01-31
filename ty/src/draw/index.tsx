@@ -15,10 +15,14 @@ const init: InitFn = ({ canvas, signal }) => {
   )
 }
 
-const render: RenderFn = ({ context, viewport }) => {
+let position: Vec2 = new Vec2(0, 0)
+
+const render: RenderFn = ({ context, viewport, debug }) => {
   context.clearRect(0, 0, viewport.w, viewport.h)
 
   const size = 20
+
+  debug('position', `[${Math.floor(position.x)}, ${Math.floor(position.y)}]`)
 
   const NUM_COLS = 20
   const NUM_ROWS = 20

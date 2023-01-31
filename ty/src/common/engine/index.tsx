@@ -13,6 +13,7 @@ export type RenderFn = (args: {
   viewport: Viewport
   timestamp: number
   elapsed: number
+  debug(key: string, value: string): void
 }) => void
 
 export interface EngineProps {
@@ -72,13 +73,27 @@ export function Engine({ init, render }: EngineProps) {
         w: canvas.width,
         h: canvas.height,
       }
+      const queue = new Map<string, string>()
       render({
         canvas,
         context,
         viewport,
         timestamp,
         elapsed,
+        debug(key, value) {
+          queue.set(key, value)
+        },
       })
+
+      {
+        context.font = '16px sans-serif'
+        let y = 16
+        queue.forEach((key, value) => {
+          context.strokeText(`${key}: ${value}`, 0, y)
+          y += 16
+        })
+      }
+
       if (!controllerRef.current.signal.aborted) {
         window.requestAnimationFrame(wrap)
       }

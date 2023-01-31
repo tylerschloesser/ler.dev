@@ -37,8 +37,4 @@ function get(col: number, row: number): Color {
   return value
 }
 
-export const debug = {
-  cache,
-}
-
 export { get }
