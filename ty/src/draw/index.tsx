@@ -22,7 +22,7 @@ const render: RenderFn = ({ context, viewport, debug }) => {
 
   const size = 20
 
-  debug('position', `[${Math.floor(position.x)}, ${Math.floor(position.y)}]`)
+  debug('position', position.toString())
 
   const NUM_COLS = 20
   const NUM_ROWS = 20

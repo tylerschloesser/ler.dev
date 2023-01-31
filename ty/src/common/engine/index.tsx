@@ -88,7 +88,7 @@ export function Engine({ init, render }: EngineProps) {
       {
         context.font = '16px sans-serif'
         let y = 16
-        queue.forEach((key, value) => {
+        queue.forEach((value, key) => {
           context.strokeText(`${key}: ${value}`, 0, y)
           y += 16
         })
