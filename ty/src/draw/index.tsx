@@ -95,15 +95,6 @@ const render: RenderFn = ({ context, viewport, debug, elapsed, timestamp }) => {
         }
       }
     },
-    () => {
-      if (pointer) {
-        const { x, y } = pointer
-        context.beginPath()
-        context.strokeStyle = 'white'
-        context.arc(x, y, 20, 0, Math.PI * 2)
-        context.stroke()
-      }
-    },
   ].forEach((fn) => fn())
 }
 
