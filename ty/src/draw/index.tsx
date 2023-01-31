@@ -33,8 +33,10 @@ const init: InitFn = ({ canvas, signal }) => {
     (e) => {
       pointer = new Vec2(e.offsetX, e.offsetY)
 
-      if (e.pressure > 0) {
+      // if mouse, use pressure to detect mouse down
+      if (e.pointerType === 'touch' || e.pressure > 0) {
         const cell = pointerToCell()
+        console.log(cell)
         const { x: col, y: row } = cell
 
         // TODO should not need this check
