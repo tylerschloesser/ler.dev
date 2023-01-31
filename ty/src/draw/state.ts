@@ -4,11 +4,15 @@ type Grid = Color[][]
 const GRID_COLS = 100
 const GRID_ROWS = 100
 
-const grid: Grid = new Array(GRID_COLS).fill(null).map(() =>
-  new Array(GRID_ROWS).fill(null).map(() => {
-    return `hsl(0, 80%, ${Math.floor(Math.random() * 80)}%)`
-  }),
-)
+function generate(): Grid {
+  return new Array(GRID_COLS).fill(null).map(() =>
+    new Array(GRID_ROWS).fill(null).map(() => {
+      return `hsl(0, 80%, ${Math.floor(Math.random() * 80)}%)`
+    }),
+  )
+}
+
+let grid = generate()
 
 function set(col: number, row: number, color: Color) {
   grid[col][row] = color
@@ -27,6 +31,9 @@ function size() {
 
 export const debug = {
   grid,
+  reset() {
+    grid = generate()
+  },
 }
 
 export { set, get, size }
