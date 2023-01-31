@@ -22,8 +22,6 @@ const init: InitFn = ({ canvas, signal }) => {
       window.clearInterval(id)
     })
   }
-
-  console.log(state.debug.grid)
 }
 
 const render: RenderFn = ({ context, viewport }) => {
