@@ -8,6 +8,16 @@ const NUM_ROWS = 50
 const NUM_COLS = 50
 let pointer: null | Vec2 = null
 
+// TODO update this on resize, not in render function
+let cellSize = 0
+
+// TODO handle out of bounds cells
+function pointerToCell() {
+  const x = Math.floor(pointer!.x / cellSize)
+  const y = Math.floor(pointer!.y / cellSize)
+  return new Vec2(x, y)
+}
+
 const grid = times(NUM_ROWS, () =>
   times(NUM_COLS, () => {
     const hue = 0
@@ -22,6 +32,8 @@ const init: InitFn = ({ canvas, signal }) => {
     'pointermove',
     (e) => {
       pointer = new Vec2(e.offsetX, e.offsetY)
+      const cell = pointerToCell()
+      console.log(cell)
     },
     { signal },
   )
@@ -30,7 +42,7 @@ const init: InitFn = ({ canvas, signal }) => {
 const render: RenderFn = ({ context, viewport }) => {
   context.clearRect(0, 0, viewport.w, viewport.h)
 
-  const cellSize = Math.min(viewport.w / NUM_COLS, viewport.h / NUM_ROWS)
+  cellSize = Math.min(viewport.w / NUM_COLS, viewport.h / NUM_ROWS)
 
   for (let row = 0; row < NUM_ROWS; row++) {
     for (let col = 0; col < NUM_COLS; col++) {
@@ -44,8 +56,7 @@ const render: RenderFn = ({ context, viewport }) => {
   }
 
   if (pointer) {
-    const x = Math.floor(pointer.x / cellSize) * cellSize
-    const y = Math.floor(pointer.y / cellSize) * cellSize
+    const { x, y } = pointerToCell().mul(cellSize)
     const w = cellSize
     const h = cellSize
     context.strokeStyle = 'white'
