@@ -88,6 +88,7 @@ export function Engine({ init, render }: EngineProps) {
       })
 
       {
+        context.strokeStyle = 'black'
         context.font = '16px sans-serif'
         let y = 16
         queue.forEach((value, key) => {

@@ -22,7 +22,7 @@ const init: InitFn = ({ canvas, signal }) => {
 }
 
 let position: Vec2 = new Vec2(0, 0)
-let velocity: Vec2 = new Vec2(1000, 0)
+let velocity: Vec2 = new Vec2(100, 0)
 
 function toSeconds(ms: Milliseconds): number {
   return ms / 1000
@@ -50,13 +50,18 @@ const render: RenderFn = ({ context, viewport, debug, elapsed }) => {
       debug('numRows', numRows.toString())
 
       // TODO make sure this works with negative numbers
-      const firstCol = Math.floor(position.x / numCols)
-      const firstRow = Math.floor(position.y / numRows)
+      const firstCol = Math.floor(Math.round(position.x) / numCols)
+      const firstRow = Math.floor(Math.round(position.y) / numRows)
       debug('firstCol', firstCol.toString())
       debug('firstRow', firstRow.toString())
 
       const offset = new Vec2(firstCol * cellSize, firstRow * cellSize)
-        //.add(new Vec2(position.x % numCols, position.y % numRows))
+        .add(
+          new Vec2(
+            Math.round(position.x) % cellSize,
+            Math.round(position.y) % cellSize,
+          ),
+        )
         .mul(-1)
       debug('offset', offset.toString())
 
@@ -69,8 +74,6 @@ const render: RenderFn = ({ context, viewport, debug, elapsed }) => {
           context.fillStyle = color
 
           const { x, y } = offset.add(new Vec2(cellSize * col, cellSize * row))
-          // const x = cellSize * col
-          // const y = cellSize * row
 
           const w = cellSize
           const h = cellSize
