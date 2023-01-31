@@ -14,20 +14,20 @@ const init: InitFn = ({ canvas, signal }) => {
     { signal },
   )
 
-  {
-    const id = window.setInterval(() => {
-      state.debug.reset()
-    }, 10)
-    signal.addEventListener('abort', () => {
-      window.clearInterval(id)
-    })
-  }
+  // {
+  //   const id = window.setInterval(() => {
+  //     state.debug.reset()
+  //   }, 10)
+  //   signal.addEventListener('abort', () => {
+  //     window.clearInterval(id)
+  //   })
+  // }
 }
 
 const render: RenderFn = ({ context, viewport }) => {
   context.clearRect(0, 0, viewport.w, viewport.h)
 
-  const size = 4
+  const size = 20
 
   for (let col = 0; col < state.size().cols; col++) {
     for (let row = 0; row < state.size().rows; row++) {
