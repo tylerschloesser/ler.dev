@@ -8,11 +8,13 @@ let pause = false
 let position: Vec2 = new Vec2(0, 0)
 let velocity: Vec2 = new Vec2(100, 33)
 
-const init: InitFn = ({ canvas, signal, updateConfig }) => {
+const init: InitFn = ({ canvas, viewport, signal, updateConfig }) => {
   canvas.addEventListener(
     'pointermove',
     (e) => {
       pointer = new Vec2(e.clientX, e.clientY)
+      const center = new Vec2(viewport.w / 2, viewport.h / 2)
+      velocity = pointer.sub(center).norm().mul(100)
     },
     { signal },
   )

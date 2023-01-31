@@ -6,6 +6,7 @@ export type Milliseconds = number
 export type InitFn = (args: {
   canvas: HTMLCanvasElement
   context: CanvasRenderingContext2D
+  viewport: Viewport
   signal: AbortSignal
   updateConfig(fn: (prev: RenderConfig) => RenderConfig): void
 }) => void
@@ -71,10 +72,15 @@ export function Engine({ init, render }: EngineProps) {
     ro.observe(canvas)
 
     const context = canvas.getContext('2d')!
+    let viewport: Viewport = {
+      w: canvas.width,
+      h: canvas.height,
+    }
 
     init({
       canvas,
       context,
+      viewport,
       signal: controllerRef.current.signal,
       updateConfig(fn) {
         config.current = fn(config.current)
@@ -100,7 +106,7 @@ export function Engine({ init, render }: EngineProps) {
       let elapsed = last ? timestamp - last : 0
       last = timestamp
 
-      const viewport: Viewport = {
+      viewport = {
         w: canvas.width,
         h: canvas.height,
       }
