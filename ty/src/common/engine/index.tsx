@@ -4,6 +4,7 @@ import styled from 'styled-components'
 export type InitFn = (args: {
   canvas: HTMLCanvasElement
   context: CanvasRenderingContext2D
+  signal: AbortSignal
 }) => void
 
 export type RenderFn = (args: {
@@ -56,7 +57,7 @@ export function Engine({ init, render }: EngineProps) {
 
     const context = canvas.getContext('2d')!
 
-    init({ canvas, context })
+    init({ canvas, context, signal: controllerRef.current.signal })
 
     let last: null | number = null
     function wrap(timestamp: number) {
