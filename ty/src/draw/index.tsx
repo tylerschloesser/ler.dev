@@ -38,8 +38,11 @@ const render: RenderFn = ({ context, viewport, debug, elapsed }) => {
       const numCols = Math.ceil(viewport.w / cellSize)
       const numRows = Math.ceil(viewport.h / cellSize)
 
-      for (let col = 0; col < numCols; col++) {
-        for (let row = 0; row < numRows; row++) {
+      const firstCol = 0
+      const firstRow = 0
+
+      for (let col = firstCol; col < firstCol + numCols; col++) {
+        for (let row = firstCol; row < firstRow + numRows; row++) {
           const color = state.get(col, row)
           if (!color) {
             continue
