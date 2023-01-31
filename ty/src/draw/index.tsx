@@ -27,6 +27,8 @@ const init: InitFn = ({ canvas, signal }) => {
 const render: RenderFn = ({ context, viewport }) => {
   context.clearRect(0, 0, viewport.w, viewport.h)
 
+  const size = 4
+
   for (let col = 0; col < state.size().cols; col++) {
     for (let row = 0; row < state.size().rows; row++) {
       const color = state.get(col, row)
@@ -34,7 +36,6 @@ const render: RenderFn = ({ context, viewport }) => {
         continue
       }
       context.fillStyle = color
-      const size = 4
       const x = size * col,
         y = size * row,
         w = size,

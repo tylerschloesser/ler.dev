@@ -1,7 +1,8 @@
-import { times } from 'lodash'
-import { createNoise3D } from 'simplex-noise'
+import { create, times } from 'lodash'
+import { createNoise3D, createNoise2D } from 'simplex-noise'
 
-const noise = createNoise3D()
+const noise3d = createNoise3D()
+const noise2d = createNoise2D()
 
 type Color = null | string
 type Grid = Color[][]
@@ -12,14 +13,24 @@ const GRID_ROWS = 100
 function generate(): Grid {
   return times(GRID_COLS, (col) => {
     return times(GRID_ROWS, (row) => {
-      const zScale = 0.0001
-      const z = window.performance.now() * zScale
+      const hue = (() => {
+        // const xyScale = 0.00005
+        // const xy = window.performance.now() * xyScale
+        // const v = (noise2d(xy, xy) + 1) / 2
+        // return Math.floor(v * 360)
+        return 0
+      })()
+      const lightness = (() => {
+        const zScale = 0.0001
+        const z = window.performance.now() * zScale
 
-      const xyScale = 0.001
-      const x = col * xyScale,
-        y = row * xyScale
-      const v = (noise(x, y, z) + 1) / 2
-      return `hsl(0, 80%, ${Math.floor(v * 80)}%)`
+        const xyScale = 0.001
+        const x = col * xyScale,
+          y = row * xyScale
+        const v = (noise3d(x, y, z) + 1) / 2
+        return Math.floor(v * 20) * 4
+      })()
+      return `hsl(${hue}, 80%, ${lightness}%)`
     })
   })
 }
