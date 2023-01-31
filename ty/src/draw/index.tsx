@@ -4,6 +4,7 @@ import { Vec2 } from '../common/vec2'
 import * as state from './state'
 
 let pointer: Vec2 | null = null
+let pause = false
 
 const init: InitFn = ({ canvas, signal }) => {
   canvas.addEventListener(
@@ -13,6 +14,11 @@ const init: InitFn = ({ canvas, signal }) => {
     },
     { signal },
   )
+  window.addEventListener('keydown', (e) => {
+    if (e.key === ' ') {
+      pause = !pause
+    }
+  })
 }
 
 let position: Vec2 = new Vec2(0, 0)
@@ -27,8 +33,11 @@ function move(elapsed: Milliseconds) {
 }
 
 const render: RenderFn = ({ context, viewport, debug, elapsed }) => {
-  move(elapsed)
+  if (!pause) {
+    move(elapsed)
+  }
   const cellSize = 20
+  debug('pause', pause.toString())
   debug('position', position.toString())
   ;[
     () => {
@@ -37,9 +46,19 @@ const render: RenderFn = ({ context, viewport, debug, elapsed }) => {
     () => {
       const numCols = Math.ceil(viewport.w / cellSize)
       const numRows = Math.ceil(viewport.h / cellSize)
+      debug('numRows', numRows.toString())
+      debug('numCols', numCols.toString())
 
-      const firstCol = 0
-      const firstRow = 0
+      // TODO make sure this works with negative numbers
+      const firstCol = Math.round(position.x / numCols)
+      const firstRow = Math.round(position.y / numRows)
+      debug('firstRow', firstRow.toString())
+      debug('firstCol', firstCol.toString())
+
+      const offset = new Vec2(firstCol * numCols, firstRow * numRows)
+        //.add(new Vec2(position.x % numCols, position.y % numRows))
+        .mul(-1)
+      debug('offset', offset.toString())
 
       for (let col = firstCol; col < firstCol + numCols; col++) {
         for (let row = firstRow; row < firstRow + numRows; row++) {
@@ -48,10 +67,13 @@ const render: RenderFn = ({ context, viewport, debug, elapsed }) => {
             continue
           }
           context.fillStyle = color
-          const x = cellSize * col,
-            y = cellSize * row,
-            w = cellSize,
-            h = cellSize
+
+          const { x, y } = offset.add(new Vec2(cellSize * col, cellSize * row))
+          // const x = cellSize * col
+          // const y = cellSize * row
+
+          const w = cellSize
+          const h = cellSize
           context.fillRect(x, y, w, h)
         }
       }
