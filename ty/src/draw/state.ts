@@ -12,10 +12,12 @@ const GRID_ROWS = 100
 function generate(): Grid {
   return times(GRID_COLS, (col) => {
     return times(GRID_ROWS, (row) => {
-      const z = window.performance.now()
-      const scale = 0.001
-      const x = col * scale,
-        y = row * scale
+      const zScale = 0.0001
+      const z = window.performance.now() * zScale
+
+      const xyScale = 0.001
+      const x = col * xyScale,
+        y = row * xyScale
       const v = (noise(x, y, z) + 1) / 2
       return `hsl(0, 80%, ${Math.floor(v * 80)}%)`
     })

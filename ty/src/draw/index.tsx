@@ -17,7 +17,7 @@ const init: InitFn = ({ canvas, signal }) => {
   {
     const id = window.setInterval(() => {
       state.debug.reset()
-    }, 1000)
+    }, 10)
     signal.addEventListener('abort', () => {
       window.clearInterval(id)
     })
