@@ -82,19 +82,31 @@ export function Engine({ init, render }: EngineProps) {
     })
 
     let last: null | number = null
+    let frames = 0
+    let fps = 0
+
     function wrap(timestamp: number) {
       if (!canvas) {
         console.error('<canvas> no longer available')
         return
       }
 
+      if (last && Math.floor(last / 1000) !== Math.floor(timestamp / 1000)) {
+        fps = frames
+        frames = 0
+      }
+      frames++
+
       let elapsed = last ? timestamp - last : 0
       last = timestamp
+
       const viewport: Viewport = {
         w: canvas.width,
         h: canvas.height,
       }
+
       const queue = new Map<string, string>()
+
       render({
         canvas,
         context,
@@ -114,6 +126,14 @@ export function Engine({ init, render }: EngineProps) {
           context.strokeText(`${key}: ${value}`, 0, y)
           y += 16
         })
+      }
+
+      if (config.current.showFps) {
+        context.strokeStyle = 'black'
+        context.font = '16px sans-serif'
+        const text = `FPS: ${fps}`
+        const metrics = context.measureText(text)
+        context.strokeText(text, viewport.w - metrics.width, 16)
       }
 
       if (!controllerRef.current.signal.aborted) {
