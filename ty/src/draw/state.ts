@@ -1,6 +1,6 @@
-import { createNoise2D } from 'simplex-noise'
+import { createNoise3D } from 'simplex-noise'
 
-const noise2d = createNoise2D()
+const noise3d = createNoise3D()
 
 type Color = null | string
 
@@ -18,7 +18,7 @@ function generate(col: number, row: number): Color {
   const lightness = (() => {
     const x = col * config.scale.x
     const y = row * config.scale.y
-    const v = (noise2d(x, y) + 1) / 2
+    const v = (noise3d(x, y, 1) + 1) / 2
     return Math.floor(v * 20) * 4
   })()
   return `hsl(${hue}, 80%, ${lightness}%)`
