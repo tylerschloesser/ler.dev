@@ -98,6 +98,6 @@ const render: RenderFn = ({ context, viewport, debug, elapsed, timestamp }) => {
   ].forEach((fn) => fn())
 }
 
-export function Draw() {
+export function Fly() {
   return <Engine render={render} init={init} />
 }
