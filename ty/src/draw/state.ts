@@ -1,5 +1,5 @@
-import { create, times } from 'lodash'
-import { createNoise3D, createNoise2D } from 'simplex-noise'
+import { times } from 'lodash'
+import { createNoise2D, createNoise3D } from 'simplex-noise'
 
 const noise3d = createNoise3D()
 const noise2d = createNoise2D()
