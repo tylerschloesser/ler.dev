@@ -1,7 +1,6 @@
 import { times } from 'lodash'
-import React, { useEffect, useRef, useState } from 'react'
+import React from 'react'
 import styled from 'styled-components'
-import { container } from 'webpack'
 import { Engine, InitFn, RenderFn } from '../common/engine'
 
 const init: InitFn = () => {}
