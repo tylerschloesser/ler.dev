@@ -1,5 +1,5 @@
 import React from 'react'
-import { Engine, InitFn, RenderFn } from '../common/engine'
+import { Engine, InitFn, Milliseconds, RenderFn } from '../common/engine'
 import { Vec2 } from '../common/vec2'
 import * as state from './state'
 
@@ -16,8 +16,15 @@ const init: InitFn = ({ canvas, signal }) => {
 }
 
 let position: Vec2 = new Vec2(0, 0)
+let velocity: Vec2 = new Vec2(5, 0)
 
-const render: RenderFn = ({ context, viewport, debug }) => {
+function move(elapsed: Milliseconds) {
+  position = position.add(velocity.mul(elapsed / 1000))
+}
+
+const render: RenderFn = ({ context, viewport, debug, elapsed }) => {
+  move(elapsed)
+
   context.clearRect(0, 0, viewport.w, viewport.h)
 
   const size = 20

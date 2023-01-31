@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 
+export type Milliseconds = number
+
 export type InitFn = (args: {
   canvas: HTMLCanvasElement
   context: CanvasRenderingContext2D
@@ -11,8 +13,8 @@ export type RenderFn = (args: {
   canvas: HTMLCanvasElement
   context: CanvasRenderingContext2D
   viewport: Viewport
-  timestamp: number
-  elapsed: number
+  timestamp: Milliseconds
+  elapsed: Milliseconds
   debug(key: string, value: string): void
 }) => void
 
