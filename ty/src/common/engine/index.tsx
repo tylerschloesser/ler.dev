@@ -40,6 +40,11 @@ function resize(canvas: HTMLCanvasElement) {
   canvas.height = rect.height
 }
 
+const Container = styled.div`
+  height: 100%;
+  overflow: hidden;
+`
+
 const Canvas = styled.canvas`
   display: block;
   width: 100%;
