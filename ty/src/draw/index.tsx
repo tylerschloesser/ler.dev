@@ -13,15 +13,6 @@ const init: InitFn = ({ canvas, signal }) => {
     },
     { signal },
   )
-
-  // {
-  //   const id = window.setInterval(() => {
-  //     state.debug.reset()
-  //   }, 10)
-  //   signal.addEventListener('abort', () => {
-  //     window.clearInterval(id)
-  //   })
-  // }
 }
 
 const render: RenderFn = ({ context, viewport }) => {
@@ -29,8 +20,11 @@ const render: RenderFn = ({ context, viewport }) => {
 
   const size = 20
 
-  for (let col = 0; col < state.size().cols; col++) {
-    for (let row = 0; row < state.size().rows; row++) {
+  const NUM_COLS = 20
+  const NUM_ROWS = 20
+
+  for (let col = 0; col < NUM_COLS; col++) {
+    for (let row = 0; row < NUM_ROWS; row++) {
       const color = state.get(col, row)
       if (!color) {
         continue

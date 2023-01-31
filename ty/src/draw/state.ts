@@ -1,62 +1,44 @@
-import { times } from 'lodash'
-import { createNoise3D } from 'simplex-noise'
+import { createNoise2D } from 'simplex-noise'
 
-const noise3d = createNoise3D()
+const noise2d = createNoise2D()
 
 type Color = null | string
-type Grid = Color[][]
-
-const GRID_COLS = 20
-const GRID_ROWS = 20
 
 const config = {
   scale: {
     x: 0.01,
     y: 0.01,
-    z: 0.0001,
   },
 }
 
-function generate(): Grid {
-  return times(GRID_COLS, (col) => {
-    return times(GRID_ROWS, (row) => {
-      const hue = (() => {
-        return 0
-      })()
-      const lightness = (() => {
-        const z = window.performance.now() * config.scale.z
-        const x = col * config.scale.x
-        const y = row * config.scale.y
-        const v = (noise3d(x, y, z) + 1) / 2
-        return Math.floor(v * 20) * 4
-      })()
-      return `hsl(${hue}, 80%, ${lightness}%)`
-    })
-  })
+function generate(col: number, row: number): Color {
+  const hue = (() => {
+    return 0
+  })()
+  const lightness = (() => {
+    const x = col * config.scale.x
+    const y = row * config.scale.y
+    const v = (noise2d(x, y) + 1) / 2
+    return Math.floor(v * 20) * 4
+  })()
+  return `hsl(${hue}, 80%, ${lightness}%)`
 }
 
-let grid = generate()
-
-function set(col: number, row: number, color: Color) {
-  grid[col][row] = color
-}
+const cache = new Map<string, Color>()
 
 function get(col: number, row: number): Color {
-  return grid[col][row]
-}
-
-function size() {
-  return {
-    cols: grid.length,
-    rows: grid[0].length,
+  const key = `${col}.${row}`
+  let value = cache.get(key)
+  if (value) {
+    return value
   }
+  value = generate(col, row)
+  cache.set(key, value)
+  return value
 }
 
 export const debug = {
-  grid,
-  reset() {
-    grid = generate()
-  },
+  cache,
 }
 
-export { set, get, size }
+export { get }
