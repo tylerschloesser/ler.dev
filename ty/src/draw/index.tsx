@@ -45,7 +45,7 @@ function move(elapsed: Milliseconds) {
   position = position.add(velocity.mul(toSeconds(elapsed)))
 }
 
-const render: RenderFn = ({ context, viewport, debug, elapsed }) => {
+const render: RenderFn = ({ context, viewport, debug, elapsed, timestamp }) => {
   if (!pause) {
     move(elapsed)
   }
@@ -81,7 +81,7 @@ const render: RenderFn = ({ context, viewport, debug, elapsed }) => {
 
       for (let col = firstCol; col < firstCol + numCols; col++) {
         for (let row = firstRow; row < firstRow + numRows; row++) {
-          const color = state.get(col, row)
+          const color = state.get(col, row, timestamp)
           if (!color) {
             continue
           }

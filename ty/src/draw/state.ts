@@ -1,4 +1,5 @@
 import { createNoise3D } from 'simplex-noise'
+import { Milliseconds } from '../common/engine'
 
 const noise3d = createNoise3D()
 
@@ -8,33 +9,22 @@ const config = {
   scale: {
     x: 0.01,
     y: 0.01,
+    z: 0.00005,
   },
 }
 
-function generate(col: number, row: number): Color {
+function get(col: number, row: number, timestamp: Milliseconds): Color {
   const hue = (() => {
-    return 0
+    return ((timestamp / 1000) * 360 * (1 / 20)) % 360
   })()
   const lightness = (() => {
     const x = col * config.scale.x
     const y = row * config.scale.y
-    const v = (noise3d(x, y, 1) + 1) / 2
-    return Math.floor(v * 20) * 4
+    const z = timestamp * config.scale.z
+    const v = (noise3d(x, y, z) + 1) / 2
+    return Math.floor(v * 20) * 3
   })()
-  return `hsl(${hue}, 80%, ${lightness}%)`
-}
-
-const cache = new Map<string, Color>()
-
-function get(col: number, row: number): Color {
-  const key = `${col}.${row}`
-  let value = cache.get(key)
-  if (value) {
-    return value
-  }
-  value = generate(col, row)
-  cache.set(key, value)
-  return value
+  return `hsl(${hue}, 60%, ${lightness}%)`
 }
 
 export { get }
