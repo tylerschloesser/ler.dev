@@ -1,3 +1,4 @@
+import { update } from 'lodash'
 import React from 'react'
 import { Engine, InitFn, Milliseconds, RenderFn } from '../common/engine'
 import { Vec2 } from '../common/vec2'
@@ -6,7 +7,7 @@ import * as state from './state'
 let pointer: Vec2 | null = null
 let pause = false
 
-const init: InitFn = ({ canvas, signal }) => {
+const init: InitFn = ({ canvas, signal, updateConfig }) => {
   canvas.addEventListener(
     'pointermove',
     (e) => {
@@ -17,6 +18,13 @@ const init: InitFn = ({ canvas, signal }) => {
   window.addEventListener('keydown', (e) => {
     if (e.key === ' ') {
       pause = !pause
+    }
+    if (e.key === 'd') {
+      updateConfig((prev) => ({
+        ...prev,
+        showDebug: !prev.showDebug,
+        showFps: !prev.showFps,
+      }))
     }
   })
 }

@@ -7,6 +7,7 @@ export type InitFn = (args: {
   canvas: HTMLCanvasElement
   context: CanvasRenderingContext2D
   signal: AbortSignal
+  updateConfig(fn: (prev: RenderConfig) => RenderConfig): void
 }) => void
 
 export type RenderFn = (args: {
@@ -21,6 +22,11 @@ export type RenderFn = (args: {
 export interface EngineProps {
   init: InitFn
   render: RenderFn
+}
+
+export interface RenderConfig {
+  showDebug: boolean
+  showFps: boolean
 }
 
 export interface Viewport {
@@ -40,9 +46,15 @@ const Canvas = styled.canvas`
   height: 100%;
 `
 
+const DEFAULT_CONFIG: RenderConfig = {
+  showDebug: false,
+  showFps: false,
+}
+
 export function Engine({ init, render }: EngineProps) {
   const [canvas, setCanvas] = useState<HTMLCanvasElement | null>()
   const initialized = useRef(false)
+  const config = useRef<RenderConfig>(DEFAULT_CONFIG)
   const controllerRef = useRef(new AbortController())
 
   useEffect(() => {
@@ -60,7 +72,14 @@ export function Engine({ init, render }: EngineProps) {
 
     const context = canvas.getContext('2d')!
 
-    init({ canvas, context, signal: controllerRef.current.signal })
+    init({
+      canvas,
+      context,
+      signal: controllerRef.current.signal,
+      updateConfig(fn) {
+        config.current = fn(config.current)
+      },
+    })
 
     let last: null | number = null
     function wrap(timestamp: number) {
@@ -87,7 +106,7 @@ export function Engine({ init, render }: EngineProps) {
         },
       })
 
-      {
+      if (config.current.showDebug) {
         context.strokeStyle = 'black'
         context.font = '16px sans-serif'
         let y = 16
@@ -116,6 +135,7 @@ export function Engine({ init, render }: EngineProps) {
       console.debug('aborting')
       controllerRef.current.abort()
       initialized.current = false
+      config.current = DEFAULT_CONFIG
     }
   }, [])
 
