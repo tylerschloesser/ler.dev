@@ -28,13 +28,12 @@ function move(elapsed: Milliseconds) {
 
 const render: RenderFn = ({ context, viewport, debug, elapsed }) => {
   move(elapsed)
-
-  context.clearRect(0, 0, viewport.w, viewport.h)
-
   const cellSize = 20
-
   debug('position', position.toString())
   ;[
+    () => {
+      context.clearRect(0, 0, viewport.w, viewport.h)
+    },
     () => {
       const numCols = Math.ceil(viewport.w / cellSize)
       const numRows = Math.ceil(viewport.h / cellSize)
