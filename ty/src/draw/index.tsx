@@ -42,7 +42,7 @@ const render: RenderFn = ({ context, viewport, debug, elapsed }) => {
       const firstRow = 0
 
       for (let col = firstCol; col < firstCol + numCols; col++) {
-        for (let row = firstCol; row < firstRow + numRows; row++) {
+        for (let row = firstRow; row < firstRow + numRows; row++) {
           const color = state.get(col, row)
           if (!color) {
             continue
