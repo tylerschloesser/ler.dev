@@ -1,4 +1,3 @@
-import { update } from 'lodash'
 import React from 'react'
 import { Engine, InitFn, Milliseconds, RenderFn } from '../common/engine'
 import { Vec2 } from '../common/vec2'
