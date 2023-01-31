@@ -23,6 +23,7 @@ export type RenderFn = (args: {
 export interface EngineProps {
   init: InitFn
   render: RenderFn
+  resize?(canvas: HTMLCanvasElement): void
 }
 
 export interface RenderConfig {
@@ -35,7 +36,7 @@ export interface Viewport {
   h: number
 }
 
-function resize(canvas: HTMLCanvasElement) {
+function defaultResize(canvas: HTMLCanvasElement) {
   const rect = canvas.getBoundingClientRect()
   canvas.width = rect.width
   canvas.height = rect.height
@@ -52,12 +53,13 @@ const DEFAULT_CONFIG: RenderConfig = {
   showFps: false,
 }
 
-export function Engine({ init, render }: EngineProps) {
+export function Engine({ init, render, resize = defaultResize }: EngineProps) {
   const [canvas, setCanvas] = useState<HTMLCanvasElement | null>()
   const initialized = useRef(false)
   const config = useRef<RenderConfig>(DEFAULT_CONFIG)
   const controllerRef = useRef(new AbortController())
 
+  // TODO add init and render to useEffect dependencies
   useEffect(() => {
     if (!canvas || initialized.current) {
       return

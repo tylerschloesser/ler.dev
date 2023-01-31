@@ -1,6 +1,7 @@
 import { times } from 'lodash'
-import React from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
+import { container } from 'webpack'
 import { Engine, InitFn, RenderFn } from '../common/engine'
 
 const init: InitFn = () => {}
@@ -36,14 +37,26 @@ const render: RenderFn = ({ context, viewport }) => {
 
 const Container = styled.div`
   box-sizing: border-box;
-  height: 100%;
   padding: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  container-type: size;
+`
+
+const EngineContainer = styled.div`
+  --size: calc(min(100cqw, 100cqh));
+  height: var(--size);
+  width: var(--size);
 `
 
 export function Draw() {
   return (
     <Container>
-      <Engine init={init} render={render} />
+      <EngineContainer>
+        <Engine init={init} render={render} />
+      </EngineContainer>
     </Container>
   )
 }
