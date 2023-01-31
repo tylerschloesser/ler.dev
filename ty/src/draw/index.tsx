@@ -31,11 +31,11 @@ const render: RenderFn = ({ context, viewport, debug, elapsed }) => {
 
   debug('position', position.toString())
 
-  const NUM_COLS = 20
-  const NUM_ROWS = 20
+  const numCols = Math.ceil(viewport.w / size)
+  const numRows = Math.ceil(viewport.h / size)
 
-  for (let col = 0; col < NUM_COLS; col++) {
-    for (let row = 0; row < NUM_ROWS; row++) {
+  for (let col = 0; col < numCols; col++) {
+    for (let row = 0; row < numRows; row++) {
       const color = state.get(col, row)
       if (!color) {
         continue
