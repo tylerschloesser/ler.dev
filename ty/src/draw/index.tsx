@@ -18,8 +18,12 @@ const init: InitFn = ({ canvas, signal }) => {
 let position: Vec2 = new Vec2(0, 0)
 let velocity: Vec2 = new Vec2(5, 0)
 
+function toSeconds(ms: Milliseconds): number {
+  return ms / 1000
+}
+
 function move(elapsed: Milliseconds) {
-  position = position.add(velocity.mul(elapsed / 1000))
+  position = position.add(velocity.mul(toSeconds(elapsed)))
 }
 
 const render: RenderFn = ({ context, viewport, debug, elapsed }) => {
