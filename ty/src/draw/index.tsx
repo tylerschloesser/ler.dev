@@ -36,12 +36,20 @@ const init: InitFn = ({ canvas, signal }) => {
 
       // if mouse, use pressure to detect mouse down
       if (e.pointerType === 'touch' || e.pressure > 0) {
-        const cell = pointerToCell(nextPointer, cellSize)
-        const { x: col, y: row } = cell
+        let v = nextPointer.sub(pointer || nextPointer)
+        const dist = v.length()
+        v = v.norm()
 
-        // TODO should not need this check
-        if (grid?.[row]?.[col]) {
-          grid[row][col] = 'white'
+        // to compensate for potentially large distances between
+        // pointer events, interpolate every [cellSize / 2] pixels
+        for (let i = 0; i <= dist; i += cellSize / 2) {
+          const interpolated = pointer!.add(v.mul(i))
+          const cell = pointerToCell(interpolated, cellSize)
+          const { x: col, y: row } = cell
+          // TODO should not need this check
+          if (grid?.[row]?.[col]) {
+            grid[row][col] = 'white'
+          }
         }
       }
 
