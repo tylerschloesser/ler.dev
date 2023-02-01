@@ -1,6 +1,6 @@
 import { App } from 'aws-cdk-lib'
 import 'source-map-support/register'
-import { CdkStack } from '../lib/cdk-stack'
+import { ProdStack } from '../lib/prod-stack'
 
 const app = new App()
-new CdkStack(app, 'LerDev')
+new ProdStack(app, 'LerDev')

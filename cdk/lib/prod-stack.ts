@@ -15,7 +15,7 @@ import { BucketDeployment, Source } from 'aws-cdk-lib/aws-s3-deployment'
 import { Construct } from 'constructs'
 import { getAssetPath, getDefaultRootObject } from './util'
 
-export class CdkStack extends Stack {
+export class ProdStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props)
 
