@@ -4,15 +4,16 @@ import styled from 'styled-components'
 import { Engine, InitFn, RenderFn } from '../common/engine'
 import { Vec2 } from '../common/vec2'
 
+type Pointer = null | Vec2
 const NUM_ROWS = 50
 const NUM_COLS = 50
-let pointer: null | Vec2 = null
+let pointer: Pointer = null
 
 // TODO update this on resize, not in render function
 let cellSize = 0
 
 // TODO handle out of bounds cells
-function pointerToCell() {
+function pointerToCell(pointer: Pointer, cellSize: number) {
   const x = Math.floor(pointer!.x / cellSize)
   const y = Math.floor(pointer!.y / cellSize)
   return new Vec2(x, y)
@@ -31,11 +32,11 @@ const init: InitFn = ({ canvas, signal }) => {
   canvas.addEventListener(
     'pointermove',
     (e) => {
-      pointer = new Vec2(e.offsetX, e.offsetY)
+      const nextPointer = new Vec2(e.offsetX, e.offsetY)
 
       // if mouse, use pressure to detect mouse down
       if (e.pointerType === 'touch' || e.pressure > 0) {
-        const cell = pointerToCell()
+        const cell = pointerToCell(nextPointer, cellSize)
         console.log(cell)
         const { x: col, y: row } = cell
 
@@ -44,6 +45,8 @@ const init: InitFn = ({ canvas, signal }) => {
           grid[row][col] = 'white'
         }
       }
+
+      pointer = nextPointer
     },
     { signal },
   )
@@ -66,11 +69,11 @@ const render: RenderFn = ({ context, viewport }) => {
   }
 
   if (pointer) {
-    const { x, y } = pointerToCell().mul(cellSize)
+    const { x, y } = pointerToCell(pointer, cellSize).mul(cellSize)
     const w = cellSize
     const h = cellSize
     context.strokeStyle = 'white'
-    context.lineWidth = 1
+    context.lineWidth = 2
     context.strokeRect(Math.round(x), Math.round(y), Math.ceil(w), Math.ceil(h))
   }
 }
