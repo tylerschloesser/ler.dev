@@ -2,7 +2,8 @@
   "name": "cdk",
   "version": "0.1.0",
   "scripts": {
-    "deploy": "cdk deploy"
+    "deploy-prod": "cdk deploy LerDevDns LerDev",
+    "deploy-staging": "cdk deploy StagingTyLerDev"
   },
   "dependencies": {
     "@types/node": "^18.7.3",

@@ -13,25 +13,23 @@ import { BucketDeployment, Source } from 'aws-cdk-lib/aws-s3-deployment'
 import { Construct } from 'constructs'
 import { getAssetPath, getDefaultRootObject } from './util'
 
-interface ProdStackProps extends StackProps {
-  rootZone: PublicHostedZone
-  tyZone: PublicHostedZone
+interface StagingStackProps extends StackProps {
+  stagingZone: PublicHostedZone
 }
 
-export class ProdStack extends Stack {
-  constructor(scope: Construct, id: string, props: ProdStackProps) {
+export class StagingStack extends Stack {
+  constructor(scope: Construct, id: string, props: StagingStackProps) {
     super(scope, id, props)
-    const { rootZone, tyZone } = props
+    const { stagingZone } = props
 
     const publicAssetBucket = new Bucket(this, 'PublicAssetBucket', {
-      bucketName: 'ler.dev',
+      bucketName: 'staging.ty.ler.dev',
       publicReadAccess: true,
     })
 
     const certificate = new DnsValidatedCertificate(this, 'Certificate', {
-      domainName: 'ler.dev',
-      subjectAlternativeNames: ['*.ler.dev'],
-      hostedZone: rootZone,
+      domainName: 'staging.ty.ler.dev',
+      hostedZone: stagingZone,
       region: 'us-east-1',
     })
 
@@ -44,7 +42,7 @@ export class ProdStack extends Stack {
           viewerProtocolPolicy: ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
         },
         defaultRootObject: getDefaultRootObject(),
-        domainNames: ['ler.dev', 'ty.ler.dev'],
+        domainNames: ['staging.ty.ler.dev'],
         certificate,
         errorResponses: [
           {
@@ -64,15 +62,8 @@ export class ProdStack extends Stack {
       destinationBucket: publicAssetBucket,
     })
 
-    new ARecord(this, 'LerDevAliasRecord', {
-      zone: rootZone,
-      target: RecordTarget.fromAlias(
-        new CloudFrontTarget(publicAssetDistribution),
-      ),
-    })
-
-    new ARecord(this, 'TyLerDevAliasRecord', {
-      zone: tyZone,
+    new ARecord(this, 'StagingTyLerDevAliasRecord', {
+      zone: stagingZone,
       target: RecordTarget.fromAlias(
         new CloudFrontTarget(publicAssetDistribution),
       ),
