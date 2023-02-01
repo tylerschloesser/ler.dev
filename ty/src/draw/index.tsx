@@ -28,6 +28,16 @@ const grid = times(NUM_ROWS, () =>
   }),
 )
 
+function setPixel(cell: Vec2, color: string) {
+  const { x: col, y: row } = cell
+  if (row < 0 || row >= NUM_ROWS || col < 0 || col >= NUM_COLS) {
+    console.error(`Invalid cell: ${cell.toString()}`)
+    return
+  }
+
+  grid[row][col] = color
+}
+
 const init: InitFn = ({ canvas, signal }) => {
   canvas.addEventListener(
     'pointermove',
@@ -45,11 +55,7 @@ const init: InitFn = ({ canvas, signal }) => {
         for (let i = 0; i <= dist; i += cellSize / 2) {
           const interpolated = pointer!.add(v.mul(i))
           const cell = pointerToCell(interpolated, cellSize)
-          const { x: col, y: row } = cell
-          // TODO should not need this check
-          if (grid?.[row]?.[col]) {
-            grid[row][col] = 'white'
-          }
+          setPixel(cell, 'white')
         }
       }
 
