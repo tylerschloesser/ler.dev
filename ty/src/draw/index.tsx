@@ -37,7 +37,6 @@ const init: InitFn = ({ canvas, signal }) => {
       // if mouse, use pressure to detect mouse down
       if (e.pointerType === 'touch' || e.pressure > 0) {
         const cell = pointerToCell(nextPointer, cellSize)
-        console.log(cell)
         const { x: col, y: row } = cell
 
         // TODO should not need this check
