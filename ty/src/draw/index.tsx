@@ -28,6 +28,11 @@ const grid = times(NUM_ROWS, () =>
   }),
 )
 
+const broadcastSetPixel = (cell: Vec2, color: string) => {
+  const payload = JSON.stringify({ cell, color })
+  console.log(payload)
+}
+
 function setPixel(cell: Vec2, color: string) {
   const { x: col, y: row } = cell
   if (row < 0 || row >= NUM_ROWS || col < 0 || col >= NUM_COLS) {
@@ -35,7 +40,10 @@ function setPixel(cell: Vec2, color: string) {
     return
   }
 
-  grid[row][col] = color
+  if (grid[row][col] !== color) {
+    grid[row][col] = color
+    broadcastSetPixel(cell, color)
+  }
 }
 
 const init: InitFn = ({ canvas, signal }) => {
