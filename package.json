@@ -2,7 +2,8 @@
   "name": "ler.dev",
   "workspaces": [
     "cdk",
-    "ty"
+    "ty",
+    "draw-api"
   ],
   "scripts": {
     "build": "cd ty && npm run build",

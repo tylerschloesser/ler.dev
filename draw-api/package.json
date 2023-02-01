@@ -1,0 +1,7 @@
+{
+  "name": "draw-api",
+  "version": "1.0.0",
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.110"
+  }
+}

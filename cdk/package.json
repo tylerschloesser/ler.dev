@@ -6,10 +6,15 @@
     "deploy-staging": "cdk deploy StagingTyLerDev"
   },
   "dependencies": {
+    "@aws-cdk/aws-apigatewayv2-alpha": "^2.63.0-alpha.0",
+    "@aws-cdk/aws-apigatewayv2-integrations-alpha": "^2.63.0-alpha.0",
     "@types/node": "^18.7.3",
     "aws-cdk": "^2.37.1",
     "aws-cdk-lib": "^2.37.1",
     "constructs": "^10.1.75",
     "source-map-support": "^0.5.21"
+  },
+  "devDependencies": {
+    "esbuild": "^0.17.5"
   }
 }
