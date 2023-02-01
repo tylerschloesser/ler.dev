@@ -2,7 +2,8 @@
   "name": "ty",
   "version": "1.0.0",
   "scripts": {
-    "start": "webpack serve"
+    "start": "webpack serve",
+    "build": "webpack"
   },
   "dependencies": {
     "@react-three/fiber": "^8.3.1",
