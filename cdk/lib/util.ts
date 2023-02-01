@@ -15,3 +15,12 @@ export function getDefaultRootObject(): string {
   )
   return manifest['index.html']
 }
+
+export enum Stage {
+  Prod = 'prod',
+  Staging = 'staging',
+}
+
+export function capitalize(str: string) {
+  return str[0].toUpperCase() + str.slice(1)
+}
