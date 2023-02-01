@@ -8,10 +8,15 @@ import { capitalize, Stage } from '../lib/util'
 
 const app = new App()
 const dnsStack = new DnsStack(app, 'LerDevDns')
-const { rootZone, tyZone, stagingZone } = dnsStack
+const { rootZone, tyZone, stagingZone, prodDrawApiZone, stagingDrawApiZone } =
+  dnsStack
 new ProdStack(app, 'LerDev', { rootZone, tyZone })
 new StagingStack(app, 'StagingTyLerDev', { stagingZone })
 
 Object.values(Stage).forEach((stage) => {
-  new DrawApiStack(app, `${capitalize(stage)}DrawApi`, { stage })
+  new DrawApiStack(app, `${capitalize(stage)}DrawApi`, {
+    stage,
+    prodDrawApiZone,
+    stagingDrawApiZone,
+  })
 })
