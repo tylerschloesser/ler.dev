@@ -15,7 +15,7 @@ export const handler: APIGatewayProxyWebsocketHandlerV2 = async (event) => {
   const domain = event.requestContext.domainName
 
   pipe(
-    DrawMessage.decode(event.body),
+    DrawMessage.decode(JSON.parse(event.body!)),
     fold(
       (errors) => {
         console.log('decode error', JSON.stringify(errors, null, 2))
