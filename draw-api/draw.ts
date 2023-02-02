@@ -4,12 +4,28 @@ import {
 } from '@aws-sdk/client-apigatewaymanagementapi'
 import { DynamoDB } from '@aws-sdk/client-dynamodb'
 import { APIGatewayProxyWebsocketHandlerV2 } from 'aws-lambda'
+import { DrawMessage } from 'common'
+import { fold } from 'fp-ts/lib/Either'
+import { pipe } from 'fp-ts/lib/function'
 
 const dynamo = new DynamoDB({ region: 'us-west-2' })
 
 export const handler: APIGatewayProxyWebsocketHandlerV2 = async (event) => {
   const { connectionId } = event.requestContext
   const domain = event.requestContext.domainName
+
+  pipe(
+    DrawMessage.decode(event.body),
+    fold(
+      (errors) => {
+        console.log('decode error', errors)
+      },
+      (message) => {
+        console.log('decode successful')
+        console.log(message)
+      },
+    ),
+  )
 
   // Don't add the stage here, even though that's what's show in the docs...
   // https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-how-to-call-websocket-api-connections.html
