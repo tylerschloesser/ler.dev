@@ -39,17 +39,21 @@ export class DrawApiStack extends Stack {
       },
     })
 
+    const lambdaFunction = new NodejsFunction(this, 'ConnectHandler', {
+      entry: path.join(__dirname, '../../draw-api/index.ts'),
+      environment: {
+        DYNAMO_TABLE_NAME: dynamoTable.tableName,
+      },
+    })
+
+    dynamoTable.grantReadWriteData(lambdaFunction.grantPrincipal)
+
     const webSocketApi = new WebSocketApi(this, 'WebSocketApi', {
       apiName: `${capitalize(stage)}DrawWebSocketApi`,
       connectRouteOptions: {
         integration: new WebSocketLambdaIntegration(
           'ConnectIntegration',
-          new NodejsFunction(this, 'ConnectHandler', {
-            entry: path.join(__dirname, '../../draw-api/index.ts'),
-            environment: {
-              DYNAMO_TABLE_NAME: dynamoTable.tableName,
-            },
-          }),
+          lambdaFunction,
         ),
       },
     })
