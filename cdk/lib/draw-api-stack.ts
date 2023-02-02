@@ -50,6 +50,7 @@ export class DrawApiStack extends Stack {
 
     const webSocketApi = new WebSocketApi(this, 'WebSocketApi', {
       apiName: `${capitalize(stage)}DrawWebSocketApi`,
+      routeSelectionExpression: '$request.body.action',
       connectRouteOptions: {
         integration: new WebSocketLambdaIntegration(
           'ConnectIntegration',
@@ -64,7 +65,7 @@ export class DrawApiStack extends Stack {
         DYNAMO_TABLE_NAME: dynamoTable.tableName,
       },
     })
-    dynamoTable.grantReadWriteData(connectHandler.grantPrincipal)
+    dynamoTable.grantReadWriteData(drawHandler.grantPrincipal)
 
     webSocketApi.addRoute('draw', {
       integration: new WebSocketLambdaIntegration(
