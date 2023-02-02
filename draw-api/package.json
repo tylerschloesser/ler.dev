@@ -5,6 +5,7 @@
     "@types/aws-lambda": "^8.10.110"
   },
   "dependencies": {
+    "@aws-sdk/client-apigatewaymanagementapi": "^3.262.0",
     "@aws-sdk/client-dynamodb": "^3.262.0"
   }
 }

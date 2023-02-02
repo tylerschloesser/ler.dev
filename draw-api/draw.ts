@@ -1,3 +1,7 @@
+import {
+  ApiGatewayManagementApiClient,
+  PostToConnectionCommand,
+} from '@aws-sdk/client-apigatewaymanagementapi'
 import { DynamoDB } from '@aws-sdk/client-dynamodb'
 import { APIGatewayProxyWebsocketHandlerV2 } from 'aws-lambda'
 
@@ -5,6 +9,14 @@ const dynamo = new DynamoDB({ region: 'us-west-2' })
 
 export const handler: APIGatewayProxyWebsocketHandlerV2 = async (event) => {
   const { connectionId } = event.requestContext
+  const domain = event.requestContext.domainName
+
+  // Don't add the stage here, even though that's what's show in the docs...
+  // https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-how-to-call-websocket-api-connections.html
+  const callbackUrl = `https://${domain}`
+
+  const client = new ApiGatewayManagementApiClient({ endpoint: callbackUrl })
+
   console.log('event', event)
   console.log('connectionId:', connectionId)
 
@@ -25,7 +37,27 @@ export const handler: APIGatewayProxyWebsocketHandlerV2 = async (event) => {
       },
     })
   ).Item
-  console.log('item', item)
+  console.log('item', JSON.stringify(item, null, 2))
+
+  const connectionIds = item!.connectionIds.L!.map((value) => value.S!)
+  console.log('connectionIds', connectionIds)
+
+  await Promise.all(
+    connectionIds.map(async (id) => {
+      const command = new PostToConnectionCommand({
+        ConnectionId: id,
+        Data: new TextEncoder().encode('hello'),
+      })
+      try {
+        return await client.send(command)
+      } catch (error) {
+        // TODO GoneException means the client disconnected, which we ignore for now
+        if (error.errorType !== 'GoneException') {
+          throw error
+        }
+      }
+    }),
+  )
 
   return {
     statusCode: 200,

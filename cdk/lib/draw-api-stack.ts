@@ -59,21 +59,6 @@ export class DrawApiStack extends Stack {
       },
     })
 
-    const drawHandler = new NodejsFunction(this, 'DrawHandler', {
-      entry: path.join(__dirname, '../../draw-api/draw.ts'),
-      environment: {
-        DYNAMO_TABLE_NAME: dynamoTable.tableName,
-      },
-    })
-    dynamoTable.grantReadWriteData(drawHandler.grantPrincipal)
-
-    webSocketApi.addRoute('draw', {
-      integration: new WebSocketLambdaIntegration(
-        'DrawIntegration',
-        drawHandler,
-      ),
-    })
-
     const domainName = `draw-api.${
       stage === Stage.Staging ? 'staging.' : ''
     }ty.ler.dev`
@@ -89,7 +74,22 @@ export class DrawApiStack extends Stack {
       }),
     })
 
-    new WebSocketStage(this, 'WebSocketStage', {
+    const drawHandler = new NodejsFunction(this, 'DrawHandler', {
+      entry: path.join(__dirname, '../../draw-api/draw.ts'),
+      environment: {
+        DYNAMO_TABLE_NAME: dynamoTable.tableName,
+      },
+    })
+    dynamoTable.grantReadWriteData(drawHandler.grantPrincipal)
+
+    webSocketApi.addRoute('draw', {
+      integration: new WebSocketLambdaIntegration(
+        'DrawIntegration',
+        drawHandler,
+      ),
+    })
+
+    const webSocketStage = new WebSocketStage(this, 'WebSocketStage', {
       webSocketApi,
       stageName: 'prod',
       autoDeploy: true,
@@ -97,6 +97,10 @@ export class DrawApiStack extends Stack {
         domainName: domain,
       },
     })
+
+    // TODO I think only one of these is needed
+    webSocketStage.grantManagementApiAccess(drawHandler.grantPrincipal)
+    webSocketApi.grantManageConnections(drawHandler.grantPrincipal)
 
     new ARecord(this, 'TyLerDevAliasRecord', {
       zone: hostedZone,
