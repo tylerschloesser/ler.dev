@@ -14,7 +14,7 @@ export const handler: APIGatewayProxyWebsocketHandlerV2 = async (event) => {
 
   console.log('DYNAMO_TABLE_NAME:', DYNAMO_TABLE_NAME)
 
-  dynamo.updateItem({
+  await dynamo.updateItem({
     TableName: DYNAMO_TABLE_NAME,
     Key: {
       id: {
