@@ -16,6 +16,7 @@ export const handler: APIGatewayProxyWebsocketHandlerV2 = async (event) => {
 
   pipe(
     DrawMessage.decode(JSON.parse(event.body!)),
+
     fold(
       (errors) => {
         console.log('decode error', JSON.stringify(errors, null, 2))
@@ -67,6 +68,7 @@ export const handler: APIGatewayProxyWebsocketHandlerV2 = async (event) => {
       try {
         return await client.send(command)
       } catch (error) {
+        console.log('send error', JSON.stringify(error, null, 2))
         // TODO GoneException means the client disconnected, which we ignore for now
         if (error.errorType !== 'GoneException') {
           throw error
