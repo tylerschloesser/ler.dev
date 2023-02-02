@@ -1,8 +1,13 @@
+import { execSync } from 'child_process'
 import { handler } from './index'
+
+const connectionId = execSync('openssl rand -base64 12').toString('utf8').trim()
+
+console.log({ connectionId })
 
 const event: any = {
   requestContext: {
-    connectionId: 'abc123',
+    connectionId,
   },
 }
 
