@@ -3,7 +3,8 @@
   "workspaces": [
     "cdk",
     "ty",
-    "draw-api"
+    "draw-api",
+    "common"
   ],
   "scripts": {
     "build": "cd ty && npm run build",
