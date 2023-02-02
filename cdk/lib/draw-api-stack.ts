@@ -9,6 +9,7 @@ import {
   Certificate,
   CertificateValidation,
 } from 'aws-cdk-lib/aws-certificatemanager'
+import { AttributeType, Table } from 'aws-cdk-lib/aws-dynamodb'
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs'
 import {
   ARecord,
@@ -31,6 +32,13 @@ export class DrawApiStack extends Stack {
     super(scope, id, props)
     const { stage, prodDrawApiZone, stagingDrawApiZone } = props
 
+    const dynamoTable = new Table(this, `${stage}DrawApiTable`, {
+      partitionKey: {
+        name: 'id',
+        type: AttributeType.STRING,
+      },
+    })
+
     const webSocketApi = new WebSocketApi(this, 'WebSocketApi', {
       apiName: `${capitalize(stage)}DrawWebSocketApi`,
       connectRouteOptions: {
@@ -38,6 +46,9 @@ export class DrawApiStack extends Stack {
           'ConnectIntegration',
           new NodejsFunction(this, 'ConnectHandler', {
             entry: path.join(__dirname, '../../draw-api/index.ts'),
+            environment: {
+              DYNAMO_TABLE_NAME: dynamoTable.tableName,
+            },
           }),
         ),
       },
