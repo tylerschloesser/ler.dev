@@ -18,11 +18,11 @@ export const handler: APIGatewayProxyWebsocketHandlerV2 = async (event) => {
     DrawMessage.decode(event.body),
     fold(
       (errors) => {
-        console.log('decode error', errors)
+        console.log('decode error', JSON.stringify(errors, null, 2))
       },
       (message) => {
         console.log('decode successful')
-        console.log(message)
+        console.log(JSON.stringify(message))
       },
     ),
   )
