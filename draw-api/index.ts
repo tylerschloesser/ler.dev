@@ -5,6 +5,7 @@ const dynamo = new DynamoDB({ region: 'us-west-2' })
 
 export const handler: APIGatewayProxyWebsocketHandlerV2 = async (event) => {
   const { connectionId } = event.requestContext
+  console.log('event', event)
   console.log('connectionId:', connectionId)
 
   const { DYNAMO_TABLE_NAME } = process.env
