@@ -1,5 +1,6 @@
 import {
   ApiGatewayManagementApiClient,
+  GoneException,
   PostToConnectionCommand,
 } from '@aws-sdk/client-apigatewaymanagementapi'
 import { DynamoDB } from '@aws-sdk/client-dynamodb'
@@ -56,8 +57,9 @@ export async function sendMessageToPeer(
     await client.send(command)
   } catch (error) {
     console.log('send error', JSON.stringify(error, null, 2))
-    // TODO GoneException means the client disconnected, which we ignore for now
-    if (error.name !== 'GoneException') {
+    if (error instanceof GoneException) {
+      // ignore for now
+    } else {
       throw error
     }
   }
