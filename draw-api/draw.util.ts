@@ -5,6 +5,7 @@ import {
 } from '@aws-sdk/client-apigatewaymanagementapi'
 import { DynamoDB } from '@aws-sdk/client-dynamodb'
 import { APIGatewayProxyWebsocketEventV2 } from 'aws-lambda'
+import { logger } from './logger'
 
 const dynamo = new DynamoDB({ region: 'us-west-2' })
 
@@ -38,7 +39,7 @@ export async function getPeerConnectionIds() {
       },
     })
   ).Item
-  console.log('item', JSON.stringify(item, null, 2))
+  logger.debug('item', JSON.stringify(item, null, 2))
   return item!.connectionIds.L!.map((value) => value.S!)
 }
 
@@ -56,7 +57,7 @@ export async function sendMessageToPeer(
   try {
     await client.send(command)
   } catch (error) {
-    console.log('send error', JSON.stringify(error, null, 2))
+    logger.debug('send error', JSON.stringify(error, null, 2))
     if (error instanceof GoneException) {
       // ignore for now
     } else {
