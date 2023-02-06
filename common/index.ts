@@ -30,3 +30,5 @@ export const DrawRequest = z.object({
     ),
   }),
 })
+
+export type DrawRequest = z.infer<typeof DrawRequest>

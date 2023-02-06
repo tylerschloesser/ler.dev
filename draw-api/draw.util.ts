@@ -17,7 +17,7 @@ export function transformEvent(event: APIGatewayProxyWebsocketEventV2) {
   }
 }
 
-export function validateEnv() {
+function validateEnv() {
   const { DYNAMO_TABLE_NAME } = process.env
   if (!DYNAMO_TABLE_NAME) {
     throw Error(`missing DYNAMO_TABLE_NAME`)
@@ -25,7 +25,8 @@ export function validateEnv() {
   return { DYNAMO_TABLE_NAME }
 }
 
-export async function getPeerConnectionIds({ DYNAMO_TABLE_NAME }) {
+export async function getPeerConnectionIds() {
+  const { DYNAMO_TABLE_NAME } = validateEnv()
   const item = (
     await dynamo.getItem({
       TableName: DYNAMO_TABLE_NAME,
@@ -52,7 +53,7 @@ export async function sendMessageToPeer(
     Data: new TextEncoder().encode(message),
   })
   try {
-    return await client.send(command)
+    await client.send(command)
   } catch (error) {
     console.log('send error', JSON.stringify(error, null, 2))
     // TODO GoneException means the client disconnected, which we ignore for now
