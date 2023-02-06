@@ -6,7 +6,7 @@ export type Handler<
   Callback = Parameters<APIGatewayProxyWebsocketHandlerV2>[2],
 > = (
   event: Parameters<APIGatewayProxyWebsocketHandlerV2>[0],
-  context: Context,
-  callback: Callback,
-  sideEffects: SideEffects,
+  context?: Context,
+  callback?: Callback,
+  sideEffects?: SideEffects,
 ) => ReturnType<APIGatewayProxyWebsocketHandlerV2>

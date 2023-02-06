@@ -5,6 +5,7 @@ import {
 } from '@aws-sdk/client-apigatewaymanagementapi'
 import { DynamoDB } from '@aws-sdk/client-dynamodb'
 import { APIGatewayProxyWebsocketEventV2 } from 'aws-lambda'
+import { memoize } from 'lodash'
 import { logger } from './logger'
 
 const dynamo = new DynamoDB({ region: 'us-west-2' })
@@ -43,19 +44,26 @@ export async function getPeerConnectionIds() {
   return item!.connectionIds.L!.map((value) => value.S!)
 }
 
-export async function sendMessageToPeer(
-  client: ApiGatewayManagementApiClient,
-  {
-    peerConnectionId: peerConnectionId,
-    message,
-  }: { peerConnectionId: string; message: string },
-) {
+const getClient = memoize(
+  (callbackUrl: string) =>
+    new ApiGatewayManagementApiClient({ endpoint: callbackUrl }),
+)
+
+export async function sendMessageToPeer({
+  callbackUrl,
+  peerConnectionId: peerConnectionId,
+  message,
+}: {
+  callbackUrl: string
+  peerConnectionId: string
+  message: string
+}) {
   const command = new PostToConnectionCommand({
     ConnectionId: peerConnectionId,
     Data: new TextEncoder().encode(message),
   })
   try {
-    await client.send(command)
+    await getClient(callbackUrl).send(command)
   } catch (error) {
     logger.debug('send error', JSON.stringify(error, null, 2))
     if (error instanceof GoneException) {

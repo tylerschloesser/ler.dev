@@ -1,6 +1,7 @@
 import { APIGatewayProxyWebsocketEventV2 } from 'aws-lambda'
 import { DrawRequest } from 'common'
 import { cloneDeep } from 'lodash'
+import { ZodError } from 'zod'
 import { handler, SideEffects } from './draw'
 
 const TEST_EVENT: APIGatewayProxyWebsocketEventV2 = {
@@ -24,7 +25,7 @@ const TEST_EVENT: APIGatewayProxyWebsocketEventV2 = {
 
 describe('draw', () => {
   describe('handler', () => {
-    it('works', async () => {
+    test('valid request', async () => {
       const event = cloneDeep(TEST_EVENT)
       event.requestContext.connectionId = 'connectionId'
       event.requestContext.domainName = 'domainName'
@@ -43,15 +44,16 @@ describe('draw', () => {
       }
       event.body = JSON.stringify(drawRequest)
 
-      const getPeerConnectionIds: jest.Mocked<
-        SideEffects['getPeerConnectionIds']
-      > = async () => {
-        return ['a', 'b']
-      }
+      const getPeerConnectionIds = jest.fn<
+        ReturnType<SideEffects['getPeerConnectionIds']>,
+        Parameters<SideEffects['getPeerConnectionIds']>
+      >()
+      getPeerConnectionIds.mockReturnValue(Promise.resolve(['a', 'b']))
 
-      const sendMessageToPeer: jest.Mocked<
-        SideEffects['sendMessageToPeer']
-      > = async () => {}
+      const sendMessageToPeer = jest.fn<
+        ReturnType<SideEffects['sendMessageToPeer']>,
+        Parameters<SideEffects['sendMessageToPeer']>
+      >()
 
       const sideEffects: SideEffects = {
         getPeerConnectionIds,
@@ -61,6 +63,21 @@ describe('draw', () => {
       expect(await handler(event, null, null, sideEffects)).toEqual({
         statusCode: 200,
       })
+
+      const partialArgs = {
+        callbackUrl: 'https://domainName',
+        message: JSON.stringify(drawRequest),
+      }
+      expect(sendMessageToPeer.mock.calls).toEqual([
+        [{ ...partialArgs, peerConnectionId: 'a' }],
+        [{ ...partialArgs, peerConnectionId: 'b' }],
+      ])
+    })
+
+    test('invalid request', async () => {
+      const event = cloneDeep(TEST_EVENT)
+      event.body = JSON.stringify({ bat: 'man' })
+      expect(() => handler(event)).rejects.toThrow(ZodError)
     })
   })
 })
