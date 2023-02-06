@@ -44,6 +44,9 @@ export class DrawApiStack extends Stack {
       environment: {
         DYNAMO_TABLE_NAME: dynamoTable.tableName,
       },
+      bundling: {
+        sourceMap: true,
+      },
     })
 
     dynamoTable.grantReadWriteData(connectHandler.grantPrincipal)
@@ -78,6 +81,9 @@ export class DrawApiStack extends Stack {
       entry: path.join(__dirname, '../../draw-api/draw.ts'),
       environment: {
         DYNAMO_TABLE_NAME: dynamoTable.tableName,
+      },
+      bundling: {
+        sourceMap: true,
       },
     })
     dynamoTable.grantReadWriteData(drawHandler.grantPrincipal)
