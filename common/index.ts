@@ -1,4 +1,5 @@
 import * as t from 'io-ts'
+import { z } from 'zod'
 
 export const Cell = t.type({
   x: t.number,
@@ -16,3 +17,16 @@ export const DrawMessage = t.type({
 })
 
 export const Message = t.exact(DrawMessage)
+
+export const DrawRequest = z.object({
+  action: z.literal('draw'),
+  payload: z.object({
+    cells: z.array(
+      z.object({
+        x: z.number(),
+        y: z.number(),
+        color: z.string(),
+      }),
+    ),
+  }),
+})

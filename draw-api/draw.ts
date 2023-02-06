@@ -7,9 +7,7 @@ import {
   APIGatewayProxyWebsocketEventV2,
   APIGatewayProxyWebsocketHandlerV2,
 } from 'aws-lambda'
-import { DrawMessage } from 'common'
-import { fold } from 'fp-ts/lib/Either'
-import { pipe } from 'fp-ts/lib/function'
+import { DrawRequest } from 'common'
 
 const dynamo = new DynamoDB({ region: 'us-west-2' })
 
@@ -71,26 +69,16 @@ async function sendMessageToPeer(
 export const handler: APIGatewayProxyWebsocketHandlerV2 = async (event) => {
   const { connectionId, callbackUrl } = transformEvent(event)
   const { DYNAMO_TABLE_NAME } = validateEnv()
+  const request = DrawRequest.parse(event.body!)
+
   console.debug(
     JSON.stringify({
       event,
       connectionId,
       callbackUrl,
       DYNAMO_TABLE_NAME,
+      request,
     }),
-  )
-
-  pipe(
-    DrawMessage.decode(JSON.parse(event.body!)),
-    fold(
-      (errors) => {
-        console.log('decode error', JSON.stringify(errors, null, 2))
-      },
-      (message) => {
-        console.log('decode successful')
-        console.log(JSON.stringify(message))
-      },
-    ),
   )
 
   const client = new ApiGatewayManagementApiClient({ endpoint: callbackUrl })
@@ -101,15 +89,12 @@ export const handler: APIGatewayProxyWebsocketHandlerV2 = async (event) => {
     peerConnectionIds.map(async (peerConnectionId) =>
       sendMessageToPeer(client, {
         peerConnectionId,
-        message: 'hello',
+        message: JSON.stringify(request),
       }),
     ),
   )
 
   return {
     statusCode: 200,
-    body: JSON.stringify({
-      message: 'hi',
-    }),
   }
 }
