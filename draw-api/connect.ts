@@ -3,17 +3,20 @@ import { APIGatewayProxyWebsocketHandlerV2 } from 'aws-lambda'
 
 const dynamo = new DynamoDB({ region: 'us-west-2' })
 
-export const handler: APIGatewayProxyWebsocketHandlerV2 = async (event) => {
-  const { connectionId } = event.requestContext
-  console.log('event', event)
-  console.log('connectionId:', connectionId)
-
+function validateEnv() {
   const { DYNAMO_TABLE_NAME } = process.env
   if (!DYNAMO_TABLE_NAME) {
     throw Error(`missing DYNAMO_TABLE_NAME`)
   }
-
   console.log('DYNAMO_TABLE_NAME:', DYNAMO_TABLE_NAME)
+  return { DYNAMO_TABLE_NAME }
+}
+
+export const handler: APIGatewayProxyWebsocketHandlerV2 = async (event) => {
+  const { connectionId } = event.requestContext
+  const { DYNAMO_TABLE_NAME } = validateEnv()
+  console.log('event', event)
+  console.log('connectionId:', connectionId)
 
   await dynamo.updateItem({
     TableName: DYNAMO_TABLE_NAME,
