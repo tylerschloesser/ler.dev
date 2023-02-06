@@ -69,7 +69,7 @@ async function sendMessageToPeer(
 export const handler: APIGatewayProxyWebsocketHandlerV2 = async (event) => {
   const { connectionId, callbackUrl } = transformEvent(event)
   const { DYNAMO_TABLE_NAME } = validateEnv()
-  const request = DrawRequest.parse(event.body!)
+  const request = DrawRequest.parse(JSON.parse(event.body!))
 
   console.debug(
     JSON.stringify({
