@@ -56,7 +56,7 @@ export async function sendMessageToPeer(
   } catch (error) {
     console.log('send error', JSON.stringify(error, null, 2))
     // TODO GoneException means the client disconnected, which we ignore for now
-    if (error.errorType !== 'GoneException') {
+    if (error.name !== 'GoneException') {
       throw error
     }
   }
