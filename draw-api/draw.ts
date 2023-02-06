@@ -23,12 +23,65 @@ function transformEvent(event: APIGatewayProxyWebsocketEventV2) {
   }
 }
 
+function validateEnv() {
+  const { DYNAMO_TABLE_NAME } = process.env
+  if (!DYNAMO_TABLE_NAME) {
+    throw Error(`missing DYNAMO_TABLE_NAME`)
+  }
+  return { DYNAMO_TABLE_NAME }
+}
+
+async function getPeerConnectionIds({ DYNAMO_TABLE_NAME }) {
+  const item = (
+    await dynamo.getItem({
+      TableName: DYNAMO_TABLE_NAME,
+      Key: {
+        id: {
+          S: 'test',
+        },
+      },
+    })
+  ).Item
+  console.log('item', JSON.stringify(item, null, 2))
+  return item!.connectionIds.L!.map((value) => value.S!)
+}
+
+async function sendMessageToPeer(
+  client: ApiGatewayManagementApiClient,
+  {
+    peerConnectionId: peerConnectionId,
+    message,
+  }: { peerConnectionId: string; message: string },
+) {
+  const command = new PostToConnectionCommand({
+    ConnectionId: peerConnectionId,
+    Data: new TextEncoder().encode(message),
+  })
+  try {
+    return await client.send(command)
+  } catch (error) {
+    console.log('send error', JSON.stringify(error, null, 2))
+    // TODO GoneException means the client disconnected, which we ignore for now
+    if (error.errorType !== 'GoneException') {
+      throw error
+    }
+  }
+}
+
 export const handler: APIGatewayProxyWebsocketHandlerV2 = async (event) => {
   const { connectionId, callbackUrl } = transformEvent(event)
+  const { DYNAMO_TABLE_NAME } = validateEnv()
+  console.debug(
+    JSON.stringify({
+      event,
+      connectionId,
+      callbackUrl,
+      DYNAMO_TABLE_NAME,
+    }),
+  )
 
   pipe(
     DrawMessage.decode(JSON.parse(event.body!)),
-
     fold(
       (errors) => {
         console.log('decode error', JSON.stringify(errors, null, 2))
@@ -41,48 +94,16 @@ export const handler: APIGatewayProxyWebsocketHandlerV2 = async (event) => {
   )
 
   const client = new ApiGatewayManagementApiClient({ endpoint: callbackUrl })
-
-  console.log('event', event)
-  console.log('connectionId:', connectionId)
-
-  const { DYNAMO_TABLE_NAME } = process.env
-  if (!DYNAMO_TABLE_NAME) {
-    throw Error(`missing DYNAMO_TABLE_NAME`)
-  }
-
-  console.log('DYNAMO_TABLE_NAME:', DYNAMO_TABLE_NAME)
-
-  const item = (
-    await dynamo.getItem({
-      TableName: DYNAMO_TABLE_NAME,
-      Key: {
-        id: {
-          S: 'test',
-        },
-      },
-    })
-  ).Item
-  console.log('item', JSON.stringify(item, null, 2))
-
-  const connectionIds = item!.connectionIds.L!.map((value) => value.S!)
-  console.log('connectionIds', connectionIds)
+  const peerConnectionIds = await getPeerConnectionIds({ DYNAMO_TABLE_NAME })
+  console.debug(JSON.stringify({ peerConnectionIds }))
 
   await Promise.all(
-    connectionIds.map(async (id) => {
-      const command = new PostToConnectionCommand({
-        ConnectionId: id,
-        Data: new TextEncoder().encode('hello'),
-      })
-      try {
-        return await client.send(command)
-      } catch (error) {
-        console.log('send error', JSON.stringify(error, null, 2))
-        // TODO GoneException means the client disconnected, which we ignore for now
-        if (error.errorType !== 'GoneException') {
-          throw error
-        }
-      }
-    }),
+    peerConnectionIds.map(async (peerConnectionId) =>
+      sendMessageToPeer(client, {
+        peerConnectionId,
+        message: 'hello',
+      }),
+    ),
   )
 
   return {
