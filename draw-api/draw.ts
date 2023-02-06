@@ -1,6 +1,7 @@
 import { ApiGatewayManagementApiClient } from '@aws-sdk/client-apigatewaymanagementapi'
 import { DrawRequest } from 'common'
 import * as util from './draw.util'
+import { logger } from './logger'
 import { Handler } from './util'
 
 const SIDE_EFFECTS = {
@@ -19,7 +20,7 @@ export const handler: Handler<SideEffects, unknown, unknown> = async (
   const { connectionId, callbackUrl } = util.transformEvent(event)
   const request = DrawRequest.parse(JSON.parse(event.body!))
 
-  console.debug(
+  logger.debug(
     JSON.stringify({
       event,
       connectionId,
@@ -30,7 +31,7 @@ export const handler: Handler<SideEffects, unknown, unknown> = async (
 
   const client = new ApiGatewayManagementApiClient({ endpoint: callbackUrl })
   const peerConnectionIds = await getPeerConnectionIds()
-  console.debug(JSON.stringify({ peerConnectionIds }))
+  logger.debug(JSON.stringify({ peerConnectionIds }))
 
   await Promise.all(
     peerConnectionIds.map(async (peerConnectionId) => {
