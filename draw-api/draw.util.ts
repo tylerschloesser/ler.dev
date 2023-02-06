@@ -41,7 +41,8 @@ export async function getPeerConnectionIds() {
     })
   ).Item
   logger.debug('item', JSON.stringify(item, null, 2))
-  return item!.connectionIds.L!.map((value) => value.S!)
+  // TODO strongly type this somehow
+  return item?.connectionIds?.SS ?? []
 }
 
 const getClient = memoize(

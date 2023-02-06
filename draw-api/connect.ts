@@ -22,17 +22,10 @@ export const handler: APIGatewayProxyWebsocketHandlerV2 = async (event) => {
         S: 'test',
       },
     },
-    UpdateExpression:
-      'SET #ids = list_append(if_not_exists(#ids, :emptyList), :newIds)',
-    ExpressionAttributeNames: {
-      '#ids': 'connectionIds',
-    },
+    UpdateExpression: 'ADD connectionIds :newIds',
     ExpressionAttributeValues: {
       ':newIds': {
-        L: [{ S: connectionId }],
-      },
-      ':emptyList': {
-        L: [],
+        SS: [connectionId],
       },
     },
   })
