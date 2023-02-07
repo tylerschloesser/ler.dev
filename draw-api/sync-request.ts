@@ -7,19 +7,10 @@ import { APIGatewayProxyWebsocketHandlerV2 } from 'aws-lambda'
 import { Grid, SyncRequestMessage, SyncResponseMessage } from 'common'
 import { promisify } from 'util'
 import zlib from 'zlib'
-import { logger } from './logger'
+import { logger, pretty } from './logger'
 
 const dynamo = new DynamoDB({ region: 'us-west-2' })
 const inflate = promisify(zlib.inflate)
-
-function validateEnv() {
-  const { DYNAMO_TABLE_NAME } = process.env
-  if (!DYNAMO_TABLE_NAME) {
-    throw Error(`missing DYNAMO_TABLE_NAME`)
-  }
-  logger.debug('DYNAMO_TABLE_NAME:', DYNAMO_TABLE_NAME)
-  return { DYNAMO_TABLE_NAME }
-}
 
 async function getGrid({ DYNAMO_TABLE_NAME }: { DYNAMO_TABLE_NAME: string }) {
   const item = (
@@ -45,9 +36,13 @@ export const handler: APIGatewayProxyWebsocketHandlerV2 = async (event) => {
   const { connectionId } = event.requestContext
   const callbackUrl = `https://${event.requestContext.domainName}`
   SyncRequestMessage.parse(JSON.parse(event.body!))
-  const { DYNAMO_TABLE_NAME } = validateEnv()
-  logger.debug('event', event)
-  logger.debug('connectionId:', connectionId)
+  const DYNAMO_TABLE_NAME = process.env.DYNAMO_TABLE_NAME!
+  logger.debug(
+    pretty({
+      event,
+      connectionId,
+    }),
+  )
 
   const grid = await getGrid({ DYNAMO_TABLE_NAME })
   const message: SyncResponseMessage = {

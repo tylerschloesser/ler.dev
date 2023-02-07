@@ -1,7 +1,7 @@
 import { SendMessageCommandInput, SQS } from '@aws-sdk/client-sqs'
 import { DrawRequest } from 'common'
 import * as util from './draw.util'
-import { logger } from './logger'
+import { logger, pretty } from './logger'
 import { Handler } from './util'
 
 const SIDE_EFFECTS = {
@@ -23,7 +23,7 @@ export const handler: Handler<SideEffects, unknown, unknown> = async (
   const request = DrawRequest.parse(JSON.parse(event.body!))
 
   logger.debug(
-    JSON.stringify({
+    pretty({
       event,
       connectionId,
       callbackUrl,
@@ -32,7 +32,7 @@ export const handler: Handler<SideEffects, unknown, unknown> = async (
   )
 
   const { peerConnectionIds } = await getRecord()
-  logger.debug(JSON.stringify({ peerConnectionIds }))
+  logger.debug(pretty({ peerConnectionIds }))
 
   await Promise.all([
     ...peerConnectionIds.map((peerConnectionId) =>
@@ -47,7 +47,7 @@ export const handler: Handler<SideEffects, unknown, unknown> = async (
         QueueUrl: process.env.SQS_QUEUE_URL,
         MessageBody: JSON.stringify(request),
       }
-      logger.debug('sending sqs message', input)
+      logger.debug(`sending sqs message: ${pretty(input)}`)
       await sqs.sendMessage(input)
       logger.debug('done sending message')
     })(),

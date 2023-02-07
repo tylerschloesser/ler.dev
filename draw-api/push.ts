@@ -1,5 +1,5 @@
 import { PushRequest } from 'common'
-import { logger } from './logger'
+import { logger, pretty } from './logger'
 import * as util from './push.util'
 import { Handler } from './util'
 
@@ -25,7 +25,7 @@ export const handler: Handler<SideEffects, unknown, unknown> = async (
   const request = PushRequest.parse(JSON.parse(event.body!))
 
   logger.debug(
-    JSON.stringify({
+    pretty({
       event,
       connectionId,
       callbackUrl,
@@ -36,7 +36,7 @@ export const handler: Handler<SideEffects, unknown, unknown> = async (
   await updateGrid(request.payload.grid)
 
   const peerConnectionIds = await getPeerConnectionIds()
-  logger.debug(JSON.stringify({ peerConnectionIds }))
+  logger.debug(pretty({ peerConnectionIds }))
 
   await Promise.all(
     peerConnectionIds.map(async (peerConnectionId) => {

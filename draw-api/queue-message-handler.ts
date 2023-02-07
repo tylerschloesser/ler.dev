@@ -1,11 +1,11 @@
 import { SQS } from '@aws-sdk/client-sqs'
 import { SQSHandler } from 'aws-lambda'
-import { logger } from './logger'
+import { logger, pretty } from './logger'
 
 const sqs = new SQS({ region: 'us-west-2' })
 
 export const handler: SQSHandler = async (event) => {
-  logger.info(event)
+  logger.info(`event: ${pretty(event)}`)
   await sqs.deleteMessageBatch({
     QueueUrl: process.env.SQS_QUEUE_URL,
     Entries: event.Records.map((record) => ({

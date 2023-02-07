@@ -9,7 +9,7 @@ import { Grid } from 'common'
 import { memoize } from 'lodash'
 import { promisify } from 'util'
 import zlib from 'zlib'
-import { logger } from './logger'
+import { logger, pretty } from './logger'
 
 const deflate = promisify(zlib.deflate)
 const dynamo = new DynamoDB({ region: 'us-west-2' })
@@ -34,7 +34,7 @@ export async function getPeerConnectionIds() {
       },
     })
   ).Item
-  logger.debug('item', JSON.stringify(item, null, 2))
+  logger.debug(`item: ${pretty(item)}`)
   // TODO strongly type this somehow
   return item?.connectionIds?.SS ?? []
 }
@@ -70,7 +70,7 @@ export async function sendMessageToPeer({
   try {
     await getClient(callbackUrl).send(command)
   } catch (error) {
-    logger.debug('send error', JSON.stringify(error, null, 2))
+    logger.debug(`send error: ${pretty(error)}`)
     if (error instanceof GoneException) {
       // ignore for now
     } else {

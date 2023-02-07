@@ -9,7 +9,7 @@ import { Grid } from 'common'
 import { memoize } from 'lodash'
 import { promisify } from 'util'
 import zlib from 'zlib'
-import { logger } from './logger'
+import { logger, pretty } from './logger'
 
 const inflate = promisify(zlib.inflate)
 const deflate = promisify(zlib.deflate)
@@ -26,16 +26,8 @@ export function transformEvent(event: APIGatewayProxyWebsocketEventV2) {
   }
 }
 
-function validateEnv() {
-  const { DYNAMO_TABLE_NAME } = process.env
-  if (!DYNAMO_TABLE_NAME) {
-    throw Error(`missing DYNAMO_TABLE_NAME`)
-  }
-  return { DYNAMO_TABLE_NAME }
-}
-
 export async function getRecord() {
-  const { DYNAMO_TABLE_NAME } = validateEnv()
+  const DYNAMO_TABLE_NAME = process.env.DYNAMO_TABLE_NAME!
   const item = (
     await dynamo.getItem({
       TableName: DYNAMO_TABLE_NAME,
@@ -46,7 +38,7 @@ export async function getRecord() {
       },
     })
   ).Item
-  logger.debug('item', JSON.stringify(item, null, 2))
+  logger.debug(`item: ${pretty(item)}`)
   // TODO strongly type this somehow
   // TODO filter out our own connection ID?
   const peerConnectionIds = item?.connectionIds?.SS ?? []
@@ -86,7 +78,7 @@ export async function sendMessageToPeer({
   try {
     await getClient(callbackUrl).send(command)
   } catch (error) {
-    logger.debug('send error', JSON.stringify(error, null, 2))
+    logger.debug(`send error: ${pretty(error)}`)
     if (error instanceof GoneException) {
       // ignore for now
     } else {
