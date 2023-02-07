@@ -52,7 +52,6 @@ export async function convertDataUrlToGrid(dataUrl: string): Promise<Grid> {
         const col = (i / 4) % NUM_COLS
         grid[row][col] = color.hsl().string()
       }
-      console.log(grid)
 
       resolve(grid)
     }
