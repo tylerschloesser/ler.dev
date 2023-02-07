@@ -4,7 +4,7 @@ import {
 } from '@aws-sdk/client-apigatewaymanagementapi'
 import { DynamoDB } from '@aws-sdk/client-dynamodb'
 import { APIGatewayProxyWebsocketHandlerV2 } from 'aws-lambda'
-import { HydrateMessage } from 'common'
+import { HydrateMessage, SyncRequestMessage, SyncResponseMessage } from 'common'
 import { logger } from './logger'
 
 const dynamo = new DynamoDB({ region: 'us-west-2' })
@@ -39,13 +39,14 @@ async function getImageDataUrl({
 export const handler: APIGatewayProxyWebsocketHandlerV2 = async (event) => {
   const { connectionId } = event.requestContext
   const callbackUrl = `https://${event.requestContext.domainName}`
+  SyncRequestMessage.parse(JSON.parse(event.body!))
   const { DYNAMO_TABLE_NAME } = validateEnv()
   logger.debug('event', event)
   logger.debug('connectionId:', connectionId)
 
   const imageDataUrl = await getImageDataUrl({ DYNAMO_TABLE_NAME })
-  const message: HydrateMessage = {
-    action: 'hydrate',
+  const message: SyncResponseMessage = {
+    action: 'sync-response',
     payload: {
       imageDataUrl,
     },

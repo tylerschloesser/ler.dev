@@ -50,6 +50,8 @@ export const WebSocketMessage = z.discriminatedUnion('action', [
   DrawRequest,
   PushRequest,
   HydrateMessage,
+  SyncRequestMessage,
+  SyncResponseMessage,
 ])
 
 export type WebSocketMessage = z.infer<typeof WebSocketMessage>

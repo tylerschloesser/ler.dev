@@ -1,4 +1,9 @@
-import { DrawRequest, PushRequest, WebSocketMessage } from 'common'
+import {
+  DrawRequest,
+  PushRequest,
+  SyncRequestMessage,
+  WebSocketMessage,
+} from 'common'
 import { times } from 'lodash'
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
@@ -138,11 +143,9 @@ export function Draw() {
       console.log('web socket open')
       const imageDataUrl = convertGridToDataUrl(grid)
 
-      const message: PushRequest = {
-        action: 'push',
-        payload: {
-          imageDataUrl,
-        },
+      const message: SyncRequestMessage = {
+        action: 'sync-request',
+        payload: null,
       }
       webSocket?.send(JSON.stringify(message))
     })
@@ -156,7 +159,7 @@ export function Draw() {
       }
 
       switch (message.action) {
-        case 'hydrate': {
+        case 'sync-response': {
           console.log('todo handle image', message.payload.imageDataUrl)
           setHydrated(true)
           break
@@ -165,10 +168,6 @@ export function Draw() {
           message.payload.cells.forEach(({ x, y, color }) => {
             setPixel(new Vec2(x, y), color, false)
           })
-          break
-        }
-        case 'push': {
-          console.log('todo handle push')
           break
         }
       }
