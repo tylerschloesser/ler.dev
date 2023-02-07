@@ -1,17 +1,12 @@
-import {
-  DrawRequest,
-  PushRequest,
-  SyncRequestMessage,
-  WebSocketMessage,
-} from 'common'
+import { DrawRequest, SyncRequestMessage, WebSocketMessage } from 'common'
 import { times } from 'lodash'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import styled from 'styled-components'
 import { Engine, InitFn, RenderFn } from '../common/engine'
 import { Vec2 } from '../common/vec2'
 import { NUM_COLS, NUM_ROWS } from './config'
 import { Grid } from './types'
-import { convertGridToDataUrl } from './util'
+import { convertDataUrlToGrid, convertGridToDataUrl } from './util'
 
 let webSocket: WebSocket | null = null
 
@@ -28,12 +23,13 @@ function pointerToCell(pointer: Pointer, cellSize: number) {
   return new Vec2(x, y)
 }
 
-const grid: Grid = times(NUM_ROWS, () =>
+let grid: Grid = times(NUM_ROWS, () =>
   times(NUM_COLS, () => {
-    const hue = 0
-    const saturation = 50
-    const lightness = 20 + Math.random() * 10
-    return `hsl(${hue}, ${saturation}%, ${lightness}%)`
+    // const hue = 0
+    // const saturation = 50
+    // const lightness = 20 + Math.random() * 10
+    // return `hsl(${hue}, ${saturation}%, ${lightness}%)`
+    return 'hsl(0, 0%, 100%)'
   }),
 )
 
@@ -135,8 +131,6 @@ enum WebSocketReadyState {
 }
 
 export function Draw() {
-  const [hydrated, setHydrated] = useState(false)
-
   useEffect(() => {
     webSocket = new WebSocket('wss://draw-api.staging.ty.ler.dev')
     webSocket.addEventListener('open', () => {
@@ -160,8 +154,12 @@ export function Draw() {
 
       switch (message.action) {
         case 'sync-response': {
-          console.log('todo handle image', message.payload.imageDataUrl)
-          setHydrated(true)
+          const { imageDataUrl } = message.payload
+          if (imageDataUrl) {
+            convertDataUrlToGrid(imageDataUrl).then((nextGrid) => {
+              grid = nextGrid
+            })
+          }
           break
         }
         case 'draw': {
