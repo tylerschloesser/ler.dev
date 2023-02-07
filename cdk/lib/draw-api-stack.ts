@@ -18,8 +18,22 @@ import {
 } from 'aws-cdk-lib/aws-route53'
 import { ApiGatewayv2DomainProperties } from 'aws-cdk-lib/aws-route53-targets'
 import { Construct } from 'constructs'
+import { camelCase, upperFirst } from 'lodash'
 import * as path from 'path'
 import { capitalize, Stage } from './util'
+
+enum Route {
+  Connect = 'connect',
+  Disconnect = 'disconnect',
+  Draw = 'draw',
+  Push = 'push',
+  SyncRequest = 'sync-request',
+}
+
+type RouteToConstructs = Record<
+  Route,
+  { integration: WebSocketLambdaIntegration; handler: NodejsFunction }
+>
 
 interface DrawApiStackProps extends StackProps {
   stage: Stage
@@ -39,45 +53,6 @@ export class DrawApiStack extends Stack {
       },
     })
 
-    const connectHandler = new NodejsFunction(this, 'ConnectHandler', {
-      entry: path.join(__dirname, '../../draw-api/connect.ts'),
-      environment: {
-        DYNAMO_TABLE_NAME: dynamoTable.tableName,
-      },
-      bundling: {
-        sourceMap: true,
-      },
-    })
-    const disconnectHandler = new NodejsFunction(this, 'DisconnectHandler', {
-      entry: path.join(__dirname, '../../draw-api/disconnect.ts'),
-      environment: {
-        DYNAMO_TABLE_NAME: dynamoTable.tableName,
-      },
-      bundling: {
-        sourceMap: true,
-      },
-    })
-
-    dynamoTable.grantReadWriteData(connectHandler.grantPrincipal)
-    dynamoTable.grantReadWriteData(disconnectHandler.grantPrincipal)
-
-    const webSocketApi = new WebSocketApi(this, 'WebSocketApi', {
-      apiName: `${capitalize(stage)}DrawWebSocketApi`,
-      routeSelectionExpression: '$request.body.action',
-      connectRouteOptions: {
-        integration: new WebSocketLambdaIntegration(
-          'ConnectIntegration',
-          connectHandler,
-        ),
-      },
-      disconnectRouteOptions: {
-        integration: new WebSocketLambdaIntegration(
-          'DisconnectIntegration',
-          disconnectHandler,
-        ),
-      },
-    })
-
     const domainName = `draw-api.${
       stage === Stage.Staging ? 'staging.' : ''
     }ty.ler.dev`
@@ -93,58 +68,40 @@ export class DrawApiStack extends Stack {
       }),
     })
 
-    const drawHandler = new NodejsFunction(this, 'DrawHandler', {
-      entry: path.join(__dirname, '../../draw-api/draw.ts'),
-      environment: {
-        DYNAMO_TABLE_NAME: dynamoTable.tableName,
-      },
-      bundling: {
-        sourceMap: true,
-      },
-    })
-    dynamoTable.grantReadWriteData(drawHandler.grantPrincipal)
+    const routeToConstructs: RouteToConstructs = Object.values(
+      Route,
+    ).reduce<RouteToConstructs>((acc, route) => {
+      const idPrefix = upperFirst(camelCase(route))
+      const handler = new NodejsFunction(this, `${idPrefix}Handler`, {
+        entry: path.join(__dirname, `../../draw-api/${route}.ts`),
+        environment: {
+          DYNAMO_TABLE_NAME: dynamoTable.tableName,
+        },
+        bundling: {
+          sourceMap: true,
+        },
+      })
+      dynamoTable.grantReadWriteData(handler.grantPrincipal)
 
-    webSocketApi.addRoute('draw', {
-      integration: new WebSocketLambdaIntegration(
-        'DrawIntegration',
-        drawHandler,
-      ),
-    })
+      const integration = new WebSocketLambdaIntegration(
+        `${idPrefix}Integration`,
+        handler,
+      )
+      return {
+        ...acc,
+        [route]: { integration, handler },
+      }
+    }, {} as RouteToConstructs)
 
-    const pushHandler = new NodejsFunction(this, 'PushHandler', {
-      entry: path.join(__dirname, '../../draw-api/push.ts'),
-      environment: {
-        DYNAMO_TABLE_NAME: dynamoTable.tableName,
+    const webSocketApi = new WebSocketApi(this, 'WebSocketApi', {
+      apiName: `${capitalize(stage)}DrawWebSocketApi`,
+      routeSelectionExpression: '$request.body.action',
+      connectRouteOptions: {
+        integration: routeToConstructs[Route.Connect].integration,
       },
-      bundling: {
-        sourceMap: true,
+      disconnectRouteOptions: {
+        integration: routeToConstructs[Route.Disconnect].integration,
       },
-    })
-    dynamoTable.grantReadWriteData(pushHandler.grantPrincipal)
-
-    webSocketApi.addRoute('push', {
-      integration: new WebSocketLambdaIntegration(
-        'PushIntegration',
-        pushHandler,
-      ),
-    })
-
-    const syncRequestHandler = new NodejsFunction(this, 'SyncRequestHandler', {
-      entry: path.join(__dirname, '../../draw-api/sync-request.ts'),
-      environment: {
-        DYNAMO_TABLE_NAME: dynamoTable.tableName,
-      },
-      bundling: {
-        sourceMap: true,
-      },
-    })
-    dynamoTable.grantReadWriteData(syncRequestHandler.grantPrincipal)
-
-    webSocketApi.addRoute('sync-request', {
-      integration: new WebSocketLambdaIntegration(
-        'SyncRequestIntegration',
-        syncRequestHandler,
-      ),
     })
 
     const webSocketStage = new WebSocketStage(this, 'WebSocketStage', {
@@ -156,9 +113,19 @@ export class DrawApiStack extends Stack {
       },
     })
 
-    webSocketStage.grantManagementApiAccess(drawHandler.grantPrincipal)
-    webSocketStage.grantManagementApiAccess(pushHandler.grantPrincipal)
-    webSocketStage.grantManagementApiAccess(syncRequestHandler.grantPrincipal)
+    Object.entries(routeToConstructs).forEach(
+      ([route, { handler, integration }]) => {
+        dynamoTable.grantReadWriteData(handler.grantPrincipal)
+        webSocketStage.grantManagementApiAccess(handler.grantPrincipal)
+        if (route === Route.Connect || route === Route.Disconnect) {
+          // These are configured in the WebSocketApi construct
+          return
+        }
+        webSocketApi.addRoute(route, {
+          integration,
+        })
+      },
+    )
 
     new ARecord(this, 'TyLerDevAliasRecord', {
       zone: hostedZone,
