@@ -37,7 +37,7 @@ const broadcastSetPixel = (cell: Vec2, color: string) => {
   broadcastQueue.push({ ...cell, color })
 }
 
-function setPixel(cell: Vec2, color: string) {
+function setPixel(cell: Vec2, color: string, broadcast: boolean) {
   const { x: col, y: row } = cell
   if (row < 0 || row >= NUM_ROWS || col < 0 || col >= NUM_COLS) {
     console.error(`Invalid cell: ${cell.toString()}`)
@@ -46,7 +46,9 @@ function setPixel(cell: Vec2, color: string) {
 
   if (grid[row][col] !== color) {
     grid[row][col] = color
-    broadcastSetPixel(cell, color)
+    if (broadcast) {
+      broadcastSetPixel(cell, color)
+    }
   }
 }
 
@@ -67,7 +69,7 @@ const init: InitFn = ({ canvas, signal }) => {
         for (let i = 0; i <= dist; i += cellSize / 2) {
           const interpolated = pointer!.add(v.mul(i))
           const cell = pointerToCell(interpolated, cellSize)
-          setPixel(cell, 'white')
+          setPixel(cell, 'white', true)
         }
       }
 
@@ -134,7 +136,9 @@ export function Draw() {
     })
     webSocket.addEventListener('message', (ev) => {
       const drawRequest = DrawRequest.parse(JSON.parse(ev.data))
-      console.log(drawRequest)
+      drawRequest.payload.cells.forEach(({ x, y, color }) => {
+        setPixel(new Vec2(x, y), color, false)
+      })
     })
     let interval = window.setInterval(() => {
       if (
