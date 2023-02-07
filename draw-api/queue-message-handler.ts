@@ -13,5 +13,5 @@ export const handler: SQSHandler = async (event) => {
       ReceiptHandle: record.receiptHandle,
     })),
   })
-  console.log('deleted all messages')
+  logger.info('deleted all messages')
 }
