@@ -1,5 +1,6 @@
 import { DynamoDB } from '@aws-sdk/client-dynamodb'
 import { APIGatewayProxyWebsocketHandlerV2 } from 'aws-lambda'
+import { logger } from './logger'
 
 const dynamo = new DynamoDB({ region: 'us-west-2' })
 
@@ -8,15 +9,15 @@ function validateEnv() {
   if (!DYNAMO_TABLE_NAME) {
     throw Error(`missing DYNAMO_TABLE_NAME`)
   }
-  console.log('DYNAMO_TABLE_NAME:', DYNAMO_TABLE_NAME)
+  logger.debug('DYNAMO_TABLE_NAME:', DYNAMO_TABLE_NAME)
   return { DYNAMO_TABLE_NAME }
 }
 
 export const handler: APIGatewayProxyWebsocketHandlerV2 = async (event) => {
   const { connectionId } = event.requestContext
   const { DYNAMO_TABLE_NAME } = validateEnv()
-  console.log('event', event)
-  console.log('connectionId:', connectionId)
+  logger.debug('event', event)
+  logger.debug('connectionId:', connectionId)
 
   await dynamo.updateItem({
     TableName: DYNAMO_TABLE_NAME,
@@ -25,9 +26,9 @@ export const handler: APIGatewayProxyWebsocketHandlerV2 = async (event) => {
         S: 'test',
       },
     },
-    UpdateExpression: 'ADD connectionIds :newIds',
+    UpdateExpression: 'ADD connectionIds :ids',
     ExpressionAttributeValues: {
-      ':newIds': {
+      ':ids': {
         SS: [connectionId],
       },
     },
@@ -35,8 +36,5 @@ export const handler: APIGatewayProxyWebsocketHandlerV2 = async (event) => {
 
   return {
     statusCode: 200,
-    body: JSON.stringify({
-      message: 'hi',
-    }),
   }
 }

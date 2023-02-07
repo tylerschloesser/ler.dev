@@ -1,5 +1,6 @@
 import { DynamoDB } from '@aws-sdk/client-dynamodb'
 import { APIGatewayProxyWebsocketHandlerV2 } from 'aws-lambda'
+import { logger } from './logger'
 
 const dynamo = new DynamoDB({ region: 'us-west-2' })
 
@@ -15,29 +16,32 @@ function validateEnv() {
 export const handler: APIGatewayProxyWebsocketHandlerV2 = async (event) => {
   const { connectionId } = event.requestContext
   const { DYNAMO_TABLE_NAME } = validateEnv()
-  console.log('event', event)
-  console.log('connectionId:', connectionId)
+  logger.debug(
+    JSON.stringify({
+      event,
+      connectionId,
+      DYNAMO_TABLE_NAME,
+    }),
+  )
 
-  console.log('TODO remove from set')
-  // await dynamo.updateItem({
-  //   TableName: DYNAMO_TABLE_NAME,
-  //   Key: {
-  //     id: {
-  //       S: 'test',
-  //     },
-  //   },
-  //   UpdateExpression: 'ADD connectionIds :newIds',
-  //   ExpressionAttributeValues: {
-  //     ':newIds': {
-  //       SS: [connectionId],
-  //     },
-  //   },
-  // })
+  logger.debug('deleting connection ID from dynamo')
+  await dynamo.updateItem({
+    TableName: DYNAMO_TABLE_NAME,
+    Key: {
+      id: {
+        S: 'test',
+      },
+    },
+    UpdateExpression: 'DELETE connectionIds :ids',
+    ExpressionAttributeValues: {
+      ':ids': {
+        SS: [connectionId],
+      },
+    },
+  })
+  logger.debug('done')
 
   return {
     statusCode: 200,
-    body: JSON.stringify({
-      message: 'todo',
-    }),
   }
 }
