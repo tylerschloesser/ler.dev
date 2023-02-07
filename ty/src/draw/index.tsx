@@ -169,7 +169,7 @@ export function Draw() {
               const hue = 0
               const saturation = 50
               const lightness = 20 + Math.random() * 10
-              return `hsl(${hue}, ${saturation}%, ${lightness}%)`
+              return `hsl(${hue}, ${saturation}%, ${lightness.toFixed(1)}%)`
             })
             push()
           }
