@@ -1,4 +1,4 @@
-import { SQS } from '@aws-sdk/client-sqs'
+import { SendMessageCommandInput, SQS } from '@aws-sdk/client-sqs'
 import { DrawRequest } from 'common'
 import * as util from './draw.util'
 import { logger } from './logger'
@@ -42,10 +42,15 @@ export const handler: Handler<SideEffects, unknown, unknown> = async (
         message: JSON.stringify(request),
       }),
     ),
-    sqs.sendMessage({
-      QueueUrl: process.env.SQS_QUEUE_URL,
-      MessageBody: JSON.stringify(request),
-    }),
+    (async () => {
+      const input: SendMessageCommandInput = {
+        QueueUrl: process.env.SQS_QUEUE_URL,
+        MessageBody: JSON.stringify(request),
+      }
+      logger.debug('sending sqs message', input)
+      await sqs.sendMessage(input)
+      logger.debug('done sending message')
+    })(),
   ])
 
   return {
