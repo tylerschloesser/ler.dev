@@ -10,6 +10,7 @@ import {
   CertificateValidation,
 } from 'aws-cdk-lib/aws-certificatemanager'
 import { AttributeType, Table } from 'aws-cdk-lib/aws-dynamodb'
+import { Runtime } from 'aws-cdk-lib/aws-lambda'
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs'
 import {
   ARecord,
@@ -80,6 +81,7 @@ export class DrawApiStack extends Stack {
         bundling: {
           sourceMap: true,
         },
+        runtime: Runtime.NODEJS_18_X,
       })
       dynamoTable.grantReadWriteData(handler.grantPrincipal)
 
