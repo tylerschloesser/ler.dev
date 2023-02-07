@@ -1,15 +1,16 @@
-import { DrawRequest } from 'common'
+import { DrawRequest, PushRequest } from 'common'
 import { times } from 'lodash'
 import React, { useEffect } from 'react'
 import styled from 'styled-components'
 import { Engine, InitFn, RenderFn } from '../common/engine'
 import { Vec2 } from '../common/vec2'
+import { NUM_COLS, NUM_ROWS } from './config'
+import { Grid } from './types'
+import { convertGridToDataUrl } from './util'
 
 let webSocket: WebSocket | null = null
 
 type Pointer = null | Vec2
-const NUM_ROWS = 50
-const NUM_COLS = 50
 let pointer: Pointer = null
 
 // TODO update this on resize, not in render function
@@ -22,7 +23,7 @@ function pointerToCell(pointer: Pointer, cellSize: number) {
   return new Vec2(x, y)
 }
 
-const grid = times(NUM_ROWS, () =>
+const grid: Grid = times(NUM_ROWS, () =>
   times(NUM_COLS, () => {
     const hue = 0
     const saturation = 50
@@ -133,6 +134,15 @@ export function Draw() {
     webSocket = new WebSocket('wss://draw-api.staging.ty.ler.dev')
     webSocket.addEventListener('open', () => {
       console.log('web socket open')
+      const imageDataUrl = convertGridToDataUrl(grid)
+
+      const message: PushRequest = {
+        action: 'push',
+        payload: {
+          imageDataUrl,
+        },
+      }
+      webSocket?.send(JSON.stringify(message))
     })
     webSocket.addEventListener('message', (ev) => {
       const drawRequest = DrawRequest.parse(JSON.parse(ev.data))

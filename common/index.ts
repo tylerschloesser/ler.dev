@@ -14,3 +14,12 @@ export const DrawRequest = z.object({
 })
 
 export type DrawRequest = z.infer<typeof DrawRequest>
+
+export const PushRequest = z.object({
+  action: z.literal('push'),
+  payload: z.object({
+    imageDataUrl: z.string(),
+  }),
+})
+
+export type PushRequest = z.infer<typeof PushRequest>
