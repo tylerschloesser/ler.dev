@@ -129,6 +129,24 @@ export class DrawApiStack extends Stack {
       ),
     })
 
+    const syncRequestHandler = new NodejsFunction(this, 'SyncRequestHandler', {
+      entry: path.join(__dirname, '../../draw-api/push.ts'),
+      environment: {
+        DYNAMO_TABLE_NAME: dynamoTable.tableName,
+      },
+      bundling: {
+        sourceMap: true,
+      },
+    })
+    dynamoTable.grantReadWriteData(syncRequestHandler.grantPrincipal)
+
+    webSocketApi.addRoute('sync-request', {
+      integration: new WebSocketLambdaIntegration(
+        'SyncRequestIntegration',
+        syncRequestHandler,
+      ),
+    })
+
     const webSocketStage = new WebSocketStage(this, 'WebSocketStage', {
       webSocketApi,
       stageName: 'prod',
@@ -140,6 +158,7 @@ export class DrawApiStack extends Stack {
 
     webSocketStage.grantManagementApiAccess(drawHandler.grantPrincipal)
     webSocketStage.grantManagementApiAccess(pushHandler.grantPrincipal)
+    webSocketStage.grantManagementApiAccess(syncRequestHandler.grantPrincipal)
 
     new ARecord(this, 'TyLerDevAliasRecord', {
       zone: hostedZone,

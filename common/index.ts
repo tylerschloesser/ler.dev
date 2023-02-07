@@ -32,6 +32,20 @@ export const HydrateMessage = z.object({
 })
 export type HydrateMessage = z.infer<typeof HydrateMessage>
 
+export const SyncRequestMessage = z.object({
+  action: z.literal('sync-request'),
+  payload: z.null(),
+})
+export type SyncRequestMessage = z.infer<typeof SyncRequestMessage>
+
+export const SyncResponseMessage = z.object({
+  action: z.literal('sync-response'),
+  payload: z.object({
+    imageDataUrl: z.string().nullable(),
+  }),
+})
+export type SyncResponseMessage = z.infer<typeof SyncResponseMessage>
+
 export const WebSocketMessage = z.discriminatedUnion('action', [
   DrawRequest,
   PushRequest,
