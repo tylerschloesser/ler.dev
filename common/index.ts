@@ -27,7 +27,7 @@ export type PushRequest = z.infer<typeof PushRequest>
 export const HydrateMessage = z.object({
   action: z.literal('hydrate'),
   payload: z.object({
-    imageDataUrl: z.string().optional(),
+    imageDataUrl: z.string().nullable(),
   }),
 })
 export type HydrateMessage = z.infer<typeof HydrateMessage>

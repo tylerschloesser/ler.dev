@@ -1,6 +1,6 @@
 import { DrawRequest, PushRequest, WebSocketMessage } from 'common'
 import { times } from 'lodash'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { Engine, InitFn, RenderFn } from '../common/engine'
 import { Vec2 } from '../common/vec2'
@@ -130,6 +130,8 @@ enum WebSocketReadyState {
 }
 
 export function Draw() {
+  const [hydrated, setHydrated] = useState(false)
+
   useEffect(() => {
     webSocket = new WebSocket('wss://draw-api.staging.ty.ler.dev')
     webSocket.addEventListener('open', () => {
@@ -154,6 +156,11 @@ export function Draw() {
       }
 
       switch (message.action) {
+        case 'hydrate': {
+          console.log('todo handle image', message.payload.imageDataUrl)
+          setHydrated(true)
+          break
+        }
         case 'draw': {
           message.payload.cells.forEach(({ x, y, color }) => {
             setPixel(new Vec2(x, y), color, false)
