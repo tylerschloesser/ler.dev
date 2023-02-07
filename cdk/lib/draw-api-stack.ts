@@ -138,9 +138,8 @@ export class DrawApiStack extends Stack {
       },
     })
 
-    // TODO I think only one of these is needed
     webSocketStage.grantManagementApiAccess(drawHandler.grantPrincipal)
-    webSocketApi.grantManageConnections(drawHandler.grantPrincipal)
+    webSocketStage.grantManagementApiAccess(pushHandler.grantPrincipal)
 
     new ARecord(this, 'TyLerDevAliasRecord', {
       zone: hostedZone,

@@ -93,10 +93,18 @@ export const handler: APIGatewayProxyWebsocketHandlerV2 = async (event) => {
 
   await Promise.all([
     addConnectionId({ connectionId, DYNAMO_TABLE_NAME }),
-    hydrateClient({ connectionId, DYNAMO_TABLE_NAME, callbackUrl }),
+    //hydrateClient({ connectionId, DYNAMO_TABLE_NAME, callbackUrl }),
   ])
+
+  const tempHydrateMessage: HydrateMessage = {
+    action: 'hydrate',
+    payload: {
+      imageDataUrl: null,
+    },
+  }
 
   return {
     statusCode: 200,
+    body: JSON.stringify(tempHydrateMessage),
   }
 }
