@@ -15,22 +15,17 @@ export const DrawRequest = z.object({
 
 export type DrawRequest = z.infer<typeof DrawRequest>
 
+export const Grid = z.array(z.array(z.string()))
+export type Grid = z.infer<typeof Grid>
+
 export const PushRequest = z.object({
   action: z.literal('push'),
   payload: z.object({
-    imageDataUrl: z.string(),
+    grid: Grid,
   }),
 })
 
 export type PushRequest = z.infer<typeof PushRequest>
-
-export const HydrateMessage = z.object({
-  action: z.literal('hydrate'),
-  payload: z.object({
-    imageDataUrl: z.string().nullable(),
-  }),
-})
-export type HydrateMessage = z.infer<typeof HydrateMessage>
 
 export const SyncRequestMessage = z.object({
   action: z.literal('sync-request'),
@@ -41,7 +36,7 @@ export type SyncRequestMessage = z.infer<typeof SyncRequestMessage>
 export const SyncResponseMessage = z.object({
   action: z.literal('sync-response'),
   payload: z.object({
-    imageDataUrl: z.string().nullable(),
+    grid: z.nullable(Grid),
   }),
 })
 export type SyncResponseMessage = z.infer<typeof SyncResponseMessage>
@@ -49,7 +44,6 @@ export type SyncResponseMessage = z.infer<typeof SyncResponseMessage>
 export const WebSocketMessage = z.discriminatedUnion('action', [
   DrawRequest,
   PushRequest,
-  HydrateMessage,
   SyncRequestMessage,
   SyncResponseMessage,
 ])

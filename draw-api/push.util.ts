@@ -5,9 +5,13 @@ import {
 } from '@aws-sdk/client-apigatewaymanagementapi'
 import { DynamoDB } from '@aws-sdk/client-dynamodb'
 import { APIGatewayProxyWebsocketEventV2 } from 'aws-lambda'
+import { Grid } from 'common'
 import { memoize } from 'lodash'
+import { promisify } from 'util'
+import zlib from 'zlib'
 import { logger } from './logger'
 
+const deflate = promisify(zlib.deflate)
 const dynamo = new DynamoDB({ region: 'us-west-2' })
 
 function validateEnv() {
@@ -75,8 +79,9 @@ export async function sendMessageToPeer({
   }
 }
 
-export async function updateImageDataUrl(imageDataUrl: string) {
+export async function updateGrid(grid: Grid) {
   const { DYNAMO_TABLE_NAME } = validateEnv()
+  const deflated = (await deflate(JSON.stringify(grid))).toString('base64')
   await dynamo.updateItem({
     TableName: DYNAMO_TABLE_NAME,
     Key: {
@@ -84,9 +89,9 @@ export async function updateImageDataUrl(imageDataUrl: string) {
         S: 'test',
       },
     },
-    UpdateExpression: 'SET imageDataUrl = :value',
+    UpdateExpression: 'SET grid = :value',
     ExpressionAttributeValues: {
-      ':value': { S: imageDataUrl },
+      ':value': { S: deflated },
     },
   })
 }

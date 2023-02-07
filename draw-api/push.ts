@@ -1,4 +1,4 @@
-import { DrawRequest, PushRequest } from 'common'
+import { PushRequest } from 'common'
 import { logger } from './logger'
 import * as util from './push.util'
 import { Handler } from './util'
@@ -6,7 +6,7 @@ import { Handler } from './util'
 const SIDE_EFFECTS = {
   getPeerConnectionIds: util.getPeerConnectionIds,
   sendMessageToPeer: util.sendMessageToPeer,
-  updateImageDataUrl: util.updateImageDataUrl,
+  updateGrid: util.updateGrid,
 }
 
 export type SideEffects = typeof SIDE_EFFECTS
@@ -16,7 +16,7 @@ export const handler: Handler<SideEffects, unknown, unknown> = async (
   _context: unknown,
   _callback: unknown,
   {
-    updateImageDataUrl,
+    updateGrid,
     getPeerConnectionIds,
     sendMessageToPeer,
   }: SideEffects = SIDE_EFFECTS,
@@ -33,7 +33,7 @@ export const handler: Handler<SideEffects, unknown, unknown> = async (
     }),
   )
 
-  await updateImageDataUrl(request.payload.imageDataUrl)
+  await updateGrid(request.payload.grid)
 
   const peerConnectionIds = await getPeerConnectionIds()
   logger.debug(JSON.stringify({ peerConnectionIds }))

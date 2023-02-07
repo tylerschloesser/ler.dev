@@ -1,12 +1,16 @@
-import { DrawRequest, SyncRequestMessage, WebSocketMessage } from 'common'
+import {
+  DrawRequest,
+  Grid,
+  PushRequest,
+  SyncRequestMessage,
+  WebSocketMessage,
+} from 'common'
 import { times } from 'lodash'
 import React, { useEffect } from 'react'
 import styled from 'styled-components'
 import { Engine, InitFn, RenderFn } from '../common/engine'
 import { Vec2 } from '../common/vec2'
 import { NUM_COLS, NUM_ROWS } from './config'
-import { Grid } from './types'
-import { convertDataUrlToGrid, convertGridToDataUrl } from './util'
 
 let webSocket: WebSocket | null = null
 
@@ -23,15 +27,11 @@ function pointerToCell(pointer: Pointer, cellSize: number) {
   return new Vec2(x, y)
 }
 
-let grid: Grid = times(NUM_ROWS, () =>
-  times(NUM_COLS, () => {
-    // const hue = 0
-    // const saturation = 50
-    // const lightness = 20 + Math.random() * 10
-    // return `hsl(${hue}, ${saturation}%, ${lightness}%)`
-    return 'hsl(0, 0%, 100%)'
-  }),
-)
+function generateGrid(getColor: () => string): Grid {
+  return times(NUM_ROWS, () => times(NUM_COLS, getColor))
+}
+
+let grid = generateGrid(() => 'hsl(0, 0%, 100%)')
 
 let broadcastQueue: DrawRequest['payload']['cells'] = []
 
@@ -130,13 +130,21 @@ enum WebSocketReadyState {
   Closed = 3,
 }
 
+async function push() {
+  const message: PushRequest = {
+    action: 'push',
+    payload: {
+      grid,
+    },
+  }
+  webSocket?.send(JSON.stringify(message))
+}
+
 export function Draw() {
   useEffect(() => {
     webSocket = new WebSocket('wss://draw-api.staging.ty.ler.dev')
     webSocket.addEventListener('open', () => {
       console.log('web socket open')
-      const imageDataUrl = convertGridToDataUrl(grid)
-
       const message: SyncRequestMessage = {
         action: 'sync-request',
         payload: null,
@@ -154,11 +162,16 @@ export function Draw() {
 
       switch (message.action) {
         case 'sync-response': {
-          const { imageDataUrl } = message.payload
-          if (imageDataUrl) {
-            convertDataUrlToGrid(imageDataUrl).then((nextGrid) => {
-              grid = nextGrid
+          if (message.payload.grid) {
+            grid = message.payload.grid
+          } else {
+            grid = generateGrid(() => {
+              const hue = 0
+              const saturation = 50
+              const lightness = 20 + Math.random() * 10
+              return `hsl(${hue}, ${saturation}%, ${lightness}%)`
             })
+            push()
           }
           break
         }
