@@ -4,13 +4,14 @@ import {
   WebSocketStage,
 } from '@aws-cdk/aws-apigatewayv2-alpha'
 import { WebSocketLambdaIntegration } from '@aws-cdk/aws-apigatewayv2-integrations-alpha'
-import { Stack, StackProps } from 'aws-cdk-lib'
+import { Duration, Stack, StackProps } from 'aws-cdk-lib'
 import {
   Certificate,
   CertificateValidation,
 } from 'aws-cdk-lib/aws-certificatemanager'
 import { AttributeType, Table } from 'aws-cdk-lib/aws-dynamodb'
 import { Runtime } from 'aws-cdk-lib/aws-lambda'
+import { SqsEventSource } from 'aws-cdk-lib/aws-lambda-event-sources'
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs'
 import {
   ARecord,
@@ -18,6 +19,7 @@ import {
   RecordTarget,
 } from 'aws-cdk-lib/aws-route53'
 import { ApiGatewayv2DomainProperties } from 'aws-cdk-lib/aws-route53-targets'
+import { Queue } from 'aws-cdk-lib/aws-sqs'
 import { Construct } from 'constructs'
 import { camelCase, upperFirst } from 'lodash'
 import * as path from 'path'
@@ -40,6 +42,38 @@ interface DrawApiStackProps extends StackProps {
   stage: Stage
   prodDrawApiZone: PublicHostedZone
   stagingDrawApiZone: PublicHostedZone
+}
+
+interface AsyncStuffProps {
+  dynamoTable: Table
+}
+
+class AsyncStuff extends Construct {
+  readonly queue: Queue
+  constructor(scope: Construct, id: string, { dynamoTable }: AsyncStuffProps) {
+    super(scope, id)
+
+    this.queue = new Queue(this, 'DrawQueue')
+
+    const handler = new NodejsFunction(this, `DrawQueueMessageHandler`, {
+      entry: path.join(__dirname, '../../draw-api/queue-message-handler.ts'),
+      environment: {
+        DYNAMO_TABLE_NAME: dynamoTable.tableName,
+      },
+      bundling: {
+        sourceMap: true,
+      },
+      runtime: Runtime.NODEJS_18_X,
+    })
+    dynamoTable.grantReadWriteData(handler.grantPrincipal)
+
+    const eventSource = new SqsEventSource(this.queue, {
+      batchSize: 10_000,
+      maxBatchingWindow: Duration.seconds(5),
+    })
+
+    handler.addEventSource(eventSource)
+  }
 }
 
 export class DrawApiStack extends Stack {
@@ -69,6 +103,10 @@ export class DrawApiStack extends Stack {
       }),
     })
 
+    const asyncStuff = new AsyncStuff(this, 'AsyncStuff', {
+      dynamoTable,
+    })
+
     const routeToConstructs: RouteToConstructs = Object.values(
       Route,
     ).reduce<RouteToConstructs>((acc, route) => {
@@ -77,6 +115,7 @@ export class DrawApiStack extends Stack {
         entry: path.join(__dirname, `../../draw-api/${route}.ts`),
         environment: {
           DYNAMO_TABLE_NAME: dynamoTable.tableName,
+          SQS_QUEUE_NAME: asyncStuff.queue.queueName,
         },
         bundling: {
           sourceMap: true,
