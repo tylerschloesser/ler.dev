@@ -1,8 +1,10 @@
 import { times } from 'lodash'
-import React from 'react'
+import React, { useEffect } from 'react'
 import styled from 'styled-components'
 import { Engine, InitFn, RenderFn } from '../common/engine'
 import { Vec2 } from '../common/vec2'
+
+let webSocket: WebSocket | null = null
 
 type Pointer = null | Vec2
 const NUM_ROWS = 50
@@ -116,6 +118,15 @@ const EngineContainer = styled.div`
 `
 
 export function Draw() {
+  useEffect(() => {
+    webSocket = new WebSocket('wss://draw-api.staging.ty.ler.dev')
+    webSocket.addEventListener('open', () => {
+      console.log('web socket open')
+    })
+    return () => {
+      webSocket?.close()
+    }
+  }, [])
   return (
     <Container>
       <EngineContainer>
