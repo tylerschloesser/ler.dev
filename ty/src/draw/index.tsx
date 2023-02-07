@@ -198,7 +198,7 @@ export function Draw() {
         }
         webSocket.send(JSON.stringify(drawRequest))
       }
-    }, 100)
+    }, 500)
     return () => {
       webSocket?.close()
       window.clearInterval(interval)

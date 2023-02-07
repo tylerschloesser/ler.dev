@@ -4,12 +4,7 @@ import {
 } from '@aws-sdk/client-apigatewaymanagementapi'
 import { DynamoDB } from '@aws-sdk/client-dynamodb'
 import { APIGatewayProxyWebsocketHandlerV2 } from 'aws-lambda'
-import {
-  Grid,
-  HydrateMessage,
-  SyncRequestMessage,
-  SyncResponseMessage,
-} from 'common'
+import { Grid, SyncRequestMessage, SyncResponseMessage } from 'common'
 import { promisify } from 'util'
 import zlib from 'zlib'
 import { logger } from './logger'

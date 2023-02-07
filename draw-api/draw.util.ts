@@ -5,8 +5,14 @@ import {
 } from '@aws-sdk/client-apigatewaymanagementapi'
 import { DynamoDB } from '@aws-sdk/client-dynamodb'
 import { APIGatewayProxyWebsocketEventV2 } from 'aws-lambda'
+import { Grid } from 'common'
 import { memoize } from 'lodash'
+import { promisify } from 'util'
+import zlib from 'zlib'
 import { logger } from './logger'
+
+const inflate = promisify(zlib.inflate)
+const deflate = promisify(zlib.deflate)
 
 const dynamo = new DynamoDB({ region: 'us-west-2' })
 
@@ -28,7 +34,7 @@ function validateEnv() {
   return { DYNAMO_TABLE_NAME }
 }
 
-export async function getPeerConnectionIds() {
+export async function getRecord() {
   const { DYNAMO_TABLE_NAME } = validateEnv()
   const item = (
     await dynamo.getItem({
@@ -42,7 +48,21 @@ export async function getPeerConnectionIds() {
   ).Item
   logger.debug('item', JSON.stringify(item, null, 2))
   // TODO strongly type this somehow
-  return item?.connectionIds?.SS ?? []
+  // TODO filter out our own connection ID?
+  const peerConnectionIds = item?.connectionIds?.SS ?? []
+
+  const deflated = item?.grid?.S ?? null
+  let grid: Grid | null = null
+  if (deflated) {
+    grid = Grid.parse(
+      JSON.parse((await inflate(Buffer.from(deflated, 'base64'))).toString()),
+    )
+  }
+
+  return {
+    peerConnectionIds,
+    grid,
+  }
 }
 
 const getClient = memoize(
