@@ -24,6 +24,9 @@ export const PushRequest = z.object({
 
 export type PushRequest = z.infer<typeof PushRequest>
 
-export const WebSocketMessage = z.union([DrawRequest, PushRequest])
+export const WebSocketMessage = z.discriminatedUnion('action', [
+  DrawRequest,
+  PushRequest,
+])
 
 export type WebSocketMessage = z.infer<typeof WebSocketMessage>

@@ -1,4 +1,4 @@
-import { DrawRequest, PushRequest } from 'common'
+import { DrawRequest, PushRequest, WebSocketMessage } from 'common'
 import { times } from 'lodash'
 import React, { useEffect } from 'react'
 import styled from 'styled-components'
@@ -145,10 +145,26 @@ export function Draw() {
       webSocket?.send(JSON.stringify(message))
     })
     webSocket.addEventListener('message', (ev) => {
-      const drawRequest = DrawRequest.parse(JSON.parse(ev.data))
-      drawRequest.payload.cells.forEach(({ x, y, color }) => {
-        setPixel(new Vec2(x, y), color, false)
-      })
+      let message: WebSocketMessage
+      try {
+        message = WebSocketMessage.parse(JSON.parse(ev.data))
+      } catch (e) {
+        console.log("can't parse websocket message, ignoring...")
+        return
+      }
+
+      switch (message.action) {
+        case 'draw': {
+          message.payload.cells.forEach(({ x, y, color }) => {
+            setPixel(new Vec2(x, y), color, false)
+          })
+          break
+        }
+        case 'push': {
+          console.log('todo handle push')
+          break
+        }
+      }
     })
     let interval = window.setInterval(() => {
       if (
