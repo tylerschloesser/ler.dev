@@ -59,6 +59,7 @@ class AsyncStuff extends Construct {
       entry: path.join(__dirname, '../../draw-api/queue-message-handler.ts'),
       environment: {
         DYNAMO_TABLE_NAME: dynamoTable.tableName,
+        SQS_QUEUE_URL: this.queue.queueUrl,
       },
       bundling: {
         sourceMap: true,
@@ -115,7 +116,7 @@ export class DrawApiStack extends Stack {
         entry: path.join(__dirname, `../../draw-api/${route}.ts`),
         environment: {
           DYNAMO_TABLE_NAME: dynamoTable.tableName,
-          SQS_QUEUE_NAME: asyncStuff.queue.queueName,
+          SQS_QUEUE_URL: asyncStuff.queue.queueUrl,
         },
         bundling: {
           sourceMap: true,
@@ -133,6 +134,10 @@ export class DrawApiStack extends Stack {
         [route]: { integration, handler },
       }
     }, {} as RouteToConstructs)
+
+    asyncStuff.queue.grantSendMessages(
+      routeToConstructs[Route.Draw].handler.grantPrincipal,
+    )
 
     const webSocketApi = new WebSocketApi(this, 'WebSocketApi', {
       apiName: `${capitalize(stage)}DrawWebSocketApi`,

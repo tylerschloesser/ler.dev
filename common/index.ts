@@ -1,15 +1,16 @@
 import { z } from 'zod'
 
+export const Cell = z.object({
+  x: z.number(),
+  y: z.number(),
+  color: z.string(),
+})
+export type Cell = z.infer<typeof Cell>
+
 export const DrawRequest = z.object({
   action: z.literal('draw'),
   payload: z.object({
-    cells: z.array(
-      z.object({
-        x: z.number(),
-        y: z.number(),
-        color: z.string(),
-      }),
-    ),
+    cells: z.array(Cell),
   }),
 })
 
@@ -49,3 +50,6 @@ export const WebSocketMessage = z.discriminatedUnion('action', [
 ])
 
 export type WebSocketMessage = z.infer<typeof WebSocketMessage>
+
+export const DrawQueueMessage = DrawRequest
+export type DrawQueueMessage = DrawRequest
