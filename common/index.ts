@@ -24,9 +24,18 @@ export const PushRequest = z.object({
 
 export type PushRequest = z.infer<typeof PushRequest>
 
+export const HydrateMessage = z.object({
+  action: z.literal('hydrate'),
+  payload: z.object({
+    imageDataUrl: z.string().optional(),
+  }),
+})
+export type HydrateMessage = z.infer<typeof HydrateMessage>
+
 export const WebSocketMessage = z.discriminatedUnion('action', [
   DrawRequest,
   PushRequest,
+  HydrateMessage,
 ])
 
 export type WebSocketMessage = z.infer<typeof WebSocketMessage>

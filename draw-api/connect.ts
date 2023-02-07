@@ -13,12 +13,13 @@ function validateEnv() {
   return { DYNAMO_TABLE_NAME }
 }
 
-export const handler: APIGatewayProxyWebsocketHandlerV2 = async (event) => {
-  const { connectionId } = event.requestContext
-  const { DYNAMO_TABLE_NAME } = validateEnv()
-  logger.debug('event', event)
-  logger.debug('connectionId:', connectionId)
-
+async function addConnectionId({
+  connectionId,
+  DYNAMO_TABLE_NAME,
+}: {
+  connectionId: string
+  DYNAMO_TABLE_NAME: string
+}) {
   await dynamo.updateItem({
     TableName: DYNAMO_TABLE_NAME,
     Key: {
@@ -33,6 +34,14 @@ export const handler: APIGatewayProxyWebsocketHandlerV2 = async (event) => {
       },
     },
   })
+}
+
+export const handler: APIGatewayProxyWebsocketHandlerV2 = async (event) => {
+  const { connectionId } = event.requestContext
+  const { DYNAMO_TABLE_NAME } = validateEnv()
+  logger.debug('event', event)
+  logger.debug('connectionId:', connectionId)
+  await addConnectionId({ connectionId, DYNAMO_TABLE_NAME })
 
   return {
     statusCode: 200,
