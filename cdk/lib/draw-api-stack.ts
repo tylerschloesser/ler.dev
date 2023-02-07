@@ -111,6 +111,24 @@ export class DrawApiStack extends Stack {
       ),
     })
 
+    const pushHandler = new NodejsFunction(this, 'PushHandler', {
+      entry: path.join(__dirname, '../../draw-api/push.ts'),
+      environment: {
+        DYNAMO_TABLE_NAME: dynamoTable.tableName,
+      },
+      bundling: {
+        sourceMap: true,
+      },
+    })
+    dynamoTable.grantReadWriteData(pushHandler.grantPrincipal)
+
+    webSocketApi.addRoute('push', {
+      integration: new WebSocketLambdaIntegration(
+        'PushIntegration',
+        pushHandler,
+      ),
+    })
+
     const webSocketStage = new WebSocketStage(this, 'WebSocketStage', {
       webSocketApi,
       stageName: 'prod',
