@@ -130,7 +130,7 @@ export class DrawApiStack extends Stack {
     })
 
     const syncRequestHandler = new NodejsFunction(this, 'SyncRequestHandler', {
-      entry: path.join(__dirname, '../../draw-api/push.ts'),
+      entry: path.join(__dirname, '../../draw-api/sync-request.ts'),
       environment: {
         DYNAMO_TABLE_NAME: dynamoTable.tableName,
       },
