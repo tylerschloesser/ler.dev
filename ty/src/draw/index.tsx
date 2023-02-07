@@ -1,3 +1,4 @@
+import { DrawRequest } from 'common'
 import { times } from 'lodash'
 import React, { useEffect } from 'react'
 import styled from 'styled-components'
@@ -30,9 +31,18 @@ const grid = times(NUM_ROWS, () =>
   }),
 )
 
+let broadcastQueue: DrawRequest['payload']['cells'] = []
+
 const broadcastSetPixel = (cell: Vec2, color: string) => {
-  const payload = JSON.stringify({ cell, color })
-  console.log(payload)
+  broadcastQueue.push({ ...cell, color })
+  // const payload = JSON.stringify({ cell, color })
+  // console.log(payload)
+  // const drawRequest: DrawRequest = {
+  //   action: 'draw',
+  //   payload: {
+  //     cells:
+  //   }
+  // }
 }
 
 function setPixel(cell: Vec2, color: string) {
@@ -117,14 +127,42 @@ const EngineContainer = styled.div`
   width: var(--size);
 `
 
+enum WebSocketReadyState {
+  Connecting = 0,
+  Open = 1,
+  Closing = 2,
+  Closed = 3,
+}
+
 export function Draw() {
   useEffect(() => {
     webSocket = new WebSocket('wss://draw-api.staging.ty.ler.dev')
     webSocket.addEventListener('open', () => {
       console.log('web socket open')
     })
+    webSocket.addEventListener('message', (ev) => {
+      const drawRequest = DrawRequest.parse(JSON.parse(ev.data))
+      console.log(drawRequest)
+    })
+    let interval = window.setInterval(() => {
+      if (
+        webSocket?.readyState === WebSocketReadyState.Open &&
+        broadcastQueue.length
+      ) {
+        const cells = broadcastQueue
+        broadcastQueue = []
+        const drawRequest: DrawRequest = {
+          action: 'draw',
+          payload: {
+            cells,
+          },
+        }
+        webSocket.send(JSON.stringify(drawRequest))
+      }
+    }, 100)
     return () => {
       webSocket?.close()
+      window.clearInterval(interval)
     }
   }, [])
   return (
