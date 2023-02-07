@@ -58,6 +58,7 @@ class AsyncStuff extends Construct {
     const handler = new NodejsFunction(this, `DrawQueueMessageHandler`, {
       entry: path.join(__dirname, '../../draw-api/queue-message-handler.ts'),
       environment: {
+        NODE_OPTIONS: '--enable-source-maps',
         DYNAMO_TABLE_NAME: dynamoTable.tableName,
         SQS_QUEUE_URL: this.queue.queueUrl,
       },
@@ -115,6 +116,7 @@ export class DrawApiStack extends Stack {
       const handler = new NodejsFunction(this, `${idPrefix}Handler`, {
         entry: path.join(__dirname, `../../draw-api/${route}.ts`),
         environment: {
+          NODE_OPTIONS: '--enable-source-maps',
           DYNAMO_TABLE_NAME: dynamoTable.tableName,
           SQS_QUEUE_URL: asyncStuff.queue.queueUrl,
         },
