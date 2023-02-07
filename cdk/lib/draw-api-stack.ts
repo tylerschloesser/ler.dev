@@ -64,6 +64,7 @@ class AsyncStuff extends Construct {
       },
       bundling: {
         sourceMap: true,
+        minify: true,
       },
       runtime: Runtime.NODEJS_18_X,
     })
@@ -122,6 +123,7 @@ export class DrawApiStack extends Stack {
         },
         bundling: {
           sourceMap: true,
+          minify: true,
         },
         runtime: Runtime.NODEJS_18_X,
       })
