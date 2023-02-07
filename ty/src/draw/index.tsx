@@ -35,14 +35,6 @@ let broadcastQueue: DrawRequest['payload']['cells'] = []
 
 const broadcastSetPixel = (cell: Vec2, color: string) => {
   broadcastQueue.push({ ...cell, color })
-  // const payload = JSON.stringify({ cell, color })
-  // console.log(payload)
-  // const drawRequest: DrawRequest = {
-  //   action: 'draw',
-  //   payload: {
-  //     cells:
-  //   }
-  // }
 }
 
 function setPixel(cell: Vec2, color: string) {
