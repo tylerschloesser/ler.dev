@@ -48,8 +48,18 @@ export class DrawApiStack extends Stack {
         sourceMap: true,
       },
     })
+    const disconnectHandler = new NodejsFunction(this, 'DisconnectHandler', {
+      entry: path.join(__dirname, '../../draw-api/disconnect.ts'),
+      environment: {
+        DYNAMO_TABLE_NAME: dynamoTable.tableName,
+      },
+      bundling: {
+        sourceMap: true,
+      },
+    })
 
     dynamoTable.grantReadWriteData(connectHandler.grantPrincipal)
+    dynamoTable.grantReadWriteData(disconnectHandler.grantPrincipal)
 
     const webSocketApi = new WebSocketApi(this, 'WebSocketApi', {
       apiName: `${capitalize(stage)}DrawWebSocketApi`,
@@ -58,6 +68,12 @@ export class DrawApiStack extends Stack {
         integration: new WebSocketLambdaIntegration(
           'ConnectIntegration',
           connectHandler,
+        ),
+      },
+      disconnectRouteOptions: {
+        integration: new WebSocketLambdaIntegration(
+          'DisconnectIntegration',
+          disconnectHandler,
         ),
       },
     })
