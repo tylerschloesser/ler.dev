@@ -1,6 +1,6 @@
 import { SendMessageCommandInput, SQS } from '@aws-sdk/client-sqs'
-import { DrawRequest } from 'common'
-import * as util from './draw.util'
+import { BatchDrawMessage } from 'common'
+import * as util from './batch-draw.util'
 import { logger, pretty } from './logger'
 import { Handler } from './util'
 
@@ -20,14 +20,14 @@ export const handler: Handler<SideEffects, unknown, unknown> = async (
   { getRecord, sendMessageToPeer }: SideEffects = SIDE_EFFECTS,
 ) => {
   const { connectionId, callbackUrl } = util.transformEvent(event)
-  const request = DrawRequest.parse(JSON.parse(event.body!))
+  const message = BatchDrawMessage.parse(JSON.parse(event.body!))
 
   logger.debug(
     pretty({
       event,
       connectionId,
       callbackUrl,
-      request,
+      message,
     }),
   )
 
@@ -39,13 +39,13 @@ export const handler: Handler<SideEffects, unknown, unknown> = async (
       sendMessageToPeer({
         callbackUrl,
         peerConnectionId,
-        message: JSON.stringify(request),
+        message: JSON.stringify(message),
       }),
     ),
     (async () => {
       const input: SendMessageCommandInput = {
         QueueUrl: process.env.SQS_QUEUE_URL,
-        MessageBody: JSON.stringify(request),
+        MessageBody: JSON.stringify(message),
       }
       logger.debug(`sending sqs message: ${pretty(input)}`)
       await sqs.sendMessage(input)

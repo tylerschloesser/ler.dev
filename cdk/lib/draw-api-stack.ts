@@ -28,7 +28,7 @@ import { capitalize, Stage } from './util'
 enum Route {
   Connect = 'connect',
   Disconnect = 'disconnect',
-  Draw = 'draw',
+  BatchDraw = 'batch-draw',
   Push = 'push',
   SyncRequest = 'sync-request',
 }
@@ -140,7 +140,7 @@ export class DrawApiStack extends Stack {
     }, {} as RouteToConstructs)
 
     asyncStuff.queue.grantSendMessages(
-      routeToConstructs[Route.Draw].handler.grantPrincipal,
+      routeToConstructs[Route.BatchDraw].handler.grantPrincipal,
     )
 
     const webSocketApi = new WebSocketApi(this, 'WebSocketApi', {

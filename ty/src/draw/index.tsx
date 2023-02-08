@@ -1,5 +1,5 @@
 import {
-  DrawRequest,
+  BatchDrawMessage,
   Grid,
   PushRequest,
   SyncRequestMessage,
@@ -33,10 +33,13 @@ function generateGrid(getColor: () => string): Grid {
 
 let grid = generateGrid(() => 'hsl(0, 0%, 100%)')
 
-let broadcastQueue: DrawRequest['payload']['cells'] = []
+const batchDrawMessage: BatchDrawMessage = {
+  action: 'batch-draw',
+  payload: [],
+}
 
 const broadcastSetPixel = (cell: Vec2, color: string) => {
-  broadcastQueue.push({ ...cell, color })
+  batchDrawMessage.payload.push({ ...cell, color })
 }
 
 function setPixel(cell: Vec2, color: string, broadcast: boolean) {
@@ -175,8 +178,8 @@ export function Draw() {
           }
           break
         }
-        case 'draw': {
-          message.payload.cells.forEach(({ x, y, color }) => {
+        case 'batch-draw': {
+          message.payload.forEach(({ x, y, color }) => {
             setPixel(new Vec2(x, y), color, false)
           })
           break
@@ -186,17 +189,11 @@ export function Draw() {
     let interval = window.setInterval(() => {
       if (
         webSocket?.readyState === WebSocketReadyState.Open &&
-        broadcastQueue.length
+        batchDrawMessage.payload.length
       ) {
-        const cells = broadcastQueue
-        broadcastQueue = []
-        const drawRequest: DrawRequest = {
-          action: 'draw',
-          payload: {
-            cells,
-          },
-        }
-        webSocket.send(JSON.stringify(drawRequest))
+        const copy = { ...batchDrawMessage }
+        batchDrawMessage.payload = []
+        webSocket.send(JSON.stringify(copy))
       }
     }, 500)
     return () => {

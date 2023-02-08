@@ -1,20 +1,22 @@
 import { z } from 'zod'
 
-export const Cell = z.object({
+export const DrawPayload = z.object({
   x: z.number(),
   y: z.number(),
   color: z.string(),
 })
-export type Cell = z.infer<typeof Cell>
 
-export const DrawRequest = z.object({
+export const DrawMessage = z.object({
   action: z.literal('draw'),
-  payload: z.object({
-    cells: z.array(Cell),
-  }),
+  payload: DrawPayload,
 })
+export type DrawMessage = z.infer<typeof DrawMessage>
 
-export type DrawRequest = z.infer<typeof DrawRequest>
+export const BatchDrawMessage = z.object({
+  action: z.literal('batch-draw'),
+  payload: z.array(DrawPayload),
+})
+export type BatchDrawMessage = z.infer<typeof BatchDrawMessage>
 
 export const Grid = z.array(z.array(z.string()))
 export type Grid = z.infer<typeof Grid>
@@ -43,7 +45,7 @@ export const SyncResponseMessage = z.object({
 export type SyncResponseMessage = z.infer<typeof SyncResponseMessage>
 
 export const WebSocketMessage = z.discriminatedUnion('action', [
-  DrawRequest,
+  BatchDrawMessage,
   PushRequest,
   SyncRequestMessage,
   SyncResponseMessage,
@@ -51,5 +53,5 @@ export const WebSocketMessage = z.discriminatedUnion('action', [
 
 export type WebSocketMessage = z.infer<typeof WebSocketMessage>
 
-export const DrawQueueMessage = DrawRequest
-export type DrawQueueMessage = DrawRequest
+export const DrawQueueMessage = BatchDrawMessage
+export type DrawQueueMessage = BatchDrawMessage
