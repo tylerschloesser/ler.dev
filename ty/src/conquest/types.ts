@@ -16,6 +16,7 @@ export interface Ball {
 }
 
 export interface World {
+  size: Vec2
   flags: Flag[]
 }
 
