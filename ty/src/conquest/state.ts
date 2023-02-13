@@ -1,10 +1,8 @@
 import { Vec2 } from '../common/vec2'
-import { Flag, Pointer, State } from './types'
-
-let pointer: Pointer = null
+import { Flag, State } from './types'
 
 export const state: State = {
-  pointer,
+  pointer: null,
   world: {
     size: new Vec2(300, 300),
     flags: [],
