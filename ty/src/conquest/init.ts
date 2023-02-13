@@ -5,6 +5,8 @@ import { state } from './state'
 export const init: InitFn = ({ canvas, signal, updateConfig }) => {
   updateConfig((prev) => ({
     ...prev,
+    showDebug: true,
+    showFps: true,
     debugFontColor: 'white',
   }))
 
