@@ -8,6 +8,13 @@ export interface Flag {
   color: Color
 }
 
+export interface Ball {
+  p: Vec2
+  v: Vec2
+  r: number
+  color: Color
+}
+
 export interface World {
   flags: Flag[]
 }
@@ -23,4 +30,5 @@ export interface State {
   pointer: Pointer
   world: World
   camera: Camera
+  ball: Ball
 }

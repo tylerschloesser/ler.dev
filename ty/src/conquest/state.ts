@@ -12,4 +12,10 @@ export const state: State = {
     p: new Vec2(0, 0),
     zoom: 1,
   },
+  ball: {
+    p: new Vec2(50, 50),
+    v: new Vec2(1, 0),
+    color: 'white',
+    r: 20,
+  },
 }

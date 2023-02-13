@@ -29,6 +29,11 @@ export const render: RenderFn = ({ context, viewport, debug }) => {
     renderCircle(context, p, r, color)
   })
 
+  {
+    const { p, r, color } = state.ball
+    renderCircle(context, p, r, color)
+  }
+
   context.resetTransform()
 
   if (state.pointer) {
