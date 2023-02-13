@@ -2,6 +2,7 @@ import { lazy } from 'react'
 import { Ball1 } from './ball1'
 import { Demo as BlobDemo } from './blob'
 import { Cal } from './cal'
+import { Conquest } from './conquest'
 import { Draw } from './draw'
 import { Fly } from './fly'
 import { Demo as MenuDemo } from './menu'
@@ -44,5 +45,9 @@ export const PATHS: PathInfo[] = [
   {
     path: 'draw',
     Component: Draw,
+  },
+  {
+    path: 'conquest',
+    Component: Conquest,
   },
 ]
