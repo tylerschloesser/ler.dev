@@ -4,4 +4,7 @@ let pointer: Pointer = null
 
 export const state: State = {
   pointer,
+  world: {
+    flags: [],
+  },
 }

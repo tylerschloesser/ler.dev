@@ -15,4 +15,5 @@ export type Pointer = Vec2 | null
 
 export interface State {
   pointer: Pointer
+  world: World
 }
