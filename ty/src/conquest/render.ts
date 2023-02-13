@@ -17,8 +17,9 @@ function renderCircle(
   context.stroke()
 }
 
-export const render: RenderFn = ({ context, viewport }) => {
+export const render: RenderFn = ({ context, viewport, debug }) => {
   context.clearRect(0, 0, viewport.w, viewport.h)
+  debug('camera.zoom', state.camera.zoom.toFixed(2))
 
   state.world.flags.forEach((flag) => {
     const { p, r, color } = flag

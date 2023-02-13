@@ -29,6 +29,7 @@ export interface EngineProps {
 export interface RenderConfig {
   showDebug: boolean
   showFps: boolean
+  debugFontColor: string
 }
 
 export interface Viewport {
@@ -51,6 +52,7 @@ const Canvas = styled.canvas`
 const DEFAULT_CONFIG: RenderConfig = {
   showDebug: false,
   showFps: false,
+  debugFontColor: 'black',
 }
 
 export function Engine({ init, render, resize = defaultResize }: EngineProps) {
@@ -127,7 +129,8 @@ export function Engine({ init, render, resize = defaultResize }: EngineProps) {
       })
 
       if (config.current.showDebug) {
-        context.strokeStyle = 'black'
+        context.lineWidth = 1
+        context.strokeStyle = config.current.debugFontColor
         context.font = '16px sans-serif'
         let y = 16
         queue.forEach((value, key) => {
@@ -137,7 +140,8 @@ export function Engine({ init, render, resize = defaultResize }: EngineProps) {
       }
 
       if (config.current.showFps) {
-        context.strokeStyle = 'black'
+        context.lineWidth = 1
+        context.strokeStyle = config.current.debugFontColor
         context.font = '16px sans-serif'
         const text = `FPS: ${fps}`
         const metrics = context.measureText(text)

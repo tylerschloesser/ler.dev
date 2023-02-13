@@ -14,7 +14,13 @@ export interface World {
 
 export type Pointer = Vec2 | null
 
+export interface Camera {
+  p: Vec2
+  zoom: number
+}
+
 export interface State {
   pointer: Pointer
   world: World
+  camera: Camera
 }

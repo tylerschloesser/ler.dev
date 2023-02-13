@@ -2,7 +2,12 @@ import { InitFn } from '../common/engine'
 import { Vec2 } from '../common/vec2'
 import { state } from './state'
 
-export const init: InitFn = ({ canvas, signal }) => {
+export const init: InitFn = ({ canvas, signal, updateConfig }) => {
+  updateConfig((prev) => ({
+    ...prev,
+    debugFontColor: 'white',
+  }))
+
   state.world.flags.push({
     color: 'red',
     r: 10,
@@ -19,6 +24,16 @@ export const init: InitFn = ({ canvas, signal }) => {
     p: new Vec2(300, 200),
   })
 
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'd') {
+      updateConfig((prev) => ({
+        ...prev,
+        showDebug: !prev.showDebug,
+        showFps: !prev.showFps,
+      }))
+    }
+  })
+
   canvas.addEventListener(
     'pointermove',
     (e) => {
@@ -26,5 +41,13 @@ export const init: InitFn = ({ canvas, signal }) => {
       state.pointer = new Vec2(x, y)
     },
     { signal },
+  )
+
+  canvas.addEventListener(
+    'wheel',
+    (e) => {
+      state.camera.zoom += e.deltaY / 100
+    },
+    { signal, passive: true },
   )
 }
