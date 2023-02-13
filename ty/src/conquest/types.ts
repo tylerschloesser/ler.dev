@@ -10,3 +10,9 @@ export interface Flag {
 export interface World {
   flags: Flag[]
 }
+
+export type Pointer = Vec2 | null
+
+export interface State {
+  pointer: Pointer
+}
