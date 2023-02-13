@@ -48,7 +48,8 @@ export const init: InitFn = ({ canvas, signal, updateConfig }) => {
   canvas.addEventListener(
     'wheel',
     (e) => {
-      state.camera.zoom += e.deltaY / 100
+      state.camera.zoom += e.deltaY * 0.001 * -1
+      state.camera.zoom = Math.max(state.camera.zoom, 1)
     },
     { signal, passive: true },
   )

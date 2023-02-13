@@ -19,12 +19,17 @@ function renderCircle(
 
 export const render: RenderFn = ({ context, viewport, debug }) => {
   context.clearRect(0, 0, viewport.w, viewport.h)
-  debug('camera.zoom', state.camera.zoom.toFixed(2))
+
+  const { zoom } = state.camera
+  debug('camera.zoom', zoom.toFixed(2))
+  context.scale(zoom, zoom)
 
   state.world.flags.forEach((flag) => {
     const { p, r, color } = flag
     renderCircle(context, p, r, color)
   })
+
+  context.resetTransform()
 
   if (state.pointer) {
     renderCircle(context, state.pointer, 20, 'white')
