@@ -4,6 +4,7 @@ export type Color = 'red' | 'white' | 'blue' | 'green'
 
 export interface Flag {
   p: Vec2
+  r: number
   color: Color
 }
 

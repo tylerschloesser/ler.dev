@@ -3,6 +3,12 @@ import { Vec2 } from '../common/vec2'
 import { state } from './state'
 
 export const init: InitFn = ({ canvas, signal }) => {
+  state.world.flags.push({
+    color: 'red',
+    r: 10,
+    p: new Vec2(0, 0),
+  })
+
   canvas.addEventListener(
     'pointermove',
     (e) => {
