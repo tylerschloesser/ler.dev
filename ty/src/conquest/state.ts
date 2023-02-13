@@ -6,7 +6,7 @@ let pointer: Pointer = null
 export const state: State = {
   pointer,
   world: {
-    size: new Vec2(1_000, 1_000),
+    size: new Vec2(300, 300),
     flags: [],
   },
   camera: {

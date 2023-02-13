@@ -40,6 +40,7 @@ export const render: RenderFn = ({
 
   {
     const { p, r, color } = state.ball
+    debug('ball.p', p.toString())
     renderCircle(context, p, r, color)
   }
 
