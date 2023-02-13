@@ -1,6 +1,6 @@
 import { InitFn } from '../common/engine'
 import { Vec2 } from '../common/vec2'
-import { state } from './state'
+import { addFlag, state } from './state'
 
 export const init: InitFn = ({ canvas, signal, updateConfig }) => {
   updateConfig((prev) => ({
@@ -10,17 +10,17 @@ export const init: InitFn = ({ canvas, signal, updateConfig }) => {
     debugFontColor: 'white',
   }))
 
-  state.world.flags.push({
+  addFlag({
     color: 'red',
     r: 10,
     p: new Vec2(20, 20),
   })
-  state.world.flags.push({
+  addFlag({
     color: 'green',
     r: 20,
     p: new Vec2(100, 50),
   })
-  state.world.flags.push({
+  addFlag({
     color: 'blue',
     r: 60,
     p: new Vec2(300, 200),

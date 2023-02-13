@@ -1,5 +1,5 @@
 import { Vec2 } from '../common/vec2'
-import { Pointer, State } from './types'
+import { Flag, Pointer, State } from './types'
 
 let pointer: Pointer = null
 
@@ -19,4 +19,8 @@ export const state: State = {
     color: 'orange',
     r: 15,
   },
+}
+
+export function addFlag(flag: Flag) {
+  state.world.flags.push(flag)
 }
