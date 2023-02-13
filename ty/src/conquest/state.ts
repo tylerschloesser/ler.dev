@@ -3,6 +3,7 @@ import { Flag, State } from './types'
 
 export const state: State = {
   pointer: null,
+  drag: null,
   world: {
     size: new Vec2(300, 300),
     flags: [],

@@ -22,6 +22,11 @@ export interface World {
 
 export type Pointer = Vec2 | null
 
+export type Drag = null | {
+  a: Vec2
+  b: Vec2 | null
+}
+
 export interface Camera {
   p: Vec2
   zoom: number
@@ -29,6 +34,7 @@ export interface Camera {
 
 export interface State {
   pointer: Pointer
+  drag: Drag
   world: World
   camera: Camera
   ball: Ball

@@ -41,6 +41,19 @@ export const init: InitFn = ({ canvas, signal, updateConfig }) => {
     (e) => {
       const { clientX: x, clientY: y } = e
       state.pointer = new Vec2(x, y)
+
+      if (e.pressure) {
+        if (state.drag?.a) {
+          state.drag.b = new Vec2(x, y)
+        } else {
+          state.drag = {
+            a: new Vec2(x, y),
+            b: null,
+          }
+        }
+      } else {
+        state.drag = null
+      }
     },
     { signal },
   )

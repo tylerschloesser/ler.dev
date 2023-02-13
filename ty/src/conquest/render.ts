@@ -49,4 +49,13 @@ export const render: RenderFn = ({
   if (state.pointer) {
     renderCircle(context, state.pointer, 20, 'white')
   }
+
+  if (state.drag?.a && state.drag.b) {
+    context.beginPath()
+    const { a, b } = state.drag
+    context.moveTo(a.x, a.y)
+    context.lineTo(b.x, b.y)
+    context.stroke()
+    context.closePath()
+  }
 }
