@@ -16,6 +16,6 @@ export const state: State = {
     p: new Vec2(50, 50),
     v: new Vec2(1, 0),
     color: 'orange',
-    r: 20,
+    r: 15,
   },
 }
