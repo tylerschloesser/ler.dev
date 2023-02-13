@@ -23,7 +23,7 @@ export const init: InitFn = ({ canvas, signal, updateConfig }) => {
   addFlag({
     color: 'blue',
     r: 60,
-    p: new Vec2(300, 200),
+    p: new Vec2(290, 200),
   })
 
   window.addEventListener('keydown', (e) => {
