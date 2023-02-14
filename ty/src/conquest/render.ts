@@ -1,39 +1,35 @@
 import { RenderFn } from '../common/engine'
+import { Vec2 } from '../common/vec2'
 import { update } from './physics'
 import { renderCircle } from './render.util'
 import { state } from './state'
 
-const renderWorld: RenderFn = ({ context, viewport, config }) => {
+const renderWorld: RenderFn = ({ context, config }) => {
   for (let wx = -1; wx <= 1; wx++) {
     for (let wy = -1; wy <= 1; wy++) {
-      const transform = context.getTransform()
-
-      context.translate(wx * state.world.size.x, wy * state.world.size.y)
-
-      // translate to center of screen
-      context.translate(viewport.w / 2, viewport.h / 2)
-
-      context.translate(-state.ball.p.x, -state.ball.p.y)
+      const translate = new Vec2(
+        wx * state.world.size.x,
+        wy * state.world.size.y,
+      ).sub(state.ball.p)
 
       // render flags
       state.world.flags.forEach((flag) => {
         const { p, r, color } = flag
-        renderCircle(context, p, r, color)
+        renderCircle(context, translate.add(p), r, color)
       })
 
       // render border
       if (config.showDebug) {
         context.strokeStyle = 'white'
-        context.strokeRect(0, 0, state.world.size.x, state.world.size.y)
+        const { x, y } = translate
+        context.strokeRect(x, y, state.world.size.x, state.world.size.y)
       }
 
       // render ball
       {
         const { p, r, color } = state.ball
-        renderCircle(context, p, r, color)
+        renderCircle(context, translate.add(p), r, color)
       }
-
-      context.setTransform(transform)
     }
   }
 }
@@ -56,14 +52,13 @@ const renderDrag: RenderFn = ({ context }) => {
 }
 
 export const render: RenderFn = (args) => {
-  const { context, viewport, debug, timestamp, elapsed } = args
+  const { context, viewport, timestamp, elapsed } = args
   context.clearRect(0, 0, viewport.w, viewport.h)
   update({ timestamp, elapsed })
 
   const { zoom } = state.camera
-  debug('camera.zoom', zoom.toFixed(2))
+  context.translate(viewport.w / 2, viewport.h / 2)
   context.scale(zoom, zoom)
-
   renderWorld(args)
 
   context.resetTransform()
