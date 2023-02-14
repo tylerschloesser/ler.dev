@@ -32,6 +32,7 @@ const renderWorld: RenderFn = ({ context, config }) => {
       }
 
       {
+        // TODO this doesn't handle when the closest flag rolls over
         let closestFlag = state.world.flags[0]
         let closestDist = state.ball.p.sub(closestFlag.p).length()
         for (let i = 1; i < state.world.flags.length; i++) {
