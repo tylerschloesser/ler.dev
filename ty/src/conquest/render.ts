@@ -8,6 +8,9 @@ const renderWorld: RenderFn = ({ context }) => {
     const { p, r, color } = flag
     renderCircle(context, p, r, color)
   })
+
+  context.strokeStyle = 'white'
+  context.strokeRect(0, 0, state.world.size.x, state.world.size.y)
 }
 
 const renderBall: RenderFn = ({ context, debug }) => {
