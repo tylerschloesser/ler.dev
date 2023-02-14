@@ -31,7 +31,7 @@ const renderWorld: RenderFn = ({ context, config }) => {
         renderCircle(context, translate.add(p), r, color)
       }
 
-      if (state.closestFlagInfo !== null) {
+      if (state.closestFlagInfo) {
         const { index, modifier } = state.closestFlagInfo
         const flag = state.world.flags[index]
         renderLine(
