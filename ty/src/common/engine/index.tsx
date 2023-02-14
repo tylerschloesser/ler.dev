@@ -18,6 +18,7 @@ export type RenderFn = (args: {
   timestamp: Milliseconds
   elapsed: Milliseconds
   debug(key: string, value: string): void
+  config: RenderConfig
 }) => void
 
 export interface EngineProps {
@@ -126,6 +127,7 @@ export function Engine({ init, render, resize = defaultResize }: EngineProps) {
         debug(key, value) {
           queue.set(key, value)
         },
+        config: config.current,
       })
 
       if (config.current.showDebug) {

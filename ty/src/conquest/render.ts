@@ -3,7 +3,7 @@ import { update } from './physics'
 import { renderCircle } from './render.util'
 import { state } from './state'
 
-const renderWorld: RenderFn = ({ context, viewport }) => {
+const renderWorld: RenderFn = ({ context, viewport, config }) => {
   for (let wx = -1; wx <= 1; wx++) {
     for (let wy = -1; wy <= 1; wy++) {
       const transform = context.getTransform()
@@ -22,7 +22,7 @@ const renderWorld: RenderFn = ({ context, viewport }) => {
       })
 
       // render border
-      {
+      if (config.showDebug) {
         context.strokeStyle = 'white'
         context.strokeRect(0, 0, state.world.size.x, state.world.size.y)
       }

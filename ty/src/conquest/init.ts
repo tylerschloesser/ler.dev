@@ -49,7 +49,10 @@ export const init: InitFn = ({ canvas, signal, updateConfig }) => {
           b: null,
         }
       }
-    } else {
+    } else if (e.type === 'pointerup') {
+      if (state.drag?.b) {
+        state.ball.v = state.drag.b.sub(state.drag.a).mul(-1)
+      }
       state.drag = null
     }
   }
