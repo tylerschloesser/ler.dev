@@ -1,7 +1,7 @@
 import { RenderFn } from '../common/engine'
 import { Vec2 } from '../common/vec2'
 import { update } from './physics'
-import { renderCircle } from './render.util'
+import { renderCircle, renderLine } from './render.util'
 import { state } from './state'
 import { Flag } from './types'
 
@@ -54,16 +54,12 @@ const renderWorld: RenderFn = ({ context, config }) => {
         }
 
         if (closest) {
-          context.strokeStyle = 'white'
-          context.moveTo(
-            state.ball.p.x + translate.x,
-            state.ball.p.y + translate.y,
+          renderLine(
+            context,
+            state.ball.p.add(translate),
+            closest.flag.p.add(closest.modifier).add(translate),
+            'white',
           )
-          context.lineTo(
-            closest.flag.p.x + translate.x + closest.modifier.x,
-            closest.flag.p.y + translate.y + closest.modifier.y,
-          )
-          context.stroke()
         }
       }
     }
