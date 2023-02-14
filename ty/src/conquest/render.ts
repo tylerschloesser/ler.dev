@@ -42,6 +42,8 @@ const renderWorld: RenderFn = ({ context, config }) => {
           new Vec2(0, state.world.size.y),
           new Vec2(0, -state.world.size.y),
           new Vec2(state.world.size.x, state.world.size.y),
+          new Vec2(state.world.size.x, -state.world.size.y),
+          new Vec2(-state.world.size.x, state.world.size.y),
           new Vec2(-state.world.size.x, -state.world.size.y),
         ]) {
           for (let i = 0; i < state.world.flags.length; i++) {

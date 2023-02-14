@@ -18,6 +18,8 @@ function isValid(p: Vec2, r: number) {
     new Vec2(0, state.world.size.y),
     new Vec2(0, -state.world.size.y),
     new Vec2(state.world.size.x, state.world.size.y),
+    new Vec2(state.world.size.x, -state.world.size.y),
+    new Vec2(-state.world.size.x, state.world.size.y),
     new Vec2(-state.world.size.x, -state.world.size.y),
   ].every((modifier) =>
     state.world.flags.every((flag) => {
