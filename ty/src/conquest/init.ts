@@ -20,11 +20,22 @@ function generateFlags() {
       )
 
       if (
-        state.world.flags.every((flag) => {
-          const dist = flag.p.sub(p).length()
-          const BUFFER = 20
-          return dist - flag.r - r - BUFFER > 0
-        })
+        [
+          // super ineffecient, fight me
+          new Vec2(0, 0),
+          new Vec2(state.world.size.x, 0),
+          new Vec2(-state.world.size.x, 0),
+          new Vec2(0, state.world.size.y),
+          new Vec2(0, -state.world.size.y),
+          new Vec2(state.world.size.x, state.world.size.y),
+          new Vec2(-state.world.size.x, -state.world.size.y),
+        ].every((modifier) =>
+          state.world.flags.every((flag) => {
+            const dist = flag.p.sub(p.add(modifier)).length()
+            const BUFFER = 20
+            return dist - flag.r - r - BUFFER > 0
+          }),
+        )
       ) {
         addFlag({ color, r, p })
         break
