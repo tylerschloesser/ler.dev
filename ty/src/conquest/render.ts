@@ -15,7 +15,12 @@ const renderWorld: RenderFn = ({ context, config }) => {
       // render flags
       state.world.flags.forEach((flag) => {
         const { p, r, color } = flag
-        renderCircle(context, translate.add(p), r, color)
+        renderCircle({
+          context,
+          p: translate.add(p),
+          radius: r,
+          color,
+        })
       })
 
       // render border
@@ -28,7 +33,12 @@ const renderWorld: RenderFn = ({ context, config }) => {
       // render ball
       {
         const { p, r, color } = state.ball
-        renderCircle(context, translate.add(p), r, color)
+        renderCircle({
+          context,
+          p: translate.add(p),
+          radius: r,
+          color,
+        })
       }
 
       if (state.closestFlagInfo) {
@@ -47,7 +57,12 @@ const renderWorld: RenderFn = ({ context, config }) => {
 
 const renderPointer: RenderFn = ({ context }) => {
   if (state.pointer) {
-    renderCircle(context, state.pointer, 20, 'white')
+    renderCircle({
+      context,
+      p: state.pointer,
+      radius: 20,
+      color: 'white',
+    })
   }
 }
 

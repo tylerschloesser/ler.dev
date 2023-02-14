@@ -1,12 +1,21 @@
 import { Vec2 } from '../common/vec2'
 import { Color } from './types'
 
-export function renderCircle(
-  context: CanvasRenderingContext2D,
-  p: Vec2,
-  radius: number,
-  color: Color,
-) {
+export interface RenderCircleArgs {
+  context: CanvasRenderingContext2D
+  p: Vec2
+  radius: number
+  color: Color
+  filled?: boolean
+}
+
+export function renderCircle({
+  context,
+  p,
+  radius,
+  color,
+  filled = false,
+}: RenderCircleArgs) {
   const { x, y } = p
   context.strokeStyle = color
   context.lineWidth = 2

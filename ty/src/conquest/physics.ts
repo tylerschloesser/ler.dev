@@ -12,8 +12,16 @@ interface UpdateArgs {
 
 export function update(args: UpdateArgs) {
   updateBallPosition(args)
-
   state.closestFlagInfo = findClosestFlagInfo()
+  updateClosestFlagProgress(args)
+}
+
+function updateClosestFlagProgress(args: UpdateArgs) {
+  if (!state.closestFlagInfo) return
+  const { elapsed } = args
+  const { index } = state.closestFlagInfo
+  const { progress } = state.world.flags[index]
+  state.world.flags[index].progress = Math.min(1, progress + toSeconds(elapsed))
 }
 
 function updateBallPosition(args: UpdateArgs) {
