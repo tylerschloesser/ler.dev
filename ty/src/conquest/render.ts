@@ -34,26 +34,39 @@ const renderWorld: RenderFn = ({ context, config }) => {
 
       {
         // TODO this doesn't handle when the closest flag rolls over
-        let closestFlag: Flag | null = null
-        let closestDist = Number.POSITIVE_INFINITY
+        let closest: { flag: Flag; dist: number; modifier: Vec2 } | null = null
 
-        for (let i = 0; i < state.world.flags.length; i++) {
-          const dist = state.ball.p.sub(state.world.flags[i].p).length()
-          if (dist < closestDist) {
-            closestDist = dist
-            closestFlag = state.world.flags[i]
+        for (const modifier of [
+          new Vec2(0, 0),
+          new Vec2(state.world.size.x, 0),
+          new Vec2(-state.world.size.x, 0),
+          new Vec2(0, state.world.size.y),
+          new Vec2(0, -state.world.size.y),
+          new Vec2(state.world.size.x, state.world.size.y),
+          new Vec2(-state.world.size.x, -state.world.size.y),
+        ]) {
+          for (let i = 0; i < state.world.flags.length; i++) {
+            const flag = state.world.flags[i]
+            const dist = state.ball.p.sub(modifier.add(flag.p)).length()
+            if (dist < (closest?.dist ?? Number.POSITIVE_INFINITY)) {
+              closest = {
+                flag,
+                dist,
+                modifier,
+              }
+            }
           }
         }
 
-        if (closestFlag) {
+        if (closest) {
           context.strokeStyle = 'white'
           context.moveTo(
             state.ball.p.x + translate.x,
             state.ball.p.y + translate.y,
           )
           context.lineTo(
-            closestFlag.p.x + translate.x,
-            closestFlag.p.y + translate.y,
+            closest.flag.p.x + translate.x + closest.modifier.x,
+            closest.flag.p.y + translate.y + closest.modifier.y,
           )
           context.stroke()
         }
