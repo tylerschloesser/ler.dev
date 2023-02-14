@@ -2,14 +2,7 @@ import { InitFn } from '../common/engine'
 import { Vec2 } from '../common/vec2'
 import { addFlag, state } from './state'
 
-export const init: InitFn = ({ canvas, signal, updateConfig }) => {
-  updateConfig((prev) => ({
-    ...prev,
-    showDebug: true,
-    showFps: true,
-    debugFontColor: 'white',
-  }))
-
+function generateFlags() {
   addFlag({
     color: 'red',
     r: 10,
@@ -25,6 +18,17 @@ export const init: InitFn = ({ canvas, signal, updateConfig }) => {
     r: 60,
     p: new Vec2(290, 200),
   })
+}
+
+export const init: InitFn = ({ canvas, signal, updateConfig }) => {
+  updateConfig((prev) => ({
+    ...prev,
+    showDebug: true,
+    showFps: true,
+    debugFontColor: 'white',
+  }))
+
+  generateFlags()
 
   window.addEventListener('keydown', (e) => {
     if (e.key === 'd') {
