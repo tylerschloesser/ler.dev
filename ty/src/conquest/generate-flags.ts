@@ -7,6 +7,24 @@ const COLORS: Color[] = ['red', 'green', 'blue']
 // min space between each flag
 const BUFFER = 20
 
+function isValid(p: Vec2, r: number) {
+  return [
+    // super ineffecient, fight me
+    new Vec2(0, 0),
+    new Vec2(state.world.size.x, 0),
+    new Vec2(-state.world.size.x, 0),
+    new Vec2(0, state.world.size.y),
+    new Vec2(0, -state.world.size.y),
+    new Vec2(state.world.size.x, state.world.size.y),
+    new Vec2(-state.world.size.x, -state.world.size.y),
+  ].every((modifier) =>
+    state.world.flags.every((flag) => {
+      const dist = flag.p.sub(p.add(modifier)).length()
+      return dist - flag.r - r - BUFFER > 0
+    }),
+  )
+}
+
 export function generateFlags() {
   const count = Math.ceil(
     Math.sqrt(state.world.size.x * state.world.size.y) * 0.05,
@@ -23,23 +41,7 @@ export function generateFlags() {
         Math.random() * state.world.size.y,
       )
 
-      if (
-        [
-          // super ineffecient, fight me
-          new Vec2(0, 0),
-          new Vec2(state.world.size.x, 0),
-          new Vec2(-state.world.size.x, 0),
-          new Vec2(0, state.world.size.y),
-          new Vec2(0, -state.world.size.y),
-          new Vec2(state.world.size.x, state.world.size.y),
-          new Vec2(-state.world.size.x, -state.world.size.y),
-        ].every((modifier) =>
-          state.world.flags.every((flag) => {
-            const dist = flag.p.sub(p.add(modifier)).length()
-            return dist - flag.r - r - BUFFER > 0
-          }),
-        )
-      ) {
+      if (isValid(p, r)) {
         addFlag({ color, r, p })
         break
       } else {
