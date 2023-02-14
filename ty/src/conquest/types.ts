@@ -6,6 +6,7 @@ export interface Flag {
   p: Vec2
   r: number
   color: Color
+  progress: number
 }
 
 export interface Ball {

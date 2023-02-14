@@ -46,7 +46,7 @@ export function generateFlags() {
       )
 
       if (isValid(p, r)) {
-        addFlag({ color, r, p })
+        addFlag({ color, r, p, progress: 0 })
         break
       } else {
         misses++
