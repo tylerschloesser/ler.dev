@@ -3,12 +3,17 @@ import { update } from './physics'
 import { renderCircle } from './render.util'
 import { state } from './state'
 
-const renderWorld: RenderFn = ({ context }) => {
+const renderWorld: RenderFn = ({ context, viewport }) => {
   for (let wx = -1; wx <= 1; wx++) {
     for (let wy = -1; wy <= 1; wy++) {
       const transform = context.getTransform()
 
       context.translate(wx * state.world.size.x, wy * state.world.size.y)
+
+      // translate to center of screen
+      context.translate(viewport.w / 2, viewport.h / 2)
+
+      context.translate(-state.ball.p.x, -state.ball.p.y)
 
       // render flags
       state.world.flags.forEach((flag) => {
