@@ -30,6 +30,28 @@ const renderWorld: RenderFn = ({ context, config }) => {
         const { p, r, color } = state.ball
         renderCircle(context, translate.add(p), r, color)
       }
+
+      {
+        let closestFlag = state.world.flags[0]
+        let closestDist = state.ball.p.sub(closestFlag.p).length()
+        for (let i = 1; i < state.world.flags.length; i++) {
+          const dist = state.ball.p.sub(state.world.flags[i].p).length()
+          if (dist < closestDist) {
+            closestDist = dist
+            closestFlag = state.world.flags[i]
+          }
+        }
+        context.strokeStyle = 'white'
+        context.moveTo(
+          state.ball.p.x + translate.x,
+          state.ball.p.y + translate.y,
+        )
+        context.lineTo(
+          closestFlag.p.x + translate.x,
+          closestFlag.p.y + translate.y,
+        )
+        context.stroke()
+      }
     }
   }
 }
