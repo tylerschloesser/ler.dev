@@ -3,6 +3,7 @@ import { Vec2 } from '../common/vec2'
 import { update } from './physics'
 import { renderCircle } from './render.util'
 import { state } from './state'
+import { Flag } from './types'
 
 const renderWorld: RenderFn = ({ context, config }) => {
   for (let wx = -1; wx <= 1; wx++) {
@@ -33,25 +34,29 @@ const renderWorld: RenderFn = ({ context, config }) => {
 
       {
         // TODO this doesn't handle when the closest flag rolls over
-        let closestFlag = state.world.flags[0]
-        let closestDist = state.ball.p.sub(closestFlag.p).length()
-        for (let i = 1; i < state.world.flags.length; i++) {
+        let closestFlag: Flag | null = null
+        let closestDist = Number.POSITIVE_INFINITY
+
+        for (let i = 0; i < state.world.flags.length; i++) {
           const dist = state.ball.p.sub(state.world.flags[i].p).length()
           if (dist < closestDist) {
             closestDist = dist
             closestFlag = state.world.flags[i]
           }
         }
-        context.strokeStyle = 'white'
-        context.moveTo(
-          state.ball.p.x + translate.x,
-          state.ball.p.y + translate.y,
-        )
-        context.lineTo(
-          closestFlag.p.x + translate.x,
-          closestFlag.p.y + translate.y,
-        )
-        context.stroke()
+
+        if (closestFlag) {
+          context.strokeStyle = 'white'
+          context.moveTo(
+            state.ball.p.x + translate.x,
+            state.ball.p.y + translate.y,
+          )
+          context.lineTo(
+            closestFlag.p.x + translate.x,
+            closestFlag.p.y + translate.y,
+          )
+          context.stroke()
+        }
       }
     }
   }
