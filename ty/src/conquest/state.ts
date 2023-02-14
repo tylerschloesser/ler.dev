@@ -5,7 +5,7 @@ export const state: State = {
   pointer: null,
   drag: null,
   world: {
-    size: new Vec2(400, 400),
+    size: new Vec2(1_000, 1_000),
     flags: [],
   },
   camera: {
@@ -16,7 +16,7 @@ export const state: State = {
     p: new Vec2(50, 50),
     v: new Vec2(40, 0),
     color: 'orange',
-    r: 15,
+    r: 2,
   },
 }
 

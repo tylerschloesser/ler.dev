@@ -11,13 +11,25 @@ function generateFlags() {
 
   const COLORS: Color[] = ['red', 'green', 'blue']
   for (let i = 0; i < count; i++) {
-    const color = COLORS[Math.floor(Math.random() * COLORS.length)]
-    const r = 10 + Math.floor(Math.random() * 40)
-    const p = new Vec2(
-      Math.random() * state.world.size.x,
-      Math.random() * state.world.size.y,
-    )
-    addFlag({ color, r, p })
+    do {
+      const color = COLORS[Math.floor(Math.random() * COLORS.length)]
+      const r = 10 + Math.floor(Math.random() * 40)
+      const p = new Vec2(
+        Math.random() * state.world.size.x,
+        Math.random() * state.world.size.y,
+      )
+
+      if (
+        state.world.flags.every((flag) => {
+          const dist = flag.p.sub(p).length()
+          const BUFFER = 20
+          return dist - flag.r - r - BUFFER > 0
+        })
+      ) {
+        addFlag({ color, r, p })
+        break
+      }
+    } while (true)
   }
 }
 
