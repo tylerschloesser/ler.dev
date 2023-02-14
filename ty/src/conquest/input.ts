@@ -16,7 +16,10 @@ export const handlePointer = (e: PointerEvent) => {
     }
   } else if (e.type === 'pointerup') {
     if (state.drag?.b) {
-      state.ball.v = state.drag.b.sub(state.drag.a).mul(-1)
+      state.ball.v = state.drag.b
+        .sub(state.drag.a)
+        .mul(-1)
+        .mul(1 / state.camera.zoom)
     }
     state.drag = null
   }
