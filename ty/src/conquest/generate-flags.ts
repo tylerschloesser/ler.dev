@@ -3,6 +3,8 @@ import { addFlag, state } from './state'
 import { Color } from './types'
 
 const COLORS: Color[] = ['red', 'green', 'blue']
+
+// min space between each flag
 const BUFFER = 20
 
 export function generateFlags() {
