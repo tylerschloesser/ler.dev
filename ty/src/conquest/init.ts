@@ -22,6 +22,7 @@ export const init: InitFn = ({ canvas, signal, updateConfig }) => {
     }
   })
 
+  canvas.addEventListener('pointerdown', handlePointer, { signal })
   canvas.addEventListener('pointermove', handlePointer, { signal })
   canvas.addEventListener('pointerup', handlePointer, { signal })
   canvas.addEventListener('wheel', handleWheel, { signal, passive: true })

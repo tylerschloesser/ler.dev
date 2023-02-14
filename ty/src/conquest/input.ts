@@ -20,6 +20,9 @@ export const handlePointer = (e: PointerEvent) => {
         .sub(state.drag.a)
         .mul(-1)
         .mul(1 / state.camera.zoom)
+    } else if (state.drag?.a) {
+      // single click stops the ball
+      state.ball.v = new Vec2(0, 0)
     }
     state.drag = null
   }
