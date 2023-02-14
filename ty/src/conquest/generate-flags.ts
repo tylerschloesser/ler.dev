@@ -3,6 +3,8 @@ import { addFlag, state } from './state'
 import { Color } from './types'
 
 const COLORS: Color[] = ['red', 'green', 'blue']
+const MIN_R = 10
+const MAX_R = 50
 
 // min space between each flag
 const BUFFER = 20
@@ -35,7 +37,7 @@ export function generateFlags() {
   for (let i = 0; i < count; i++) {
     do {
       const color = COLORS[Math.floor(Math.random() * COLORS.length)]
-      const r = 10 + Math.floor(Math.random() * 40)
+      const r = MIN_R + Math.floor(Math.random() * (MAX_R - MIN_R))
       const p = new Vec2(
         Math.random() * state.world.size.x,
         Math.random() * state.world.size.y,
