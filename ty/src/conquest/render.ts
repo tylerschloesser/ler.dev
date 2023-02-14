@@ -86,7 +86,9 @@ const renderDrag: RenderFn = ({ context }) => {
 }
 
 export const render: RenderFn = (args) => {
-  const { context, viewport, timestamp, elapsed, debug } = args
+  const { context, scale, viewport, timestamp, elapsed, debug } = args
+
+  context.scale(scale, scale)
   context.clearRect(0, 0, viewport.w, viewport.h)
   update({ timestamp, elapsed })
 
@@ -97,6 +99,7 @@ export const render: RenderFn = (args) => {
   renderWorld(args)
 
   context.resetTransform()
+  context.scale(scale, scale)
 
   renderPointer(args)
   renderDrag(args)

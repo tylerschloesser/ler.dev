@@ -14,6 +14,7 @@ export type InitFn = (args: {
 export type RenderFn = (args: {
   canvas: HTMLCanvasElement
   context: CanvasRenderingContext2D
+  scale: number
   viewport: Viewport
   timestamp: Milliseconds
   elapsed: Milliseconds
@@ -40,8 +41,12 @@ export interface Viewport {
 
 function defaultResize(canvas: HTMLCanvasElement) {
   const rect = canvas.getBoundingClientRect()
-  canvas.width = rect.width
-  canvas.height = rect.height
+
+  const scale = window.devicePixelRatio
+  canvas.dataset['scale'] = scale.toString()
+
+  canvas.width = Math.floor(rect.width * scale)
+  canvas.height = Math.floor(rect.height * scale)
 }
 
 const Canvas = styled.canvas`
@@ -77,9 +82,11 @@ export function Engine({ init, render, resize = defaultResize }: EngineProps) {
     ro.observe(canvas)
 
     const context = canvas.getContext('2d')!
+
+    const scale = parseFloat(canvas.dataset['scale']!)
     let viewport: Viewport = {
-      w: canvas.width,
-      h: canvas.height,
+      w: canvas.width / scale,
+      h: canvas.height / scale,
     }
 
     init({
@@ -111,9 +118,10 @@ export function Engine({ init, render, resize = defaultResize }: EngineProps) {
       let elapsed = last ? timestamp - last : 0
       last = timestamp
 
+      const scale = parseFloat(canvas.dataset['scale']!)
       viewport = {
-        w: canvas.width,
-        h: canvas.height,
+        w: canvas.width / scale,
+        h: canvas.height / scale,
       }
 
       const queue = new Map<string, string>()
@@ -121,6 +129,7 @@ export function Engine({ init, render, resize = defaultResize }: EngineProps) {
       render({
         canvas,
         context,
+        scale,
         viewport,
         timestamp,
         elapsed,
@@ -130,24 +139,27 @@ export function Engine({ init, render, resize = defaultResize }: EngineProps) {
         config: config.current,
       })
 
+      context.resetTransform()
+      context.scale(scale, scale)
+
       if (config.current.showDebug) {
         context.lineWidth = 1
-        context.strokeStyle = config.current.debugFontColor
+        context.fillStyle = config.current.debugFontColor
         context.font = '16px sans-serif'
         let y = 16
         queue.forEach((value, key) => {
-          context.strokeText(`${key}: ${value}`, 0, y)
+          context.fillText(`${key}: ${value}`, 0, y)
           y += 16
         })
       }
 
       if (config.current.showFps) {
         context.lineWidth = 1
-        context.strokeStyle = config.current.debugFontColor
+        context.fillStyle = config.current.debugFontColor
         context.font = '16px sans-serif'
         const text = `FPS: ${fps}`
         const metrics = context.measureText(text)
-        context.strokeText(text, viewport.w - metrics.width, 16)
+        context.fillText(text, viewport.w - metrics.width, 16)
       }
 
       if (!controllerRef.current.signal.aborted) {
