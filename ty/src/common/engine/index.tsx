@@ -42,6 +42,8 @@ export interface Viewport {
 function defaultResize(canvas: HTMLCanvasElement) {
   const rect = canvas.getBoundingClientRect()
 
+  // TODO monitor this separately
+  // https://developer.mozilla.org/en-US/docs/Web/API/Window/devicePixelRatio#javascript_2
   const scale = window.devicePixelRatio
   canvas.dataset['scale'] = scale.toString()
 
