@@ -3,10 +3,13 @@ import { generateFlags } from './generate-flags'
 import { handlePointer, handleWheel } from './input'
 
 export const init: InitFn = ({ canvas, signal, updateConfig }) => {
+  const showDebug = location.hostname === 'localhost'
+  const showFps = showDebug
+
   updateConfig((prev) => ({
     ...prev,
-    showDebug: true,
-    showFps: true,
+    showDebug,
+    showFps,
     debugFontColor: 'white',
   }))
 
