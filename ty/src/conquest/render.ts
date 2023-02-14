@@ -88,17 +88,19 @@ const renderDrag: RenderFn = ({ context }) => {
 export const render: RenderFn = (args) => {
   const { context, scale, viewport, timestamp, elapsed, debug } = args
 
-  context.scale(scale, scale)
   context.clearRect(0, 0, viewport.w, viewport.h)
   update({ timestamp, elapsed })
 
   const { zoom } = state.camera
   debug('zoom', zoom.toFixed(2))
+
   context.translate(viewport.w / 2, viewport.h / 2)
   context.scale(zoom, zoom)
+  context.scale(scale, scale)
   renderWorld(args)
 
   context.resetTransform()
+
   context.scale(scale, scale)
 
   renderPointer(args)
