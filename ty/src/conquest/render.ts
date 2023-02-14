@@ -74,12 +74,8 @@ const renderPointer: RenderFn = ({ context }) => {
 
 const renderDrag: RenderFn = ({ context }) => {
   if (state.drag?.a && state.drag.b) {
-    context.beginPath()
     const { a, b } = state.drag
-    context.moveTo(a.x, a.y)
-    context.lineTo(b.x, b.y)
-    context.stroke()
-    context.closePath()
+    renderLine(context, a, b, 'white')
   }
 }
 
