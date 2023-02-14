@@ -10,6 +10,14 @@ const renderWorld: RenderFn = ({ context }) => {
   })
 }
 
+const renderBall: RenderFn = ({ context, debug }) => {
+  {
+    const { p, r, color } = state.ball
+    debug('ball.p', p.toString())
+    renderCircle(context, p, r, color)
+  }
+}
+
 const renderPointer: RenderFn = ({ context }) => {
   if (state.pointer) {
     renderCircle(context, state.pointer, 20, 'white')
@@ -37,12 +45,7 @@ export const render: RenderFn = (args) => {
   context.scale(zoom, zoom)
 
   renderWorld(args)
-
-  {
-    const { p, r, color } = state.ball
-    debug('ball.p', p.toString())
-    renderCircle(context, p, r, color)
-  }
+  renderBall(args)
 
   context.resetTransform()
 
