@@ -39,4 +39,9 @@ export interface State {
   world: World
   camera: Camera
   ball: Ball
+
+  closestFlagInfo: null | {
+    index: number
+    modifier: Vec2
+  }
 }

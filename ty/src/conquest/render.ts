@@ -3,7 +3,6 @@ import { Vec2 } from '../common/vec2'
 import { update } from './physics'
 import { renderCircle, renderLine } from './render.util'
 import { state } from './state'
-import { Flag } from './types'
 
 const renderWorld: RenderFn = ({ context, config }) => {
   for (let wx = -1; wx <= 1; wx++) {
@@ -32,37 +31,15 @@ const renderWorld: RenderFn = ({ context, config }) => {
         renderCircle(context, translate.add(p), r, color)
       }
 
-      {
-        let closest: { flag: Flag; dist: number; modifier: Vec2 } | null = null
-
-        for (const modifier of [
-          new Vec2(0, 0),
-          new Vec2(state.world.size.x, 0),
-          new Vec2(-state.world.size.x, 0),
-          new Vec2(0, state.world.size.y),
-          new Vec2(0, -state.world.size.y),
-          new Vec2(state.world.size.x, state.world.size.y),
-          new Vec2(state.world.size.x, -state.world.size.y),
-          new Vec2(-state.world.size.x, state.world.size.y),
-          new Vec2(-state.world.size.x, -state.world.size.y),
-        ]) {
-          for (let i = 0; i < state.world.flags.length; i++) {
-            const flag = state.world.flags[i]
-            const dist = state.ball.p.sub(modifier.add(flag.p)).length()
-            if (dist < (closest?.dist ?? Number.POSITIVE_INFINITY)) {
-              closest = { flag, dist, modifier }
-            }
-          }
-        }
-
-        if (closest) {
-          renderLine(
-            context,
-            state.ball.p.add(translate),
-            closest.flag.p.add(closest.modifier).add(translate),
-            'white',
-          )
-        }
+      if (state.closestFlagInfo !== null) {
+        const { index, modifier } = state.closestFlagInfo
+        const flag = state.world.flags[index]
+        renderLine(
+          context,
+          state.ball.p.add(translate),
+          flag.p.add(modifier).add(translate),
+          'white',
+        )
       }
     }
   }

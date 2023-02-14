@@ -18,6 +18,7 @@ export const state: State = {
     color: 'orange',
     r: 2,
   },
+  closestFlagInfo: null,
 }
 
 export function addFlag(flag: Flag) {
