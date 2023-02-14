@@ -1,6 +1,5 @@
+import Color from 'color'
 import { Vec2 } from '../common/vec2'
-
-export type Color = 'red' | 'white' | 'blue' | 'green' | 'orange'
 
 export interface Flag {
   p: Vec2

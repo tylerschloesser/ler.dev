@@ -1,8 +1,11 @@
+import Color from 'color'
 import { RenderFn } from '../common/engine'
 import { Vec2 } from '../common/vec2'
 import { update } from './physics'
 import { renderCircle, renderLine } from './render.util'
 import { state } from './state'
+
+const WHITE = new Color('white')
 
 const renderWorld: RenderFn = ({ context, config }) => {
   for (let wx = -1; wx <= 1; wx++) {
@@ -25,7 +28,7 @@ const renderWorld: RenderFn = ({ context, config }) => {
 
       // render border
       if (config.showDebug) {
-        context.strokeStyle = 'white'
+        context.strokeStyle = WHITE.toString()
         const { x, y } = translate
         context.strokeRect(x, y, state.world.size.x, state.world.size.y)
       }
@@ -48,7 +51,7 @@ const renderWorld: RenderFn = ({ context, config }) => {
           context,
           state.ball.p.add(translate),
           flag.p.add(modifier).add(translate),
-          'white',
+          WHITE,
         )
       }
     }
@@ -61,7 +64,7 @@ const renderPointer: RenderFn = ({ context }) => {
       context,
       p: state.pointer,
       radius: 20,
-      color: 'white',
+      color: WHITE,
     })
   }
 }
@@ -69,7 +72,7 @@ const renderPointer: RenderFn = ({ context }) => {
 const renderDrag: RenderFn = ({ context }) => {
   if (state.drag?.a && state.drag.b) {
     const { a, b } = state.drag
-    renderLine(context, a, b, 'white')
+    renderLine(context, a, b, WHITE)
   }
 }
 

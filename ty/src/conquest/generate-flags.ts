@@ -1,8 +1,8 @@
+import Color from 'color'
 import { Vec2 } from '../common/vec2'
 import { addFlag, state } from './state'
-import { Color } from './types'
 
-const COLORS: Color[] = ['red', 'green', 'blue']
+const COLORS: Color[] = ['red', 'green', 'blue'].map((name) => new Color(name))
 const MIN_R = 10
 const MAX_R = 50
 

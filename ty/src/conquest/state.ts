@@ -1,3 +1,4 @@
+import Color from 'color'
 import { Vec2 } from '../common/vec2'
 import { Flag, State } from './types'
 
@@ -15,7 +16,7 @@ export const state: State = {
   ball: {
     p: new Vec2(50, 50),
     v: new Vec2(40, 0),
-    color: 'orange',
+    color: new Color('orange'),
     r: 2,
   },
   closestFlagInfo: null,
