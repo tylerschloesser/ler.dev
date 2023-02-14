@@ -33,7 +33,6 @@ const renderWorld: RenderFn = ({ context, config }) => {
       }
 
       {
-        // TODO this doesn't handle when the closest flag rolls over
         let closest: { flag: Flag; dist: number; modifier: Vec2 } | null = null
 
         for (const modifier of [
@@ -49,11 +48,7 @@ const renderWorld: RenderFn = ({ context, config }) => {
             const flag = state.world.flags[i]
             const dist = state.ball.p.sub(modifier.add(flag.p)).length()
             if (dist < (closest?.dist ?? Number.POSITIVE_INFINITY)) {
-              closest = {
-                flag,
-                dist,
-                modifier,
-              }
+              closest = { flag, dist, modifier }
             }
           }
         }
