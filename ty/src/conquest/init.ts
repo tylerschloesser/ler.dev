@@ -1,48 +1,7 @@
 import { InitFn } from '../common/engine'
 import { Vec2 } from '../common/vec2'
-import { addFlag, state } from './state'
-import { Color } from './types'
-
-function generateFlags() {
-  const count = Math.ceil(
-    Math.sqrt(state.world.size.x * state.world.size.y) * 0.05,
-  )
-  console.debug(`Generating ${count} flags`)
-
-  const COLORS: Color[] = ['red', 'green', 'blue']
-  for (let i = 0; i < count; i++) {
-    do {
-      const color = COLORS[Math.floor(Math.random() * COLORS.length)]
-      const r = 10 + Math.floor(Math.random() * 40)
-      const p = new Vec2(
-        Math.random() * state.world.size.x,
-        Math.random() * state.world.size.y,
-      )
-
-      if (
-        [
-          // super ineffecient, fight me
-          new Vec2(0, 0),
-          new Vec2(state.world.size.x, 0),
-          new Vec2(-state.world.size.x, 0),
-          new Vec2(0, state.world.size.y),
-          new Vec2(0, -state.world.size.y),
-          new Vec2(state.world.size.x, state.world.size.y),
-          new Vec2(-state.world.size.x, -state.world.size.y),
-        ].every((modifier) =>
-          state.world.flags.every((flag) => {
-            const dist = flag.p.sub(p.add(modifier)).length()
-            const BUFFER = 20
-            return dist - flag.r - r - BUFFER > 0
-          }),
-        )
-      ) {
-        addFlag({ color, r, p })
-        break
-      }
-    } while (true)
-  }
-}
+import { generateFlags } from './generate-flags'
+import { state } from './state'
 
 export const init: InitFn = ({ canvas, signal, updateConfig }) => {
   updateConfig((prev) => ({
