@@ -17,12 +17,21 @@ const renderWorld: RenderFn = ({ context, config }) => {
 
       // render flags
       state.world.flags.forEach((flag) => {
-        const { p, r, color } = flag
+        const { p, r, color, progress } = flag
+        if (progress > 0) {
+          renderCircle({
+            context,
+            p: translate.add(p),
+            radius: r,
+            color: color.fade(1 - progress),
+            filled: true,
+          })
+        }
         renderCircle({
           context,
           p: translate.add(p),
           radius: r,
-          color,
+          color: progress === 1 ? WHITE : color,
         })
       })
 

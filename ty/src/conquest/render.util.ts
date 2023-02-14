@@ -17,11 +17,20 @@ export function renderCircle({
   filled = false,
 }: RenderCircleArgs) {
   const { x, y } = p
-  context.strokeStyle = color.toString()
-  context.lineWidth = 2
   context.beginPath()
+  if (filled) {
+    context.fillStyle = color.toString()
+  } else {
+    context.strokeStyle = color.toString()
+    context.lineWidth = 2
+  }
   context.arc(x, y, radius, 0, Math.PI * 2)
-  context.stroke()
+  if (filled) {
+    context.fill()
+  } else {
+    context.stroke()
+  }
+  context.closePath()
 }
 
 export function renderLine(
