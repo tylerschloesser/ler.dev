@@ -4,20 +4,32 @@ import { renderCircle } from './render.util'
 import { state } from './state'
 
 const renderWorld: RenderFn = ({ context }) => {
-  state.world.flags.forEach((flag) => {
-    const { p, r, color } = flag
-    renderCircle(context, p, r, color)
-  })
+  for (let wx = -1; wx <= 1; wx++) {
+    for (let wy = -1; wy <= 1; wy++) {
+      const transform = context.getTransform()
 
-  context.strokeStyle = 'white'
-  context.strokeRect(0, 0, state.world.size.x, state.world.size.y)
-}
+      context.translate(wx * state.world.size.x, wy * state.world.size.y)
 
-const renderBall: RenderFn = ({ context, debug }) => {
-  {
-    const { p, r, color } = state.ball
-    debug('ball.p', p.toString())
-    renderCircle(context, p, r, color)
+      // render flags
+      state.world.flags.forEach((flag) => {
+        const { p, r, color } = flag
+        renderCircle(context, p, r, color)
+      })
+
+      // render border
+      {
+        context.strokeStyle = 'white'
+        context.strokeRect(0, 0, state.world.size.x, state.world.size.y)
+      }
+
+      // render ball
+      {
+        const { p, r, color } = state.ball
+        renderCircle(context, p, r, color)
+      }
+
+      context.setTransform(transform)
+    }
   }
 }
 
@@ -48,7 +60,6 @@ export const render: RenderFn = (args) => {
   context.scale(zoom, zoom)
 
   renderWorld(args)
-  renderBall(args)
 
   context.resetTransform()
 
