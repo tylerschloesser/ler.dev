@@ -7,6 +7,7 @@ import { Draw } from './draw'
 import { Fly } from './fly'
 import { Jump } from './jump'
 import { Demo as MenuDemo } from './menu'
+import { TestCanvas } from './test-canvas'
 import { Tetris } from './tetris'
 
 interface PathInfo {
@@ -54,5 +55,9 @@ export const PATHS: PathInfo[] = [
   {
     path: 'jump',
     Component: Jump,
+  },
+  {
+    path: 'test-canvas',
+    Component: TestCanvas,
   },
 ]
