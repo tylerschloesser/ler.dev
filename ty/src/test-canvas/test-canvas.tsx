@@ -8,17 +8,15 @@ interface Perf {
 export function TestCanvas() {
   const [fps, setFps] = useState(0)
   const perf = useRef<Perf>({ frames: 0, last: 0 })
-  const canvas = useRef<HTMLCanvasElement>(null)
+  const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null)
 
   useEffect(() => {
+    if (!canvas) return
     let stop = false
 
-    function handleFrame(timestamp: number) {
-      if (!canvas.current) {
-        if (!stop) requestAnimationFrame(handleFrame)
-        return
-      }
+    const context = canvas.getContext('2d')!
 
+    function handleFrame(timestamp: number) {
       if (
         Math.floor(timestamp / 1000) !== Math.floor(perf.current.last / 1000)
       ) {
@@ -31,8 +29,7 @@ export function TestCanvas() {
         perf.current.frames++
       }
 
-      const context = canvas.current.getContext('2d')!
-      context.clearRect(0, 0, canvas.current.width, canvas.current.height)
+      context.clearRect(0, 0, canvas!.width, canvas!.height)
 
       context.strokeStyle = 'white'
       context.lineWidth = 2
@@ -45,12 +42,12 @@ export function TestCanvas() {
     return () => {
       stop = true
     }
-  }, [])
+  }, [canvas])
 
   return (
     <div>
       FPS: {fps}
-      <canvas ref={canvas}></canvas>
+      <canvas ref={setCanvas}></canvas>
     </div>
   )
 }
