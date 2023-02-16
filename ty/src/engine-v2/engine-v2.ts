@@ -1,12 +1,25 @@
+type Milliseconds = number
+
+export interface ConstructorArgs {
+  container: HTMLElement
+}
+
 export class EngineV2 {
   readonly container: HTMLElement
+  readonly canvas: HTMLCanvasElement
 
-  constructor(container: HTMLElement) {
+  constructor({ container }: ConstructorArgs) {
     this.container = container
-    console.log('todo init')
+    this.canvas = document.createElement('canvas')
+    this.container.appendChild(this.canvas)
+    window.requestAnimationFrame(this.handleFrame.bind(this))
+  }
+
+  private handleFrame(timestamp: Milliseconds) {
+    window.requestAnimationFrame(this.handleFrame.bind(this))
   }
 
   cleanup() {
-    console.log('todo cleanup')
+    this.canvas.remove()
   }
 }
