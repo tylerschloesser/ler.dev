@@ -15,8 +15,7 @@ export function addBall() {
   const ab = state.drag.a.sub(state.drag.b)
   const v = ab.norm().mul(ab.length() * 5)
   state.ball = { p, v }
-  console.debug(state.viewport)
-  console.debug('adding ball', state.ball.p.toString(), state.ball.v.toString())
+  console.debug('adding ball')
 }
 
 export function update({ elapsed }: UpdateArgs) {
