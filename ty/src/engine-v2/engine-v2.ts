@@ -1,5 +1,5 @@
-import { InitFn, RenderFn } from '../common/engine'
-import { preventScroll, updateSize } from './util'
+import { RenderFn } from '../common/engine'
+import { initDebug, preventScroll, updateSize } from './util'
 
 type Milliseconds = number
 
@@ -15,8 +15,10 @@ export class EngineV2 {
 
   private readonly context: CanvasRenderingContext2D
   private readonly render: RenderFn
+  private readonly debug: HTMLElement
 
   private lastFrame: number = 0
+  private frames: number = 0
 
   constructor({ container, render }: ConstructorArgs) {
     this.container = container
@@ -25,6 +27,7 @@ export class EngineV2 {
     this.container.appendChild(this.canvas)
     this.controller = new AbortController()
     this.render = render
+    this.debug = initDebug(this.container)
 
     preventScroll(this.controller.signal)
     updateSize(this.container, this.canvas)
@@ -39,6 +42,12 @@ export class EngineV2 {
     if (this.controller.signal.aborted) {
       return
     }
+
+    if (Math.floor(this.lastFrame / 1000) !== Math.floor(timestamp / 1000)) {
+      this.debug.textContent = `FPS: ${this.frames}`
+      this.frames = 0
+    }
+    this.frames++
 
     const elapsed = timestamp - this.lastFrame
     this.lastFrame = timestamp
