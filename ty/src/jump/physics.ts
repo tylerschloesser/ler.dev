@@ -27,10 +27,10 @@ export function update({ elapsed }: UpdateArgs) {
     ball.v = ball.v.add(a.mul(toSeconds(elapsed)))
 
     if (
-      ball.p.y > state.viewport.h ||
-      ball.p.y < 0 ||
-      ball.p.x > state.viewport.w ||
-      ball.p.x < 0
+      ball.p.y - ball.r > state.viewport.h ||
+      ball.p.y + ball.r < 0 ||
+      ball.p.x - ball.r > state.viewport.w ||
+      ball.p.x + ball.r < 0
     ) {
       state.ball = null
       console.debug('removing ball')
