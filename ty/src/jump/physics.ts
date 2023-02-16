@@ -25,18 +25,27 @@ export function update({ elapsed }: UpdateArgs) {
     ball.p = ball.p.add(ball.v.mul(toSeconds(elapsed)))
     let captured = false
 
+    let a = new Vec2(0, 6 * 1000)
+    let friction = 1
+
     for (const target of state.targets) {
       const dist = target.p.sub(ball.p).length()
-      if (dist < target.r + ball.r) {
-        ball.p = target.p
-        captured = true
+      if (dist < target.r * 3 + ball.r) {
+        a = a.add(
+          target.p
+            .sub(ball.p)
+            .mul(1000)
+            .mul(1 - dist / (target.r * 3 + ball.r)),
+        )
+
+        // slow the ball down as it gets closer to the target
+        friction = Math.sqrt(dist / (target.r * 3 + ball.r))
         break
       }
     }
 
     if (!captured) {
-      const a = new Vec2(0, 6 * 1000)
-      ball.v = ball.v.add(a.mul(toSeconds(elapsed)))
+      ball.v = ball.v.add(a.mul(toSeconds(elapsed))).mul(friction)
 
       if (
         ball.p.y - ball.r > state.viewport.h ||
