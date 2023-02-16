@@ -42,6 +42,18 @@ function renderBall(buffer: RenderObject[]) {
   })
 }
 
+function renderTargets(buffer: RenderObject[]) {
+  state.targets.forEach(({ p, r }) => {
+    buffer.push({
+      type: 'circle',
+      method: 'fill',
+      p,
+      r,
+      color: new Color('red'),
+    })
+  })
+}
+
 export const render: RenderFn = ({ context, elapsed }) => {
   context.clearRect(0, 0, state.viewport.w, state.viewport.h)
   update({ elapsed })
@@ -49,6 +61,7 @@ export const render: RenderFn = ({ context, elapsed }) => {
   const buffer: RenderObject[] = []
 
   renderInput(buffer)
+  renderTargets(buffer)
   renderBall(buffer)
 
   renderBuffer(context, buffer)

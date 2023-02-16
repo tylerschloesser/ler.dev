@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
+import { Vec2 } from '../common/vec2'
 import { EngineV2 } from '../engine-v2'
 import { handlePointer } from './input'
 import { render } from './render'
@@ -27,6 +28,11 @@ export function Jump() {
       w: canvas.width,
       h: canvas.height,
     }
+
+    state.targets.push({
+      p: new Vec2(state.viewport.w * 0.75, state.viewport.h * 0.33),
+      r: Math.min(state.viewport.w, state.viewport.h) * 0.05,
+    })
 
     engine.start()
 
