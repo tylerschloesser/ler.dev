@@ -4,6 +4,7 @@ import { Vec2 } from '../common/vec2'
 export interface Ball {
   p: Vec2
   v: Vec2
+  r: number
 }
 
 export interface Drag {

@@ -14,21 +14,23 @@ export function addBall() {
   const p = new Vec2(state.viewport.w / 2, state.viewport.h)
   const ab = state.drag.a.sub(state.drag.b)
   const v = ab.norm().mul(ab.length() * 5)
-  state.ball = { p, v }
+  const r = Math.floor(Math.min(state.viewport.w, state.viewport.h) * 0.05)
+  state.ball = { p, v, r }
   console.debug('adding ball')
 }
 
 export function update({ elapsed }: UpdateArgs) {
-  if (state.ball) {
+  const { ball } = state
+  if (ball) {
     const a = new Vec2(0, 5 * 1000)
-    state.ball.p = state.ball.p.add(state.ball.v.mul(toSeconds(elapsed)))
-    state.ball.v = state.ball.v.add(a.mul(toSeconds(elapsed)))
+    ball.p = ball.p.add(ball.v.mul(toSeconds(elapsed)))
+    ball.v = ball.v.add(a.mul(toSeconds(elapsed)))
 
     if (
-      state.ball.p.y > state.viewport.h ||
-      state.ball.p.y < 0 ||
-      state.ball.p.x > state.viewport.w ||
-      state.ball.p.x < 0
+      ball.p.y > state.viewport.h ||
+      ball.p.y < 0 ||
+      ball.p.x > state.viewport.w ||
+      ball.p.x < 0
     ) {
       state.ball = null
       console.debug('removing ball')
