@@ -20,9 +20,13 @@ export function TestCanvas() {
   useEffect(() => {
     if (!canvas) return
 
+    let scale = window.devicePixelRatio
+    // scale = 1
     const rect = document.body.getBoundingClientRect()
-    canvas.width = rect.width
-    canvas.height = rect.height
+    canvas.width = rect.width * scale
+    canvas.height = rect.height * scale
+    canvas.style.width = `${rect.width}px`
+    canvas.style.height = `${rect.height}px`
 
     let stop = false
 
@@ -43,13 +47,16 @@ export function TestCanvas() {
 
       context.clearRect(0, 0, canvas!.width, canvas!.height)
 
+      context.resetTransform()
+      context.scale(scale, scale)
+
       context.strokeStyle = 'white'
       context.lineWidth = 2
       for (let i = 0; i < 100; i++) {
         const w = 10 + Math.floor(Math.random() * 20)
         const h = 10 + Math.floor(Math.random() * 20)
-        const x = Math.random() * (canvas!.width - w)
-        const y = Math.random() * (canvas!.height - h)
+        const x = Math.random() * (rect.width - w)
+        const y = Math.random() * (rect.height - h)
         context.strokeRect(x, y, w, h)
       }
 
