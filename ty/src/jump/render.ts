@@ -9,7 +9,21 @@ export const render: RenderFn = ({ context, viewport }) => {
 
   const buffer: RenderObject[] = []
 
-  if (state.pointer) {
+  if (state.drag?.b) {
+    buffer.push({
+      type: 'line',
+      a: state.drag.a,
+      b: state.drag.b,
+      color: new Color('white'),
+    })
+    buffer.push({
+      type: 'circle',
+      method: 'stroke',
+      p: state.drag.b,
+      r: 10,
+      color: new Color('white'),
+    })
+  } else if (state.pointer) {
     buffer.push({
       type: 'circle',
       method: 'stroke',
