@@ -30,12 +30,25 @@ function renderInput(buffer: RenderObject[]) {
   }
 }
 
+function renderBall(buffer: RenderObject[]) {
+  if (!state.ball) return
+
+  buffer.push({
+    type: 'circle',
+    method: 'fill',
+    p: state.ball.p,
+    r: 20,
+    color: new Color('blue'),
+  })
+}
+
 export const render: RenderFn = ({ context, viewport }) => {
   context.clearRect(0, 0, viewport.w, viewport.h)
 
   const buffer: RenderObject[] = []
 
   renderInput(buffer)
+  renderBall(buffer)
 
   renderBuffer(context, buffer)
 }
