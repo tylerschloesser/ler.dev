@@ -1,8 +1,14 @@
-import React from 'react'
-import { Engine } from '../common/engine'
-import { init } from './init'
-import { render } from './render'
+import React, { useEffect, useState } from 'react'
+import { EngineV2 } from '../engine-v2'
 
 export function Jump() {
-  return <Engine render={render} init={init} />
+  const [container, setContainer] = useState<HTMLElement | null>(null)
+  useEffect(() => {
+    if (!container) return
+    const engine = new EngineV2(container)
+    return () => {
+      engine.cleanup()
+    }
+  }, [container])
+  return <div ref={setContainer} />
 }
