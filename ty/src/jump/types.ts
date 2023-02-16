@@ -7,6 +7,11 @@ export interface Ball {
   r: number
 }
 
+export interface Target {
+  p: Vec2
+  r: number
+}
+
 export interface Drag {
   a: Vec2
   b: Vec2 | null
@@ -17,4 +22,5 @@ export interface State {
   drag: Drag | null
   ball: Ball | null
   viewport: Viewport
+  targets: Target[]
 }

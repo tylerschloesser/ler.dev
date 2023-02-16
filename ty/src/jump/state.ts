@@ -5,4 +5,5 @@ export const state: State = {
   drag: null,
   ball: null,
   viewport: null!, // to be set during init
+  targets: [],
 }
