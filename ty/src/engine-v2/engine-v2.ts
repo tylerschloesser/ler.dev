@@ -1,5 +1,5 @@
 import { InitFn, RenderFn } from '../common/engine'
-import { preventScroll } from './util'
+import { preventScroll, updateSize } from './util'
 
 type Milliseconds = number
 
@@ -21,6 +21,7 @@ export class EngineV2 {
     this.controller = new AbortController()
 
     preventScroll(this.controller.signal)
+    updateSize(this.container, this.canvas)
 
     window.requestAnimationFrame(this.handleFrame.bind(this))
   }
