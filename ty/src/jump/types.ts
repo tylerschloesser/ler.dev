@@ -1,3 +1,4 @@
+import { Viewport } from '../common/engine'
 import { Vec2 } from '../common/vec2'
 
 export interface Ball {
@@ -14,4 +15,5 @@ export interface State {
   pointer: Vec2 | null
   drag: Drag | null
   ball: Ball | null
+  viewport: Viewport
 }
