@@ -6,8 +6,8 @@ import { render } from './render'
 import { state } from './state'
 
 const Container = styled.div`
-  width: 100%;
-  height: 100%;
+  width: 100dvw;
+  height: 100dvh;
 `
 
 export function Jump() {
