@@ -5,7 +5,6 @@ export function handlePointer(e: PointerEvent) {
   const p = new Vec2(e.x, e.y)
   state.pointer = p
 
-  console.log(e.type)
   switch (e.type) {
     case 'pointerdown': {
       state.drag = {
