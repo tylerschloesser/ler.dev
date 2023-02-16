@@ -1,4 +1,5 @@
 import { Vec2 } from '../common/vec2'
+import { addBall } from './physics'
 import { state } from './state'
 
 export function handlePointer(e: PointerEvent) {
@@ -21,9 +22,7 @@ export function handlePointer(e: PointerEvent) {
     }
     case 'pointerup': {
       if (state.drag?.b) {
-        const p = new Vec2(200, 200)
-        const v = state.drag.a.sub(state.drag.b).norm().mul(10)
-        state.ball = { p, v }
+        addBall()
       }
       state.drag = null
       break
