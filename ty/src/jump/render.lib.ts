@@ -1,4 +1,4 @@
-import { Circle, Rectangle, RenderObject } from './render.types'
+import { Circle, Line, Rectangle } from './render.types'
 
 export function renderCircle(
   context: CanvasRenderingContext2D,
@@ -23,4 +23,16 @@ export function renderRectangle(
   rectangle: Rectangle,
 ) {
   throw Error('todo')
+}
+
+export function renderLine(
+  context: CanvasRenderingContext2D,
+  { a, b, color }: Line,
+) {
+  context.beginPath()
+  context.strokeStyle = color.toString()
+  context.moveTo(a.x, a.y)
+  context.lineTo(b.x, b.y)
+  context.stroke()
+  context.closePath()
 }

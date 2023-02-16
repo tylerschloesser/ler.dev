@@ -1,6 +1,6 @@
 import Color from 'color'
 import { RenderFn } from '../common/engine'
-import { renderCircle, renderRectangle } from './render.lib'
+import { renderCircle, renderLine, renderRectangle } from './render.lib'
 import { RenderObject } from './render.types'
 import { state } from './state'
 
@@ -34,6 +34,10 @@ function renderBuffer(
       }
       case 'rectangle': {
         renderRectangle(context, renderObject)
+        break
+      }
+      case 'line': {
+        renderLine(context, renderObject)
         break
       }
       default: {
