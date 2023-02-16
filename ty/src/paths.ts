@@ -5,6 +5,7 @@ import { Cal } from './cal'
 import { Conquest } from './conquest'
 import { Draw } from './draw'
 import { Fly } from './fly'
+import { Jump } from './jump'
 import { Demo as MenuDemo } from './menu'
 import { Tetris } from './tetris'
 
@@ -49,5 +50,9 @@ export const PATHS: PathInfo[] = [
   {
     path: 'conquest',
     Component: Conquest,
+  },
+  {
+    path: 'jump',
+    Component: Jump,
   },
 ]
