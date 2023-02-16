@@ -1,4 +1,4 @@
-import { Vec2 } from 'three'
+import { Vec2 } from '../common/vec2'
 
 export interface Ball {
   p: Vec2

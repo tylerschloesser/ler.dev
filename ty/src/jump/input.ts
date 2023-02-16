@@ -20,6 +20,11 @@ export function handlePointer(e: PointerEvent) {
       break
     }
     case 'pointerup': {
+      if (state.drag?.b) {
+        const p = new Vec2(200, 200)
+        const v = state.drag.a.sub(state.drag.b).norm().mul(10)
+        state.ball = { p, v }
+      }
       state.drag = null
       break
     }

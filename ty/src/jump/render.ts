@@ -4,11 +4,7 @@ import { renderCircle, renderLine, renderRectangle } from './render.lib'
 import { RenderObject } from './render.types'
 import { state } from './state'
 
-export const render: RenderFn = ({ context, viewport }) => {
-  context.clearRect(0, 0, viewport.w, viewport.h)
-
-  const buffer: RenderObject[] = []
-
+function renderInput(buffer: RenderObject[]) {
   if (state.drag?.b) {
     buffer.push({
       type: 'line',
@@ -32,6 +28,14 @@ export const render: RenderFn = ({ context, viewport }) => {
       color: new Color('white'),
     })
   }
+}
+
+export const render: RenderFn = ({ context, viewport }) => {
+  context.clearRect(0, 0, viewport.w, viewport.h)
+
+  const buffer: RenderObject[] = []
+
+  renderInput(buffer)
 
   renderBuffer(context, buffer)
 }
