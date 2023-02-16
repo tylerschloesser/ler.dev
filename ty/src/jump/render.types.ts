@@ -17,4 +17,11 @@ export interface Rectangle {
   color: Color
 }
 
-export type RenderObject = Circle | Rectangle
+export interface Line {
+  type: 'line'
+  a: Vec2
+  b: Vec2
+  color: Color
+}
+
+export type RenderObject = Circle | Rectangle | Line

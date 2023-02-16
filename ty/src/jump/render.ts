@@ -36,6 +36,9 @@ function renderBuffer(
         renderRectangle(context, renderObject)
         break
       }
+      default: {
+        throw Error('todo')
+      }
     }
   })
 }
