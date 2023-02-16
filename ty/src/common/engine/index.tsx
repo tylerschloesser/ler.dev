@@ -112,6 +112,7 @@ export function Engine({ init, render, resize = defaultResize }: EngineProps) {
       }
 
       if (last && Math.floor(last / 1000) !== Math.floor(timestamp / 1000)) {
+        console.log(frames)
         fps = frames
         frames = 0
       }

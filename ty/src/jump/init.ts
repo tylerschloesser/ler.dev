@@ -8,7 +8,7 @@ export const init: InitFn = ({ canvas, signal, viewport, updateConfig }) => {
 
   updateConfig((prev) => ({
     ...prev,
-    showFps: true,
+    showFps: false,
     debugFontColor: 'white',
   }))
 
