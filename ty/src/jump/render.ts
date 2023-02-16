@@ -1,5 +1,6 @@
 import Color from 'color'
 import { RenderFn } from '../common/engine'
+import { update } from './physics'
 import { renderCircle, renderLine, renderRectangle } from './render.lib'
 import { RenderObject } from './render.types'
 import { state } from './state'
@@ -42,8 +43,9 @@ function renderBall(buffer: RenderObject[]) {
   })
 }
 
-export const render: RenderFn = ({ context, viewport }) => {
+export const render: RenderFn = ({ context, viewport, elapsed }) => {
   context.clearRect(0, 0, viewport.w, viewport.h)
+  update({ elapsed })
 
   const buffer: RenderObject[] = []
 
