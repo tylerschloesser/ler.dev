@@ -22,18 +22,31 @@ export function addBall() {
 export function update({ elapsed }: UpdateArgs) {
   const { ball } = state
   if (ball) {
-    const a = new Vec2(0, 6 * 1000)
     ball.p = ball.p.add(ball.v.mul(toSeconds(elapsed)))
-    ball.v = ball.v.add(a.mul(toSeconds(elapsed)))
+    let captured = false
 
-    if (
-      ball.p.y - ball.r > state.viewport.h ||
-      ball.p.y + ball.r < 0 ||
-      ball.p.x - ball.r > state.viewport.w ||
-      ball.p.x + ball.r < 0
-    ) {
-      state.ball = null
-      console.debug('removing ball')
+    for (const target of state.targets) {
+      const dist = target.p.sub(ball.p).length()
+      if (dist < target.r + ball.r) {
+        ball.p = target.p
+        captured = true
+        break
+      }
+    }
+
+    if (!captured) {
+      const a = new Vec2(0, 6 * 1000)
+      ball.v = ball.v.add(a.mul(toSeconds(elapsed)))
+
+      if (
+        ball.p.y - ball.r > state.viewport.h ||
+        ball.p.y + ball.r < 0 ||
+        ball.p.x - ball.r > state.viewport.w ||
+        ball.p.x + ball.r < 0
+      ) {
+        state.ball = null
+        console.debug('removing ball')
+      }
     }
   }
 }
