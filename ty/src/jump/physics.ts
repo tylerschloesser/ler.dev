@@ -15,13 +15,13 @@ export function addBall() {
 
   const p = new Vec2(state.viewport.w / 2, state.viewport.h)
   const ab = state.drag.a.sub(state.drag.b)
-  const v = ab.norm().mul(ab.length() * 4)
+  const v = ab.norm().mul(ab.length() * 5)
   state.ball = { p, v }
 }
 
 export function update({ elapsed }: UpdateArgs) {
   if (state.ball) {
-    const a = new Vec2(0, 4 * 1000)
+    const a = new Vec2(0, 5 * 1000)
     state.ball.p = state.ball.p.add(state.ball.v.mul(toSeconds(elapsed)))
     state.ball.v = state.ball.v.add(a.mul(toSeconds(elapsed)))
 
