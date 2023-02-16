@@ -5,7 +5,6 @@ type Milliseconds = number
 
 export interface ConstructorArgs {
   container: HTMLElement
-  init: InitFn
   render: RenderFn
 }
 
@@ -14,15 +13,25 @@ export class EngineV2 {
   readonly canvas: HTMLCanvasElement
   readonly controller: AbortController
 
-  constructor({ container }: ConstructorArgs) {
+  private readonly context: CanvasRenderingContext2D
+  private readonly render: RenderFn
+
+  private lastFrame: number = 0
+
+  constructor({ container, render }: ConstructorArgs) {
     this.container = container
     this.canvas = document.createElement('canvas')
+    this.context = this.canvas.getContext('2d')! // TODO error handling
     this.container.appendChild(this.canvas)
     this.controller = new AbortController()
+    this.render = render
 
     preventScroll(this.controller.signal)
     updateSize(this.container, this.canvas)
+  }
 
+  start() {
+    this.lastFrame = window.performance.now()
     window.requestAnimationFrame(this.handleFrame.bind(this))
   }
 
@@ -30,7 +39,23 @@ export class EngineV2 {
     if (this.controller.signal.aborted) {
       return
     }
-    console.log('handle frame')
+
+    const elapsed = timestamp - this.lastFrame
+    this.lastFrame = timestamp
+
+    this.render({
+      context: this.context,
+      elapsed,
+      timestamp,
+
+      // TODO clean this up
+      canvas: null!,
+      config: null!,
+      debug: null!,
+      scale: null!,
+      viewport: null!,
+    })
+
     window.requestAnimationFrame(this.handleFrame.bind(this))
   }
 }

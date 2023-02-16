@@ -45,8 +45,8 @@ function renderBall(buffer: RenderObject[]) {
   })
 }
 
-export const render: RenderFn = ({ context, viewport, elapsed }) => {
-  context.clearRect(0, 0, viewport.w, viewport.h)
+export const render: RenderFn = ({ context, elapsed }) => {
+  context.clearRect(0, 0, state.viewport.w, state.viewport.h)
   update({ elapsed })
 
   const buffer: RenderObject[] = []
