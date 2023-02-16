@@ -34,11 +34,13 @@ function renderInput(buffer: RenderObject[]) {
 function renderBall(buffer: RenderObject[]) {
   if (!state.ball) return
 
+  const r = Math.floor(Math.min(state.viewport.w, state.viewport.h) * 0.05)
+
   buffer.push({
     type: 'circle',
     method: 'fill',
     p: state.ball.p,
-    r: 20,
+    r,
     color: new Color('blue'),
   })
 }
