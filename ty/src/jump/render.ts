@@ -19,6 +19,13 @@ export const render: RenderFn = ({ context, viewport }) => {
     })
   }
 
+  renderBuffer(context, buffer)
+}
+
+function renderBuffer(
+  context: CanvasRenderingContext2D,
+  buffer: RenderObject[],
+) {
   buffer.forEach((renderObject) => {
     switch (renderObject.type) {
       case 'circle': {
