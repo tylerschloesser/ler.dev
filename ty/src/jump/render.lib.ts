@@ -7,13 +7,13 @@ export function renderCircle(
   context.beginPath()
   if (method === 'fill') {
     context.fillStyle = color.toString()
-    context.arc(Math.round(p.x), Math.round(p.y), Math.round(r), 0, Math.PI * 2)
+    context.arc(p.x, p.y, r, 0, Math.PI * 2)
     context.fill()
   } else {
     // stroke
     context.strokeStyle = color.toString()
     context.lineWidth = 1
-    context.arc(Math.round(p.x), Math.round(p.y), Math.round(r), 0, Math.PI * 2)
+    context.arc(p.x, p.y, r, 0, Math.PI * 2)
     context.stroke()
   }
 }
@@ -31,8 +31,8 @@ export function renderLine(
 ) {
   context.beginPath()
   context.strokeStyle = color.toString()
-  context.moveTo(Math.round(a.x), Math.round(a.y))
-  context.lineTo(Math.round(b.x), Math.round(b.y))
+  context.moveTo(a.x, a.y)
+  context.lineTo(b.x, b.y)
   context.stroke()
   context.closePath()
 }
