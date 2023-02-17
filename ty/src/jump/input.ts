@@ -1,5 +1,5 @@
 import { Vec2 } from '../common/vec2'
-import { addBall } from './physics'
+import { launchBall } from './physics'
 import { state } from './state'
 
 export function handlePointer(e: PointerEvent) {
@@ -22,7 +22,7 @@ export function handlePointer(e: PointerEvent) {
     }
     case 'pointerup': {
       if (state.drag?.b) {
-        addBall()
+        launchBall()
       }
       state.drag = null
       break

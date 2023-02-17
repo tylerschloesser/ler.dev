@@ -9,7 +9,7 @@ export interface UpdateArgs {
 
 const toSeconds = (ms: Milliseconds) => ms / 1000
 
-export function addBall() {
+export function launchBall() {
   if (!state.drag?.b) throw Error('this should only be called if drag is valid')
 
   const p = new Vec2(state.viewport.w / 2, 0)
