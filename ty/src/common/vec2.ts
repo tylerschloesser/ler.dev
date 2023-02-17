@@ -40,6 +40,9 @@ export class Vec2 {
 
   norm(): Vec2 {
     const length = this.length()
+    if (length === 0) {
+      return new Vec2(0, 0)
+    }
     return new Vec2(this.x / length, this.y / length)
   }
 }
