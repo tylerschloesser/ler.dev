@@ -17,7 +17,7 @@ export function addBall() {
   const v = ab.norm().mul(ab.length() * 6)
   const r = Math.floor(Math.min(state.viewport.w, state.viewport.h) * 0.05)
   state.ball = { p, v, r, capturedBy: null }
-  console.debug('adding ball', JSON.stringify(state.ball))
+  console.debug('adding ball')
 }
 
 export function update({ elapsed }: UpdateArgs) {
