@@ -1,10 +1,14 @@
 import { Viewport } from '../common/engine'
 import { Vec2 } from '../common/vec2'
 
+export type TargetIndex = number
+
 export interface Ball {
   p: Vec2
   v: Vec2
   r: number
+
+  capturedBy: TargetIndex | null
 }
 
 export interface Target {

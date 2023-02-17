@@ -1,5 +1,6 @@
 import Color from 'color'
 import { RenderFn } from '../common/engine'
+import { Vec2 } from '../common/vec2'
 import { update } from './physics'
 import { renderCircle, renderLine, renderRectangle } from './render.lib'
 import { RenderObject } from './render.types'
@@ -31,30 +32,30 @@ function renderInput(buffer: RenderObject[]) {
   }
 }
 
-function renderBall(buffer: RenderObject[]) {
+function renderBall(buffer: RenderObject[], translate: Vec2) {
   if (!state.ball) return
   buffer.push({
     type: 'circle',
     method: 'fill',
-    p: state.ball.p,
+    p: state.ball.p.add(translate),
     r: state.ball.r,
     color: new Color('blue'),
   })
 }
 
-function renderTargets(buffer: RenderObject[]) {
+function renderTargets(buffer: RenderObject[], translate: Vec2) {
   state.targets.forEach(({ p, r }) => {
     buffer.push({
       type: 'circle',
       method: 'fill',
-      p,
+      p: p.add(translate),
       r,
       color: new Color('red'),
     })
     buffer.push({
       type: 'circle',
       method: 'stroke',
-      p,
+      p: p.add(translate),
       r: r * 3,
       color: new Color('red'),
     })
@@ -68,8 +69,10 @@ export const render: RenderFn = ({ context, elapsed }) => {
   const buffer: RenderObject[] = []
 
   renderInput(buffer)
-  renderTargets(buffer)
-  renderBall(buffer)
+
+  const translate = state.camera.p.mul(-1)
+  renderTargets(buffer, translate)
+  renderBall(buffer, translate)
 
   renderBuffer(context, buffer)
 }
