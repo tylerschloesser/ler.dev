@@ -23,4 +23,5 @@ export interface State {
   ball: Ball | null
   viewport: Viewport
   targets: Target[]
+  camera: Vec2
 }
