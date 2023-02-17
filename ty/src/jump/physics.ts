@@ -67,15 +67,14 @@ export function update({ elapsed }: UpdateArgs) {
 function updateCamera({ elapsed }: UpdateArgs) {
   if (state.ball && state.ball.capturedBy !== null) {
     const target = state.targets[state.ball.capturedBy]
-    const destination = new Vec2(state.viewport.w, state.viewport.h)
-      .div(2)
-      .mul(-1)
-      .add(target.p)
+    const destination = target.p.sub(
+      new Vec2(state.viewport.w / 2, state.viewport.h * 0.66),
+    )
 
-    let v = destination.sub(state.ball.p)
-    v = v.norm().mul(Math.min(v.length(), 100))
+    let v = destination.sub(state.camera.p)
+    v = v.norm().mul(Math.pow(v.length(), 1.4))
 
     state.camera.v = v
-    state.camera.p = state.camera.p.add(state.camera.v.mul(toSeconds(elapsed)))
+    state.camera.p = state.camera.p.add(v.mul(toSeconds(elapsed)))
   }
 }
