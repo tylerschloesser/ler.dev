@@ -27,5 +27,9 @@ export function handlePointer(e: PointerEvent) {
       state.drag = null
       break
     }
+    case 'pointerleave': {
+      state.drag = state.pointer = null
+      break
+    }
   }
 }

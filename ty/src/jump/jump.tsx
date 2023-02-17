@@ -22,6 +22,7 @@ export function Jump() {
     canvas.addEventListener('pointerdown', handlePointer, { signal })
     canvas.addEventListener('pointermove', handlePointer, { signal })
     canvas.addEventListener('pointerup', handlePointer, { signal })
+    canvas.addEventListener('pointerleave', handlePointer, { signal })
 
     // TODO clean this up
     state.viewport = {
