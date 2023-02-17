@@ -30,7 +30,10 @@ export function Jump() {
       h: canvas.height,
     }
 
-    state.camera = new Vec2(0, 0)
+    state.camera = {
+      p: new Vec2(0, 0),
+      v: new Vec2(0, 0),
+    }
 
     state.targets.push({
       p: new Vec2(state.viewport.w * 0.75, state.viewport.h * 0.33),

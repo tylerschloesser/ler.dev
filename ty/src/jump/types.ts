@@ -17,11 +17,16 @@ export interface Drag {
   b: Vec2 | null
 }
 
+export interface Camera {
+  p: Vec2
+  v: Vec2
+}
+
 export interface State {
   pointer: Vec2 | null
   drag: Drag | null
   ball: Ball | null
   viewport: Viewport
   targets: Target[]
-  camera: Vec2
+  camera: Camera
 }
