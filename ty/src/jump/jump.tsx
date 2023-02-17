@@ -5,6 +5,7 @@ import { EngineV2 } from '../engine-v2'
 import { handlePointer } from './input'
 import { render } from './render'
 import { state } from './state'
+import { Target } from './types'
 
 const Container = styled.div`
   width: 100dvw;
@@ -35,14 +36,20 @@ export function Jump() {
       v: new Vec2(0, 0),
     }
 
-    state.targets.push({
+    let last: Target = {
       p: new Vec2(state.viewport.w * 0.75, -state.viewport.h * 0.66),
       r: Math.min(state.viewport.w, state.viewport.h) * 0.05,
-    })
-    state.targets.push({
-      p: new Vec2(state.viewport.w * 0.5, -state.viewport.h * 1),
-      r: Math.min(state.viewport.w, state.viewport.h) * 0.04,
-    })
+    }
+    state.targets.push(last)
+
+    for (let i = 0; i < 20; i++) {
+      let next = {
+        p: new Vec2(last.p.x, last.p.y + -state.viewport.h * 0.66),
+        r: last.r,
+      }
+      state.targets.push(next)
+      last = next
+    }
 
     engine.start()
 
