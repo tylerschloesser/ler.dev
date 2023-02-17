@@ -51,6 +51,13 @@ function renderTargets(buffer: RenderObject[]) {
       r,
       color: new Color('red'),
     })
+    buffer.push({
+      type: 'circle',
+      method: 'stroke',
+      p,
+      r: r * 3,
+      color: new Color('red'),
+    })
   })
 }
 
