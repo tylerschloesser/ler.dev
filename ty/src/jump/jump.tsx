@@ -44,7 +44,10 @@ export function Jump() {
 
     for (let i = 0; i < 20; i++) {
       let next = {
-        p: new Vec2(last.p.x, last.p.y + -state.viewport.h * 0.66),
+        p: new Vec2(
+          last.p.x + (0.5 - Math.random()) * state.viewport.w,
+          last.p.y + -state.viewport.h * 0.66,
+        ),
         r: last.r,
       }
       state.targets.push(next)

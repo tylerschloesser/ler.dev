@@ -61,11 +61,7 @@ export function update({ elapsed }: UpdateArgs) {
 
     ball.v = ball.v.add(a.mul(toSeconds(elapsed))).mul(friction)
 
-    if (
-      ball.p.y > 0 ||
-      ball.p.x - ball.r > state.viewport.w ||
-      ball.p.x + ball.r < 0
-    ) {
+    if (ball.p.y > 0) {
       state.ball = null
       console.debug('removing ball')
     }
