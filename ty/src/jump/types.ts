@@ -9,6 +9,7 @@ export interface Ball {
   r: number
 
   capturedBy: TargetIndex | null
+  launchedBy: TargetIndex | null
 }
 
 export interface Target {

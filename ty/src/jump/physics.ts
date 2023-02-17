@@ -16,7 +16,7 @@ export function addBall() {
   const ab = state.drag.a.sub(state.drag.b)
   const v = ab.norm().mul(ab.length() * 6)
   const r = Math.floor(Math.min(state.viewport.w, state.viewport.h) * 0.05)
-  state.ball = { p, v, r, capturedBy: null }
+  state.ball = { p, v, r, capturedBy: null, launchedBy: null }
   console.debug('adding ball')
 }
 
