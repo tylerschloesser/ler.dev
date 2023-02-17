@@ -12,12 +12,19 @@ const toSeconds = (ms: Milliseconds) => ms / 1000
 export function launchBall() {
   if (!state.drag?.b) throw Error('this should only be called if drag is valid')
 
-  const p = new Vec2(state.viewport.w / 2, 0)
+  if (state.ball === null) {
+    const p = new Vec2(state.viewport.w / 2, 0)
+    const r = Math.floor(Math.min(state.viewport.w, state.viewport.h) * 0.05)
+    state.ball = { p, v: new Vec2(0, 0), r, capturedBy: null, launchedBy: null }
+  } else {
+    state.ball.launchedBy = state.ball.capturedBy
+    state.ball.capturedBy = null
+  }
+
   const ab = state.drag.a.sub(state.drag.b)
-  const v = ab.norm().mul(ab.length() * 6)
-  const r = Math.floor(Math.min(state.viewport.w, state.viewport.h) * 0.05)
-  state.ball = { p, v, r, capturedBy: null, launchedBy: null }
-  console.debug('adding ball')
+  state.ball.v = ab.norm().mul(ab.length() * 6)
+
+  console.log('launching ball')
 }
 
 export function update({ elapsed }: UpdateArgs) {
@@ -30,6 +37,9 @@ export function update({ elapsed }: UpdateArgs) {
     let friction = 1
 
     for (let i = 0; i < state.targets.length; i++) {
+      // TODO unset launchedBy when we get far enough away
+      if (ball.launchedBy === i) continue
+
       const target = state.targets[i]
       const dist = target.p.sub(ball.p).length()
       if (dist < target.r * 3 + ball.r) {
