@@ -39,6 +39,10 @@ export function Jump() {
       p: new Vec2(state.viewport.w * 0.75, -state.viewport.h * 0.66),
       r: Math.min(state.viewport.w, state.viewport.h) * 0.05,
     })
+    state.targets.push({
+      p: new Vec2(state.viewport.w * 0.5, -state.viewport.h * 1),
+      r: Math.min(state.viewport.w, state.viewport.h) * 0.04,
+    })
 
     engine.start()
 
