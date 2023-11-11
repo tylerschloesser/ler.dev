@@ -220,6 +220,14 @@ const initCanvas: InitCanvasFn = (canvas) => {
       )
       context.fill()
 
+      context.save()
+      context.lineWidth = 2
+      context.strokeStyle = 'white'
+      context.moveTo((gear.size * TILE_SIZE) / 2, (gear.size * TILE_SIZE) / 2)
+      context.lineTo(gear.size * TILE_SIZE, (gear.size * TILE_SIZE) / 2)
+      context.stroke()
+      context.restore()
+
       if (tint) {
         context.fillStyle = tint
         context.fillRect(0, 0, TILE_SIZE * gear.size, TILE_SIZE * gear.size)
