@@ -169,6 +169,7 @@ const initCanvas: InitCanvasFn = (canvas) => {
     }
 
     for (const gear of Object.values(gears)) {
+      renderGear(gear)
     }
 
     if (pointer) {
