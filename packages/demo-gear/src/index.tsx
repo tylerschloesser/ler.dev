@@ -137,6 +137,8 @@ const initCanvas: InitCanvasFn = (canvas) => {
   function render() {
     invariant(context)
 
+    context.resetTransform()
+
     context.clearRect(0, 0, canvas.width, canvas.height)
 
     context.fillStyle = 'black'
@@ -145,7 +147,6 @@ const initCanvas: InitCanvasFn = (canvas) => {
     context.beginPath()
     context.strokeStyle = 'grey'
 
-    context.resetTransform()
     context.translate(offset.x, offset.y)
 
     for (let y = 0; y < size.y + 1; y++) {
