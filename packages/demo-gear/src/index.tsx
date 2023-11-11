@@ -32,6 +32,7 @@ interface AddGearPointer extends BasePointer {
 
 interface ApplyForcePointer extends BasePointer {
   mode: PointerMode.ApplyForce
+  gearId?: string
 }
 
 type Pointer = AddGearPointer | ApplyForcePointer
@@ -174,7 +175,11 @@ const getApplyForcePointer: GetPointerFn<ApplyForcePointer> = ({
     y: Math.floor((e.offsetY - canvas.height / 2) / TILE_SIZE),
   }
 
-  return { mode: PointerMode.ApplyForce, position }
+  const tileId = `${position.x}${position.y}`
+  const tile = tiles[tileId]
+  const gearId = tile?.gearId
+
+  return { mode: PointerMode.ApplyForce, position, gearId }
 }
 
 const getAddGearPointer: GetPointerFn<AddGearPointer> = ({
