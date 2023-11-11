@@ -2,8 +2,8 @@ import { initRoot } from './init-root.js'
 import { InitCanvasFn, InitPointerFn, Vec2, initKeyboardFn } from './types.js'
 import { useCanvas } from './use-canvas.js'
 
-import styles from './index.module.scss'
 import invariant from 'tiny-invariant'
+import styles from './index.module.scss'
 
 const TILE_SIZE = 30
 
@@ -32,6 +32,53 @@ interface Tile {
 }
 
 const tiles: Record<string, Tile> = {}
+
+function initSimulator() {
+  let prev: number = performance.now()
+  function tick() {
+    const now = performance.now()
+    const elapsed = (now - prev) / 1000
+    prev = now
+
+    for (const gear of Object.values(gears)) {
+      gear.angle += gear.velocity * elapsed
+    }
+  }
+  self.setInterval(tick, 100)
+}
+
+function addGear({ size, position }: { size: number; position: Vec2 }): void {
+  invariant(position.x === Math.floor(position.x))
+  invariant(position.y === Math.floor(position.y))
+
+  const gearId = `${position.x}.${position.y}`
+  invariant(gears[gearId] === undefined)
+
+  const gear: Gear = {
+    id: gearId,
+    position: {
+      x: position.x,
+      y: position.y,
+    },
+    size,
+    angle: 0,
+    velocity: Math.PI,
+  }
+
+  gears[gear.id] = gear
+
+  for (let x = -((size - 1) / 2); x <= (size - 1) / 2; x++) {
+    for (let y = -((size - 1) / 2); y <= (size - 1) / 2; y++) {
+      invariant(x === Math.floor(x))
+      invariant(y === Math.floor(y))
+
+      const tileId = `${position.x + x}.${position.y + y}`
+      invariant(tiles[tileId] === undefined)
+
+      tiles[tileId] = { gearId }
+    }
+  }
+}
 
 function getPointer({
   e,
@@ -98,41 +145,9 @@ const initPointer: InitPointerFn = ({ canvas, size, offset }) => {
   canvas.addEventListener('pointerup', (e) => {
     pointer = getPointer({ e, offset, size })
     if (pointer && pointer.valid) {
-      const { position } = pointer
-      invariant(position.x === Math.floor(position.x))
-      invariant(position.y === Math.floor(position.y))
-
       const gearSize = GEAR_SIZES[gearSizeIndex]
       invariant(gearSize !== undefined)
-
-      const gearId = `${position.x}.${position.y}`
-      invariant(gears[gearId] === undefined)
-
-      const gear: Gear = {
-        id: gearId,
-        position: {
-          x: position.x,
-          y: position.y,
-        },
-        size: gearSize,
-        angle: 0,
-        velocity: 1,
-      }
-
-      gears[gear.id] = gear
-
-      for (let x = -((gearSize - 1) / 2); x <= (gearSize - 1) / 2; x++) {
-        for (let y = -((gearSize - 1) / 2); y <= (gearSize - 1) / 2; y++) {
-          invariant(x === Math.floor(x))
-          invariant(y === Math.floor(y))
-
-          const tileId = `${position.x + x}.${position.y + y}`
-          invariant(tiles[tileId] === undefined)
-
-          tiles[tileId] = { gearId }
-        }
-      }
-      console.log(tiles)
+      addGear({ position: pointer.position, size: gearSize })
     }
     pointer = null
   })
@@ -168,6 +183,7 @@ const initCanvas: InitCanvasFn = (canvas) => {
 
   initPointer({ canvas, size, offset })
   initKeyboard({ canvas })
+  initSimulator()
 
   function render() {
     invariant(context)
