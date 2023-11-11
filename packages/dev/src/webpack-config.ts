@@ -13,14 +13,17 @@ export function getWebpackConfig(): Configuration {
     module: {
       rules: [
         {
-          test: /\.tsx?$/,
+          test: /\.[tj]sx?$/,
           use: 'ts-loader',
           exclude: /node_modules/,
         },
       ],
     },
     resolve: {
-      extensions: ['.tsx', '.ts', '.js'],
+      extensions: ['.tsx', '.ts', '.jsx', '.js'],
+      extensionAlias: {
+        '.js': ['.ts', '.tsx', '.js'],
+      },
     },
     plugins: [
       new HtmlWebpackPlugin({
