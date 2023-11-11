@@ -5,7 +5,9 @@ import { useCanvas } from './use-canvas.js'
 import invariant from 'tiny-invariant'
 import styles from './index.module.scss'
 
-const TILE_SIZE = 30
+const TILE_SIZE = 50
+
+const DRAW_GEAR_BOX = false
 
 interface Pointer {
   position: Vec2
@@ -295,8 +297,10 @@ const initCanvas: InitCanvasFn = (canvas) => {
         (gear.position.y - (gear.size - 1) / 2) * TILE_SIZE,
       )
 
-      context.fillStyle = 'grey'
-      context.fillRect(0, 0, TILE_SIZE * gear.size, TILE_SIZE * gear.size)
+      if (DRAW_GEAR_BOX) {
+        context.fillStyle = 'grey'
+        context.fillRect(0, 0, TILE_SIZE * gear.size, TILE_SIZE * gear.size)
+      }
 
       context.strokeStyle = 'white'
       context.fillStyle = 'blue'
