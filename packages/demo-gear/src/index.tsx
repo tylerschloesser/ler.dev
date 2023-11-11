@@ -118,8 +118,7 @@ function initSimulator({
       ) {
         accelerateGear({
           gear,
-          acceleration:
-            Math.sign(gear.velocity) * inputState.current.acceleration,
+          acceleration: inputState.current.acceleration,
           elapsed,
         })
       }
