@@ -1,5 +1,5 @@
 {
-  "name": "ler.dev",
+  "name": "@ler.dev/root",
   "workspaces": [
     "cdk",
     "ty",
