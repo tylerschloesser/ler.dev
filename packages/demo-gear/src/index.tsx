@@ -1,5 +1,4 @@
-import { createRoot } from 'react-dom/client'
-import invariant from 'tiny-invariant'
+import { initRoot } from './init-root.js'
 import { InitCanvasFn } from './types.js'
 import { useCanvas } from './use-canvas.js'
 
@@ -10,7 +9,4 @@ const DemoGear = () => {
   return <canvas ref={setCanvas} />
 }
 
-const container = document.getElementById('app')
-invariant(container)
-const root = createRoot(container)
-root.render(<DemoGear />)
+initRoot(<DemoGear />)
