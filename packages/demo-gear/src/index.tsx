@@ -50,7 +50,37 @@ function getPointer({
     position.y >= 0 &&
     position.y < size.y
   ) {
-    return { position, valid: true }
+    const gearSize = GEAR_SIZES[gearSizeIndex]
+    invariant(gearSize !== undefined)
+
+    let valid = true
+    for (let x = -((gearSize - 1) / 2); x <= (gearSize - 1) / 2 && valid; x++) {
+      for (
+        let y = -((gearSize - 1) / 2);
+        y <= (gearSize - 1) / 2 && valid;
+        y++
+      ) {
+        invariant(x === Math.floor(x))
+        invariant(y === Math.floor(y))
+
+        if (
+          !(
+            position.x + x >= 0 &&
+            position.x + x < size.x &&
+            position.y + y >= 0 &&
+            position.y + y < size.y
+          )
+        ) {
+          valid = false
+        }
+        const tileId = `${position.x + x}.${position.y + y}`
+        if (tiles[tileId]) {
+          valid = false
+        }
+      }
+    }
+
+    return { position, valid }
   } else {
     return null
   }
