@@ -1,9 +1,17 @@
 import { initRoot } from './init-root.js'
-import { InitCanvasFn, InitPointerFn, Vec2, initKeyboardFn } from './types.js'
-import { useCanvas } from './use-canvas.js'
+import {
+  GEAR_SIZES,
+  InitCanvasFn,
+  InitPointerFn,
+  InputState,
+  Vec2,
+  initKeyboardFn,
+} from './types.js'
 
+import { useEffect, useState } from 'react'
 import invariant from 'tiny-invariant'
 import styles from './index.module.scss'
+import { useInputState } from './state.js'
 import { Toolbar } from './toolbar.js'
 
 const TILE_SIZE = 30
@@ -18,9 +26,6 @@ interface Pointer {
 }
 
 let pointer: Pointer | null = null
-
-const GEAR_SIZES = [1, 3, 5, 7]
-let gearSizeIndex: number = 0
 
 interface Gear {
   id: string
@@ -146,12 +151,13 @@ function getConnections({
 function getPointer({
   e,
   canvas,
+  inputState,
 }: {
   e: PointerEvent
   canvas: HTMLCanvasElement
+  inputState: React.MutableRefObject<InputState>
 }): Pointer {
-  const gearSize = GEAR_SIZES[gearSizeIndex]
-  invariant(gearSize !== undefined)
+  const { gearSize } = inputState.current
 
   const position = {
     x: Math.floor((e.offsetX - canvas.width / 2) / TILE_SIZE),
@@ -179,35 +185,25 @@ function getPointer({
   return { position, valid, connections }
 }
 
-const initPointer: InitPointerFn = ({ canvas }) => {
+const initPointer: InitPointerFn = ({ canvas, inputState }) => {
   canvas.addEventListener('pointermove', (e) => {
-    pointer = getPointer({ e, canvas })
+    pointer = getPointer({ e, canvas, inputState })
   })
   canvas.addEventListener('pointerleave', () => {
     pointer = null
   })
   canvas.addEventListener('pointerup', (e) => {
-    pointer = getPointer({ e, canvas })
+    pointer = getPointer({ e, canvas, inputState })
     if (pointer.valid) {
-      const gearSize = GEAR_SIZES[gearSizeIndex]
-      invariant(gearSize !== undefined)
+      const { gearSize } = inputState.current
       addGear({ position: pointer.position, size: gearSize })
     }
   })
 }
 
-const initKeyboard: initKeyboardFn = () => {
-  window.addEventListener('keyup', (e) => {
-    if (e.key === 'ArrowUp') {
-      gearSizeIndex = Math.min(GEAR_SIZES.length - 1, gearSizeIndex + 1)
-    } else if (e.key === 'ArrowDown') {
-      gearSizeIndex = Math.max(0, gearSizeIndex - 1)
-    }
-  })
-}
+const initKeyboard: initKeyboardFn = () => {}
 
-const initCanvas: InitCanvasFn = (canvas) => {
-  console.log('initializing canvas')
+const initCanvas: InitCanvasFn = ({ canvas, inputState }) => {
   const rect = canvas.getBoundingClientRect()
   canvas.width = rect.width
   canvas.height = rect.height
@@ -215,7 +211,7 @@ const initCanvas: InitCanvasFn = (canvas) => {
   const context = canvas.getContext('2d')
   invariant(context)
 
-  initPointer({ canvas })
+  initPointer({ canvas, inputState })
   initKeyboard({ canvas })
   initSimulator()
 
@@ -345,8 +341,7 @@ const initCanvas: InitCanvasFn = (canvas) => {
     }
 
     if (pointer) {
-      const gearSize = GEAR_SIZES[gearSizeIndex]
-      invariant(gearSize !== undefined)
+      const { gearSize } = inputState.current
       renderGear(
         {
           position: pointer.position,
@@ -364,7 +359,13 @@ const initCanvas: InitCanvasFn = (canvas) => {
 }
 
 function DemoGear() {
-  const setCanvas = useCanvas(initCanvas)
+  const inputState = useInputState()
+  const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null)
+  useEffect(() => {
+    if (canvas) {
+      initCanvas({ canvas, inputState })
+    }
+  }, [canvas])
   return (
     <div className={styles.container}>
       <div className={styles.toolbar}>
