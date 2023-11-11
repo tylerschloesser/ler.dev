@@ -2,7 +2,13 @@ export type Vec2 = { x: number; y: number }
 
 export const GEAR_SIZES = [1, 3, 5, 7]
 
+export enum PointerMode {
+  AddGear = 'add-gear',
+  ApplyForce = 'apply-force',
+}
+
 export interface InputState {
+  pointerMode: PointerMode
   gearSize: number
 }
 
