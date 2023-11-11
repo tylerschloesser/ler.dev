@@ -15,7 +15,7 @@ import styles from './index.module.scss'
 import { useInputState } from './state.js'
 import { Toolbar } from './toolbar.js'
 
-const TILE_SIZE = 30
+const TILE_SIZE = 40
 
 const TICK_DURATION = 50
 const DRAW_GEAR_BOX = false
@@ -83,7 +83,7 @@ function accelerateGear({
       const ratio = gear.size / peer.size
       accelerateGear({
         gear: peer,
-        acceleration: Math.sign(peer.velocity) * ratio,
+        acceleration: acceleration * -1 * ratio,
         elapsed,
         seen,
       })
@@ -144,8 +144,7 @@ function addGear({ size, position }: { size: number; position: Vec2 }): void {
     invariant(peer)
 
     const ratio = peer.size / size
-    velocity = Math.sign(peer.velocity) * -1 * Math.abs(peer.velocity) * ratio
-    console.log(velocity)
+    velocity = peer.velocity * -1 * ratio
   }
 
   const gear: Gear = {
