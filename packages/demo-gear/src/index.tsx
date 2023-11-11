@@ -23,6 +23,7 @@ interface Gear {
   size: number
   angle: number
   velocity: number
+  connections: Set<string>
 }
 
 const gears: Record<string, Gear> = {}
@@ -63,6 +64,7 @@ function addGear({ size, position }: { size: number; position: Vec2 }): void {
     size,
     angle: 0,
     velocity: Math.PI,
+    connections: new Set(),
   }
 
   gears[gear.id] = gear
@@ -277,6 +279,7 @@ const initCanvas: InitCanvasFn = (canvas) => {
           position: pointer.position,
           size: gearSize,
           angle: 0,
+          connections: new Set(),
         },
         pointer.valid ? `hsla(120, 50%, 50%, .5)` : `hsla(240, 50%, 50%, .5)`,
       )
