@@ -17,20 +17,53 @@ let pointer: Pointer | null = null
 const GEAR_SIZES = [1, 3, 5, 7]
 let gearSizeIndex: number = 0
 
+interface Gear {
+  id: string
+  size: number
+}
+
+const gears: Record<string, Gear> = {}
+
+interface Tile {
+  gearId: string
+}
+
+const tiles: Record<string, Tile> = {}
+
+type Vec2 = { x: number; y: number }
+
+function getPointer({
+  e,
+  offset,
+  size,
+}: {
+  e: PointerEvent
+  size: Vec2
+  offset: Vec2
+}): Vec2 | null {
+  const p = {
+    x: Math.floor((e.clientX - offset.x) / TILE_SIZE),
+    y: Math.floor((e.clientY - offset.y) / TILE_SIZE),
+  }
+  if (p.x >= 0 && p.x < size.x && p.y >= 0 && p.y < size.y) {
+    return p
+  } else {
+    return null
+  }
+}
+
 const initPointer: InitPointerFn = ({ canvas, size, offset }) => {
   canvas.addEventListener('pointermove', (e) => {
-    const p = {
-      x: Math.floor((e.clientX - offset.x) / TILE_SIZE),
-      y: Math.floor((e.clientY - offset.y) / TILE_SIZE),
-    }
-    if (p.x >= 0 && p.x < size.x && p.y >= 0 && p.y < size.y) {
-      pointer = p
-    } else {
-      pointer = null
-    }
+    pointer = getPointer({ e, offset, size })
   })
   canvas.addEventListener('pointerleave', () => {
     pointer = null
+  })
+  canvas.addEventListener('pointerup', (e) => {
+    pointer = getPointer({ e, offset, size })
+    if (pointer) {
+      console.log('TODO place gear')
+    }
   })
 }
 
@@ -95,8 +128,8 @@ const initCanvas: InitCanvasFn = (canvas) => {
 
       context.fillStyle = 'grey'
       context.fillRect(
-        (Math.floor(pointer.x) - (gearSize - 1) / 2) * TILE_SIZE,
-        (Math.floor(pointer.y) - (gearSize - 1) / 2) * TILE_SIZE,
+        (pointer.x - (gearSize - 1) / 2) * TILE_SIZE,
+        (pointer.y - (gearSize - 1) / 2) * TILE_SIZE,
         TILE_SIZE * gearSize,
         TILE_SIZE * gearSize,
       )
@@ -104,8 +137,8 @@ const initCanvas: InitCanvasFn = (canvas) => {
       context.fillStyle = 'blue'
       context.beginPath()
       context.arc(
-        (Math.floor(pointer.x) + 0.5) * TILE_SIZE,
-        (Math.floor(pointer.y) + 0.5) * TILE_SIZE,
+        (pointer.x + 0.5) * TILE_SIZE,
+        (pointer.y + 0.5) * TILE_SIZE,
         (TILE_SIZE * gearSize) / 2,
         0,
         Math.PI * 2,
