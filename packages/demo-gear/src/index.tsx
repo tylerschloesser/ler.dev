@@ -159,15 +159,29 @@ function getConnections({
   return connections
 }
 
-function getAddGearPointer({
-  e,
-  canvas,
-  inputState,
-}: {
+type GetPointerFn<T extends Pointer> = (args: {
   e: PointerEvent
   canvas: HTMLCanvasElement
   inputState: React.MutableRefObject<InputState>
-}): AddGearPointer {
+}) => T
+
+const getApplyForcePointer: GetPointerFn<ApplyForcePointer> = ({
+  e,
+  canvas,
+}) => {
+  const position = {
+    x: Math.floor((e.offsetX - canvas.width / 2) / TILE_SIZE),
+    y: Math.floor((e.offsetY - canvas.height / 2) / TILE_SIZE),
+  }
+
+  return { mode: PointerMode.ApplyForce, position }
+}
+
+const getAddGearPointer: GetPointerFn<AddGearPointer> = ({
+  e,
+  canvas,
+  inputState,
+}) => {
   const { gearSize } = inputState.current
 
   const position = {
@@ -203,15 +217,14 @@ const initPointer: InitPointerFn = ({ canvas, inputState }) => {
         pointer = getAddGearPointer({ e, canvas, inputState })
         break
       }
-    }
-  })
-  canvas.addEventListener('pointerleave', () => {
-    switch (inputState.current.pointerMode) {
-      case PointerMode.AddGear: {
-        pointer = null
+      case PointerMode.ApplyForce: {
+        pointer = getApplyForcePointer({ e, canvas, inputState })
         break
       }
     }
+  })
+  canvas.addEventListener('pointerleave', () => {
+    pointer = null
   })
   canvas.addEventListener('pointerup', (e) => {
     switch (inputState.current.pointerMode) {
@@ -376,6 +389,16 @@ const initCanvas: InitCanvasFn = ({ canvas, inputState }) => {
           connections: pointer.connections,
         },
         pointer.valid ? `hsla(120, 50%, 50%, .5)` : `hsla(240, 50%, 50%, .5)`,
+      )
+    }
+
+    if (pointer?.mode === PointerMode.ApplyForce) {
+      context.fillStyle = 'pink'
+      context.fillRect(
+        pointer.position.x * TILE_SIZE,
+        pointer.position.y * TILE_SIZE,
+        TILE_SIZE,
+        TILE_SIZE,
       )
     }
 
