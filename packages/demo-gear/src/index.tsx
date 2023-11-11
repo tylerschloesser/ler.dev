@@ -65,7 +65,10 @@ function addGear({ size, position }: { size: number; position: Vec2 }): void {
     size,
     angle: 0,
     velocity: Math.PI,
-    connections: new Set(),
+    connections: getConnections({
+      gearSize: size,
+      position,
+    }),
   }
 
   gears[gear.id] = gear
@@ -81,6 +84,43 @@ function addGear({ size, position }: { size: number; position: Vec2 }): void {
       tiles[tileId] = { gearId }
     }
   }
+}
+
+function getConnections({
+  gearSize,
+  position,
+}: {
+  gearSize: number
+  position: Vec2
+}): Set<string> {
+  const connections = new Set<string>()
+
+  for (const delta of [
+    { x: 0, y: -1 },
+    { x: 0, y: 1 },
+    { x: 1, y: 0 },
+    { x: -1, y: 0 },
+  ]) {
+    const point = {
+      x: position.x + ((gearSize - 1) / 2 + 1) * delta.x,
+      y: position.y + ((gearSize - 1) / 2 + 1) * delta.y,
+    }
+    const tileId = `${point.x}.${point.y}`
+    const tile = tiles[tileId]
+    if (!tile) {
+      continue
+    }
+    const gear = gears[tile.gearId]
+    invariant(gear)
+
+    if (
+      gear.position.x + -(((gear.size - 1) / 2) * delta.x) === point.x &&
+      gear.position.y + -(((gear.size - 1) / 2) * delta.y) === point.y
+    ) {
+      connections.add(tile.gearId)
+    }
+  }
+  return connections
 }
 
 function getPointer({
@@ -132,34 +172,9 @@ function getPointer({
       }
     }
 
-    const connections = new Set<string>()
-
+    let connections = new Set<string>()
     if (valid) {
-      for (const delta of [
-        { x: 0, y: -1 },
-        { x: 0, y: 1 },
-        { x: 1, y: 0 },
-        { x: -1, y: 0 },
-      ]) {
-        const point = {
-          x: position.x + ((gearSize - 1) / 2 + 1) * delta.x,
-          y: position.y + ((gearSize - 1) / 2 + 1) * delta.y,
-        }
-        const tileId = `${point.x}.${point.y}`
-        const tile = tiles[tileId]
-        if (!tile) {
-          continue
-        }
-        const gear = gears[tile.gearId]
-        invariant(gear)
-
-        if (
-          gear.position.x + -(((gear.size - 1) / 2) * delta.x) === point.x &&
-          gear.position.y + -(((gear.size - 1) / 2) * delta.y) === point.y
-        ) {
-          connections.add(tile.gearId)
-        }
-      }
+      connections = getConnections({ position, gearSize })
     }
 
     return { position, valid, connections }
@@ -237,6 +252,7 @@ const initCanvas: InitCanvasFn = (canvas) => {
     context.fillRect(0, 0, canvas.width, canvas.height)
 
     context.beginPath()
+    context.lineWidth = 1
     context.strokeStyle = 'grey'
 
     context.translate(offset.x, offset.y)
@@ -250,6 +266,7 @@ const initCanvas: InitCanvasFn = (canvas) => {
       context.lineTo(x * TILE_SIZE, size.y * TILE_SIZE)
     }
     context.stroke()
+    context.closePath()
 
     function renderGear(
       gear: Omit<Gear, 'id' | 'velocity'>,
@@ -266,6 +283,7 @@ const initCanvas: InitCanvasFn = (canvas) => {
       context.fillStyle = 'grey'
       context.fillRect(0, 0, TILE_SIZE * gear.size, TILE_SIZE * gear.size)
 
+      context.strokeStyle = 'white'
       context.fillStyle = 'blue'
       context.beginPath()
       context.arc(
@@ -276,23 +294,22 @@ const initCanvas: InitCanvasFn = (canvas) => {
         Math.PI * 2,
       )
       context.fill()
+      context.closePath()
 
       context.save()
       context.translate(
         (gear.size * TILE_SIZE) / 2,
         (gear.size * TILE_SIZE) / 2,
       )
+      context.beginPath()
       context.lineWidth = 2
       context.strokeStyle = 'white'
       context.rotate(gear.angle)
       context.moveTo(0, 0)
       context.lineTo((gear.size * TILE_SIZE) / 2, 0)
       context.stroke()
+      context.closePath()
       context.restore()
-
-      for (const connection of gear.connections) {
-        console.log(connection)
-      }
 
       if (tint) {
         context.fillStyle = tint
@@ -300,6 +317,24 @@ const initCanvas: InitCanvasFn = (canvas) => {
       }
 
       context.restore()
+
+      for (const connection of gear.connections) {
+        const peer = gears[connection]
+        invariant(peer)
+        context.beginPath()
+        context.strokeStyle = 'red'
+        context.lineWidth = 2
+        context.moveTo(
+          (gear.position.x + 0.5) * TILE_SIZE,
+          (gear.position.y + 0.5) * TILE_SIZE,
+        )
+        context.lineTo(
+          (peer.position.x + 0.5) * TILE_SIZE,
+          (peer.position.y + 0.5) * TILE_SIZE,
+        )
+        context.stroke()
+        context.closePath()
+      }
     }
 
     for (const gear of Object.values(gears)) {
