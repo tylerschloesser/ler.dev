@@ -132,7 +132,37 @@ function getPointer({
       }
     }
 
-    return { position, valid, connections: new Set() }
+    const connections = new Set<string>()
+
+    if (valid) {
+      for (const delta of [
+        { x: 0, y: -1 },
+        { x: 0, y: 1 },
+        { x: 1, y: 0 },
+        { x: -1, y: 0 },
+      ]) {
+        const point = {
+          x: position.x + ((gearSize - 1) / 2 + 1) * delta.x,
+          y: position.y + ((gearSize - 1) / 2 + 1) * delta.y,
+        }
+        const tileId = `${point.x}.${point.y}`
+        const tile = tiles[tileId]
+        if (!tile) {
+          continue
+        }
+        const gear = gears[tile.gearId]
+        invariant(gear)
+
+        if (
+          gear.position.x + -(((gear.size - 1) / 2) * delta.x) === point.x &&
+          gear.position.y + -(((gear.size - 1) / 2) * delta.y) === point.y
+        ) {
+          connections.add(tile.gearId)
+        }
+      }
+    }
+
+    return { position, valid, connections }
   } else {
     return null
   }
@@ -259,6 +289,10 @@ const initCanvas: InitCanvasFn = (canvas) => {
       context.lineTo((gear.size * TILE_SIZE) / 2, 0)
       context.stroke()
       context.restore()
+
+      for (const connection of gear.connections) {
+        console.log(connection)
+      }
 
       if (tint) {
         context.fillStyle = tint
