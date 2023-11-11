@@ -66,6 +66,7 @@ function addGear({ size, position }: { size: number; position: Vec2 }): void {
 
   let velocity = Math.PI / 4
 
+  invariant(connections.size < 2)
   if (connections.size === 1) {
     const peerId = [...connections].at(0)
     invariant(peerId !== undefined)
