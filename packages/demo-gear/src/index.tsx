@@ -61,12 +61,34 @@ function accelerateGear({
   gear,
   acceleration,
   elapsed,
+  seen,
 }: {
   gear: Gear
   acceleration: number
   elapsed: number
+  seen: Set<string>
 }): void {
   gear.velocity += acceleration * elapsed
+
+  invariant(gear.connections.size < 2)
+  if (gear.connections.size) {
+    const peerId = [...gear.connections].at(0)
+    invariant(peerId)
+
+    if (!seen.has(peerId)) {
+      seen.add(peerId)
+      const peer = gears[peerId]
+      invariant(peer)
+
+      const ratio = gear.size / peer.size
+      accelerateGear({
+        gear: peer,
+        acceleration: Math.sign(peer.velocity) * ratio,
+        elapsed,
+        seen,
+      })
+    }
+  }
 }
 
 function initSimulator() {
@@ -81,7 +103,13 @@ function initSimulator() {
         pointer.gearId === gear.id &&
         pointer.active
       ) {
-        accelerateGear({ gear, acceleration: 1, elapsed })
+        const seen = new Set<string>()
+        accelerateGear({
+          gear,
+          acceleration: Math.sign(gear.velocity),
+          elapsed,
+          seen,
+        })
       }
       gear.angle += gear.velocity * elapsed
     }
@@ -99,6 +127,11 @@ function addGear({ size, position }: { size: number; position: Vec2 }): void {
   const connections = getConnections({
     gearSize: size,
     position,
+  })
+  connections.forEach((peerId) => {
+    const peer = gears[peerId]
+    invariant(peer)
+    peer.connections.add(gearId)
   })
 
   let velocity = Math.PI / 4
