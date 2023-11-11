@@ -341,7 +341,7 @@ const initCanvas: InitCanvasFn = (canvas) => {
         const peer = gears[connection]
         invariant(peer)
         context.beginPath()
-        context.strokeStyle = 'red'
+        context.strokeStyle = 'hsla(0, 50%, 50%, .75)'
         context.lineWidth = 2
         context.moveTo(
           (gear.position.x + 0.5) * TILE_SIZE,
