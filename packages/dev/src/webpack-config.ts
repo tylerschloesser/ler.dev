@@ -17,6 +17,30 @@ export function getWebpackConfig(): Configuration {
           use: 'ts-loader',
           exclude: /node_modules/,
         },
+        {
+          test: /\.s[ac]ss$/i,
+          use: [
+            'style-loader',
+            {
+              loader: 'css-loader',
+              options: {
+                modules: {
+                  auto: true,
+                  localIdentName: '[local]--[hash:base64:5]',
+                },
+              },
+            },
+            {
+              loader: 'postcss-loader',
+              options: {
+                postcssOptions: {
+                  plugins: [['postcss-preset-env']],
+                },
+              },
+            },
+            'sass-loader',
+          ],
+        },
       ],
     },
     resolve: {
