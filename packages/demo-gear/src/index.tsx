@@ -185,6 +185,14 @@ const initCanvas: InitCanvasFn = (canvas) => {
   initKeyboard({ canvas })
   initSimulator()
 
+  addGear({
+    position: {
+      x: Math.floor(size.x / 2),
+      y: Math.floor(size.y / 2),
+    },
+    size: GEAR_SIZES[1]!,
+  })
+
   function render() {
     invariant(context)
 
