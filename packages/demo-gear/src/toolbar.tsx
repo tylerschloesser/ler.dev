@@ -9,12 +9,16 @@ export function Toolbar() {
   const [pointerMode, setPointerMode] = useState<PointerMode>(
     inputState.current.pointerMode,
   )
+  const [acceleration, setAcceleration] = useState<number>(
+    inputState.current.acceleration,
+  )
 
   useEffect(() => {
     inputState.current.gearSize = gearSize
     inputState.current.pointerMode = pointerMode
+    inputState.current.acceleration = acceleration
     saveInputState()
-  }, [gearSize, pointerMode])
+  }, [gearSize, pointerMode, acceleration])
 
   return (
     <div className={styles.container}>
@@ -43,6 +47,19 @@ export function Toolbar() {
               type="radio"
               checked={pointerMode === value}
               onChange={() => setPointerMode(value)}
+            />
+          </label>
+        ))}
+      </fieldset>
+      <fieldset>
+        <legend>Acceleration:</legend>
+        {[1, -1].map((value) => (
+          <label key={value}>
+            {value}
+            <input
+              type="radio"
+              checked={acceleration === value}
+              onChange={() => setAcceleration(value)}
             />
           </label>
         ))}

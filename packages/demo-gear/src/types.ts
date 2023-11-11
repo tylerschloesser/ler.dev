@@ -10,6 +10,7 @@ export enum PointerMode {
 export interface InputState {
   pointerMode: PointerMode
   gearSize: number
+  acceleration: number
 }
 
 export type InitCanvasFn = (args: {

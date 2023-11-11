@@ -18,7 +18,7 @@ const initialState = (() => {
   }
   const gearSize = GEAR_SIZES[0]
   invariant(gearSize !== undefined)
-  return { gearSize, pointerMode: PointerMode.AddGear }
+  return { gearSize, pointerMode: PointerMode.AddGear, acceleration: 1 }
 })()
 
 export function useInputState(): {

@@ -100,7 +100,11 @@ function accelerateGear({
   })
 }
 
-function initSimulator() {
+function initSimulator({
+  inputState,
+}: {
+  inputState: React.MutableRefObject<InputState>
+}) {
   let prev: number = performance.now()
   function tick() {
     const now = performance.now()
@@ -114,7 +118,8 @@ function initSimulator() {
       ) {
         accelerateGear({
           gear,
-          acceleration: Math.sign(gear.velocity),
+          acceleration:
+            Math.sign(gear.velocity) * inputState.current.acceleration,
           elapsed,
         })
       }
@@ -330,7 +335,7 @@ const initCanvas: InitCanvasFn = ({ canvas, inputState }) => {
 
   initPointer({ canvas, inputState })
   initKeyboard({ canvas })
-  initSimulator()
+  initSimulator({ inputState })
 
   addGear({
     position: {
