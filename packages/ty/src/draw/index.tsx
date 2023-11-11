@@ -4,7 +4,7 @@ import {
   PushRequest,
   SyncRequestMessage,
   WebSocketMessage,
-} from 'common'
+} from '@ler.dev/common'
 import { times } from 'lodash'
 import React, { useEffect } from 'react'
 import styled from 'styled-components'

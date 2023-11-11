@@ -5,6 +5,7 @@
     "build": "webpack"
   },
   "dependencies": {
+    "@ler.dev/common": "*",
     "@react-three/fiber": "^8.3.1",
     "@types/color": "^3.0.3",
     "@types/lodash": "^4.14.184",
