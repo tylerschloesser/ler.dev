@@ -8,8 +8,8 @@ import invariant from 'tiny-invariant'
 const TILE_SIZE = 30
 
 interface Pointer {
-  x: number
-  y: number
+  position: Vec2
+  valid: boolean
 }
 
 let pointer: Pointer | null = null
@@ -31,7 +31,7 @@ interface Tile {
 
 const tiles: Record<string, Tile> = {}
 
-function getPointer({
+function getPosition({
   e,
   offset,
   size,
@@ -53,40 +53,46 @@ function getPointer({
 
 const initPointer: InitPointerFn = ({ canvas, size, offset }) => {
   canvas.addEventListener('pointermove', (e) => {
-    pointer = getPointer({ e, offset, size })
+    const position = getPosition({ e, offset, size })
+    if (position) {
+      pointer = { position, valid: true }
+    } else {
+      pointer = null
+    }
   })
   canvas.addEventListener('pointerleave', () => {
     pointer = null
   })
   canvas.addEventListener('pointerup', (e) => {
-    pointer = getPointer({ e, offset, size })
-    if (pointer) {
-      invariant(pointer.x === Math.floor(pointer.x))
-      invariant(pointer.y === Math.floor(pointer.y))
+    pointer = null
+    const position = getPosition({ e, offset, size })
+    if (position) {
+      invariant(position.x === Math.floor(position.x))
+      invariant(position.y === Math.floor(position.y))
 
       const gearSize = GEAR_SIZES[gearSizeIndex]
       invariant(gearSize !== undefined)
 
-      const gearId = `${pointer.x}.${pointer.y}`
+      const gearId = `${position.x}.${position.y}`
       invariant(gears[gearId] === undefined)
 
       const gear: Gear = {
         id: gearId,
         position: {
-          x: pointer.x,
-          y: pointer.y,
+          x: position.x,
+          y: position.y,
         },
         size: gearSize,
       }
 
       gears[gear.id] = gear
 
-      for (let x = -((gearSize - 1) / 2); x < (gearSize - 1) / 2; x++) {
-        for (let y = -((gearSize - 1) / 2); y < (gearSize - 1) / 2; y++) {
+      for (let x = -((gearSize - 1) / 2); x <= (gearSize - 1) / 2; x++) {
+        for (let y = -((gearSize - 1) / 2); y <= (gearSize - 1) / 2; y++) {
           invariant(x === Math.floor(x))
           invariant(y === Math.floor(y))
 
-          const tileId = `${pointer.x + x}.${pointer.y + y}`
+          const tileId = `${position.x + x}.${position.y + y}`
           invariant(tiles[tileId] === undefined)
 
           tiles[tileId] = { gearId }
@@ -182,7 +188,7 @@ const initCanvas: InitCanvasFn = (canvas) => {
       const gearSize = GEAR_SIZES[gearSizeIndex]
       invariant(gearSize !== undefined)
       renderGear({
-        position: pointer,
+        position: pointer.position,
         size: gearSize,
       })
     }
