@@ -21,6 +21,8 @@ interface Gear {
   id: string
   position: Vec2
   size: number
+  angle: number
+  velocity: number
 }
 
 const gears: Record<string, Gear> = {}
@@ -113,6 +115,8 @@ const initPointer: InitPointerFn = ({ canvas, size, offset }) => {
           y: position.y,
         },
         size: gearSize,
+        angle: 0,
+        velocity: 1,
       }
 
       gears[gear.id] = gear
@@ -190,21 +194,26 @@ const initCanvas: InitCanvasFn = (canvas) => {
     }
     context.stroke()
 
-    function renderGear(gear: Omit<Gear, 'id'>, tint?: string): void {
+    function renderGear(
+      gear: Omit<Gear, 'id' | 'velocity'>,
+      tint?: string,
+    ): void {
       invariant(context)
-      context.fillStyle = 'grey'
-      context.fillRect(
+
+      context.save()
+      context.translate(
         (gear.position.x - (gear.size - 1) / 2) * TILE_SIZE,
         (gear.position.y - (gear.size - 1) / 2) * TILE_SIZE,
-        TILE_SIZE * gear.size,
-        TILE_SIZE * gear.size,
       )
+
+      context.fillStyle = 'grey'
+      context.fillRect(0, 0, TILE_SIZE * gear.size, TILE_SIZE * gear.size)
 
       context.fillStyle = 'blue'
       context.beginPath()
       context.arc(
-        (gear.position.x + 0.5) * TILE_SIZE,
-        (gear.position.y + 0.5) * TILE_SIZE,
+        (gear.size * TILE_SIZE) / 2,
+        (gear.size * TILE_SIZE) / 2,
         (TILE_SIZE * gear.size) / 2,
         0,
         Math.PI * 2,
@@ -213,13 +222,10 @@ const initCanvas: InitCanvasFn = (canvas) => {
 
       if (tint) {
         context.fillStyle = tint
-        context.fillRect(
-          (gear.position.x - (gear.size - 1) / 2) * TILE_SIZE,
-          (gear.position.y - (gear.size - 1) / 2) * TILE_SIZE,
-          TILE_SIZE * gear.size,
-          TILE_SIZE * gear.size,
-        )
+        context.fillRect(0, 0, TILE_SIZE * gear.size, TILE_SIZE * gear.size)
       }
+
+      context.restore()
     }
 
     for (const gear of Object.values(gears)) {
@@ -233,6 +239,7 @@ const initCanvas: InitCanvasFn = (canvas) => {
         {
           position: pointer.position,
           size: gearSize,
+          angle: 0,
         },
         pointer.valid ? `hsla(120, 50%, 50%, .5)` : `hsla(240, 50%, 50%, .5)`,
       )
