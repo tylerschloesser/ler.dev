@@ -4,6 +4,7 @@ import {
   InitCanvasFn,
   InitPointerFn,
   InputState,
+  PointerMode,
   Vec2,
   initKeyboardFn,
 } from './types.js'
@@ -187,16 +188,31 @@ function getPointer({
 
 const initPointer: InitPointerFn = ({ canvas, inputState }) => {
   canvas.addEventListener('pointermove', (e) => {
-    pointer = getPointer({ e, canvas, inputState })
+    switch (inputState.current.pointerMode) {
+      case PointerMode.AddGear: {
+        pointer = getPointer({ e, canvas, inputState })
+        break
+      }
+    }
   })
   canvas.addEventListener('pointerleave', () => {
-    pointer = null
+    switch (inputState.current.pointerMode) {
+      case PointerMode.AddGear: {
+        pointer = null
+        break
+      }
+    }
   })
   canvas.addEventListener('pointerup', (e) => {
-    pointer = getPointer({ e, canvas, inputState })
-    if (pointer.valid) {
-      const { gearSize } = inputState.current
-      addGear({ position: pointer.position, size: gearSize })
+    switch (inputState.current.pointerMode) {
+      case PointerMode.AddGear: {
+        pointer = getPointer({ e, canvas, inputState })
+        if (pointer.valid) {
+          const { gearSize } = inputState.current
+          addGear({ position: pointer.position, size: gearSize })
+        }
+        break
+      }
     }
   })
 }
