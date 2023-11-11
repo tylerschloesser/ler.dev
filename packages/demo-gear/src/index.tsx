@@ -56,6 +56,11 @@ function addGear({ size, position }: { size: number; position: Vec2 }): void {
   const gearId = `${position.x}.${position.y}`
   invariant(gears[gearId] === undefined)
 
+  const connections = getConnections({
+    gearSize: size,
+    position,
+  })
+
   const gear: Gear = {
     id: gearId,
     position: {
@@ -65,10 +70,7 @@ function addGear({ size, position }: { size: number; position: Vec2 }): void {
     size,
     angle: 0,
     velocity: Math.PI,
-    connections: getConnections({
-      gearSize: size,
-      position,
-    }),
+    connections,
   }
 
   gears[gear.id] = gear
