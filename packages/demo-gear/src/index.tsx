@@ -7,6 +7,7 @@ import styles from './index.module.scss'
 
 const TILE_SIZE = 30
 
+const TICK_DURATION = 50
 const DRAW_GEAR_BOX = false
 
 interface Pointer {
@@ -48,7 +49,7 @@ function initSimulator() {
       gear.angle += gear.velocity * elapsed
     }
   }
-  self.setInterval(tick, 100)
+  self.setInterval(tick, TICK_DURATION)
 }
 
 function addGear({ size, position }: { size: number; position: Vec2 }): void {
