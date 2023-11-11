@@ -6,8 +6,8 @@
     "deploy-staging": "npm run deploy-staging -w packages/cdk"
   },
   "dependencies": {
-    "@trivago/prettier-plugin-sort-imports": "^3.3.0",
-    "prettier": "^2.7.1",
+    "@trivago/prettier-plugin-sort-imports": "^3.4.0",
+    "prettier": "^2.8.8",
     "ts-node": "^10.9.1",
     "typescript": "^5.2.2"
   },
