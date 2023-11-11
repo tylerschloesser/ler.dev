@@ -175,8 +175,9 @@ const getApplyForcePointer: GetPointerFn<ApplyForcePointer> = ({
     y: Math.floor((e.offsetY - canvas.height / 2) / TILE_SIZE),
   }
 
-  const tileId = `${position.x}${position.y}`
+  const tileId = `${position.x}.${position.y}`
   const tile = tiles[tileId]
+
   const gearId = tile?.gearId
 
   return { mode: PointerMode.ApplyForce, position, gearId }
@@ -393,18 +394,24 @@ const initCanvas: InitCanvasFn = ({ canvas, inputState }) => {
           angle: 0,
           connections: pointer.connections,
         },
-        pointer.valid ? `hsla(120, 50%, 50%, .5)` : `hsla(240, 50%, 50%, .5)`,
+        pointer.valid ? `hsla(120, 50%, 50%, .5)` : `hsla(0, 50%, 50%, .5)`,
       )
     }
 
-    if (pointer?.mode === PointerMode.ApplyForce) {
-      context.fillStyle = 'pink'
-      context.fillRect(
-        pointer.position.x * TILE_SIZE,
-        pointer.position.y * TILE_SIZE,
-        TILE_SIZE,
-        TILE_SIZE,
+    if (pointer?.mode === PointerMode.ApplyForce && pointer.gearId) {
+      const gear = gears[pointer.gearId]
+      invariant(gear)
+
+      context.beginPath()
+      context.lineWidth = 2
+      context.strokeStyle = 'white'
+      context.strokeRect(
+        (gear.position.x - (gear.size - 1) / 2) * TILE_SIZE,
+        (gear.position.y - (gear.size - 1) / 2) * TILE_SIZE,
+        TILE_SIZE * gear.size,
+        TILE_SIZE * gear.size,
       )
+      context.closePath()
     }
 
     window.requestAnimationFrame(render)
