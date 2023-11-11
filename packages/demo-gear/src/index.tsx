@@ -57,6 +57,18 @@ interface Tile {
 
 const tiles: Record<string, Tile> = {}
 
+function accelerateGear({
+  gear,
+  acceleration,
+  elapsed,
+}: {
+  gear: Gear
+  acceleration: number
+  elapsed: number
+}): void {
+  gear.velocity += acceleration * elapsed
+}
+
 function initSimulator() {
   let prev: number = performance.now()
   function tick() {
@@ -69,8 +81,7 @@ function initSimulator() {
         pointer.gearId === gear.id &&
         pointer.active
       ) {
-        const acceleration = 1
-        gear.velocity += acceleration * elapsed
+        accelerateGear({ gear, acceleration: 1, elapsed })
       }
       gear.angle += gear.velocity * elapsed
     }
