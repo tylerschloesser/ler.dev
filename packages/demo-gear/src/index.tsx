@@ -64,12 +64,10 @@ const initPointer: InitPointerFn = ({ canvas, size, offset }) => {
       invariant(pointer.x === Math.floor(pointer.x))
       invariant(pointer.y === Math.floor(pointer.y))
 
-      invariant(gearSizeIndex === 0)
+      const gearSize = GEAR_SIZES[gearSizeIndex]
+      invariant(gearSize !== undefined)
 
-      const tileId = `${pointer.x}.${pointer.y}`
-      invariant(tiles[tileId] === undefined)
-
-      const gearId = tileId
+      const gearId = `${pointer.x}.${pointer.y}`
       invariant(gears[gearId] === undefined)
 
       const gear: Gear = {
@@ -78,15 +76,23 @@ const initPointer: InitPointerFn = ({ canvas, size, offset }) => {
           x: pointer.x,
           y: pointer.y,
         },
-        size: 1,
-      }
-
-      const tile: Tile = {
-        gearId,
+        size: gearSize,
       }
 
       gears[gear.id] = gear
-      tiles[tileId] = tile
+
+      for (let x = -((gearSize - 1) / 2); x < (gearSize - 1) / 2; x++) {
+        for (let y = -((gearSize - 1) / 2); y < (gearSize - 1) / 2; y++) {
+          invariant(x === Math.floor(x))
+          invariant(y === Math.floor(y))
+
+          const tileId = `${pointer.x + x}.${pointer.y + y}`
+          invariant(tiles[tileId] === undefined)
+
+          tiles[tileId] = { gearId }
+        }
+      }
+      console.log(tiles)
     }
   })
 }
