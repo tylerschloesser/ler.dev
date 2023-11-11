@@ -57,38 +57,47 @@ interface Tile {
 
 const tiles: Record<string, Tile> = {}
 
+function propogateVelocity({
+  gear,
+  seen,
+}: {
+  gear: Gear
+  seen: Set<string>
+}): void {
+  for (const peerId of gear.connections) {
+    if (seen.has(peerId)) {
+      continue
+    }
+    seen.add(peerId)
+
+    const peer = gears[peerId]
+    invariant(peer)
+
+    const ratio = gear.size / peer.size
+    peer.velocity = gear.velocity * -1 * ratio
+
+    propogateVelocity({
+      gear: peer,
+      seen,
+    })
+  }
+}
+
 function accelerateGear({
   gear,
   acceleration,
   elapsed,
-  seen,
 }: {
   gear: Gear
   acceleration: number
   elapsed: number
-  seen: Set<string>
 }): void {
   gear.velocity += acceleration * elapsed
 
-  invariant(gear.connections.size < 2)
-  if (gear.connections.size) {
-    const peerId = [...gear.connections].at(0)
-    invariant(peerId)
-
-    if (!seen.has(peerId)) {
-      seen.add(peerId)
-      const peer = gears[peerId]
-      invariant(peer)
-
-      const ratio = gear.size / peer.size
-      accelerateGear({
-        gear: peer,
-        acceleration: acceleration * -1 * ratio,
-        elapsed,
-        seen,
-      })
-    }
-  }
+  propogateVelocity({
+    gear,
+    seen: new Set<string>(),
+  })
 }
 
 function initSimulator() {
@@ -103,12 +112,10 @@ function initSimulator() {
         pointer.gearId === gear.id &&
         pointer.active
       ) {
-        const seen = new Set<string>()
         accelerateGear({
           gear,
           acceleration: Math.sign(gear.velocity),
           elapsed,
-          seen,
         })
       }
       gear.angle += gear.velocity * elapsed
