@@ -69,7 +69,7 @@ function addGear({ size, position }: { size: number; position: Vec2 }): void {
     },
     size,
     angle: 0,
-    velocity: Math.PI,
+    velocity: Math.PI / 2,
     connections,
   }
 
@@ -213,6 +213,7 @@ const initKeyboard: initKeyboardFn = () => {
 }
 
 const initCanvas: InitCanvasFn = (canvas) => {
+  console.log('initializing canvas')
   const rect = canvas.getBoundingClientRect()
   canvas.width = rect.width
   canvas.height = rect.height
