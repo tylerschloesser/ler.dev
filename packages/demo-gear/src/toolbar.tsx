@@ -1,3 +1,5 @@
+import styles from './toolbar.module.scss'
+
 export function Toolbar() {
-  return <>TODO</>
+  return <div className={styles.container}>TODO</div>
 }
