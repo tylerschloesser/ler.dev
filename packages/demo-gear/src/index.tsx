@@ -5,7 +5,7 @@ import { useCanvas } from './use-canvas.js'
 import invariant from 'tiny-invariant'
 import styles from './index.module.scss'
 
-const TILE_SIZE = 50
+const TILE_SIZE = 30
 
 const DRAW_GEAR_BOX = false
 
@@ -63,7 +63,7 @@ function addGear({ size, position }: { size: number; position: Vec2 }): void {
     position,
   })
 
-  let velocity = Math.PI / 2
+  let velocity = Math.PI / 4
 
   if (connections.size === 1) {
     const peerId = [...connections].at(0)
@@ -323,10 +323,15 @@ const initCanvas: InitCanvasFn = (canvas) => {
       context.beginPath()
       context.lineWidth = 2
       context.strokeStyle = 'white'
-      context.rotate(gear.angle)
-      context.moveTo(0, 0)
-      context.lineTo((gear.size * TILE_SIZE) / 2, 0)
-      context.stroke()
+      const teeth = gear.size * 5
+      for (let i = 0; i < teeth; i++) {
+        context.save()
+        context.rotate(gear.angle + (i / teeth) * Math.PI * 2)
+        context.moveTo(((gear.size - 0.5) * TILE_SIZE) / 2, 0)
+        context.lineTo((gear.size * TILE_SIZE) / 2, 0)
+        context.stroke()
+        context.restore()
+      }
       context.closePath()
       context.restore()
 
