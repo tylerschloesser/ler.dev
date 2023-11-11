@@ -32,6 +32,7 @@ interface AddGearPointer extends BasePointer {
 
 interface ApplyForcePointer extends BasePointer {
   mode: PointerMode.ApplyForce
+  active: boolean
   gearId?: string
 }
 
@@ -62,8 +63,15 @@ function initSimulator() {
     const now = performance.now()
     const elapsed = (now - prev) / 1000
     prev = now
-
     for (const gear of Object.values(gears)) {
+      if (
+        pointer?.mode === PointerMode.ApplyForce &&
+        pointer.gearId === gear.id &&
+        pointer.active
+      ) {
+        const acceleration = 1
+        gear.velocity += acceleration * elapsed
+      }
       gear.angle += gear.velocity * elapsed
     }
   }
@@ -180,7 +188,9 @@ const getApplyForcePointer: GetPointerFn<ApplyForcePointer> = ({
 
   const gearId = tile?.gearId
 
-  return { mode: PointerMode.ApplyForce, position, gearId }
+  const active = Boolean(e.buttons)
+
+  return { mode: PointerMode.ApplyForce, position, gearId, active }
 }
 
 const getAddGearPointer: GetPointerFn<AddGearPointer> = ({
@@ -240,6 +250,18 @@ const initPointer: InitPointerFn = ({ canvas, inputState }) => {
           const { gearSize } = inputState.current
           addGear({ position: pointer.position, size: gearSize })
         }
+        break
+      }
+      case PointerMode.ApplyForce: {
+        pointer = getApplyForcePointer({ e, canvas, inputState })
+        break
+      }
+    }
+  })
+  canvas.addEventListener('pointerdown', (e) => {
+    switch (inputState.current.pointerMode) {
+      case PointerMode.ApplyForce: {
+        pointer = getApplyForcePointer({ e, canvas, inputState })
         break
       }
     }
@@ -404,7 +426,7 @@ const initCanvas: InitCanvasFn = ({ canvas, inputState }) => {
 
       context.beginPath()
       context.lineWidth = 2
-      context.strokeStyle = 'white'
+      context.strokeStyle = pointer.active ? 'green' : 'white'
       context.strokeRect(
         (gear.position.x - (gear.size - 1) / 2) * TILE_SIZE,
         (gear.position.y - (gear.size - 1) / 2) * TILE_SIZE,
