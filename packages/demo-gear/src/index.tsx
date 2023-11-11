@@ -4,6 +4,7 @@ import { useCanvas } from './use-canvas.js'
 
 import invariant from 'tiny-invariant'
 import styles from './index.module.scss'
+import { Toolbar } from './toolbar.js'
 
 const TILE_SIZE = 30
 
@@ -386,9 +387,16 @@ const initCanvas: InitCanvasFn = (canvas) => {
   window.requestAnimationFrame(render)
 }
 
-const DemoGear = () => {
+function DemoGear() {
   const setCanvas = useCanvas(initCanvas)
-  return <canvas className={styles.canvas} ref={setCanvas} />
+  return (
+    <div className={styles.container}>
+      <div className={styles.toolbar}>
+        <Toolbar />
+      </div>
+      <canvas className={styles.canvas} ref={setCanvas} />
+    </div>
+  )
 }
 
 initRoot(<DemoGear />)
