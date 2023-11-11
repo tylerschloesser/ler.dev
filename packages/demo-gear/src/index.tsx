@@ -145,74 +145,50 @@ function getConnections({
 
 function getPointer({
   e,
-  offset,
-  size,
+  canvas,
 }: {
   e: PointerEvent
-  size: Vec2
-  offset: Vec2
-}): Pointer | null {
+  canvas: HTMLCanvasElement
+}): Pointer {
+  const gearSize = GEAR_SIZES[gearSizeIndex]
+  invariant(gearSize !== undefined)
+
   const position = {
-    x: Math.floor((e.clientX - offset.x) / TILE_SIZE),
-    y: Math.floor((e.clientY - offset.y) / TILE_SIZE),
+    x: Math.floor((e.offsetX - canvas.width / 2) / TILE_SIZE),
+    y: Math.floor((e.offsetY - canvas.height / 2) / TILE_SIZE),
   }
-  if (
-    position.x >= 0 &&
-    position.x < size.x &&
-    position.y >= 0 &&
-    position.y < size.y
-  ) {
-    const gearSize = GEAR_SIZES[gearSizeIndex]
-    invariant(gearSize !== undefined)
 
-    let valid = true
-    for (let x = -((gearSize - 1) / 2); x <= (gearSize - 1) / 2 && valid; x++) {
-      for (
-        let y = -((gearSize - 1) / 2);
-        y <= (gearSize - 1) / 2 && valid;
-        y++
-      ) {
-        invariant(x === Math.floor(x))
-        invariant(y === Math.floor(y))
+  let valid = true
+  for (let x = -((gearSize - 1) / 2); x <= (gearSize - 1) / 2 && valid; x++) {
+    for (let y = -((gearSize - 1) / 2); y <= (gearSize - 1) / 2 && valid; y++) {
+      invariant(x === Math.floor(x))
+      invariant(y === Math.floor(y))
 
-        if (
-          !(
-            position.x + x >= 0 &&
-            position.x + x < size.x &&
-            position.y + y >= 0 &&
-            position.y + y < size.y
-          )
-        ) {
-          valid = false
-        }
-        const tileId = `${position.x + x}.${position.y + y}`
-        if (tiles[tileId]) {
-          valid = false
-        }
+      const tileId = `${position.x + x}.${position.y + y}`
+      if (tiles[tileId]) {
+        valid = false
       }
     }
-
-    let connections = new Set<string>()
-    if (valid) {
-      connections = getConnections({ position, gearSize })
-    }
-
-    return { position, valid, connections }
-  } else {
-    return null
   }
+
+  let connections = new Set<string>()
+  if (valid) {
+    connections = getConnections({ position, gearSize })
+  }
+
+  return { position, valid, connections }
 }
 
-const initPointer: InitPointerFn = ({ canvas, size, offset }) => {
+const initPointer: InitPointerFn = ({ canvas }) => {
   canvas.addEventListener('pointermove', (e) => {
-    pointer = getPointer({ e, offset, size })
+    pointer = getPointer({ e, canvas })
   })
   canvas.addEventListener('pointerleave', () => {
     pointer = null
   })
   canvas.addEventListener('pointerup', (e) => {
-    pointer = getPointer({ e, offset, size })
-    if (pointer && pointer.valid) {
+    pointer = getPointer({ e, canvas })
+    if (pointer.valid) {
       const gearSize = GEAR_SIZES[gearSizeIndex]
       invariant(gearSize !== undefined)
       addGear({ position: pointer.position, size: gearSize })
@@ -239,24 +215,14 @@ const initCanvas: InitCanvasFn = (canvas) => {
   const context = canvas.getContext('2d')
   invariant(context)
 
-  const size = {
-    x: Math.floor(canvas.width / TILE_SIZE),
-    y: Math.floor(canvas.height / TILE_SIZE),
-  }
-
-  const offset = {
-    x: ((canvas.width / TILE_SIZE - size.x) / 2) * TILE_SIZE,
-    y: ((canvas.height / TILE_SIZE - size.y) / 2) * TILE_SIZE,
-  }
-
-  initPointer({ canvas, size, offset })
+  initPointer({ canvas })
   initKeyboard({ canvas })
   initSimulator()
 
   addGear({
     position: {
-      x: Math.floor(size.x / 2),
-      y: Math.floor(size.y / 2),
+      x: 0,
+      y: 0,
     },
     size: GEAR_SIZES[1]!,
   })
@@ -271,19 +237,29 @@ const initCanvas: InitCanvasFn = (canvas) => {
     context.fillStyle = 'black'
     context.fillRect(0, 0, canvas.width, canvas.height)
 
+    context.translate(canvas.width / 2, canvas.height / 2)
+
+    let grid = {
+      tl: {
+        x: Math.floor(-canvas.width / 2 / TILE_SIZE) * TILE_SIZE,
+        y: Math.floor(-canvas.height / 2 / TILE_SIZE) * TILE_SIZE,
+      },
+      br: {
+        x: Math.ceil(canvas.width / 2 / TILE_SIZE) * TILE_SIZE,
+        y: Math.ceil(canvas.height / 2 / TILE_SIZE) * TILE_SIZE,
+      },
+    }
+
     context.beginPath()
     context.lineWidth = 1
     context.strokeStyle = 'grey'
-
-    context.translate(offset.x, offset.y)
-
-    for (let y = 0; y < size.y + 1; y++) {
-      context.moveTo(0, y * TILE_SIZE)
-      context.lineTo(size.x * TILE_SIZE, y * TILE_SIZE)
+    for (let y = grid.tl.y; y < grid.br.y; y += TILE_SIZE) {
+      context.moveTo(grid.tl.x, y)
+      context.lineTo(grid.br.x, y)
     }
-    for (let x = 0; x < size.x + 1; x++) {
-      context.moveTo(x * TILE_SIZE, 0)
-      context.lineTo(x * TILE_SIZE, size.y * TILE_SIZE)
+    for (let x = grid.tl.x; x < grid.br.x; x += TILE_SIZE) {
+      context.moveTo(x, grid.tl.y)
+      context.lineTo(x, grid.br.y)
     }
     context.stroke()
     context.closePath()
