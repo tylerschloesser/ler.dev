@@ -13,7 +13,8 @@ export function Toolbar() {
 
   return (
     <div className={styles.container}>
-      <fieldset>
+      <fieldset className={styles['gear-sizes']}>
+        <legend>Gear Size:</legend>
         {GEAR_SIZES.map((value) => (
           <label key={value}>
             {value}
