@@ -21,7 +21,7 @@ const initPointer: InitPointerFn = ({ canvas, size, offset }) => {
       y: Math.floor(e.clientY / TILE_SIZE - offset.y),
     }
     if (p.x >= 0 && p.y < size.x && p.y >= 0 && p.y < size.y) {
-      pointer = { x: e.clientX, y: e.clientY }
+      pointer = p
     } else {
       pointer = null
     }
@@ -80,10 +80,12 @@ const initCanvas: InitCanvasFn = (canvas) => {
 
     if (pointer) {
       context.fillStyle = 'white'
-      const radius = Math.min(canvas.width, canvas.height) * 0.1
-      context.beginPath()
-      context.arc(pointer.x, pointer.y, radius, 0, Math.PI * 2)
-      context.fill()
+      context.fillRect(
+        Math.floor((pointer.x + offset.x) * TILE_SIZE),
+        Math.floor((pointer.y + offset.y) * TILE_SIZE),
+        TILE_SIZE,
+        TILE_SIZE,
+      )
     }
 
     window.requestAnimationFrame(render)
