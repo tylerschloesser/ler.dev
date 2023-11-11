@@ -245,10 +245,15 @@ const initCanvas: InitCanvasFn = (canvas) => {
       context.fill()
 
       context.save()
+      context.translate(
+        (gear.size * TILE_SIZE) / 2,
+        (gear.size * TILE_SIZE) / 2,
+      )
       context.lineWidth = 2
       context.strokeStyle = 'white'
-      context.moveTo((gear.size * TILE_SIZE) / 2, (gear.size * TILE_SIZE) / 2)
-      context.lineTo(gear.size * TILE_SIZE, (gear.size * TILE_SIZE) / 2)
+      context.rotate(gear.angle)
+      context.moveTo(0, 0)
+      context.lineTo((gear.size * TILE_SIZE) / 2, 0)
       context.stroke()
       context.restore()
 
