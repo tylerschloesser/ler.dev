@@ -408,7 +408,7 @@ const initCanvas: InitCanvasFn = ({ canvas, inputState }) => {
 }
 
 function DemoGear() {
-  const inputState = useInputState()
+  const { inputState } = useInputState()
   const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null)
   useEffect(() => {
     if (canvas) {

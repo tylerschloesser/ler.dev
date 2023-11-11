@@ -4,15 +4,16 @@ import styles from './toolbar.module.scss'
 import { GEAR_SIZES, PointerMode } from './types.js'
 
 export function Toolbar() {
-  const inputState = useInputState()
+  const { inputState, saveInputState } = useInputState()
   const [gearSize, setGearSize] = useState<number>(inputState.current.gearSize)
   const [pointerMode, setPointerMode] = useState<PointerMode>(
-    PointerMode.AddGear,
+    inputState.current.pointerMode,
   )
 
   useEffect(() => {
     inputState.current.gearSize = gearSize
     inputState.current.pointerMode = pointerMode
+    saveInputState()
   }, [gearSize, pointerMode])
 
   return (
