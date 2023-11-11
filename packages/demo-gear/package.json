@@ -1,3 +1,14 @@
 {
-  "name": "@ler.dev/demo-gear"
+  "name": "@ler.dev/demo-gear",
+  "type": "module",
+  "peerDependencies": {
+    "@types/react": "^18.2.37",
+    "@types/react-dom": "^18.2.15",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "dependencies": {
+    "@ler.dev/dev": "*",
+    "@ler.dev/tsconfig": "*"
+  }
 }
