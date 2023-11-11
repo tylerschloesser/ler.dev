@@ -31,7 +31,7 @@ interface Tile {
 
 const tiles: Record<string, Tile> = {}
 
-function getPosition({
+function getPointer({
   e,
   offset,
   size,
@@ -39,13 +39,18 @@ function getPosition({
   e: PointerEvent
   size: Vec2
   offset: Vec2
-}): Vec2 | null {
-  const p = {
+}): Pointer | null {
+  const position = {
     x: Math.floor((e.clientX - offset.x) / TILE_SIZE),
     y: Math.floor((e.clientY - offset.y) / TILE_SIZE),
   }
-  if (p.x >= 0 && p.x < size.x && p.y >= 0 && p.y < size.y) {
-    return p
+  if (
+    position.x >= 0 &&
+    position.x < size.x &&
+    position.y >= 0 &&
+    position.y < size.y
+  ) {
+    return { position, valid: true }
   } else {
     return null
   }
@@ -53,20 +58,15 @@ function getPosition({
 
 const initPointer: InitPointerFn = ({ canvas, size, offset }) => {
   canvas.addEventListener('pointermove', (e) => {
-    const position = getPosition({ e, offset, size })
-    if (position) {
-      pointer = { position, valid: true }
-    } else {
-      pointer = null
-    }
+    pointer = getPointer({ e, offset, size })
   })
   canvas.addEventListener('pointerleave', () => {
     pointer = null
   })
   canvas.addEventListener('pointerup', (e) => {
-    pointer = null
-    const position = getPosition({ e, offset, size })
-    if (position) {
+    pointer = getPointer({ e, offset, size })
+    if (pointer && pointer.valid) {
+      const { position } = pointer
       invariant(position.x === Math.floor(position.x))
       invariant(position.y === Math.floor(position.y))
 
@@ -100,6 +100,7 @@ const initPointer: InitPointerFn = ({ canvas, size, offset }) => {
       }
       console.log(tiles)
     }
+    pointer = null
   })
 }
 
