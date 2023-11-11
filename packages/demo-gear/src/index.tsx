@@ -197,7 +197,6 @@ const initPointer: InitPointerFn = ({ canvas, size, offset }) => {
       invariant(gearSize !== undefined)
       addGear({ position: pointer.position, size: gearSize })
     }
-    pointer = null
   })
 }
 
