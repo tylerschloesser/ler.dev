@@ -14,9 +14,17 @@ interface Pointer {
 
 let pointer: Pointer | null = null
 
-const initPointer: InitPointerFn = (canvas) => {
+const initPointer: InitPointerFn = ({ canvas, size, offset }) => {
   canvas.addEventListener('pointermove', (e) => {
-    pointer = { x: e.clientX, y: e.clientY }
+    const p = {
+      x: Math.floor(e.clientX / TILE_SIZE - offset.x),
+      y: Math.floor(e.clientY / TILE_SIZE - offset.y),
+    }
+    if (p.x >= 0 && p.y < size.x && p.y >= 0 && p.y < size.y) {
+      pointer = { x: e.clientX, y: e.clientY }
+    } else {
+      pointer = null
+    }
   })
   canvas.addEventListener('pointerleave', () => {
     pointer = null
@@ -31,8 +39,6 @@ const initCanvas: InitCanvasFn = (canvas) => {
   const context = canvas.getContext('2d')
   invariant(context)
 
-  initPointer(canvas)
-
   const size = {
     x: Math.floor(canvas.width / TILE_SIZE),
     y: Math.floor(canvas.height / TILE_SIZE),
@@ -42,6 +48,8 @@ const initCanvas: InitCanvasFn = (canvas) => {
     x: (canvas.width / TILE_SIZE - size.x) / 2,
     y: (canvas.height / TILE_SIZE - size.y) / 2,
   }
+
+  initPointer({ canvas, size, offset })
 
   function render() {
     invariant(context)
