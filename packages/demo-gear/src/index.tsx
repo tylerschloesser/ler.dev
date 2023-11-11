@@ -1,11 +1,11 @@
 import { initRoot } from './init-root.js'
-import { InitCanvasFn, InitPointerFn } from './types.js'
+import { InitCanvasFn, InitPointerFn, initKeyboardFn } from './types.js'
 import { useCanvas } from './use-canvas.js'
 
 import styles from './index.module.scss'
 import invariant from 'tiny-invariant'
 
-const TILE_SIZE = 50
+const TILE_SIZE = 30
 
 interface Pointer {
   x: number
@@ -13,6 +13,9 @@ interface Pointer {
 }
 
 let pointer: Pointer | null = null
+
+const GEAR_SIZES = [1, 3, 5, 7]
+let gearSizeIndex: number = 0
 
 const initPointer: InitPointerFn = ({ canvas, size, offset }) => {
   canvas.addEventListener('pointermove', (e) => {
@@ -28,6 +31,16 @@ const initPointer: InitPointerFn = ({ canvas, size, offset }) => {
   })
   canvas.addEventListener('pointerleave', () => {
     pointer = null
+  })
+}
+
+const initKeyboard: initKeyboardFn = () => {
+  window.addEventListener('keyup', (e) => {
+    if (e.key === 'ArrowUp') {
+      gearSizeIndex = Math.min(GEAR_SIZES.length - 1, gearSizeIndex + 1)
+    } else if (e.key === 'ArrowDown') {
+      gearSizeIndex = Math.max(0, gearSizeIndex - 1)
+    }
   })
 }
 
@@ -48,9 +61,9 @@ const initCanvas: InitCanvasFn = (canvas) => {
     x: ((canvas.width / TILE_SIZE - size.x) / 2) * TILE_SIZE,
     y: ((canvas.height / TILE_SIZE - size.y) / 2) * TILE_SIZE,
   }
-  console.log(offset)
 
   initPointer({ canvas, size, offset })
+  initKeyboard({ canvas })
 
   function render() {
     invariant(context)
@@ -61,7 +74,7 @@ const initCanvas: InitCanvasFn = (canvas) => {
     context.fillRect(0, 0, canvas.width, canvas.height)
 
     context.beginPath()
-    context.strokeStyle = 'white'
+    context.strokeStyle = 'grey'
 
     context.resetTransform()
     context.translate(offset.x, offset.y)
@@ -77,12 +90,15 @@ const initCanvas: InitCanvasFn = (canvas) => {
     context.stroke()
 
     if (pointer) {
-      context.fillStyle = 'white'
+      const gearSize = GEAR_SIZES[gearSizeIndex]
+      invariant(gearSize !== undefined)
+
+      context.fillStyle = 'grey'
       context.fillRect(
-        Math.floor(pointer.x) * TILE_SIZE,
-        Math.floor(pointer.y) * TILE_SIZE,
-        TILE_SIZE,
-        TILE_SIZE,
+        (Math.floor(pointer.x) - (gearSize - 1) / 2) * TILE_SIZE,
+        (Math.floor(pointer.y) - (gearSize - 1) / 2) * TILE_SIZE,
+        TILE_SIZE * gearSize,
+        TILE_SIZE * gearSize,
       )
 
       context.fillStyle = 'blue'
@@ -90,7 +106,7 @@ const initCanvas: InitCanvasFn = (canvas) => {
       context.arc(
         (Math.floor(pointer.x) + 0.5) * TILE_SIZE,
         (Math.floor(pointer.y) + 0.5) * TILE_SIZE,
-        TILE_SIZE / 2,
+        (TILE_SIZE * gearSize) / 2,
         0,
         Math.PI * 2,
       )

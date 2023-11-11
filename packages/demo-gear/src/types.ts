@@ -4,3 +4,5 @@ export type InitPointerFn = (args: {
   size: { x: number; y: number }
   offset: { x: number; y: number }
 }) => void
+
+export type initKeyboardFn = (args: { canvas: HTMLCanvasElement }) => void
