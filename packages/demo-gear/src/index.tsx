@@ -10,6 +10,7 @@ const TILE_SIZE = 30
 interface Pointer {
   position: Vec2
   valid: boolean
+  connections: Set<string>
 }
 
 let pointer: Pointer | null = null
@@ -131,7 +132,7 @@ function getPointer({
       }
     }
 
-    return { position, valid }
+    return { position, valid, connections: new Set() }
   } else {
     return null
   }
@@ -279,7 +280,7 @@ const initCanvas: InitCanvasFn = (canvas) => {
           position: pointer.position,
           size: gearSize,
           angle: 0,
-          connections: new Set(),
+          connections: pointer.connections,
         },
         pointer.valid ? `hsla(120, 50%, 50%, .5)` : `hsla(240, 50%, 50%, .5)`,
       )
