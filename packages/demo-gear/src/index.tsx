@@ -20,11 +20,21 @@ const TILE_SIZE = 30
 const TICK_DURATION = 50
 const DRAW_GEAR_BOX = false
 
-interface Pointer {
+interface BasePointer {
   position: Vec2
+}
+
+interface AddGearPointer extends BasePointer {
+  mode: PointerMode.AddGear
   valid: boolean
   connections: Set<string>
 }
+
+interface ApplyForcePointer extends BasePointer {
+  mode: PointerMode.ApplyForce
+}
+
+type Pointer = AddGearPointer | ApplyForcePointer
 
 let pointer: Pointer | null = null
 
@@ -149,7 +159,7 @@ function getConnections({
   return connections
 }
 
-function getPointer({
+function getAddGearPointer({
   e,
   canvas,
   inputState,
@@ -157,7 +167,7 @@ function getPointer({
   e: PointerEvent
   canvas: HTMLCanvasElement
   inputState: React.MutableRefObject<InputState>
-}): Pointer {
+}): AddGearPointer {
   const { gearSize } = inputState.current
 
   const position = {
@@ -183,14 +193,14 @@ function getPointer({
     connections = getConnections({ position, gearSize })
   }
 
-  return { position, valid, connections }
+  return { mode: PointerMode.AddGear, position, valid, connections }
 }
 
 const initPointer: InitPointerFn = ({ canvas, inputState }) => {
   canvas.addEventListener('pointermove', (e) => {
     switch (inputState.current.pointerMode) {
       case PointerMode.AddGear: {
-        pointer = getPointer({ e, canvas, inputState })
+        pointer = getAddGearPointer({ e, canvas, inputState })
         break
       }
     }
@@ -206,7 +216,7 @@ const initPointer: InitPointerFn = ({ canvas, inputState }) => {
   canvas.addEventListener('pointerup', (e) => {
     switch (inputState.current.pointerMode) {
       case PointerMode.AddGear: {
-        pointer = getPointer({ e, canvas, inputState })
+        pointer = getAddGearPointer({ e, canvas, inputState })
         if (pointer.valid) {
           const { gearSize } = inputState.current
           addGear({ position: pointer.position, size: gearSize })
@@ -356,7 +366,7 @@ const initCanvas: InitCanvasFn = ({ canvas, inputState }) => {
       renderGear(gear)
     }
 
-    if (pointer) {
+    if (pointer?.mode === PointerMode.AddGear) {
       const { gearSize } = inputState.current
       renderGear(
         {
