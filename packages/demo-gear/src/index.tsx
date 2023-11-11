@@ -159,7 +159,7 @@ const initCanvas: InitCanvasFn = (canvas) => {
     }
     context.stroke()
 
-    function renderGear(gear: Omit<Gear, 'id'>): void {
+    function renderGear(gear: Omit<Gear, 'id'>, tint?: string): void {
       invariant(context)
       context.fillStyle = 'grey'
       context.fillRect(
@@ -179,6 +179,16 @@ const initCanvas: InitCanvasFn = (canvas) => {
         Math.PI * 2,
       )
       context.fill()
+
+      if (tint) {
+        context.fillStyle = tint
+        context.fillRect(
+          (gear.position.x - (gear.size - 1) / 2) * TILE_SIZE,
+          (gear.position.y - (gear.size - 1) / 2) * TILE_SIZE,
+          TILE_SIZE * gear.size,
+          TILE_SIZE * gear.size,
+        )
+      }
     }
 
     for (const gear of Object.values(gears)) {
@@ -188,10 +198,13 @@ const initCanvas: InitCanvasFn = (canvas) => {
     if (pointer) {
       const gearSize = GEAR_SIZES[gearSizeIndex]
       invariant(gearSize !== undefined)
-      renderGear({
-        position: pointer.position,
-        size: gearSize,
-      })
+      renderGear(
+        {
+          position: pointer.position,
+          size: gearSize,
+        },
+        pointer.valid ? `hsla(120, 50%, 50%, .5)` : `hsla(240, 50%, 50%, .5)`,
+      )
     }
 
     window.requestAnimationFrame(render)
