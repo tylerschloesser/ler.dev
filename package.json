@@ -1,9 +1,9 @@
 {
   "name": "@ler.dev/root",
   "scripts": {
-    "build": "cd ty && npm run build",
-    "deploy-prod": "cd cdk && npm run deploy-prod",
-    "deploy-staging": "cd cdk && npm run deploy-staging"
+    "build": "npm run build -w packages/ty",
+    "deploy-prod": "npm run deploy-prod -w packages/cdk",
+    "deploy-staging": "npm run deploy-staging -w packages/cdk"
   },
   "dependencies": {
     "@trivago/prettier-plugin-sort-imports": "^3.3.0",
