@@ -4,8 +4,8 @@ import {
   PostToConnectionCommand,
 } from '@aws-sdk/client-apigatewaymanagementapi'
 import { DynamoDB } from '@aws-sdk/client-dynamodb'
+import { Grid } from '@ler.dev/common'
 import { APIGatewayProxyWebsocketEventV2 } from 'aws-lambda'
-import { Grid } from 'common'
 import { memoize } from 'lodash'
 import { promisify } from 'util'
 import zlib from 'zlib'

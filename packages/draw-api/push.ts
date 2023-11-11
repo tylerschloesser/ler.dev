@@ -1,4 +1,4 @@
-import { PushRequest } from 'common'
+import { PushRequest } from '@ler.dev/common'
 import { logger, pretty } from './logger'
 import * as util from './push.util'
 import { Handler } from './util'

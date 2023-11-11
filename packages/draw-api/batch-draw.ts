@@ -1,5 +1,5 @@
 import { SendMessageCommandInput, SQS } from '@aws-sdk/client-sqs'
-import { BatchDrawMessage } from 'common'
+import { BatchDrawMessage } from '@ler.dev/common'
 import * as util from './batch-draw.util'
 import { logger, pretty } from './logger'
 import { Handler } from './util'

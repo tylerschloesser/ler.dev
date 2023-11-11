@@ -1,6 +1,6 @@
 import { SQS } from '@aws-sdk/client-sqs'
+import { DrawQueueMessage } from '@ler.dev/common'
 import { SQSHandler } from 'aws-lambda'
-import { DrawQueueMessage } from 'common'
 import { logger, pretty } from './logger'
 
 const sqs = new SQS({ region: 'us-west-2' })
