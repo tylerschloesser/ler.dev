@@ -1,5 +1,5 @@
 import { initRoot } from './init-root.js'
-import { InitCanvasFn, InitPointerFn, initKeyboardFn } from './types.js'
+import { InitCanvasFn, InitPointerFn, Vec2, initKeyboardFn } from './types.js'
 import { useCanvas } from './use-canvas.js'
 
 import styles from './index.module.scss'
@@ -19,6 +19,7 @@ let gearSizeIndex: number = 0
 
 interface Gear {
   id: string
+  position: Vec2
   size: number
 }
 
@@ -29,8 +30,6 @@ interface Tile {
 }
 
 const tiles: Record<string, Tile> = {}
-
-type Vec2 = { x: number; y: number }
 
 function getPointer({
   e,
@@ -62,7 +61,32 @@ const initPointer: InitPointerFn = ({ canvas, size, offset }) => {
   canvas.addEventListener('pointerup', (e) => {
     pointer = getPointer({ e, offset, size })
     if (pointer) {
-      console.log('TODO place gear')
+      invariant(pointer.x === Math.floor(pointer.x))
+      invariant(pointer.y === Math.floor(pointer.y))
+
+      invariant(gearSizeIndex === 0)
+
+      const tileId = `${pointer.x}.${pointer.y}`
+      invariant(tiles[tileId] === undefined)
+
+      const gearId = tileId
+      invariant(gears[gearId] === undefined)
+
+      const gear: Gear = {
+        id: gearId,
+        position: {
+          x: pointer.x,
+          y: pointer.y,
+        },
+        size: 1,
+      }
+
+      const tile: Tile = {
+        gearId,
+      }
+
+      gears[gear.id] = gear
+      tiles[tileId] = tile
     }
   })
 }
@@ -122,28 +146,38 @@ const initCanvas: InitCanvasFn = (canvas) => {
     }
     context.stroke()
 
-    if (pointer) {
-      const gearSize = GEAR_SIZES[gearSizeIndex]
-      invariant(gearSize !== undefined)
-
+    function renderGear(gear: Omit<Gear, 'id'>): void {
+      invariant(context)
       context.fillStyle = 'grey'
       context.fillRect(
-        (pointer.x - (gearSize - 1) / 2) * TILE_SIZE,
-        (pointer.y - (gearSize - 1) / 2) * TILE_SIZE,
-        TILE_SIZE * gearSize,
-        TILE_SIZE * gearSize,
+        (gear.position.x - (gear.size - 1) / 2) * TILE_SIZE,
+        (gear.position.y - (gear.size - 1) / 2) * TILE_SIZE,
+        TILE_SIZE * gear.size,
+        TILE_SIZE * gear.size,
       )
 
       context.fillStyle = 'blue'
       context.beginPath()
       context.arc(
-        (pointer.x + 0.5) * TILE_SIZE,
-        (pointer.y + 0.5) * TILE_SIZE,
-        (TILE_SIZE * gearSize) / 2,
+        (gear.position.x + 0.5) * TILE_SIZE,
+        (gear.position.y + 0.5) * TILE_SIZE,
+        (TILE_SIZE * gear.size) / 2,
         0,
         Math.PI * 2,
       )
       context.fill()
+    }
+
+    for (const gear of Object.values(gears)) {
+    }
+
+    if (pointer) {
+      const gearSize = GEAR_SIZES[gearSizeIndex]
+      invariant(gearSize !== undefined)
+      renderGear({
+        position: pointer,
+        size: gearSize,
+      })
     }
 
     window.requestAnimationFrame(render)
