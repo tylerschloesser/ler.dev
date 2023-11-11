@@ -26,7 +26,10 @@ export function Toolbar() {
             <input
               type="radio"
               checked={gearSize === value}
-              onChange={() => setGearSize(value)}
+              onChange={() => {
+                setGearSize(value)
+                setPointerMode(PointerMode.AddGear)
+              }}
             />
           </label>
         ))}
