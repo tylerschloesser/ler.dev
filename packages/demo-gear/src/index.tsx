@@ -61,6 +61,19 @@ function addGear({ size, position }: { size: number; position: Vec2 }): void {
     position,
   })
 
+  let velocity = Math.PI / 2
+
+  if (connections.size === 1) {
+    const peerId = [...connections].at(0)
+    invariant(peerId !== undefined)
+    const peer = gears[peerId]
+    invariant(peer)
+
+    const ratio = peer.size / size
+    velocity = Math.sign(peer.velocity) * -1 * Math.abs(peer.velocity) * ratio
+    console.log(velocity)
+  }
+
   const gear: Gear = {
     id: gearId,
     position: {
@@ -69,7 +82,7 @@ function addGear({ size, position }: { size: number; position: Vec2 }): void {
     },
     size,
     angle: 0,
-    velocity: Math.PI / 2,
+    velocity,
     connections,
   }
 
