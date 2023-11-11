@@ -1,22 +1,8 @@
 {
-  "name": "common",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.ts",
+  "name": "@ler.dev/common",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/tylerschloesser/ler.dev.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/tylerschloesser/ler.dev/issues"
-  },
-  "homepage": "https://github.com/tylerschloesser/ler.dev#readme",
   "dependencies": {
     "zod": "^3.20.2"
   }

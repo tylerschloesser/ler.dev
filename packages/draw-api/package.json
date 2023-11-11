@@ -1,6 +1,5 @@
 {
-  "name": "draw-api",
-  "version": "1.0.0",
+  "name": "@ler.dev/draw-api",
   "devDependencies": {
     "@types/aws-lambda": "^8.10.110",
     "@types/jest": "^29.4.0",

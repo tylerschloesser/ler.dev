@@ -1,6 +1,5 @@
 {
-  "name": "ty",
-  "version": "1.0.0",
+  "name": "@ler.dev/ty",
   "scripts": {
     "start": "webpack serve",
     "build": "webpack"

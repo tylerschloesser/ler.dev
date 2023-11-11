@@ -1,6 +1,5 @@
 {
-  "name": "cdk",
-  "version": "0.1.0",
+  "name": "@ler.dev/cdk",
   "scripts": {
     "deploy-prod": "cdk deploy LerDevDns LerDev",
     "deploy-staging": "cdk deploy StagingTyLerDev"
