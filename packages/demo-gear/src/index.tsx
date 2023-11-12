@@ -1,6 +1,7 @@
 import { initRoot } from './init-root.js'
 import {
   GEAR_SIZES,
+  Gear,
   InitCanvasFn,
   InitPointerFn,
   InputState,
@@ -39,16 +40,6 @@ interface ApplyForcePointer extends BasePointer {
 type Pointer = AddGearPointer | ApplyForcePointer
 
 let pointer: Pointer | null = null
-
-interface Gear {
-  id: string
-  position: Vec2
-  size: number
-  angle: number
-  velocity: number
-  mass: number
-  connections: Set<string>
-}
 
 const gears: Record<string, Gear> = {}
 

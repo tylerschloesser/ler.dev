@@ -22,3 +22,13 @@ export type InitPointerFn = (args: {
   inputState: React.MutableRefObject<InputState>
 }) => void
 export type initKeyboardFn = (args: { canvas: HTMLCanvasElement }) => void
+
+export interface Gear {
+  id: string
+  position: Vec2
+  size: number
+  angle: number
+  velocity: number
+  mass: number
+  connections: Set<string>
+}
