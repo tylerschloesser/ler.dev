@@ -148,9 +148,8 @@ function addGear({ size, position }: { size: number; position: Vec2 }): void {
 
   let network = networks[networkId]
   if (!network) {
-    network = { id: networkId, mass: 0 }
+    network = { id: networkId, energy: 0 }
   }
-  network.mass += mass
 
   for (const peerId of connections) {
     const peer = gears[peerId]

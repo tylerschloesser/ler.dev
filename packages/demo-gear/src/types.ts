@@ -36,5 +36,5 @@ export interface Gear {
 
 export interface Network {
   id: string
-  mass: number
+  energy: number
 }
