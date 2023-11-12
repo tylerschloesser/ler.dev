@@ -46,6 +46,7 @@ interface Gear {
   size: number
   angle: number
   velocity: number
+  mass: number
   connections: Set<string>
 }
 
@@ -165,6 +166,7 @@ function addGear({ size, position }: { size: number; position: Vec2 }): void {
       y: position.y,
     },
     size,
+    mass: 0,
     angle: 0,
     velocity,
     connections,
@@ -382,7 +384,7 @@ const initCanvas: InitCanvasFn = ({ canvas, inputState }) => {
     context.closePath()
 
     function renderGear(
-      gear: Omit<Gear, 'id' | 'velocity'>,
+      gear: Pick<Gear, 'size' | 'position' | 'angle' | 'connections'>,
       tint?: string,
     ): void {
       invariant(context)
