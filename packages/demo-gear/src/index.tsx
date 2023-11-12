@@ -166,7 +166,7 @@ function addGear({ size, position }: { size: number; position: Vec2 }): void {
       y: position.y,
     },
     size,
-    mass: 0,
+    mass: Math.PI * size ** 2,
     angle: 0,
     velocity,
     connections,
