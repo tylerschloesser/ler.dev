@@ -25,10 +25,16 @@ export type initKeyboardFn = (args: { canvas: HTMLCanvasElement }) => void
 
 export interface Gear {
   id: string
+  networkId: string
   position: Vec2
   size: number
   angle: number
   velocity: number
   mass: number
   connections: Set<string>
+}
+
+export interface Network {
+  id: string
+  mass: number
 }

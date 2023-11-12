@@ -5,6 +5,7 @@ import {
   InitCanvasFn,
   InitPointerFn,
   InputState,
+  Network,
   PointerMode,
   Vec2,
   initKeyboardFn,
@@ -48,6 +49,8 @@ interface Tile {
 }
 
 const tiles: Record<string, Tile> = {}
+
+const networks: Record<string, Network> = {}
 
 function propogateVelocity({
   gear,
@@ -131,11 +134,29 @@ function addGear({ size, position }: { size: number; position: Vec2 }): void {
     gearSize: size,
     position,
   })
-  connections.forEach((peerId) => {
+
+  let networkId: string
+  if (connections.size > 0) {
+    const first = [...connections].at(0)
+    invariant(first)
+    networkId = first
+  } else {
+    networkId = getNextNetworkId()
+  }
+
+  const mass = Math.PI * size ** 2
+
+  let network = networks[networkId]
+  if (!network) {
+    network = { id: networkId, mass: 0 }
+  }
+  network.mass += mass
+
+  for (const peerId of connections) {
     const peer = gears[peerId]
     invariant(peer)
     peer.connections.add(gearId)
-  })
+  }
 
   let velocity = Math.PI / 4
 
@@ -152,12 +173,13 @@ function addGear({ size, position }: { size: number; position: Vec2 }): void {
 
   const gear: Gear = {
     id: gearId,
+    networkId,
     position: {
       x: position.x,
       y: position.y,
     },
     size,
-    mass: Math.PI * size ** 2,
+    mass,
     angle: 0,
     velocity,
     connections,
@@ -507,3 +529,8 @@ function DemoGear() {
 }
 
 initRoot(<DemoGear />)
+
+let nextNetworkId = 0
+function getNextNetworkId() {
+  return `${nextNetworkId++}`
+}
