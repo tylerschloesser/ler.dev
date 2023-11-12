@@ -123,7 +123,15 @@ function initSimulator({
   self.setInterval(tick, TICK_DURATION)
 }
 
-function addGear({ size, position }: { size: number; position: Vec2 }): void {
+function addGear({
+  size,
+  position,
+  velocity,
+}: {
+  size: number
+  position: Vec2
+  velocity: number
+}): void {
   invariant(position.x === Math.floor(position.x))
   invariant(position.y === Math.floor(position.y))
 
@@ -156,8 +164,6 @@ function addGear({ size, position }: { size: number; position: Vec2 }): void {
     invariant(peer)
     peer.connections.add(gearId)
   }
-
-  let velocity = Math.PI / 4
 
   invariant(connections.size < 2)
   if (connections.size === 1) {
@@ -316,7 +322,7 @@ const initPointer: InitPointerFn = ({ canvas, inputState }) => {
         pointer = getAddGearPointer({ e, canvas, inputState })
         if (pointer.valid) {
           const { gearSize } = inputState.current
-          addGear({ position: pointer.position, size: gearSize })
+          addGear({ position: pointer.position, size: gearSize, velocity: 0 })
         }
         break
       }
@@ -356,6 +362,7 @@ const initCanvas: InitCanvasFn = ({ canvas, inputState }) => {
       y: 0,
     },
     size: GEAR_SIZES[1]!,
+    velocity: Math.PI / 4,
   })
 
   function render() {
