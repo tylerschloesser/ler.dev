@@ -84,6 +84,14 @@ function accelerateGear({
   diff = network.energy - diff
 }
 
+function applyFriction({
+  network,
+  elapsed,
+}: {
+  network: Network
+  elapsed: number
+}): void {}
+
 function initSimulator({
   inputState,
 }: {
@@ -94,18 +102,26 @@ function initSimulator({
     const now = performance.now()
     const elapsed = (now - prev) / 1000
     prev = now
+
+    if (
+      pointer?.mode === PointerMode.ApplyForce &&
+      pointer.active &&
+      pointer.gearId
+    ) {
+      const gear = gears[pointer.gearId]
+      invariant(gear)
+      accelerateGear({
+        gear,
+        acceleration: inputState.current.acceleration,
+        elapsed,
+      })
+    }
+
+    for (const network of Object.values(networks)) {
+      applyFriction({ network, elapsed })
+    }
+
     for (const gear of Object.values(gears)) {
-      if (
-        pointer?.mode === PointerMode.ApplyForce &&
-        pointer.gearId === gear.id &&
-        pointer.active
-      ) {
-        accelerateGear({
-          gear,
-          acceleration: inputState.current.acceleration,
-          elapsed,
-        })
-      }
       gear.angle += gear.velocity * elapsed
     }
   }
