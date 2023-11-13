@@ -142,12 +142,15 @@ function addGear({
     gearSize: size,
     position,
   })
+  invariant(connections.size < 2)
 
   let networkId: string
   if (connections.size > 0) {
-    const first = [...connections].at(0)
+    const firstId = [...connections].at(0)
+    invariant(firstId)
+    const first = gears[firstId]
     invariant(first)
-    networkId = first
+    networkId = first.networkId
   } else {
     networkId = getNextNetworkId()
   }
@@ -155,28 +158,21 @@ function addGear({
   const mass = Math.PI * size ** 2
   const radius = size / 2
 
-  let network = networks[networkId]
-  if (!network) {
-    invariant(velocity !== undefined)
-    const energy = (1 / 4) * mass * radius ** 2 * velocity ** 2
-    network = { id: networkId, energy }
-  }
-
   for (const peerId of connections) {
     const peer = gears[peerId]
     invariant(peer)
     peer.connections.add(gearId)
   }
 
-  invariant(connections.size < 2)
   if (connections.size === 1) {
     const peerId = [...connections].at(0)
     invariant(peerId !== undefined)
     const peer = gears[peerId]
     invariant(peer)
 
-    const ratio = peer.size / size
-    velocity = peer.velocity * -1 * ratio
+    invariant(peer.velocity !== 0)
+    // TODO refactor
+    velocity = Math.sign(peer.velocity) * -1
   }
 
   const gear: Gear = {
@@ -205,6 +201,49 @@ function addGear({
 
       tiles[tileId] = { gearId }
     }
+  }
+
+  let network = networks[networkId]
+  if (!network) {
+    invariant(velocity !== undefined)
+    const energy = (1 / 4) * mass * radius ** 2 * velocity ** 2
+    network = networks[networkId] = {
+      id: networkId,
+      energy,
+      gears: new Set<Gear>([gear]),
+    }
+  } else {
+    invariant(!network.gears.has(gear))
+    network.gears.add(gear)
+
+    const arr = [...network.gears]
+    invariant(arr.length > 1)
+
+    const [first, ...rest] = arr
+    invariant(first)
+    invariant(rest.length > 0)
+
+    let sum = 0
+    for (const g of arr) {
+      sum += (1 / 4) * g.mass * ((g.size / 2) ** 4 / (first.size / 2) ** 2)
+    }
+    invariant(sum !== 0)
+
+    first.velocity = Math.sign(first.velocity) * Math.sqrt(network.energy / sum)
+
+    for (const g of rest) {
+      g.velocity =
+        Math.sign(g.velocity) *
+        (first.size / 2 / (g.size / 2)) *
+        Math.abs(first.velocity)
+    }
+    console.log(
+      JSON.stringify({
+        id: network.id,
+        energy: network.energy,
+        gears: [...network.gears],
+      }),
+    )
   }
 }
 

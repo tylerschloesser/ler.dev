@@ -37,4 +37,5 @@ export interface Gear {
 export interface Network {
   id: string
   energy: number
+  gears: Set<Gear>
 }
