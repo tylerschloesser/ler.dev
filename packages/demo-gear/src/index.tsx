@@ -112,6 +112,15 @@ function initSimulator({
   let prev: number = performance.now()
   function tick() {
     const now = performance.now()
+
+    // cap the tick at 2x the duration
+    // elapsed will likely be > TICK_DURATION because
+    // of setInterval accuracy
+    //
+    if (now - prev > TICK_DURATION * 2) {
+      prev = now - TICK_DURATION * 2
+    }
+
     const elapsed = (now - prev) / 1000
     prev = now
 
@@ -154,19 +163,29 @@ function addGear({ size, position }: { size: number; position: Vec2 }): void {
   })
 
   // TODO allow loops?
-  invariant(connections.length === 0 || connections.length === 1)
+  // invariant(connections.length === 0 || connections.length === 1)
 
   let sign = 0
-  if (connections.length === 1) {
-    const neighborId = [...connections].at(0)
-    invariant(neighborId)
-    const neighbor = gears[neighborId]
-    invariant(neighbor)
+  if (connections.length > 0) {
+    const neighbors = connections.map((id) => {
+      const neighbor = gears[id]
+      invariant(neighbor)
+      return neighbor
+    })
+
+    const [first, ...rest] = neighbors
+    invariant(first)
 
     // sign is the opposite of the neighbor
-    sign = Math.sign(neighbor.velocity) * -1
+    sign = Math.sign(first.velocity) * -1
 
-    neighbor.connections.push(gearId)
+    for (const neighbor of rest) {
+      invariant(sign === Math.sign(neighbor.velocity) * -1)
+    }
+
+    neighbors.forEach((neighbor) => {
+      neighbor.connections.push(gearId)
+    })
   }
 
   const mass = Math.PI * size ** 2
