@@ -264,13 +264,6 @@ function addGear({
         (first.radius / node.radius) *
         Math.abs(first.velocity)
     }
-    console.log(
-      JSON.stringify({
-        id: network.id,
-        energy: network.energy,
-        gears: [...network.gears],
-      }),
-    )
   }
 }
 
