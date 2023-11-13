@@ -1,4 +1,3 @@
-import { initRoot } from './init-root.js'
 import {
   GEAR_SIZES,
   Gear,
@@ -592,7 +591,12 @@ const initCanvas: InitCanvasFn = ({ canvas, inputState }) => {
   window.requestAnimationFrame(render)
 }
 
-function DemoGear() {
+let nextNetworkId = 0
+function getNextNetworkId() {
+  return `${nextNetworkId++}`
+}
+
+export function DemoGear() {
   const { inputState } = useInputState()
   const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null)
   useEffect(() => {
@@ -608,11 +612,4 @@ function DemoGear() {
       <canvas className={styles.canvas} ref={setCanvas} />
     </div>
   )
-}
-
-initRoot(<DemoGear />)
-
-let nextNetworkId = 0
-function getNextNetworkId() {
-  return `${nextNetworkId++}`
 }

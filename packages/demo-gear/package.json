@@ -1,6 +1,9 @@
 {
   "name": "@ler.dev/demo-gear",
   "type": "module",
+  "scripts": {
+    "start": "NODE_NO_WARNINGS=1 NODE_OPTIONS=\"--loader ts-node/esm\" webpack serve"
+  },
   "peerDependencies": {
     "@types/react": "^18.2.37",
     "@types/react-dom": "^18.2.15",

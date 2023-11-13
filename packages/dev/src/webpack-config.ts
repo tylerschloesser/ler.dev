@@ -8,7 +8,7 @@ export function getWebpackConfig(): Configuration {
   return {
     stats: 'minimal',
     mode: 'development',
-    entry: './src/index.tsx',
+    entry: './src/index-dev.tsx',
     devtool: 'eval-cheap-module-source-map',
     module: {
       rules: [
