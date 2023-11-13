@@ -22,7 +22,7 @@ const TILE_SIZE = 40
 const TICK_DURATION = 50
 const DRAW_GEAR_BOX = false
 
-const FRICTION = 5 // energy/sec
+const FRICTION = 2 // energy/sec
 const ACCELERATION = 20
 
 interface BasePointer {
@@ -64,12 +64,7 @@ function accelerateGear({
   acceleration: number
   elapsed: number
 }): void {
-  invariant(acceleration !== 0)
-
-  const sign = Math.sign(gear.velocity) || Math.sign(acceleration)
-
   gear.velocity += acceleration * elapsed
-  const flip = Math.sign(gear.velocity) === sign ? 1 : -1
 
   const network = networks[gear.networkId]
   invariant(network)
@@ -77,15 +72,15 @@ function accelerateGear({
   network.energy = 0
 
   function recurse(node: Gear, sign: number, seen: Set<Gear>): void {
-    if (seen.has(gear)) {
+    if (seen.has(node)) {
       return
     }
 
-    seen.add(gear)
+    seen.add(node)
 
     if (node !== gear) {
       node.velocity =
-        sign * Math.abs(gear.velocity * (gear.radius / node.radius))
+        sign * Math.abs(gear.velocity) * (gear.radius / node.radius)
     }
     invariant(network)
 
@@ -99,9 +94,7 @@ function accelerateGear({
     })
   }
 
-  const first = [...network.gears].at(0)
-  invariant(first)
-  recurse(first, sign * flip, new Set<Gear>())
+  recurse(gear, Math.sign(gear.velocity), new Set<Gear>())
 }
 
 function applyFriction({
@@ -146,10 +139,6 @@ function initSimulator({
       applyFriction({ network, elapsed })
     }
 
-    for (const gear of Object.values(gears)) {
-      gear.angle += gear.velocity * elapsed
-    }
-
     if (
       pointer?.mode === PointerMode.ApplyForce &&
       pointer.active &&
@@ -162,10 +151,10 @@ function initSimulator({
         acceleration: inputState.current.acceleration * ACCELERATION,
         elapsed,
       })
+    }
 
-      for (const gear of Object.values(gears)) {
-        gear.angle += gear.velocity * elapsed
-      }
+    for (const gear of Object.values(gears)) {
+      gear.angle += gear.velocity * elapsed
     }
 
     console.log(
