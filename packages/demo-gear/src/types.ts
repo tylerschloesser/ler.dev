@@ -1,5 +1,8 @@
 export type Vec2 = { x: number; y: number }
 
+export type Network = Set<Gear>
+export type GearId = string
+
 export const GEAR_SIZES = [1, 3, 5, 7]
 
 export enum PointerMode {
@@ -25,17 +28,10 @@ export type initKeyboardFn = (args: { canvas: HTMLCanvasElement }) => void
 
 export interface Gear {
   id: string
-  networkId: string
   position: Vec2
   radius: number
   angle: number
   velocity: number
   mass: number
   connections: Set<string>
-}
-
-export interface Network {
-  id: string
-  energy: number
-  gears: Set<Gear>
 }

@@ -15,6 +15,7 @@ import invariant from 'tiny-invariant'
 import styles from './index.module.scss'
 import { useInputState } from './state.js'
 import { Toolbar } from './toolbar.js'
+import { getNetwork, getNetworks, iterateNetwork } from './util.js'
 
 const TILE_SIZE = 40
 
@@ -52,48 +53,27 @@ interface Tile {
 
 const tiles: Record<string, Tile> = {}
 
-const networks: Record<string, Network> = {}
+function getEnergy(network: Set<Gear>): number {
+  let energy = 0
+  for (const node of network) {
+    energy += (1 / 4) * node.mass * node.radius ** 2 * node.velocity ** 2
+  }
+  return energy
+}
 
 function accelerateGear({
-  gear,
+  root,
   acceleration,
   elapsed,
 }: {
-  gear: Gear
+  root: Gear
   acceleration: number
   elapsed: number
 }): void {
-  gear.velocity += acceleration * elapsed
-
-  const network = networks[gear.networkId]
-  invariant(network)
-
-  network.energy = 0
-
-  function recurse(node: Gear, sign: number, seen: Set<Gear>): void {
-    if (seen.has(node)) {
-      return
-    }
-
-    seen.add(node)
-
-    if (node !== gear) {
-      node.velocity =
-        sign * Math.abs(gear.velocity) * (gear.radius / node.radius)
-    }
-    invariant(network)
-
-    network.energy +=
-      (1 / 4) * node.mass * node.radius ** 2 * node.velocity ** 2
-
-    node.connections.forEach((id) => {
-      const peer = gears[id]
-      invariant(peer)
-      recurse(peer, sign * -1, seen)
-    })
+  root.velocity += acceleration * elapsed
+  for (const { gear, sign } of iterateNetwork(root, gears)) {
+    gear.velocity = sign * Math.abs(root.velocity) * (root.radius / gear.radius)
   }
-
-  recurse(gear, Math.sign(gear.velocity), new Set<Gear>())
 }
 
 function applyFriction({
@@ -103,23 +83,23 @@ function applyFriction({
   network: Network
   elapsed: number
 }): void {
-  network.energy = network.energy - network.energy * FRICTION * elapsed
+  let energy = getEnergy(network)
+  energy -= energy * FRICTION * elapsed
 
-  const arr = [...network.gears]
-  const [first, ...rest] = arr
-  invariant(first)
+  const [root] = [...network]
+  invariant(root)
 
   let sum = 0
-  for (const node of arr) {
-    sum += (1 / 4) * node.mass * first.radius ** 2
+  for (const node of network) {
+    sum += (1 / 4) * node.mass * root.radius ** 2
   }
-  first.velocity = Math.sign(first.velocity) * Math.sqrt(network.energy / sum)
+  root.velocity = Math.sign(root.velocity) * Math.sqrt(energy / sum)
 
-  for (const node of rest) {
+  for (const node of network) {
     node.velocity =
       Math.sign(node.velocity) *
-      (first.radius / node.radius) *
-      Math.abs(first.velocity)
+      (root.radius / node.radius) *
+      Math.abs(root.velocity)
   }
 }
 
@@ -142,12 +122,15 @@ function initSimulator({
       const gear = gears[pointer.gearId]
       invariant(gear)
       accelerateGear({
-        gear,
+        root: gear,
         acceleration: inputState.current.acceleration * ACCELERATION,
         elapsed,
       })
     }
-    for (const network of Object.values(networks)) {
+
+    const networks = getNetworks(gears)
+    console.log(`networks: ${networks.length}`)
+    for (const network of networks) {
       applyFriction({ network, elapsed })
     }
 
@@ -164,15 +147,7 @@ function initSimulator({
   self.setInterval(tick, TICK_DURATION)
 }
 
-function addGear({
-  size,
-  position,
-  velocity,
-}: {
-  size: number
-  position: Vec2
-  velocity?: number
-}): void {
+function addGear({ size, position }: { size: number; position: Vec2 }): void {
   invariant(position.x === Math.floor(position.x))
   invariant(position.y === Math.floor(position.y))
 
@@ -183,31 +158,26 @@ function addGear({
     gearSize: size,
     position,
   })
-  invariant(connections.size < 2)
+  invariant(connections.size === 0 || connections.size === 1)
 
-  let networkId: string
-  if (connections.size > 0) {
-    const firstId = [...connections].at(0)
-    invariant(firstId)
-    const first = gears[firstId]
-    invariant(first)
-    networkId = first.networkId
-  } else {
-    networkId = getNextNetworkId()
+  let sign = 0
+  if (connections.size === 1) {
+    const neighborId = [...connections].at(0)
+    invariant(neighborId)
+    const neighbor = gears[neighborId]
+    invariant(neighbor)
+
+    // sign is the opposite of the neighbor
+    sign = Math.sign(neighbor.velocity) * -1
+
+    neighbor.connections.add(gearId)
   }
 
   const mass = Math.PI * size ** 2
   const radius = size / 2
 
-  for (const peerId of connections) {
-    const peer = gears[peerId]
-    invariant(peer)
-    peer.connections.add(gearId)
-  }
-
   const gear: Gear = {
     id: gearId,
-    networkId,
     position: {
       x: position.x,
       y: position.y,
@@ -215,7 +185,7 @@ function addGear({
     radius,
     mass,
     angle: 0,
-    velocity: velocity ?? 0,
+    velocity: 0,
     connections,
   }
 
@@ -233,41 +203,21 @@ function addGear({
     }
   }
 
-  let network = networks[networkId]
-  if (!network) {
-    invariant(velocity !== undefined)
-    const energy = (1 / 4) * mass * radius ** 2 * velocity ** 2
-    network = networks[networkId] = {
-      id: networkId,
-      energy,
-      gears: new Set<Gear>([gear]),
-    }
-  } else {
-    invariant(velocity === undefined)
-    invariant(!network.gears.has(gear))
-    network.gears.add(gear)
+  const network = getNetwork(gear, gears)
+  const energy = getEnergy(network)
 
-    const arr = [...network.gears]
-    invariant(arr.length > 1)
+  const root = gear
+  let sum = 0
+  for (const node of network) {
+    sum += (1 / 4) * node.mass * root.radius ** 2
+  }
+  root.velocity = sign * Math.sqrt(energy / sum)
 
-    const [first, ...rest] = arr
-    invariant(first)
-    invariant(rest.length > 0)
-
-    let sum = 0
-    for (const node of arr) {
-      sum += (1 / 4) * node.mass * (node.radius ** 4 / first.radius ** 2)
-    }
-    invariant(sum !== 0)
-
-    first.velocity = Math.sign(first.velocity) * Math.sqrt(network.energy / sum)
-
-    for (const node of rest) {
-      node.velocity =
-        Math.sign(node.velocity) *
-        (first.radius / node.radius) *
-        Math.abs(first.velocity)
-    }
+  for (const node of network) {
+    node.velocity =
+      Math.sign(node.velocity) *
+      (root.radius / node.radius) *
+      Math.abs(root.velocity)
   }
 }
 
@@ -428,7 +378,6 @@ const initCanvas: InitCanvasFn = ({ canvas, inputState }) => {
       y: 0,
     },
     size: GEAR_SIZES[1]!,
-    velocity: 0,
   })
   addGear({
     position: {
@@ -594,11 +543,6 @@ const initCanvas: InitCanvasFn = ({ canvas, inputState }) => {
     window.requestAnimationFrame(render)
   }
   window.requestAnimationFrame(render)
-}
-
-let nextNetworkId = 0
-function getNextNetworkId() {
-  return `${nextNetworkId++}`
 }
 
 export function DemoGear() {
