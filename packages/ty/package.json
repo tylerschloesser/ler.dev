@@ -3,7 +3,7 @@
   "type": "module",
   "scripts": {
     "start": "NODE_NO_WARNINGS=1 NODE_OPTIONS=\"--loader ts-node/esm\" webpack serve",
-    "build": "webpack"
+    "build": "NODE_NO_WARNINGS=1 NODE_OPTIONS=\"--loader ts-node/esm\" webpack"
   },
   "dependencies": {
     "@ler.dev/common": "*",
