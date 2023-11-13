@@ -58,10 +58,10 @@ export class ProdStack extends Stack {
       },
     )
 
-    // TODO don't deploy manifest.json
     new BucketDeployment(this, 'PublicAssetBucketDeployment', {
       sources: [Source.asset(getAssetPath())],
       destinationBucket: publicAssetBucket,
+      exclude: ['manifest.json'],
     })
 
     new ARecord(this, 'LerDevAliasRecord', {
