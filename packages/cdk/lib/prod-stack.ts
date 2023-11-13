@@ -59,9 +59,12 @@ export class ProdStack extends Stack {
     )
 
     new BucketDeployment(this, 'PublicAssetBucketDeployment', {
-      sources: [Source.asset(getAssetPath())],
+      sources: [
+        Source.asset(getAssetPath(), {
+          exclude: ['manifest.json'],
+        }),
+      ],
       destinationBucket: publicAssetBucket,
-      exclude: ['manifest.json'],
     })
 
     new ARecord(this, 'LerDevAliasRecord', {
