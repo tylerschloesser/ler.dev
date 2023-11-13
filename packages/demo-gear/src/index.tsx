@@ -22,7 +22,7 @@ const TILE_SIZE = 40
 const TICK_DURATION = 50
 const DRAW_GEAR_BOX = false
 
-const FRICTION = 2 // energy/sec
+const FRICTION = 1 // energy/sec
 const ACCELERATION = 20
 
 interface BasePointer {
