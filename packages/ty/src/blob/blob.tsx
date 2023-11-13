@@ -1,9 +1,9 @@
-import { curry } from 'lodash/fp'
-import React, { useEffect, useRef, useState } from 'react'
-import styled from 'styled-components'
-import { Config, RenderFn, RenderMethod } from './config'
-import { renderBezier } from './render-bezier'
-import { renderSimple } from './render-simple'
+import { curry } from 'lodash'
+import { useEffect, useRef, useState } from 'react'
+import { styled } from 'styled-components'
+import { Config, RenderFn, RenderMethod } from './config.js'
+import { renderBezier } from './render-bezier.js'
+import { renderSimple } from './render-simple.js'
 
 const render: RenderFn = (canvas, context, config, timestamp) => {
   const { renderMethod = RenderMethod.Simple } = config

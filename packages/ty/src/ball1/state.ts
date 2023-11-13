@@ -1,4 +1,4 @@
-import { Vec2 } from '../common/vec2'
+import { Vec2 } from '../common/vec2.js'
 
 export interface Drag {
   a: Vec2

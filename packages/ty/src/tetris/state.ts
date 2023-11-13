@@ -120,7 +120,7 @@ const PIECES: { cells: Cell[]; color: Color }[] = [
 
 export function createRandomPiece(): Piece {
   const piece: Piece = {
-    ...cloneDeep(PIECES[random(PIECES.length - 1)]),
+    ...cloneDeep(PIECES[random(PIECES.length - 1)]!),
     position: {
       row: 0,
       // move to center, assuming piece is either 3 or 4 cols
@@ -155,10 +155,10 @@ function isValid(piece: Piece): boolean {
   return piece.cells
     .map(([row, col]) => [row + piece.position.row, col + piece.position.col])
     .every(([row, col]) => {
-      if (row < 0 || row >= NUM_ROWS || col < 0 || col >= NUM_COLS) {
+      if (row! < 0 || row! >= NUM_ROWS || col! < 0 || col! >= NUM_COLS) {
         return false
       }
-      if (state.board[row][col]) {
+      if (state.board[row!]![col!]) {
         return false
       }
       return true
@@ -168,10 +168,10 @@ function isValid(piece: Piece): boolean {
 function checkBoard() {
   const next: (Color | null)[][] = []
   for (let row = 0; row < NUM_ROWS; row++) {
-    if (state.board[row].every((cell) => cell)) {
+    if (state.board[row]!.every((cell) => cell)) {
       next.unshift(new Array(NUM_COLS).fill(false))
     } else {
-      next.push(state.board[row])
+      next.push(state.board[row]!)
     }
   }
   state.board = next
@@ -185,8 +185,8 @@ function movePiece(direction: 'left' | 'right' | 'down') {
   }[direction]
 
   const next = cloneDeep(state.piece)
-  next.position.col += dCol
-  next.position.row += dRow
+  next.position.col += dCol!
+  next.position.row += dRow!
 
   if (isValid(next)) {
     state.piece = next
@@ -197,7 +197,7 @@ function movePiece(direction: 'left' | 'right' | 'down') {
         col + state.piece.position.col,
       ])
       .forEach(([row, col]) => {
-        state.board[row][col] = state.piece.color
+        state.board[row!]![col!] = state.piece.color
       })
     checkBoard()
     state.piece = createRandomPiece()

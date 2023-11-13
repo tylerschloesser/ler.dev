@@ -1,9 +1,8 @@
-import React from 'react'
 import { Link } from 'react-router-dom'
-import styled from 'styled-components'
-import { Blob } from './blob'
-import { PATHS } from './paths'
-import { UsMap } from './us-map'
+import { styled } from 'styled-components'
+import { Blob } from './blob/index.js'
+import { PATHS } from './paths.js'
+import { UsMap } from './us-map.js'
 
 const HomeContainer = styled.div`
   --color-text: hsl(0, 0%, 80%);

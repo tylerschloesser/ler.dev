@@ -1,7 +1,7 @@
-import { RenderFn } from '../common/engine'
-import { Vec2 } from '../common/vec2'
-import { detectCollisions, moveBall, moveTargets } from './physics'
-import { scale, state } from './state'
+import { RenderFn } from '../common/engine/index.js'
+import { Vec2 } from '../common/vec2.js'
+import { detectCollisions, moveBall, moveTargets } from './physics.js'
+import { scale, state } from './state.js'
 
 export interface RenderArgs {
   context: CanvasRenderingContext2D
@@ -42,7 +42,7 @@ export function renderWorld({ context, transform }: RenderArgs) {
       [0, world.h],
       [0, 0],
     ].forEach(([x, y]) => {
-      context.lineTo(transform.x(x), transform.y(y))
+      context.lineTo(transform.x(x!), transform.y(y!))
     })
     context.stroke()
     context.closePath()
@@ -67,13 +67,13 @@ export function renderBall({ context, transform }: RenderArgs) {
 
 export function renderTargets({ context, transform }: RenderArgs) {
   for (let i = 0; i < state.targets.length; i++) {
-    const pair = state.targets[i]
+    const pair = state.targets[i]!
 
     context.beginPath()
     context.strokeStyle = 'hsl(120, 60%, 20%)'
     context.lineWidth = 4
-    context.moveTo(transform.x(pair[0].p.x), transform.y(pair[0].p.y))
-    context.lineTo(transform.x(pair[1].p.x), transform.y(pair[1].p.y))
+    context.moveTo(transform.x(pair[0]!.p.x), transform.y(pair[0]!.p.y))
+    context.lineTo(transform.x(pair[1]!.p.x), transform.y(pair[1]!.p.y))
     context.stroke()
     context.closePath()
 

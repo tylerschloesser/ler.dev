@@ -1,9 +1,9 @@
 import Color from 'color'
-import { RenderFn } from '../common/engine'
-import { Vec2 } from '../common/vec2'
-import { update } from './physics'
-import { renderCircle, renderLine } from './render.util'
-import { state } from './state'
+import { RenderFn } from '../common/engine/index.js'
+import { Vec2 } from '../common/vec2.js'
+import { update } from './physics.js'
+import { renderCircle, renderLine } from './render.util.js'
+import { state } from './state.js'
 
 const WHITE = new Color('white')
 
@@ -55,7 +55,7 @@ const renderWorld: RenderFn = ({ context, config }) => {
 
       if (state.closestFlagInfo) {
         const { index, modifier } = state.closestFlagInfo
-        const flag = state.world.flags[index]
+        const flag = state.world.flags[index]!
         renderLine(
           context,
           state.ball.p.add(translate),

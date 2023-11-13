@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react'
-import styled from 'styled-components'
-import { Blob } from './blob'
-import { Config, RenderMethod } from './config'
+import { useEffect, useState } from 'react'
+import { styled } from 'styled-components'
+import { Blob } from './blob.js'
+import { Config, RenderMethod } from './config.js'
 
 const Controls = styled.div`
   position: fixed;

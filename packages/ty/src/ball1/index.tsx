@@ -1,8 +1,7 @@
-import React from 'react'
-import { Engine, InitFn } from '../common/engine'
-import { initInput } from './input'
-import { render } from './render'
-import { addTargetPair, state } from './state'
+import { Engine, InitFn } from '../common/engine/index.js'
+import { initInput } from './input.js'
+import { render } from './render.js'
+import { addTargetPair, state } from './state.js'
 
 const TARGET_PAIRS = 100
 

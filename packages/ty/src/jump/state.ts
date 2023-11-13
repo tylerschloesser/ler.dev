@@ -1,4 +1,4 @@
-import { State } from './types'
+import { State } from './types.js'
 
 export const state: State = {
   pointer: null,

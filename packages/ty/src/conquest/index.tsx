@@ -1,1 +1,1 @@
-export { Conquest } from './conquest'
+export { Conquest } from './conquest.js'

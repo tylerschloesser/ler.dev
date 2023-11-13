@@ -1,7 +1,7 @@
 import { times } from 'lodash'
 import { createNoise3D } from 'simplex-noise'
-import { Vec2 } from '../common/vec2'
-import { RenderFn } from './config'
+import { Vec2 } from '../common/vec2.js'
+import { RenderFn } from './config.js'
 
 const noise = createNoise3D()
 
@@ -32,22 +32,22 @@ export const renderBezier: RenderFn = (canvas, context, config, timestamp) => {
     return p
   })
 
-  context.moveTo(points[0].x, points[0].y)
+  context.moveTo(points[0]!.x, points[0]!.y)
   for (let i = 1; i < points.length + 1; i++) {
-    const prev = points[(i - 1) % parts]
-    const p = points[i % parts]
+    const prev = points[(i - 1) % parts]!
+    const p = points[i % parts]!
     const cp1 = (() => {
-      const a = points[i % parts]
-      const b = points[(i - 2 + parts) % parts]
+      const a = points[i % parts]!
+      const b = points[(i - 2 + parts) % parts]!
       const dir = b.sub(a).norm()
-      const dist = a.sub(points[i - 1]).length()
+      const dist = a.sub(points[i - 1]!).length()
       return prev.sub(dir.mul(dist / Math.PI))
     })()
     const cp2 = (() => {
-      const a = points[(i - 1) % parts]
-      const b = points[(i + 1) % parts]
+      const a = points[(i - 1) % parts]!
+      const b = points[(i + 1) % parts]!
       const dir = b.sub(a).norm()
-      const dist = p.sub(points[i - 1]).length()
+      const dist = p.sub(points[i - 1]!).length()
       return p.sub(dir.mul(dist / Math.PI))
     })()
     context.bezierCurveTo(cp1.x, cp1.y, cp2.x, cp2.y, p.x, p.y)

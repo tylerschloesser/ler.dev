@@ -1,2 +1,2 @@
-export { Demo } from './demo'
-export { Blob } from './blob'
+export { Demo } from './demo.js'
+export { Blob } from './blob.js'

@@ -1,6 +1,6 @@
 import { cloneDeep } from 'lodash'
-import { RenderFn } from '../common/engine'
-import { NUM_COLS, NUM_ROWS, state, updateState } from './state'
+import { RenderFn } from '../common/engine/index.js'
+import { NUM_COLS, NUM_ROWS, state, updateState } from './state.js'
 
 export const render: RenderFn = ({ context, viewport, elapsed }) => {
   updateState({ elapsed })
@@ -13,7 +13,7 @@ export const render: RenderFn = ({ context, viewport, elapsed }) => {
       col + state.piece.position.col,
     ])
     .forEach(([row, col]) => {
-      board[row][col] = state.piece.color
+      board[row!]![col!] = state.piece.color
     })
 
   context.clearRect(0, 0, viewport.w, viewport.h)
@@ -38,8 +38,8 @@ export const render: RenderFn = ({ context, viewport, elapsed }) => {
   context.fillRect(0, 0, size * NUM_COLS, size * NUM_ROWS)
 
   for (let row = 0; row < board.length; row++) {
-    for (let col = 0; col < board[0].length; col++) {
-      const color = board[row][col]
+    for (let col = 0; col < board[0]!.length; col++) {
+      const color = board[row!]![col!]
       const x = col * size
       const y = row * size
       const w = size

@@ -1,6 +1,6 @@
 import { times } from 'lodash'
-import React, { useEffect, useState } from 'react'
-import styled from 'styled-components'
+import { useState } from 'react'
+import { styled } from 'styled-components'
 
 const Container = styled.div`
   width: 100vw;
@@ -19,7 +19,7 @@ const Cell = styled.div`
 `
 
 export function Cal() {
-  const [container, setContainer] = useState<HTMLDivElement | null>()
+  const [_, setContainer] = useState<HTMLDivElement | null>()
 
   return (
     <Container ref={setContainer}>

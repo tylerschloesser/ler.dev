@@ -1,14 +1,14 @@
 import { lazy } from 'react'
-import { Ball1 } from './ball1'
-import { Demo as BlobDemo } from './blob'
-import { Cal } from './cal'
-import { Conquest } from './conquest'
-import { Draw } from './draw'
-import { Fly } from './fly'
-import { Jump } from './jump'
-import { Demo as MenuDemo } from './menu'
-import { TestCanvas } from './test-canvas'
-import { Tetris } from './tetris'
+import { Ball1 } from './ball1/index.js'
+import { Demo as BlobDemo } from './blob/index.js'
+import { Cal } from './cal/index.js'
+import { Conquest } from './conquest/index.js'
+import { Draw } from './draw/index.js'
+import { Fly } from './fly/index.js'
+import { Jump } from './jump/index.js'
+import { Demo as MenuDemo } from './menu/index.js'
+import { TestCanvas } from './test-canvas/index.js'
+import { Tetris } from './tetris/index.js'
 
 interface PathInfo {
   path: string
@@ -18,7 +18,7 @@ interface PathInfo {
 export const PATHS: PathInfo[] = [
   {
     path: 'dots',
-    Component: lazy(() => import('./three-demo')),
+    Component: lazy(() => import('./three-demo.js')),
   },
   {
     path: 'menu',
@@ -60,8 +60,8 @@ export const PATHS: PathInfo[] = [
     path: 'test-canvas',
     Component: TestCanvas,
   },
-  {
-    path: 'gears',
-    Component: lazy(() => (await import('@ler.dev/demo-gear')).DemoGear),
-  },
+  // {
+  //   path: 'gears',
+  //   Component: lazy(() => (await import('@ler.dev/demo-gear')).DemoGear),
+  // },
 ]

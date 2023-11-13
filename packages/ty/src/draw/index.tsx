@@ -6,11 +6,11 @@ import {
   WebSocketMessage,
 } from '@ler.dev/common'
 import { times } from 'lodash'
-import React, { useEffect } from 'react'
-import styled from 'styled-components'
-import { Engine, InitFn, RenderFn } from '../common/engine'
-import { Vec2 } from '../common/vec2'
-import { NUM_COLS, NUM_ROWS } from './config'
+import { useEffect } from 'react'
+import { styled } from 'styled-components'
+import { Engine, InitFn, RenderFn } from '../common/engine/index.js'
+import { Vec2 } from '../common/vec2.js'
+import { NUM_COLS, NUM_ROWS } from './config.js'
 
 let webSocket: WebSocket | null = null
 
@@ -49,8 +49,8 @@ function setPixel(cell: Vec2, color: string, broadcast: boolean) {
     return
   }
 
-  if (grid[row][col] !== color) {
-    grid[row][col] = color
+  if (grid[row!]![col!] !== color) {
+    grid[row!]![col!] = color
     if (broadcast) {
       broadcastSetPixel(cell, color)
     }
@@ -91,7 +91,7 @@ const render: RenderFn = ({ context, viewport }) => {
 
   for (let row = 0; row < NUM_ROWS; row++) {
     for (let col = 0; col < NUM_COLS; col++) {
-      context.fillStyle = grid[row][col]
+      context.fillStyle = grid[row!]![col]!
       const x = col * cellSize
       const y = row * cellSize
       const w = cellSize

@@ -1,6 +1,6 @@
 import Color from 'color'
-import { Vec2 } from '../common/vec2'
-import { Flag, State } from './types'
+import { Vec2 } from '../common/vec2.js'
+import { Flag, State } from './types.js'
 
 export const state: State = {
   pointer: null,

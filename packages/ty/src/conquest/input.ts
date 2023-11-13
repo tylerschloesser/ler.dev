@@ -1,5 +1,5 @@
-import { Vec2 } from '../common/vec2'
-import { state } from './state'
+import { Vec2 } from '../common/vec2.js'
+import { state } from './state.js'
 
 export const handlePointer = (e: PointerEvent) => {
   const { clientX: x, clientY: y } = e

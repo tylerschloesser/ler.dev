@@ -1,5 +1,5 @@
 import Color from 'color'
-import { Vec2 } from '../common/vec2'
+import { Vec2 } from '../common/vec2.js'
 
 export interface Flag {
   p: Vec2

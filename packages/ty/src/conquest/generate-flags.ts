@@ -1,6 +1,6 @@
 import Color from 'color'
-import { Vec2 } from '../common/vec2'
-import { addFlag, state } from './state'
+import { Vec2 } from '../common/vec2.js'
+import { addFlag, state } from './state.js'
 
 const COLORS: Color[] = ['red', 'green', 'blue'].map((name) => new Color(name))
 const MIN_R = 10
@@ -38,7 +38,7 @@ export function generateFlags() {
 
   for (let i = 0; i < count; i++) {
     do {
-      const color = COLORS[Math.floor(Math.random() * COLORS.length)]
+      const color = COLORS[Math.floor(Math.random() * COLORS.length)]!
       const r = MIN_R + Math.floor(Math.random() * (MAX_R - MIN_R))
       const p = new Vec2(
         Math.random() * state.world.size.x,

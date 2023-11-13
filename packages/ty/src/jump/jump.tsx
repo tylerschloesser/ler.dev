@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react'
-import styled from 'styled-components'
-import { Vec2 } from '../common/vec2'
-import { EngineV2 } from '../engine-v2'
-import { handlePointer } from './input'
-import { render } from './render'
-import { state } from './state'
-import { Target } from './types'
+import { useEffect, useState } from 'react'
+import { styled } from 'styled-components'
+import { Vec2 } from '../common/vec2.js'
+import { EngineV2 } from '../engine-v2/index.js'
+import { handlePointer } from './input.js'
+import { render } from './render.js'
+import { state } from './state.js'
+import { Target } from './types.js'
 
 const Container = styled.div`
   width: 100dvw;

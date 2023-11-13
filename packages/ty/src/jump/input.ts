@@ -1,6 +1,6 @@
-import { Vec2 } from '../common/vec2'
-import { launchBall } from './physics'
-import { state } from './state'
+import { Vec2 } from '../common/vec2.js'
+import { launchBall } from './physics.js'
+import { state } from './state.js'
 
 export function handlePointer(e: PointerEvent) {
   const p = new Vec2(e.x, e.y)

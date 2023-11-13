@@ -1,10 +1,10 @@
 import Color from 'color'
-import { RenderFn } from '../common/engine'
-import { Vec2 } from '../common/vec2'
-import { update } from './physics'
-import { renderCircle, renderLine, renderRectangle } from './render.lib'
-import { RenderObject } from './render.types'
-import { state } from './state'
+import { RenderFn } from '../common/engine/index.js'
+import { Vec2 } from '../common/vec2.js'
+import { update } from './physics.js'
+import { renderCircle, renderLine, renderRectangle } from './render.lib.js'
+import { RenderObject } from './render.types.js'
+import { state } from './state.js'
 
 function renderInput(buffer: RenderObject[]) {
   if (state.drag?.b) {

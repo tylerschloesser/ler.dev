@@ -1,6 +1,6 @@
 import Color from 'color'
 import React, { useEffect, useState } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 
 // https://simplemaps.com/resources/svg-us
 
@@ -94,7 +94,7 @@ export function UsMap({ coloredStates }: UsMapProps) {
     if (!container || !svg) return
 
     const ro = new ResizeObserver(([entry]) => {
-      const rect = entry.contentRect
+      const rect = entry!.contentRect
       const scale = rect.width / size.w
       container.style.setProperty('--scale', `${scale}`)
       container.style.setProperty(
@@ -102,8 +102,10 @@ export function UsMap({ coloredStates }: UsMapProps) {
         `${svg.getBoundingClientRect().height}px`,
       )
     })
+    console.log('ro observe')
     ro.observe(container)
     return () => {
+      console.log('ro disconnect')
       ro.disconnect()
     }
   }, [container, svg])
@@ -132,8 +134,8 @@ export function UsMap({ coloredStates }: UsMapProps) {
     if (!svg) return
     svg.querySelectorAll('path').forEach((path) => {
       const state = path.dataset['id'] as string
-      const colorNumber = STATE_TO_COLOR_NUMBER[state]
-      let fill = COLOR_NUMBER_TO_COLOR[colorNumber]
+      const colorNumber = STATE_TO_COLOR_NUMBER[state]!
+      let fill = COLOR_NUMBER_TO_COLOR[colorNumber]!
       if (!coloredStates.has(state)) {
         fill = Color(fill).lighten(0.95).string()
       }

@@ -1,4 +1,4 @@
-import { Circle, Line, Rectangle } from './render.types'
+import { Circle, Line, Rectangle } from './render.types.js'
 
 export function renderCircle(
   context: CanvasRenderingContext2D,

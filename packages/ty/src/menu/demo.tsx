@@ -1,7 +1,7 @@
 import { shuffle, times } from 'lodash'
-import React, { useEffect, useState } from 'react'
-import styled from 'styled-components'
-import { Menu } from './menu'
+import { useEffect, useState } from 'react'
+import { styled } from 'styled-components'
+import { Menu } from './menu.js'
 
 const ImageList = styled.ol`
   display: flex;

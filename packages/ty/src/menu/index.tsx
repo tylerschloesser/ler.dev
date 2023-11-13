@@ -1,2 +1,2 @@
-export { Menu } from './menu'
-export { Demo } from './demo'
+export { Menu } from './menu.js'
+export { Demo } from './demo.js'

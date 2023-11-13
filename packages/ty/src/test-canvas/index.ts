@@ -1,1 +1,1 @@
-export { TestCanvas } from './test-canvas'
+export { TestCanvas } from './test-canvas.js'

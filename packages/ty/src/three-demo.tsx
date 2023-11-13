@@ -1,6 +1,5 @@
 import { Canvas, useFrame } from '@react-three/fiber'
-import { throttle } from 'lodash'
-import React, { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import * as THREE from 'three'
 import { Matrix4 } from 'three'
 
@@ -61,8 +60,6 @@ function Scene({ dots, width, height }: SceneProps) {
   const matrix = new Matrix4()
   const baseColor = new THREE.Color(1, 1, 1)
 
-  const log = throttle<typeof console.log>(console.log, 100)
-
   useFrame(({ pointer }) => {
     if (!mesh) {
       return
@@ -72,7 +69,7 @@ function Scene({ dots, width, height }: SceneProps) {
     spointer.multiply(new THREE.Vector2(width / 2, height / 2))
 
     for (i = 0; i < dots.values.length; i++) {
-      const dot = dots.values[i]
+      const dot = dots.values[i]!
 
       let color = new THREE.Color(baseColor)
       color.multiplyScalar(0.1)

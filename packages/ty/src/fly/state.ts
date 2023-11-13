@@ -1,5 +1,5 @@
 import { createNoise3D } from 'simplex-noise'
-import { Milliseconds } from '../common/engine'
+import { Milliseconds } from '../common/engine/index.js'
 
 const noise3d = createNoise3D()
 

@@ -1,6 +1,6 @@
-import { InitFn } from '../common/engine'
-import { generateFlags } from './generate-flags'
-import { handlePointer, handleWheel } from './input'
+import { InitFn } from '../common/engine/index.js'
+import { generateFlags } from './generate-flags.js'
+import { handlePointer, handleWheel } from './input.js'
 
 export const init: InitFn = ({ canvas, signal, updateConfig }) => {
   const showDebug = location.hostname === 'localhost'

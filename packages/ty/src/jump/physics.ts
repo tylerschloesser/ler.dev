@@ -1,7 +1,7 @@
-import { Milliseconds } from '../common/engine'
-import { Vec2 } from '../common/vec2'
-import { state } from './state'
-import { TargetIndex } from './types'
+import { Milliseconds } from '../common/engine/index.js'
+import { Vec2 } from '../common/vec2.js'
+import { state } from './state.js'
+import { TargetIndex } from './types.js'
 
 export interface UpdateArgs {
   elapsed: Milliseconds
@@ -40,7 +40,7 @@ export function update({ elapsed }: UpdateArgs) {
       // TODO unset launchedBy when we get far enough away
       if (ball.launchedBy === i) continue
 
-      const target = state.targets[i]
+      const target = state.targets[i]!
       const dist = target.p.sub(ball.p).length()
       if (dist < target.r * 3 + ball.r) {
         a = a.add(
@@ -73,7 +73,7 @@ export function update({ elapsed }: UpdateArgs) {
 function updateCamera({ elapsed }: UpdateArgs) {
   let destination: Vec2
   if (state.ball && state.ball.capturedBy !== null) {
-    const target = state.targets[state.ball.capturedBy]
+    const target = state.targets[state.ball.capturedBy]!
     destination = target.p.sub(
       new Vec2(state.viewport.w / 2, state.viewport.h * 0.66),
     )

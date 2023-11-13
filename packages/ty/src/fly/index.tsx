@@ -1,7 +1,11 @@
-import React from 'react'
-import { Engine, InitFn, Milliseconds, RenderFn } from '../common/engine'
-import { Vec2 } from '../common/vec2'
-import * as state from './state'
+import {
+  Engine,
+  InitFn,
+  Milliseconds,
+  RenderFn,
+} from '../common/engine/index.js'
+import { Vec2 } from '../common/vec2.js'
+import * as state from './state.js'
 
 let pointer: Vec2 | null = null
 let pause = false

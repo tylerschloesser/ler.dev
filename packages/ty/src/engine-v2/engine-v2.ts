@@ -1,5 +1,5 @@
-import { RenderFn } from '../common/engine'
-import { initDebug, preventScroll, updateSize } from './util'
+import { RenderFn } from '../common/engine/index.js'
+import { initDebug, preventScroll, updateSize } from './util.js'
 
 type Milliseconds = number
 

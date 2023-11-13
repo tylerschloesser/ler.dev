@@ -1,8 +1,8 @@
-import { curry } from 'lodash/fp'
-import React, { useEffect } from 'react'
-import { Engine, InitFn } from '../common/engine'
-import { render } from './render'
-import { handleInput, Input, state } from './state'
+import { curry } from 'lodash'
+import { useEffect } from 'react'
+import { Engine, InitFn } from '../common/engine/index.js'
+import { render } from './render.js'
+import { Input, handleInput, state } from './state.js'
 
 const init: InitFn = () => {
   console.log(state)

@@ -1,8 +1,8 @@
-import React, { Suspense } from 'react'
+import { Suspense } from 'react'
 import { BrowserRouter, Outlet, Route, Routes } from 'react-router-dom'
-import styled from 'styled-components'
-import { Home } from './home'
-import { PATHS } from './paths'
+import { styled } from 'styled-components'
+import { Home } from './home.js'
+import { PATHS } from './paths.js'
 
 const Page = styled.div`
   height: 100vh;

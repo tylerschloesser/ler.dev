@@ -1,5 +1,5 @@
-import React, { CSSProperties, useMemo, useState } from 'react'
-import styled from 'styled-components'
+import { CSSProperties, useMemo, useState } from 'react'
+import { styled } from 'styled-components'
 
 const DEBUG: boolean = false
 

@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react'
-import styled from 'styled-components'
+import { useEffect, useRef, useState } from 'react'
+import { styled } from 'styled-components'
 
 export type Milliseconds = number
 

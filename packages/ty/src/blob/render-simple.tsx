@@ -1,5 +1,5 @@
 import { createNoise3D } from 'simplex-noise'
-import { RenderFn } from './config'
+import { RenderFn } from './config.js'
 
 const noise = createNoise3D()
 

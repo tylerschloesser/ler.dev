@@ -1,5 +1,5 @@
-import { Viewport } from '../common/engine'
-import { Vec2 } from '../common/vec2'
+import { Viewport } from '../common/engine/index.js'
+import { Vec2 } from '../common/vec2.js'
 
 export type TargetIndex = number
 

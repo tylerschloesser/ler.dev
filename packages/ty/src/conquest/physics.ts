@@ -1,7 +1,7 @@
-import { Milliseconds } from '../common/engine'
-import { Vec2 } from '../common/vec2'
-import { state } from './state'
-import { State } from './types'
+import { Milliseconds } from '../common/engine/index.js'
+import { Vec2 } from '../common/vec2.js'
+import { state } from './state.js'
+import { State } from './types.js'
 
 const toSeconds = (ms: Milliseconds) => ms / 1000
 
@@ -20,8 +20,11 @@ function updateClosestFlagProgress(args: UpdateArgs) {
   if (!state.closestFlagInfo) return
   const { elapsed } = args
   const { index } = state.closestFlagInfo
-  const { progress } = state.world.flags[index]
-  state.world.flags[index].progress = Math.min(1, progress + toSeconds(elapsed))
+  const { progress } = state.world.flags[index]!
+  state.world.flags[index]!.progress = Math.min(
+    1,
+    progress + toSeconds(elapsed),
+  )
 }
 
 function updateBallPosition(args: UpdateArgs) {
@@ -57,7 +60,7 @@ function findClosestFlagInfo(): State['closestFlagInfo'] {
     new Vec2(-state.world.size.x, -state.world.size.y),
   ]) {
     for (let i = 0; i < state.world.flags.length; i++) {
-      const flag = state.world.flags[i]
+      const flag = state.world.flags[i]!
       const dist = state.ball.p.sub(modifier.add(flag.p)).length()
       if (dist < (closest?.dist ?? Number.POSITIVE_INFINITY)) {
         closest = { index: i, dist, modifier }
