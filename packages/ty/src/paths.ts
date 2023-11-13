@@ -18,7 +18,11 @@ interface PathInfo {
 export const PATHS: PathInfo[] = [
   {
     path: 'dots',
-    Component: lazy(() => import('./three-demo.js')),
+    Component: lazy(() =>
+      import('./three-demo.js').then(({ ThreeDemo }) => ({
+        default: ThreeDemo,
+      })),
+    ),
   },
   {
     path: 'menu',
@@ -60,8 +64,12 @@ export const PATHS: PathInfo[] = [
     path: 'test-canvas',
     Component: TestCanvas,
   },
-  // {
-  //   path: 'gears',
-  //   Component: lazy(() => (await import('@ler.dev/demo-gear')).DemoGear),
-  // },
+  {
+    path: 'gears',
+    Component: lazy(() =>
+      import('@ler.dev/demo-gear').then(({ DemoGear }) => ({
+        default: DemoGear,
+      })),
+    ),
+  },
 ]
