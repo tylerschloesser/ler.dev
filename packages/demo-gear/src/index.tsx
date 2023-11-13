@@ -68,7 +68,7 @@ function propogateVelocity({
     const peer = gears[peerId]
     invariant(peer)
 
-    const ratio = gear.size / peer.size
+    const ratio = gear.radius / peer.radius
     peer.velocity = gear.velocity * -1 * ratio
 
     propogateVelocity({
@@ -182,7 +182,7 @@ function addGear({
       x: position.x,
       y: position.y,
     },
-    size,
+    radius,
     mass,
     angle: 0,
     velocity,
@@ -225,7 +225,7 @@ function addGear({
 
     let sum = 0
     for (const g of arr) {
-      sum += (1 / 4) * g.mass * ((g.size / 2) ** 4 / (first.size / 2) ** 2)
+      sum += (1 / 4) * g.mass * (g.radius ** 4 / first.radius ** 2)
     }
     invariant(sum !== 0)
 
@@ -234,7 +234,7 @@ function addGear({
     for (const g of rest) {
       g.velocity =
         Math.sign(g.velocity) *
-        (first.size / 2 / (g.size / 2)) *
+        (first.radius / g.radius) *
         Math.abs(first.velocity)
     }
     console.log(
@@ -275,8 +275,8 @@ function getConnections({
     invariant(gear)
 
     if (
-      gear.position.x + -(((gear.size - 1) / 2) * delta.x) === point.x &&
-      gear.position.y + -(((gear.size - 1) / 2) * delta.y) === point.y
+      gear.position.x + -((gear.radius - 0.5) * delta.x) === point.x &&
+      gear.position.y + -((gear.radius - 0.5) * delta.y) === point.y
     ) {
       connections.add(tile.gearId)
     }
@@ -445,29 +445,34 @@ const initCanvas: InitCanvasFn = ({ canvas, inputState }) => {
     context.closePath()
 
     function renderGear(
-      gear: Pick<Gear, 'size' | 'position' | 'angle' | 'connections'>,
+      gear: Pick<Gear, 'radius' | 'position' | 'angle' | 'connections'>,
       tint?: string,
     ): void {
       invariant(context)
 
       context.save()
       context.translate(
-        (gear.position.x - (gear.size - 1) / 2) * TILE_SIZE,
-        (gear.position.y - (gear.size - 1) / 2) * TILE_SIZE,
+        (gear.position.x - (gear.radius - 0.5)) * TILE_SIZE,
+        (gear.position.y - (gear.radius - 0.5)) * TILE_SIZE,
       )
 
       if (DRAW_GEAR_BOX) {
         context.fillStyle = 'grey'
-        context.fillRect(0, 0, TILE_SIZE * gear.size, TILE_SIZE * gear.size)
+        context.fillRect(
+          0,
+          0,
+          TILE_SIZE * gear.radius * 2,
+          TILE_SIZE * gear.radius * 2,
+        )
       }
 
       context.strokeStyle = 'white'
       context.fillStyle = 'blue'
       context.beginPath()
       context.arc(
-        (gear.size * TILE_SIZE) / 2,
-        (gear.size * TILE_SIZE) / 2,
-        (TILE_SIZE * gear.size) / 2,
+        gear.radius * TILE_SIZE,
+        gear.radius * TILE_SIZE,
+        gear.radius * TILE_SIZE,
         0,
         Math.PI * 2,
       )
@@ -475,19 +480,16 @@ const initCanvas: InitCanvasFn = ({ canvas, inputState }) => {
       context.closePath()
 
       context.save()
-      context.translate(
-        (gear.size * TILE_SIZE) / 2,
-        (gear.size * TILE_SIZE) / 2,
-      )
+      context.translate(gear.radius * TILE_SIZE, gear.radius * TILE_SIZE)
       context.beginPath()
       context.lineWidth = 2
       context.strokeStyle = 'white'
-      const teeth = gear.size * 5
+      const teeth = gear.radius * 10
       for (let i = 0; i < teeth; i++) {
         context.save()
         context.rotate(gear.angle + (i / teeth) * Math.PI * 2)
-        context.moveTo(((gear.size - 0.5) * TILE_SIZE) / 2, 0)
-        context.lineTo((gear.size * TILE_SIZE) / 2, 0)
+        context.moveTo((gear.radius - 0.25) * TILE_SIZE, 0)
+        context.lineTo(gear.radius * TILE_SIZE, 0)
         context.stroke()
         context.restore()
       }
@@ -496,7 +498,12 @@ const initCanvas: InitCanvasFn = ({ canvas, inputState }) => {
 
       if (tint) {
         context.fillStyle = tint
-        context.fillRect(0, 0, TILE_SIZE * gear.size, TILE_SIZE * gear.size)
+        context.fillRect(
+          0,
+          0,
+          TILE_SIZE * gear.radius * 2,
+          TILE_SIZE * gear.radius * 2,
+        )
       }
 
       context.restore()
@@ -529,7 +536,7 @@ const initCanvas: InitCanvasFn = ({ canvas, inputState }) => {
       renderGear(
         {
           position: pointer.position,
-          size: gearSize,
+          radius: gearSize / 2,
           angle: 0,
           connections: pointer.connections,
         },
@@ -545,10 +552,10 @@ const initCanvas: InitCanvasFn = ({ canvas, inputState }) => {
       context.lineWidth = 2
       context.strokeStyle = pointer.active ? 'green' : 'white'
       context.strokeRect(
-        (gear.position.x - (gear.size - 1) / 2) * TILE_SIZE,
-        (gear.position.y - (gear.size - 1) / 2) * TILE_SIZE,
-        TILE_SIZE * gear.size,
-        TILE_SIZE * gear.size,
+        (gear.position.x - (gear.radius - 0.5)) * TILE_SIZE,
+        (gear.position.y - (gear.radius - 0.5)) * TILE_SIZE,
+        TILE_SIZE * gear.radius * 2,
+        TILE_SIZE * gear.radius * 2,
       )
       context.closePath()
     }

@@ -27,7 +27,7 @@ export interface Gear {
   id: string
   networkId: string
   position: Vec2
-  size: number
+  radius: number
   angle: number
   velocity: number
   mass: number
