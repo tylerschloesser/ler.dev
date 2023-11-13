@@ -129,7 +129,6 @@ function initSimulator({
     }
 
     const networks = getNetworks(gears)
-    console.log(`networks: ${networks.length}`)
     for (const network of networks) {
       applyFriction({ network, elapsed })
     }
