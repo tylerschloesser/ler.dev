@@ -157,6 +157,8 @@ function addGear({ size, position }: { size: number; position: Vec2 }): void {
     gearSize: size,
     position,
   })
+
+  // TODO allow loops?
   invariant(connections.size === 0 || connections.size === 1)
 
   let sign = 0

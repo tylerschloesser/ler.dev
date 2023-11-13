@@ -19,8 +19,6 @@ export function* iterateNetwork(root: Gear, gears: Record<GearId, Gear>) {
     yield node
 
     const { connections } = node.gear
-    invariant(connections.size === 0 || connections.size === 1)
-
     connections.forEach((id) => {
       const neighbor = gears[id]
       invariant(neighbor)
