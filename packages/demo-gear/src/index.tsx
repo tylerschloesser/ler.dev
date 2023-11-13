@@ -1,6 +1,7 @@
 import {
   GEAR_SIZES,
   Gear,
+  GearId,
   InitCanvasFn,
   InitPointerFn,
   InputState,
@@ -32,7 +33,7 @@ interface BasePointer {
 interface AddGearPointer extends BasePointer {
   mode: PointerMode.AddGear
   valid: boolean
-  connections: Set<string>
+  connections: GearId[]
 }
 
 interface ApplyForcePointer extends BasePointer {
@@ -159,10 +160,10 @@ function addGear({ size, position }: { size: number; position: Vec2 }): void {
   })
 
   // TODO allow loops?
-  invariant(connections.size === 0 || connections.size === 1)
+  invariant(connections.length === 0 || connections.length === 1)
 
   let sign = 0
-  if (connections.size === 1) {
+  if (connections.length === 1) {
     const neighborId = [...connections].at(0)
     invariant(neighborId)
     const neighbor = gears[neighborId]
@@ -171,7 +172,7 @@ function addGear({ size, position }: { size: number; position: Vec2 }): void {
     // sign is the opposite of the neighbor
     sign = Math.sign(neighbor.velocity) * -1
 
-    neighbor.connections.add(gearId)
+    neighbor.connections.push(gearId)
   }
 
   const mass = Math.PI * size ** 2
@@ -228,8 +229,8 @@ function getConnections({
 }: {
   gearSize: number
   position: Vec2
-}): Set<string> {
-  const connections = new Set<string>()
+}): GearId[] {
+  const connections = new Set<GearId>()
 
   for (const delta of [
     { x: 0, y: -1 },
@@ -256,7 +257,7 @@ function getConnections({
       connections.add(tile.gearId)
     }
   }
-  return connections
+  return [...connections]
 }
 
 type GetPointerFn<T extends Pointer> = (args: {
@@ -309,7 +310,7 @@ const getAddGearPointer: GetPointerFn<AddGearPointer> = ({
     }
   }
 
-  let connections = new Set<string>()
+  let connections: GearId[] = []
   if (valid) {
     connections = getConnections({ position, gearSize })
   }

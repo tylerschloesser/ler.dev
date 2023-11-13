@@ -27,11 +27,11 @@ export type InitPointerFn = (args: {
 export type initKeyboardFn = (args: { canvas: HTMLCanvasElement }) => void
 
 export interface Gear {
-  id: string
+  id: GearId
   position: Vec2
   radius: number
   angle: number
   velocity: number
   mass: number
-  connections: Set<string>
+  connections: GearId[]
 }
