@@ -52,32 +52,6 @@ const tiles: Record<string, Tile> = {}
 
 const networks: Record<string, Network> = {}
 
-function propogateVelocity({
-  gear,
-  seen,
-}: {
-  gear: Gear
-  seen: Set<string>
-}): void {
-  for (const peerId of gear.connections) {
-    if (seen.has(peerId)) {
-      continue
-    }
-    seen.add(peerId)
-
-    const peer = gears[peerId]
-    invariant(peer)
-
-    const ratio = gear.radius / peer.radius
-    peer.velocity = gear.velocity * -1 * ratio
-
-    propogateVelocity({
-      gear: peer,
-      seen,
-    })
-  }
-}
-
 function accelerateGear({
   gear,
   acceleration,
@@ -87,12 +61,27 @@ function accelerateGear({
   acceleration: number
   elapsed: number
 }): void {
+  const sign = Math.sign(gear.velocity)
   gear.velocity += acceleration * elapsed
+  const flip = Math.sign(gear.velocity) === sign ? 1 : -1
 
-  propogateVelocity({
-    gear,
-    seen: new Set<string>(),
-  })
+  const network = networks[gear.networkId]
+  invariant(network)
+
+  let diff = network.energy
+  network.energy = 0
+  for (const node of network.gears) {
+    if (node !== gear) {
+      node.velocity =
+        Math.sign(node.velocity) *
+        flip *
+        Math.abs(gear.velocity * (gear.radius / node.radius))
+    }
+    network.energy +=
+      (1 / 4) * node.mass * node.radius ** 2 * node.velocity ** 2
+  }
+
+  diff = network.energy - diff
 }
 
 function initSimulator({
