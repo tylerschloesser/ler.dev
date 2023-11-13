@@ -134,10 +134,6 @@ function initSimulator({
     const elapsed = (now - prev) / 1000
     prev = now
 
-    for (const network of Object.values(networks)) {
-      applyFriction({ network, elapsed })
-    }
-
     if (
       pointer?.mode === PointerMode.ApplyForce &&
       pointer.active &&
@@ -151,10 +147,19 @@ function initSimulator({
         elapsed,
       })
     }
+    for (const network of Object.values(networks)) {
+      applyFriction({ network, elapsed })
+    }
 
     for (const gear of Object.values(gears)) {
       gear.angle += gear.velocity * elapsed
     }
+
+    // console.log(
+    //   Object.values(gears)
+    //     .map((g) => g.velocity.toFixed(2))
+    //     .join(', '),
+    // )
   }
   self.setInterval(tick, TICK_DURATION)
 }
