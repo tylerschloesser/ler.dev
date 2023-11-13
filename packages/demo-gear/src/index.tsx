@@ -153,10 +153,13 @@ function addGear({
   }
 
   const mass = Math.PI * size ** 2
+  const radius = size / 2
 
   let network = networks[networkId]
   if (!network) {
-    network = { id: networkId, energy: 0 }
+    invariant(velocity !== undefined)
+    const energy = (1 / 4) * mass * radius ** 2 * velocity ** 2
+    network = { id: networkId, energy }
   }
 
   for (const peerId of connections) {
