@@ -23,7 +23,7 @@ const TICK_DURATION = 50
 const DRAW_GEAR_BOX = false
 
 const FRICTION = 1 // energy/sec
-const ACCELERATION = 20
+const ACCELERATION = 2
 
 interface BasePointer {
   position: Vec2
@@ -112,7 +112,7 @@ function applyFriction({
 
   let sum = 0
   for (const node of arr) {
-    sum += (1 / 4) * node.mass * (node.radius ** 4 / first.radius ** 2)
+    sum += (1 / 4) * node.mass * first.radius ** 2
   }
   first.velocity = Math.sign(first.velocity) * Math.sqrt(network.energy / sum)
 
@@ -156,12 +156,6 @@ function initSimulator({
     for (const gear of Object.values(gears)) {
       gear.angle += gear.velocity * elapsed
     }
-
-    console.log(
-      Object.values(gears)
-        .map((g) => g.velocity.toFixed(2))
-        .join(','),
-    )
   }
   self.setInterval(tick, TICK_DURATION)
 }
