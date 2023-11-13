@@ -137,12 +137,6 @@ function initSimulator({
     for (const gear of Object.values(gears)) {
       gear.angle += gear.velocity * elapsed
     }
-
-    // console.log(
-    //   Object.values(gears)
-    //     .map((g) => g.velocity.toFixed(2))
-    //     .join(', '),
-    // )
   }
   self.setInterval(tick, TICK_DURATION)
 }
