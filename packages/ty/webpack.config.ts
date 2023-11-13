@@ -2,8 +2,11 @@ import CopyPlugin from 'copy-webpack-plugin'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
 import { Configuration } from 'webpack'
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer'
-import { Configuration as DevServerConfiguration } from 'webpack-dev-server'
+import 'webpack-dev-server'
 import { WebpackManifestPlugin } from 'webpack-manifest-plugin'
+
+import * as url from 'url'
+const __dirname = url.fileURLToPath(new URL('.', import.meta.url))
 
 const prod = Boolean(process.env.PROD) || !Boolean(process.env.WEBPACK_SERVE)
 

@@ -1,11 +1,13 @@
 {
   "name": "@ler.dev/ty",
+  "type": "module",
   "scripts": {
-    "start": "webpack serve",
+    "start": "NODE_NO_WARNINGS=1 NODE_OPTIONS=\"--loader ts-node/esm\" webpack serve",
     "build": "webpack"
   },
   "dependencies": {
     "@ler.dev/common": "*",
+    "@ler.dev/demo-gear": "*",
     "@react-three/fiber": "^8.15.10",
     "@types/color": "^3.0.6",
     "@types/lodash": "^4.14.201",

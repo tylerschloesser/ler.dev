@@ -60,4 +60,8 @@ export const PATHS: PathInfo[] = [
     path: 'test-canvas',
     Component: TestCanvas,
   },
+  {
+    path: 'gears',
+    Component: lazy(() => (await import('@ler.dev/demo-gear')).DemoGear),
+  },
 ]
