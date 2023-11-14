@@ -72,24 +72,30 @@ export function* iterateNetwork(
   }
 }
 
+export function* iterateGearTileIds(
+  position: Vec2,
+  size: number,
+) {
+  const radius = (size - 1) / 2
+  for (let x = -radius; x <= radius; x++) {
+    for (let y = -radius; y <= radius; y++) {
+      invariant(x === Math.floor(x))
+      invariant(y === Math.floor(y))
+      const tileId = `${position.x + x}.${position.y + y}`
+      yield tileId
+    }
+  }
+}
+
 export function* iterateGearTiles(
   position: Vec2,
   size: number,
   world: World,
 ) {
-  const radius = (size - 1) / 2
-
-  for (let x = -radius; x <= radius; x++) {
-    for (let y = -radius; y <= radius; y++) {
-      invariant(x === Math.floor(x))
-      invariant(y === Math.floor(y))
-
-      const tileId = `${position.x + x}.${position.y + y}`
-      const tile = world.tiles[tileId]
-
-      if (tile) {
-        yield tile
-      }
+  for (const tileId of iterateGearTileIds(position, size)) {
+    const tile = world.tiles[tileId]
+    if (tile) {
+      yield tile
     }
   }
 }

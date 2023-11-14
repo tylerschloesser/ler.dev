@@ -7,7 +7,11 @@ import {
   Vec2,
   World,
 } from './types.js'
-import { getEnergy, getNetwork } from './util.js'
+import {
+  getEnergy,
+  getNetwork,
+  iterateGearTileIds,
+} from './util.js'
 
 interface BaseAddGearArgs {
   size: number
@@ -123,24 +127,9 @@ export function addGear(args: AddGearArgs): void {
 
   world.gears[gear.id] = gear
 
-  for (
-    let x = -((size - 1) / 2);
-    x <= (size - 1) / 2;
-    x++
-  ) {
-    for (
-      let y = -((size - 1) / 2);
-      y <= (size - 1) / 2;
-      y++
-    ) {
-      invariant(x === Math.floor(x))
-      invariant(y === Math.floor(y))
-
-      const tileId = `${position.x + x}.${position.y + y}`
-      invariant(world.tiles[tileId] === undefined)
-
-      world.tiles[tileId] = { gearId }
-    }
+  for (const tileId of iterateGearTileIds(position, size)) {
+    invariant(world.tiles[tileId] === undefined)
+    world.tiles[tileId] = { gearId }
   }
 
   const network = getNetwork(gear, world.gears)
