@@ -85,3 +85,15 @@ export function getNetworks(
 
   return networks
 }
+
+export function getEnergy(network: Network): number {
+  let energy = 0
+  for (const node of network) {
+    energy +=
+      (1 / 4) *
+      node.mass *
+      node.radius ** 2 *
+      node.velocity ** 2
+  }
+  return energy
+}
