@@ -38,13 +38,17 @@ interface AddGearPointer extends BasePointer {
   connections: Connection[]
 }
 
+interface AddGearWithChainPointer extends BasePointer {
+  mode: PointerMode.AddGearWithChain
+}
+
 interface ApplyForcePointer extends BasePointer {
   mode: PointerMode.ApplyForce
   active: boolean
   gearId?: string
 }
 
-type Pointer = AddGearPointer | ApplyForcePointer
+type Pointer = AddGearPointer | AddGearWithChainPointer | ApplyForcePointer
 
 let pointer: Pointer | null = null
 
@@ -339,11 +343,28 @@ const getAddGearPointer: GetPointerFn<AddGearPointer> = ({
   return { mode: PointerMode.AddGear, position, valid, connections }
 }
 
+const getAddGearWithChainPointer: GetPointerFn<AddGearWithChainPointer> = ({
+  e,
+  canvas,
+  inputState,
+}) => {
+  const position = {
+    x: Math.floor((e.offsetX - canvas.width / 2) / TILE_SIZE),
+    y: Math.floor((e.offsetY - canvas.height / 2) / TILE_SIZE),
+  }
+
+  return { mode: PointerMode.AddGearWithChain, position }
+}
+
 const initPointer: InitPointerFn = ({ canvas, inputState }) => {
   canvas.addEventListener('pointermove', (e) => {
     switch (inputState.current.pointerMode) {
       case PointerMode.AddGear: {
         pointer = getAddGearPointer({ e, canvas, inputState })
+        break
+      }
+      case PointerMode.AddGearWithChain: {
+        pointer = getAddGearWithChainPointer({ e, canvas, inputState })
         break
       }
       case PointerMode.ApplyForce: {

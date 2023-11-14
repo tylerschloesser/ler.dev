@@ -22,48 +22,34 @@ export function Toolbar() {
 
   return (
     <div className={styles.container}>
-      <fieldset>
-        <legend>Gear Size:</legend>
-        {GEAR_SIZES.map((value) => (
-          <label key={value}>
-            {value}
-            <input
-              type="radio"
-              checked={gearSize === value}
-              onChange={() => {
-                setGearSize(value)
-                setPointerMode(PointerMode.AddGear)
-              }}
-            />
-          </label>
+      <div>
+        <div>Add Gear:</div>
+        {GEAR_SIZES.map((size) => (
+          <button
+            key={size}
+            onPointerUp={() => {
+              setGearSize(size)
+              setPointerMode(PointerMode.AddGear)
+            }}
+          >
+            {size}
+          </button>
         ))}
-      </fieldset>
-      <fieldset>
-        <legend>Pointer Mode:</legend>
-        {Object.values(PointerMode).map((value) => (
-          <label key={value}>
-            {value}
-            <input
-              type="radio"
-              checked={pointerMode === value}
-              onChange={() => setPointerMode(value)}
-            />
-          </label>
+      </div>
+      <div>
+        <div>Accelerate:</div>
+        {[1, -1].map((acceleration) => (
+          <button
+            key={acceleration}
+            onPointerUp={() => {
+              setAcceleration(acceleration)
+              setPointerMode(PointerMode.ApplyForce)
+            }}
+          >
+            {acceleration}
+          </button>
         ))}
-      </fieldset>
-      <fieldset>
-        <legend>Acceleration:</legend>
-        {[1, -1].map((value) => (
-          <label key={value}>
-            {value}
-            <input
-              type="radio"
-              checked={acceleration === value}
-              onChange={() => setAcceleration(value)}
-            />
-          </label>
-        ))}
-      </fieldset>
+      </div>
     </div>
   )
 }

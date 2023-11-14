@@ -7,6 +7,7 @@ export const GEAR_SIZES = [1, 3, 5, 7]
 
 export enum PointerMode {
   AddGear = 'add-gear',
+  AddGearWithChain = 'add-gear-with-chain',
   ApplyForce = 'apply-force',
 }
 
