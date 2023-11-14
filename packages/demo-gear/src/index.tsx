@@ -305,7 +305,7 @@ const updateAddGearPointer: UpdatePointerFn<AddGearPointer> = ({
   const { size } = pointer
   const radius = (size - 1) / 2
 
-  let chain = false
+  let chain: GearId | null = null
   let valid = true
   for (let x = -radius; x <= radius && valid; x++) {
     for (let y = -radius; y <= radius && valid; y++) {
@@ -320,7 +320,7 @@ const updateAddGearPointer: UpdatePointerFn<AddGearPointer> = ({
         const gear = gears[tile.gearId]
         invariant(gear)
         if (pointer.size === 1 && gear.radius === 0.5) {
-          chain = true
+          chain = gear.id
         }
       }
     }
@@ -380,11 +380,21 @@ const initPointer: InitPointerFn = ({ canvas, pointer }) => {
     switch (pointer.current.type) {
       case PointerType.AddGear: {
         updateAddGearPointer({ e, canvas, pointer: pointer.current })
-        if (pointer.current.state?.valid) {
+        if (pointer.current.state?.chain) {
+          pointer.current = {
+            type: PointerType.AddGearWithChain,
+            sourceId: pointer.current.state.chain,
+            state: {
+              position: pointer.current.state.position,
+            },
+          }
+        } else if (pointer.current.state?.valid) {
           const { size } = pointer.current
           addGear({ position: pointer.current.state.position, size })
+
+          // update again in case we need to show chain option
+          updateAddGearPointer({ e, canvas, pointer: pointer.current })
         }
-        updateAddGearPointer({ e, canvas, pointer: pointer.current })
         break
       }
       case PointerType.ApplyForce: {
@@ -603,6 +613,20 @@ const initCanvas: InitCanvasFn = ({ canvas, pointer }) => {
         TILE_SIZE * gear.radius * 2,
         TILE_SIZE * gear.radius * 2,
       )
+      context.closePath()
+    }
+
+    if (pointer.current.type === PointerType.AddGearWithChain) {
+      const source = gears[pointer.current.sourceId]
+      invariant(source)
+
+      context.beginPath()
+      context.lineWidth = 2
+      context.strokeStyle = 'white'
+
+      invariant(source.radius === .5)
+
+      context.strokeRect(source.position.x * TILE_SIZE, source.position.y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
       context.closePath()
     }
 

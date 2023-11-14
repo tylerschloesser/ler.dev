@@ -23,14 +23,14 @@ export interface AddGearPointer {
   state: {
     position: Vec2
     valid: boolean
-    chain: boolean
+    chain: GearId | null
     connections: Connection[]
   } | null
 }
 
 export interface AddGearWithChainPointer {
   type: PointerType.AddGearWithChain
-  position: Vec2
+  sourceId: GearId
   state: {
     position: Vec2
   } | null
