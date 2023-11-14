@@ -2,11 +2,17 @@ export type Vec2 = { x: number; y: number }
 
 export type Network = Set<Gear>
 export type GearId = string
+export type TileId = string
 
 export const GEAR_SIZES = [1, 3, 5, 7]
 
 export interface Tile {
-  gearId: string
+  gearId: GearId
+}
+
+export interface World {
+  gears: Record<GearId, Gear>
+  tiles: Record<TileId, Tile>
 }
 
 export enum PointerType {
@@ -47,7 +53,7 @@ export interface ApplyForcePointer {
   state: {
     position: Vec2
     active: boolean
-    gearId?: string
+    gearId?: GearId
   } | null
 }
 
@@ -61,18 +67,25 @@ export type InitCanvasFn = (args: {
   canvas: HTMLCanvasElement
   pointer: React.MutableRefObject<Pointer>
   signal: AbortSignal
+  world: World
 }) => void
 
 export type InitPointerFn = (args: {
   canvas: HTMLCanvasElement
   pointer: React.MutableRefObject<Pointer>
   signal: AbortSignal
+  world: World
 }) => void
 
 export type initKeyboardFn = (args: {
   canvas: HTMLCanvasElement
   pointer: React.MutableRefObject<Pointer>
   signal: AbortSignal
+}) => void
+
+export type InitSimulatorFn = (args: {
+  pointer: React.MutableRefObject<Pointer>
+  world: World
 }) => void
 
 export enum ConnectionType {

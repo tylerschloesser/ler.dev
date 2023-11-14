@@ -13,11 +13,12 @@ import {
   GearId,
   InitCanvasFn,
   InitPointerFn,
+  InitSimulatorFn,
   Network,
   Pointer,
   PointerType,
-  Tile,
   Vec2,
+  World,
   initKeyboardFn,
 } from './types.js'
 import {
@@ -33,10 +34,6 @@ const DRAW_GEAR_BOX = false
 
 const FRICTION = 1 // energy/sec
 const ACCELERATION = 2
-
-const gears: Record<string, Gear> = {}
-
-const tiles: Record<string, Tile> = {}
 
 function getEnergy(network: Set<Gear>): number {
   let energy = 0
@@ -54,15 +51,17 @@ function accelerateGear({
   root,
   acceleration,
   elapsed,
+  world,
 }: {
   root: Gear
   acceleration: number
   elapsed: number
+  world: World
 }): void {
   root.velocity += acceleration * elapsed
   for (const { gear, sign } of iterateNetwork(
     root,
-    gears,
+    world.gears,
   )) {
     gear.velocity =
       sign *
@@ -99,11 +98,10 @@ function applyFriction({
   }
 }
 
-function initSimulator({
+const initSimulator: InitSimulatorFn = ({
   pointer,
-}: {
-  pointer: React.MutableRefObject<Pointer>
-}) {
+  world,
+}) => {
   let prev: number = performance.now()
   function tick() {
     const now = performance.now()
@@ -124,22 +122,23 @@ function initSimulator({
       pointer.current.state?.active &&
       pointer.current.state.gearId
     ) {
-      const gear = gears[pointer.current.state.gearId]
+      const gear = world.gears[pointer.current.state.gearId]
       invariant(gear)
       accelerateGear({
         root: gear,
         acceleration:
           pointer.current.acceleration * ACCELERATION,
         elapsed,
+        world,
       })
     }
 
-    const networks = getNetworks(gears)
+    const networks = getNetworks(world.gears)
     for (const network of networks) {
       applyFriction({ network, elapsed })
     }
 
-    for (const gear of Object.values(gears)) {
+    for (const gear of Object.values(world.gears)) {
       gear.angle += gear.velocity * elapsed
     }
   }
@@ -150,26 +149,29 @@ function addGear({
   size,
   position,
   chain,
+  world,
 }: {
   size: number
   position: Vec2
   chain?: Gear
+  world: World
 }): void {
   invariant(position.x === Math.floor(position.x))
   invariant(position.y === Math.floor(position.y))
 
   const gearId = `${position.x}.${position.y}`
-  invariant(gears[gearId] === undefined)
+  invariant(world.gears[gearId] === undefined)
 
   const connections = getConnections({
     size,
     position,
+    world,
   })
 
   let sign = 0
   if (connections.length > 0) {
     const neighbors = connections.map((connection) => {
-      const neighbor = gears[connection.gearId]
+      const neighbor = world.gears[connection.gearId]
       invariant(neighbor)
       return neighbor
     })
@@ -225,7 +227,7 @@ function addGear({
     connections,
   }
 
-  gears[gear.id] = gear
+  world.gears[gear.id] = gear
 
   for (
     let x = -((size - 1) / 2);
@@ -241,13 +243,13 @@ function addGear({
       invariant(y === Math.floor(y))
 
       const tileId = `${position.x + x}.${position.y + y}`
-      invariant(tiles[tileId] === undefined)
+      invariant(world.tiles[tileId] === undefined)
 
-      tiles[tileId] = { gearId }
+      world.tiles[tileId] = { gearId }
     }
   }
 
-  const network = getNetwork(gear, gears)
+  const network = getNetwork(gear, world.gears)
   const energy = getEnergy(network)
 
   const root = gear
@@ -268,9 +270,11 @@ function addGear({
 function getConnections({
   size,
   position,
+  world,
 }: {
   size: number
   position: Vec2
+  world: World
 }): Connection[] {
   const connections = new Set<GearId>()
 
@@ -285,11 +289,11 @@ function getConnections({
       y: position.y + ((size - 1) / 2 + 1) * delta.y,
     }
     const tileId = `${point.x}.${point.y}`
-    const tile = tiles[tileId]
+    const tile = world.tiles[tileId]
     if (!tile) {
       continue
     }
-    const gear = gears[tile.gearId]
+    const gear = world.gears[tile.gearId]
     invariant(gear)
 
     if (
@@ -311,11 +315,12 @@ type UpdatePointerFn<T extends Pointer> = (args: {
   e: PointerEvent
   canvas: HTMLCanvasElement
   pointer: T
+  world: World
 }) => void
 
 const updateApplyForcePointer: UpdatePointerFn<
   ApplyForcePointer
-> = ({ e, canvas, pointer }) => {
+> = ({ e, canvas, pointer, world }) => {
   const position = {
     x: Math.floor(
       (e.offsetX - canvas.width / 2) / TILE_SIZE,
@@ -326,7 +331,7 @@ const updateApplyForcePointer: UpdatePointerFn<
   }
 
   const tileId = `${position.x}.${position.y}`
-  const tile = tiles[tileId]
+  const tile = world.tiles[tileId]
 
   const gearId = tile?.gearId
 
@@ -340,7 +345,7 @@ const updateApplyForcePointer: UpdatePointerFn<
 
 const updateAddGearPointer: UpdatePointerFn<
   AddGearPointer
-> = ({ e, canvas, pointer }) => {
+> = ({ e, canvas, pointer, world }) => {
   const position = {
     x: Math.floor(
       (e.offsetX - canvas.width / 2) / TILE_SIZE,
@@ -361,11 +366,11 @@ const updateAddGearPointer: UpdatePointerFn<
       invariant(y === Math.floor(y))
 
       const tileId = `${position.x + x}.${position.y + y}`
-      const tile = tiles[tileId]
+      const tile = world.tiles[tileId]
       if (tile) {
         valid = false
 
-        const gear = gears[tile.gearId]
+        const gear = world.gears[tile.gearId]
         invariant(gear)
         if (pointer.size === 1 && gear.radius === 0.5) {
           chain = gear.id
@@ -376,7 +381,7 @@ const updateAddGearPointer: UpdatePointerFn<
 
   let connections: Connection[] = []
   if (valid) {
-    connections = getConnections({ position, size })
+    connections = getConnections({ position, size, world })
   }
 
   pointer.state = {
@@ -389,7 +394,7 @@ const updateAddGearPointer: UpdatePointerFn<
 
 const updateAddGearWithChainPointer: UpdatePointerFn<
   AddGearWithChainPointer
-> = ({ e, canvas, pointer }) => {
+> = ({ e, canvas, pointer, world }) => {
   const position = {
     x: Math.floor(
       (e.offsetX - canvas.width / 2) / TILE_SIZE,
@@ -399,11 +404,11 @@ const updateAddGearWithChainPointer: UpdatePointerFn<
     ),
   }
 
-  const source = gears[pointer.sourceId]
+  const source = world.gears[pointer.sourceId]
   invariant(source)
 
   const tileId = `${position.x}.${position.y}`
-  const tile = tiles[tileId]
+  const tile = world.tiles[tileId]
 
   let valid = true
 
@@ -430,6 +435,7 @@ const initPointer: InitPointerFn = ({
   canvas,
   pointer,
   signal,
+  world,
 }) => {
   canvas.addEventListener(
     'pointermove',
@@ -440,6 +446,7 @@ const initPointer: InitPointerFn = ({
             e,
             canvas,
             pointer: pointer.current,
+            world,
           })
           break
         }
@@ -448,6 +455,7 @@ const initPointer: InitPointerFn = ({
             e,
             canvas,
             pointer: pointer.current,
+            world,
           })
           break
         }
@@ -456,6 +464,7 @@ const initPointer: InitPointerFn = ({
             e,
             canvas,
             pointer: pointer.current,
+            world,
           })
           break
         }
@@ -479,6 +488,7 @@ const initPointer: InitPointerFn = ({
             e,
             canvas,
             pointer: pointer.current,
+            world,
           })
           if (pointer.current.state?.chain) {
             pointer.current = {
@@ -490,12 +500,14 @@ const initPointer: InitPointerFn = ({
               e,
               canvas,
               pointer: pointer.current,
+              world,
             })
           } else if (pointer.current.state?.valid) {
             const { size } = pointer.current
             addGear({
               position: pointer.current.state.position,
               size,
+              world,
             })
 
             // update again in case we need to show chain option
@@ -503,18 +515,21 @@ const initPointer: InitPointerFn = ({
               e,
               canvas,
               pointer: pointer.current,
+              world,
             })
           }
           break
         }
         case PointerType.AddGearWithChain: {
           if (pointer.current.state?.valid) {
-            const chain = gears[pointer.current.sourceId]
+            const chain =
+              world.gears[pointer.current.sourceId]
             invariant(chain)
             addGear({
               position: pointer.current.state.position,
               size: 1,
               chain,
+              world,
             })
 
             pointer.current = {
@@ -526,6 +541,7 @@ const initPointer: InitPointerFn = ({
               e,
               canvas,
               pointer: pointer.current,
+              world,
             })
           }
           break
@@ -535,6 +551,7 @@ const initPointer: InitPointerFn = ({
             e,
             canvas,
             pointer: pointer.current,
+            world,
           })
           break
         }
@@ -551,6 +568,7 @@ const initPointer: InitPointerFn = ({
             e,
             canvas,
             pointer: pointer.current,
+            world,
           })
           break
         }
@@ -582,6 +600,7 @@ const initCanvas: InitCanvasFn = ({
   canvas,
   pointer,
   signal,
+  world,
 }) => {
   const rect = canvas.getBoundingClientRect()
   canvas.width = rect.width
@@ -590,9 +609,9 @@ const initCanvas: InitCanvasFn = ({
   const context = canvas.getContext('2d')
   invariant(context)
 
-  initPointer({ canvas, pointer, signal })
+  initPointer({ canvas, pointer, signal, world })
   initKeyboard({ canvas, pointer, signal })
-  initSimulator({ pointer })
+  initSimulator({ pointer, world })
 
   addGear({
     position: {
@@ -600,6 +619,7 @@ const initCanvas: InitCanvasFn = ({
       y: 0,
     },
     size: GEAR_SIZES[1]!,
+    world,
   })
   addGear({
     position: {
@@ -607,6 +627,7 @@ const initCanvas: InitCanvasFn = ({
       y: 0,
     },
     size: GEAR_SIZES[3]!,
+    world,
   })
 
   function render() {
@@ -727,7 +748,7 @@ const initCanvas: InitCanvasFn = ({
       context.restore()
 
       for (const connection of gear.connections) {
-        const peer = gears[connection.gearId]
+        const peer = world.gears[connection.gearId]
         invariant(peer)
 
         if (connection.type === ConnectionType.Chain) {
@@ -765,7 +786,7 @@ const initCanvas: InitCanvasFn = ({
       }
     }
 
-    for (const gear of Object.values(gears)) {
+    for (const gear of Object.values(world.gears)) {
       renderGear(gear)
     }
 
@@ -804,7 +825,7 @@ const initCanvas: InitCanvasFn = ({
       pointer.current.type === PointerType.ApplyForce &&
       pointer.current.state?.gearId
     ) {
-      const gear = gears[pointer.current.state.gearId]
+      const gear = world.gears[pointer.current.state.gearId]
       const { active } = pointer.current.state
       invariant(gear)
 
@@ -823,7 +844,7 @@ const initCanvas: InitCanvasFn = ({
     if (
       pointer.current.type === PointerType.AddGearWithChain
     ) {
-      const source = gears[pointer.current.sourceId]
+      const source = world.gears[pointer.current.sourceId]
       invariant(source)
 
       let chain = {
@@ -882,11 +903,20 @@ export function DemoGear() {
   })
   const [canvas, setCanvas] =
     useState<HTMLCanvasElement | null>(null)
+  const world = useRef<World>({
+    gears: {},
+    tiles: {},
+  })
   useEffect(() => {
     if (canvas) {
       const controller = new AbortController()
       const { signal } = controller
-      initCanvas({ canvas, pointer, signal })
+      initCanvas({
+        canvas,
+        pointer,
+        signal,
+        world: world.current,
+      })
       return () => {
         controller.abort()
       }
