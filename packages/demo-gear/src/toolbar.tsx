@@ -1,5 +1,9 @@
 import styles from './toolbar.module.scss'
-import { GEAR_SIZES, Pointer, PointerType } from './types.js'
+import {
+  GEAR_SIZES,
+  Pointer,
+  PointerType,
+} from './types.js'
 
 export interface ToolbarProps {
   pointer: React.MutableRefObject<Pointer>

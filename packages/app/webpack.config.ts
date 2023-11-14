@@ -5,7 +5,10 @@ import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer'
 import 'webpack-dev-server'
 import { WebpackManifestPlugin } from 'webpack-manifest-plugin'
 
-export default (_env: unknown, argv: { mode: Configuration['mode'] }) => {
+export default (
+  _env: unknown,
+  argv: { mode: Configuration['mode'] },
+) => {
   const prod = argv.mode !== 'development'
   const mode = prod ? 'production' : 'development'
 
@@ -13,7 +16,9 @@ export default (_env: unknown, argv: { mode: Configuration['mode'] }) => {
     stats: 'minimal',
     mode,
     entry: './src/index.tsx',
-    devtool: prod ? 'source-map' : 'eval-cheap-module-source-map',
+    devtool: prod
+      ? 'source-map'
+      : 'eval-cheap-module-source-map',
     output: {
       filename: '[name].[contenthash].js',
       chunkFilename: '[name].[contenthash].chunk.js',
@@ -36,7 +41,8 @@ export default (_env: unknown, argv: { mode: Configuration['mode'] }) => {
               options: {
                 modules: {
                   auto: true,
-                  localIdentName: '[local]--[hash:base64:5]',
+                  localIdentName:
+                    '[local]--[hash:base64:5]',
                 },
               },
             },
@@ -61,7 +67,9 @@ export default (_env: unknown, argv: { mode: Configuration['mode'] }) => {
     },
     plugins: [
       new HtmlWebpackPlugin({
-        filename: prod ? 'index.[contenthash].html' : 'index.html',
+        filename: prod
+          ? 'index.[contenthash].html'
+          : 'index.html',
         template: './src/index.html',
       }),
       new WebpackManifestPlugin({}),
@@ -69,7 +77,9 @@ export default (_env: unknown, argv: { mode: Configuration['mode'] }) => {
       new CopyPlugin({
         patterns: [{ from: 'public' }],
       }),
-      ...(Boolean(process.env.ANALYZE) ? [new BundleAnalyzerPlugin()] : []),
+      ...(Boolean(process.env.ANALYZE)
+        ? [new BundleAnalyzerPlugin()]
+        : []),
     ],
     devServer: {
       historyApiFallback: true,

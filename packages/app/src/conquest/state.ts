@@ -29,7 +29,9 @@ export function addFlag(flag: Flag) {
     flag.p.x >= state.world.size.x ||
     flag.p.y >= state.world.size.y
   ) {
-    throw Error(`Invalid flag position: ${flag.p.toString()}`)
+    throw Error(
+      `Invalid flag position: ${flag.p.toString()}`,
+    )
   }
   state.world.flags.push(flag)
 }

@@ -24,17 +24,28 @@ function times(n: number) {
   return arr
 }
 
-function getDots({ width, height }: { width: number; height: number }): Dots {
+function getDots({
+  width,
+  height,
+}: {
+  width: number
+  height: number
+}): Dots {
   const dots: Dot[] = []
   const numCols = Math.floor(width / 50)
   const numRows = Math.floor(height / 50)
   times(numRows).forEach((row) => {
     times(numCols).forEach((col) => {
-      const x = (width / numCols) * col + width / numCols / 2
-      const y = (height / numRows) * row + height / numRows / 2
+      const x =
+        (width / numCols) * col + width / numCols / 2
+      const y =
+        (height / numRows) * row + height / numRows / 2
       dots.push({
         p: new THREE.Vector2(x, y),
-        sp: new THREE.Vector2((x / width) * 2 - 1, (y / height) * 2 - 1),
+        sp: new THREE.Vector2(
+          (x / width) * 2 - 1,
+          (y / height) * 2 - 1,
+        ),
       })
     })
   })
@@ -54,7 +65,8 @@ interface SceneProps {
 }
 
 function Scene({ dots, width, height }: SceneProps) {
-  const [mesh, setMesh] = useState<THREE.InstancedMesh | null>(null)
+  const [mesh, setMesh] =
+    useState<THREE.InstancedMesh | null>(null)
 
   let i = 0
   const matrix = new Matrix4()
@@ -66,7 +78,9 @@ function Scene({ dots, width, height }: SceneProps) {
     }
 
     const spointer = new THREE.Vector2(pointer.x, pointer.y)
-    spointer.multiply(new THREE.Vector2(width / 2, height / 2))
+    spointer.multiply(
+      new THREE.Vector2(width / 2, height / 2),
+    )
 
     for (i = 0; i < dots.values.length; i++) {
       const dot = dots.values[i]!
@@ -132,7 +146,9 @@ function Inner({ canvas }: InnerProps) {
 
   return (
     <>
-      {dots && <Scene dots={dots} width={width} height={height} />}
+      {dots && (
+        <Scene dots={dots} width={width} height={height} />
+      )}
       <ambientLight color={0xffffff} intensity={1} />
       <color attach="background" args={['#111']} />
     </>
@@ -140,10 +156,15 @@ function Inner({ canvas }: InnerProps) {
 }
 
 export function ThreeDemo() {
-  const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null)
+  const [canvas, setCanvas] =
+    useState<HTMLCanvasElement | null>(null)
 
   return (
-    <Canvas orthographic={true} dpr={window.devicePixelRatio} ref={setCanvas}>
+    <Canvas
+      orthographic={true}
+      dpr={window.devicePixelRatio}
+      ref={setCanvas}
+    >
       {canvas && <Inner canvas={canvas} />}
     </Canvas>
   )

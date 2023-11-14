@@ -15,7 +15,10 @@ import {
 } from 'aws-cdk-lib/aws-route53'
 import { CloudFrontTarget } from 'aws-cdk-lib/aws-route53-targets'
 import { Bucket } from 'aws-cdk-lib/aws-s3'
-import { BucketDeployment, Source } from 'aws-cdk-lib/aws-s3-deployment'
+import {
+  BucketDeployment,
+  Source,
+} from 'aws-cdk-lib/aws-s3-deployment'
 import { Construct } from 'constructs'
 import { camelCase, upperCase } from 'lodash-es'
 import { DefaultToIndexHtmlFunction } from './default-to-index-html-function.js'
@@ -56,46 +59,51 @@ export class CdnStack extends Stack {
       'OriginAccessIdentity',
     )
 
-    const distribution = new Distribution(this, 'Distribution', {
-      defaultBehavior: {
-        origin: new S3Origin(bucket, {
-          originAccessIdentity,
-        }),
-        viewerProtocolPolicy: ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
-        functionAssociations: [
-          {
-            function: new DefaultToIndexHtmlFunction(
-              this,
-              'DefaultToIndexHtmlFunction',
-            ),
-            eventType: FunctionEventType.VIEWER_REQUEST,
-          },
-        ],
-        responseHeadersPolicy: new ResponseHeadersPolicy(
-          this,
-          'ResponseHeadersPolicy',
-          {
-            customHeadersBehavior: {
-              customHeaders: [
-                {
-                  header: 'Cross-Origin-Opener-Policy',
-                  value: 'same-origin',
-                  override: false,
-                },
-                {
-                  header: 'Cross-Origin-Embedder-Policy',
-                  value: 'require-corp',
-                  override: false,
-                },
-              ],
+    const distribution = new Distribution(
+      this,
+      'Distribution',
+      {
+        defaultBehavior: {
+          origin: new S3Origin(bucket, {
+            originAccessIdentity,
+          }),
+          viewerProtocolPolicy:
+            ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+          functionAssociations: [
+            {
+              function: new DefaultToIndexHtmlFunction(
+                this,
+                'DefaultToIndexHtmlFunction',
+              ),
+              eventType: FunctionEventType.VIEWER_REQUEST,
             },
-          },
-        ),
+          ],
+          responseHeadersPolicy: new ResponseHeadersPolicy(
+            this,
+            'ResponseHeadersPolicy',
+            {
+              customHeadersBehavior: {
+                customHeaders: [
+                  {
+                    header: 'Cross-Origin-Opener-Policy',
+                    value: 'same-origin',
+                    override: false,
+                  },
+                  {
+                    header: 'Cross-Origin-Embedder-Policy',
+                    value: 'require-corp',
+                    override: false,
+                  },
+                ],
+              },
+            },
+          ),
+        },
+        defaultRootObject: getDefaultRootObject(),
+        domainNames,
+        certificate,
       },
-      defaultRootObject: getDefaultRootObject(),
-      domainNames,
-      certificate,
-    })
+    )
 
     new BucketDeployment(this, 'BucketDeployment', {
       sources: [
@@ -108,10 +116,14 @@ export class CdnStack extends Stack {
     })
 
     for (const zone of hostedZones) {
-      const id = `ARecord-${upperCase(camelCase(zone.zoneName))}`
+      const id = `ARecord-${upperCase(
+        camelCase(zone.zoneName),
+      )}`
       new ARecord(this, id, {
         zone,
-        target: RecordTarget.fromAlias(new CloudFrontTarget(distribution)),
+        target: RecordTarget.fromAlias(
+          new CloudFrontTarget(distribution),
+        ),
       })
     }
   }

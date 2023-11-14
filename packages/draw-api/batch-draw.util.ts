@@ -16,7 +16,9 @@ const deflate = promisify(zlib.deflate)
 
 const dynamo = new DynamoDB({ region: 'us-west-2' })
 
-export function transformEvent(event: APIGatewayProxyWebsocketEventV2) {
+export function transformEvent(
+  event: APIGatewayProxyWebsocketEventV2,
+) {
   return {
     connectionId: event.requestContext.connectionId,
 
@@ -47,7 +49,11 @@ export async function getRecord() {
   let grid: Grid | null = null
   if (deflated) {
     grid = Grid.parse(
-      JSON.parse((await inflate(Buffer.from(deflated, 'base64'))).toString()),
+      JSON.parse(
+        (
+          await inflate(Buffer.from(deflated, 'base64'))
+        ).toString(),
+      ),
     )
   }
 
@@ -59,7 +65,9 @@ export async function getRecord() {
 
 const getClient = memoize(
   (callbackUrl: string) =>
-    new ApiGatewayManagementApiClient({ endpoint: callbackUrl }),
+    new ApiGatewayManagementApiClient({
+      endpoint: callbackUrl,
+    }),
 )
 
 export async function sendMessageToPeer({

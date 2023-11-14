@@ -5,14 +5,21 @@ import { Config, RenderFn, RenderMethod } from './config.js'
 import { renderBezier } from './render-bezier.js'
 import { renderSimple } from './render-simple.js'
 
-const render: RenderFn = (canvas, context, config, timestamp) => {
+const render: RenderFn = (
+  canvas,
+  context,
+  config,
+  timestamp,
+) => {
   const { renderMethod = RenderMethod.Simple } = config
   const renderFn = {
     [RenderMethod.Simple]: renderSimple,
     [RenderMethod.Bezier]: renderBezier,
   }[renderMethod]
   renderFn(canvas, context, config, timestamp)
-  window.requestAnimationFrame(curry(render)(canvas, context, config))
+  window.requestAnimationFrame(
+    curry(render)(canvas, context, config),
+  )
 }
 
 function resize(canvas: HTMLCanvasElement) {
@@ -21,14 +28,19 @@ function resize(canvas: HTMLCanvasElement) {
   canvas.height = rect.height
 }
 
-function init(canvas: HTMLCanvasElement, config: Config): { cleanup(): void } {
+function init(
+  canvas: HTMLCanvasElement,
+  config: Config,
+): { cleanup(): void } {
   resize(canvas)
   const ro = new ResizeObserver(() => {
     resize(canvas)
   })
   ro.observe(canvas)
   const context = canvas.getContext('2d')!
-  window.requestAnimationFrame(curry(render)(canvas, context, config))
+  window.requestAnimationFrame(
+    curry(render)(canvas, context, config),
+  )
 
   return {
     cleanup: () => {
@@ -48,7 +60,8 @@ export interface BlobProps {
 }
 
 export function Blob({ config }: BlobProps) {
-  const [canvas, setCanvas] = useState<HTMLCanvasElement | null>()
+  const [canvas, setCanvas] =
+    useState<HTMLCanvasElement | null>()
   const configRef = useRef(config)
   useEffect(() => {
     Object.assign(configRef.current, config)

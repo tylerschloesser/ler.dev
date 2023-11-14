@@ -33,12 +33,17 @@ const storage = {
     }
   },
   put(config: Config) {
-    localStorage.setItem('config', JSON.stringify(config, null, 2))
+    localStorage.setItem(
+      'config',
+      JSON.stringify(config, null, 2),
+    )
   },
 }
 
 export function Demo() {
-  const [config, setConfig] = useState<Config>(storage.getOrDefault())
+  const [config, setConfig] = useState<Config>(
+    storage.getOrDefault(),
+  )
   useEffect(() => storage.put(config), [config])
 
   const sliders = [
@@ -56,7 +61,10 @@ export function Demo() {
       max: 10,
       step: 0.05,
       value: config.xScale,
-      toConfig: (value: number) => ({ xScale: value, yScale: value }),
+      toConfig: (value: number) => ({
+        xScale: value,
+        yScale: value,
+      }),
     },
     {
       name: 'z scale',
@@ -71,42 +79,49 @@ export function Demo() {
   return (
     <>
       <Controls>
-        {sliders.map(({ name, min, max, step, value, toConfig }) => (
-          <Label key={name}>
-            {name}
-            <input
-              type="range"
-              min={min}
-              max={max}
-              step={step}
-              value={value}
-              onChange={(e) =>
-                setConfig((prev) => ({
-                  ...prev,
-                  ...toConfig(parseFloat(e.target.value)),
-                }))
-              }
-            />
-          </Label>
-        ))}
-        <fieldset>
-          <legend>render method</legend>
-          {Object.values(RenderMethod).map((renderMethod) => (
-            <label key={renderMethod}>
-              {renderMethod}
+        {sliders.map(
+          ({ name, min, max, step, value, toConfig }) => (
+            <Label key={name}>
+              {name}
               <input
-                type="radio"
-                value={renderMethod}
-                checked={config.renderMethod === renderMethod}
+                type="range"
+                min={min}
+                max={max}
+                step={step}
+                value={value}
                 onChange={(e) =>
                   setConfig((prev) => ({
                     ...prev,
-                    renderMethod: e.target.value as RenderMethod,
+                    ...toConfig(parseFloat(e.target.value)),
                   }))
                 }
               />
-            </label>
-          ))}
+            </Label>
+          ),
+        )}
+        <fieldset>
+          <legend>render method</legend>
+          {Object.values(RenderMethod).map(
+            (renderMethod) => (
+              <label key={renderMethod}>
+                {renderMethod}
+                <input
+                  type="radio"
+                  value={renderMethod}
+                  checked={
+                    config.renderMethod === renderMethod
+                  }
+                  onChange={(e) =>
+                    setConfig((prev) => ({
+                      ...prev,
+                      renderMethod: e.target
+                        .value as RenderMethod,
+                    }))
+                  }
+                />
+              </label>
+            ),
+          )}
         </fieldset>
         <label>
           debug
@@ -114,7 +129,10 @@ export function Demo() {
             type="checkbox"
             checked={config.debug}
             onChange={(e) =>
-              setConfig((prev) => ({ ...prev, debug: e.target.checked }))
+              setConfig((prev) => ({
+                ...prev,
+                debug: e.target.checked,
+              }))
             }
           />
         </label>

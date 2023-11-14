@@ -1,4 +1,7 @@
-import { SendMessageCommandInput, SQS } from '@aws-sdk/client-sqs'
+import {
+  SendMessageCommandInput,
+  SQS,
+} from '@aws-sdk/client-sqs'
 import { BatchDrawMessage } from '@ler.dev/common'
 import * as util from './batch-draw.util'
 import { logger, pretty } from './logger'
@@ -13,14 +16,24 @@ export type SideEffects = typeof SIDE_EFFECTS
 
 const sqs = new SQS({ region: 'us-west-2' })
 
-export const handler: Handler<SideEffects, unknown, unknown> = async (
+export const handler: Handler<
+  SideEffects,
+  unknown,
+  unknown
+> = async (
   event,
   _context: unknown,
   _callback: unknown,
-  { getRecord, sendMessageToPeer }: SideEffects = SIDE_EFFECTS,
+  {
+    getRecord,
+    sendMessageToPeer,
+  }: SideEffects = SIDE_EFFECTS,
 ) => {
-  const { connectionId, callbackUrl } = util.transformEvent(event)
-  const message = BatchDrawMessage.parse(JSON.parse(event.body!))
+  const { connectionId, callbackUrl } =
+    util.transformEvent(event)
+  const message = BatchDrawMessage.parse(
+    JSON.parse(event.body!),
+  )
 
   logger.debug(
     pretty({

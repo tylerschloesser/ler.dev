@@ -27,14 +27,18 @@ async function addConnectionId({
   })
 }
 
-export const handler: APIGatewayProxyWebsocketHandlerV2 = async (event) => {
-  const { connectionId } = event.requestContext
-  const DYNAMO_TABLE_NAME = process.env.DYNAMO_TABLE_NAME!
-  logger.debug(pretty({ event, connectionId }))
+export const handler: APIGatewayProxyWebsocketHandlerV2 =
+  async (event) => {
+    const { connectionId } = event.requestContext
+    const DYNAMO_TABLE_NAME = process.env.DYNAMO_TABLE_NAME!
+    logger.debug(pretty({ event, connectionId }))
 
-  await addConnectionId({ connectionId, DYNAMO_TABLE_NAME })
+    await addConnectionId({
+      connectionId,
+      DYNAMO_TABLE_NAME,
+    })
 
-  return {
-    statusCode: 200,
+    return {
+      statusCode: 200,
+    }
   }
-}

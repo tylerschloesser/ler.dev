@@ -12,14 +12,23 @@ let pause = false
 let position: Vec2 = new Vec2(0, 0)
 let velocity: Vec2 = new Vec2(100, 33)
 
-const init: InitFn = ({ canvas, viewport, signal, updateConfig }) => {
+const init: InitFn = ({
+  canvas,
+  viewport,
+  signal,
+  updateConfig,
+}) => {
   canvas.addEventListener(
     'pointermove',
     (e) => {
       pointer = new Vec2(e.clientX, e.clientY)
-      const center = new Vec2(viewport.w / 2, viewport.h / 2)
+      const center = new Vec2(
+        viewport.w / 2,
+        viewport.h / 2,
+      )
       const speed =
-        pointer.sub(center).length() / Math.min(viewport.w, viewport.h)
+        pointer.sub(center).length() /
+        Math.min(viewport.w, viewport.h)
       velocity = pointer
         .sub(center)
         .norm()
@@ -49,7 +58,13 @@ function move(elapsed: Milliseconds) {
   position = position.add(velocity.mul(toSeconds(elapsed)))
 }
 
-const render: RenderFn = ({ context, viewport, debug, elapsed, timestamp }) => {
+const render: RenderFn = ({
+  context,
+  viewport,
+  debug,
+  elapsed,
+  timestamp,
+}) => {
   if (!pause) {
     move(elapsed)
   }
@@ -67,31 +82,52 @@ const render: RenderFn = ({ context, viewport, debug, elapsed, timestamp }) => {
       debug('numCols', numCols.toString())
       debug('numRows', numRows.toString())
 
-      const firstCol = Math.floor(Math.round(position.x) / cellSize)
-      const firstRow = Math.floor(Math.round(position.y) / cellSize)
+      const firstCol = Math.floor(
+        Math.round(position.x) / cellSize,
+      )
+      const firstRow = Math.floor(
+        Math.round(position.y) / cellSize,
+      )
       debug('firstCol', firstCol.toString())
       debug('firstRow', firstRow.toString())
 
-      const offset = new Vec2(firstCol * cellSize, firstRow * cellSize)
+      const offset = new Vec2(
+        firstCol * cellSize,
+        firstRow * cellSize,
+      )
         .add(
           // double mod to handle negative numbers
           new Vec2(
-            ((Math.round(position.x) % cellSize) + cellSize) % cellSize,
-            ((Math.round(position.y) % cellSize) + cellSize) % cellSize,
+            ((Math.round(position.x) % cellSize) +
+              cellSize) %
+              cellSize,
+            ((Math.round(position.y) % cellSize) +
+              cellSize) %
+              cellSize,
           ),
         )
         .mul(-1)
       debug('offset', offset.toString())
 
-      for (let col = firstCol; col < firstCol + numCols; col++) {
-        for (let row = firstRow; row < firstRow + numRows; row++) {
+      for (
+        let col = firstCol;
+        col < firstCol + numCols;
+        col++
+      ) {
+        for (
+          let row = firstRow;
+          row < firstRow + numRows;
+          row++
+        ) {
           const color = state.get(col, row, timestamp)
           if (!color) {
             continue
           }
           context.fillStyle = color
 
-          const { x, y } = offset.add(new Vec2(cellSize * col, cellSize * row))
+          const { x, y } = offset.add(
+            new Vec2(cellSize * col, cellSize * row),
+          )
 
           const w = cellSize
           const h = cellSize

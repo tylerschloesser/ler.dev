@@ -214,7 +214,9 @@ export function Home() {
         <List>
           {PATHS.map(({ path }) => (
             <ListItem key={path}>
-              <StyledLink to={path}>{path.toUpperCase()}</StyledLink>
+              <StyledLink to={path}>
+                {path.toUpperCase()}
+              </StyledLink>
             </ListItem>
           ))}
         </List>
@@ -225,8 +227,10 @@ export function Home() {
           {
             marathons
               .map(({ state }) => state)
-              .reduce<Set<string>>((acc, state) => acc.add(state), new Set())
-              .size
+              .reduce<Set<string>>(
+                (acc, state) => acc.add(state),
+                new Set(),
+              ).size
           }{' '}
           / 50
         </RaceProgress>
@@ -242,14 +246,16 @@ export function Home() {
               </tr>
             </thead>
             <tbody>
-              {marathons.map(({ name, date, time, state }, i) => (
-                <tr key={i}>
-                  <TableData>{name} Marathon</TableData>
-                  <TableData>{date}</TableData>
-                  <TableData>{time}</TableData>
-                  <TableData>{state}</TableData>
-                </tr>
-              ))}
+              {marathons.map(
+                ({ name, date, time, state }, i) => (
+                  <tr key={i}>
+                    <TableData>{name} Marathon</TableData>
+                    <TableData>{date}</TableData>
+                    <TableData>{time}</TableData>
+                    <TableData>{state}</TableData>
+                  </tr>
+                ),
+              )}
             </tbody>
           </table>
         </TableContainer>

@@ -10,12 +10,23 @@ export interface UpdateArgs {
 const toSeconds = (ms: Milliseconds) => ms / 1000
 
 export function launchBall() {
-  if (!state.drag?.b) throw Error('this should only be called if drag is valid')
+  if (!state.drag?.b)
+    throw Error(
+      'this should only be called if drag is valid',
+    )
 
   if (state.ball === null) {
     const p = new Vec2(state.viewport.w / 2, 0)
-    const r = Math.floor(Math.min(state.viewport.w, state.viewport.h) * 0.05)
-    state.ball = { p, v: new Vec2(0, 0), r, capturedBy: null, launchedBy: null }
+    const r = Math.floor(
+      Math.min(state.viewport.w, state.viewport.h) * 0.05,
+    )
+    state.ball = {
+      p,
+      v: new Vec2(0, 0),
+      r,
+      capturedBy: null,
+      launchedBy: null,
+    }
   } else {
     state.ball.launchedBy = state.ball.capturedBy
     state.ball.capturedBy = null
@@ -59,7 +70,9 @@ export function update({ elapsed }: UpdateArgs) {
 
     state.ball!.capturedBy = capturedBy
 
-    ball.v = ball.v.add(a.mul(toSeconds(elapsed))).mul(friction)
+    ball.v = ball.v
+      .add(a.mul(toSeconds(elapsed)))
+      .mul(friction)
 
     if (ball.p.y > 0) {
       state.ball = null
@@ -75,7 +88,10 @@ function updateCamera({ elapsed }: UpdateArgs) {
   if (state.ball && state.ball.capturedBy !== null) {
     const target = state.targets[state.ball.capturedBy]!
     destination = target.p.sub(
-      new Vec2(state.viewport.w / 2, state.viewport.h * 0.66),
+      new Vec2(
+        state.viewport.w / 2,
+        state.viewport.h * 0.66,
+      ),
     )
   } else if (!state.ball) {
     destination = new Vec2(0, -state.viewport.h)
@@ -88,5 +104,7 @@ function updateCamera({ elapsed }: UpdateArgs) {
   v = v.norm().mul(Math.pow(v.length(), 1.4))
 
   state.camera.v = v
-  state.camera.p = state.camera.p.add(v.mul(toSeconds(elapsed)))
+  state.camera.p = state.camera.p.add(
+    v.mul(toSeconds(elapsed)),
+  )
 }

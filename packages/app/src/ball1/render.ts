@@ -1,6 +1,10 @@
 import { RenderFn } from '../common/engine/index.js'
 import { Vec2 } from '../common/vec2.js'
-import { detectCollisions, moveBall, moveTargets } from './physics.js'
+import {
+  detectCollisions,
+  moveBall,
+  moveTargets,
+} from './physics.js'
 import { scale, state } from './state.js'
 
 export interface RenderArgs {
@@ -11,7 +15,10 @@ export interface RenderArgs {
   }
 }
 
-export function renderWorld({ context, transform }: RenderArgs) {
+export function renderWorld({
+  context,
+  transform,
+}: RenderArgs) {
   const { world } = state
 
   {
@@ -21,10 +28,16 @@ export function renderWorld({ context, transform }: RenderArgs) {
     const size = 100
     for (let i = 1; i < world.w / size; i++) {
       context.moveTo(transform.x(i * size), transform.y(0))
-      context.lineTo(transform.x(i * size), transform.y(world.h))
+      context.lineTo(
+        transform.x(i * size),
+        transform.y(world.h),
+      )
 
       context.moveTo(transform.x(0), transform.y(i * size))
-      context.lineTo(transform.x(world.w), transform.y(i * size))
+      context.lineTo(
+        transform.x(world.w),
+        transform.y(i * size),
+      )
     }
 
     context.stroke()
@@ -49,7 +62,10 @@ export function renderWorld({ context, transform }: RenderArgs) {
   }
 }
 
-export function renderBall({ context, transform }: RenderArgs) {
+export function renderBall({
+  context,
+  transform,
+}: RenderArgs) {
   if (state.ball) {
     context.beginPath()
     context.fillStyle = 'hsl(0, 60%, 50%)'
@@ -65,15 +81,24 @@ export function renderBall({ context, transform }: RenderArgs) {
   }
 }
 
-export function renderTargets({ context, transform }: RenderArgs) {
+export function renderTargets({
+  context,
+  transform,
+}: RenderArgs) {
   for (let i = 0; i < state.targets.length; i++) {
     const pair = state.targets[i]!
 
     context.beginPath()
     context.strokeStyle = 'hsl(120, 60%, 20%)'
     context.lineWidth = 4
-    context.moveTo(transform.x(pair[0]!.p.x), transform.y(pair[0]!.p.y))
-    context.lineTo(transform.x(pair[1]!.p.x), transform.y(pair[1]!.p.y))
+    context.moveTo(
+      transform.x(pair[0]!.p.x),
+      transform.y(pair[0]!.p.y),
+    )
+    context.lineTo(
+      transform.x(pair[1]!.p.x),
+      transform.y(pair[1]!.p.y),
+    )
     context.stroke()
     context.closePath()
 
@@ -98,21 +123,31 @@ export function renderTargets({ context, transform }: RenderArgs) {
   }
 }
 
-export function renderDrag({ context, transform }: RenderArgs) {
+export function renderDrag({
+  context,
+  transform,
+}: RenderArgs) {
   const { drag } = state
   if (drag?.b) {
     context.strokeStyle = 'hsl(240, 60%, 80%)'
     context.lineWidth = 2
     context.beginPath()
     const end = state.ball.p.add(drag.b.sub(drag.a).mul(-1))
-    context.moveTo(transform.x(state.ball.p.x), transform.y(state.ball.p.y))
+    context.moveTo(
+      transform.x(state.ball.p.x),
+      transform.y(state.ball.p.y),
+    )
     context.lineTo(transform.x(end.x), transform.y(end.y))
     context.stroke()
     context.closePath()
   }
 }
 
-export const render: RenderFn = ({ context, viewport, ...props }) => {
+export const render: RenderFn = ({
+  context,
+  viewport,
+  ...props
+}) => {
   // TODO clean this up. This code was written before collapsed was refactored to be ms
   const elapsed = props.elapsed / 1000
 

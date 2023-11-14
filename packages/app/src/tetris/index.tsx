@@ -13,7 +13,10 @@ export function Tetris() {
     const controller = new AbortController()
     const { signal } = controller
 
-    function listener(type: 'keydown' | 'keyup', ev: KeyboardEvent) {
+    function listener(
+      type: 'keydown' | 'keyup',
+      ev: KeyboardEvent,
+    ) {
       if (type === 'keydown' && ev.key === ' ') {
         debugger
         return
@@ -29,12 +32,20 @@ export function Tetris() {
     }
 
     // TODO arrayify this with typescript somehow
-    document.addEventListener('keydown', curry(listener)('keydown'), {
-      signal,
-    })
-    document.addEventListener('keyup', curry(listener)('keyup'), {
-      signal,
-    })
+    document.addEventListener(
+      'keydown',
+      curry(listener)('keydown'),
+      {
+        signal,
+      },
+    )
+    document.addEventListener(
+      'keyup',
+      curry(listener)('keyup'),
+      {
+        signal,
+      },
+    )
     return () => {
       controller.abort()
     }

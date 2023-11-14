@@ -89,7 +89,8 @@ export function UsMap({ coloredStates }: UsMapProps) {
     h: 589,
   }
   const [svg, setSvg] = useState<SVGElement | null>(null)
-  const [container, setContainer] = useState<HTMLDivElement | null>(null)
+  const [container, setContainer] =
+    useState<HTMLDivElement | null>(null)
   useEffect(() => {
     if (!container || !svg) return
 

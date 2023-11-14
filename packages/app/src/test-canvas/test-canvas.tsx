@@ -15,7 +15,8 @@ const Overlay = styled.div`
 export function TestCanvas() {
   const [fps, setFps] = useState(0)
   const perf = useRef<Perf>({ frames: 0, last: 0 })
-  const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null)
+  const [canvas, setCanvas] =
+    useState<HTMLCanvasElement | null>(null)
 
   useEffect(() => {
     if (!canvas) return
@@ -34,7 +35,8 @@ export function TestCanvas() {
 
     function handleFrame(timestamp: number) {
       if (
-        Math.floor(timestamp / 1000) !== Math.floor(perf.current.last / 1000)
+        Math.floor(timestamp / 1000) !==
+        Math.floor(perf.current.last / 1000)
       ) {
         setFps(perf.current.frames)
         perf.current = {

@@ -2,7 +2,11 @@ import Color from 'color'
 import { RenderFn } from '../common/engine/index.js'
 import { Vec2 } from '../common/vec2.js'
 import { update } from './physics.js'
-import { renderCircle, renderLine, renderRectangle } from './render.lib.js'
+import {
+  renderCircle,
+  renderLine,
+  renderRectangle,
+} from './render.lib.js'
 import { RenderObject } from './render.types.js'
 import { state } from './state.js'
 
@@ -32,7 +36,10 @@ function renderInput(buffer: RenderObject[]) {
   }
 }
 
-function renderBall(buffer: RenderObject[], translate: Vec2) {
+function renderBall(
+  buffer: RenderObject[],
+  translate: Vec2,
+) {
   if (!state.ball) return
   buffer.push({
     type: 'circle',
@@ -43,7 +50,10 @@ function renderBall(buffer: RenderObject[], translate: Vec2) {
   })
 }
 
-function renderTargets(buffer: RenderObject[], translate: Vec2) {
+function renderTargets(
+  buffer: RenderObject[],
+  translate: Vec2,
+) {
   state.targets.forEach(({ p, r }) => {
     buffer.push({
       type: 'circle',
@@ -63,7 +73,12 @@ function renderTargets(buffer: RenderObject[], translate: Vec2) {
 }
 
 export const render: RenderFn = ({ context, elapsed }) => {
-  context.clearRect(0, 0, state.viewport.w, state.viewport.h)
+  context.clearRect(
+    0,
+    0,
+    state.viewport.w,
+    state.viewport.h,
+  )
   update({ elapsed })
 
   const buffer: RenderObject[] = []

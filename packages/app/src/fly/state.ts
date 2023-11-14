@@ -13,7 +13,11 @@ const config = {
   },
 }
 
-function get(col: number, row: number, timestamp: Milliseconds): Color {
+function get(
+  col: number,
+  row: number,
+  timestamp: Milliseconds,
+): Color {
   const hue = (() => {
     return ((timestamp / 1000) * 360 * (1 / 20)) % 360
   })()

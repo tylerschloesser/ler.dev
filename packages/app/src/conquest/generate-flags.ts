@@ -2,7 +2,9 @@ import Color from 'color'
 import { Vec2 } from '../common/vec2.js'
 import { addFlag, state } from './state.js'
 
-const COLORS: Color[] = ['red', 'green', 'blue'].map((name) => new Color(name))
+const COLORS: Color[] = ['red', 'green', 'blue'].map(
+  (name) => new Color(name),
+)
 const MIN_R = 10
 const MAX_R = 50
 
@@ -31,15 +33,18 @@ function isValid(p: Vec2, r: number) {
 
 export function generateFlags() {
   const count = Math.ceil(
-    Math.sqrt(state.world.size.x * state.world.size.y) * 0.05,
+    Math.sqrt(state.world.size.x * state.world.size.y) *
+      0.05,
   )
 
   let misses = 0
 
   for (let i = 0; i < count; i++) {
     do {
-      const color = COLORS[Math.floor(Math.random() * COLORS.length)]!
-      const r = MIN_R + Math.floor(Math.random() * (MAX_R - MIN_R))
+      const color =
+        COLORS[Math.floor(Math.random() * COLORS.length)]!
+      const r =
+        MIN_R + Math.floor(Math.random() * (MAX_R - MIN_R))
       const p = new Vec2(
         Math.random() * state.world.size.x,
         Math.random() * state.world.size.y,
@@ -54,5 +59,7 @@ export function generateFlags() {
     } while (true)
   }
 
-  console.debug(`Generated ${count} flags with ${misses} misses`)
+  console.debug(
+    `Generated ${count} flags with ${misses} misses`,
+  )
 }

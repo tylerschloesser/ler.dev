@@ -55,7 +55,8 @@ export function adjustScale(dy: number) {
 export function addTargetPair(targets: [Target, Target][]) {
   let a: Vec2
 
-  const padding = Math.min(state.world.w, state.world.h) * 0.1
+  const padding =
+    Math.min(state.world.w, state.world.h) * 0.1
   const isValid = (v: Vec2) => {
     if (
       v.x < padding ||
@@ -76,14 +77,19 @@ export function addTargetPair(targets: [Target, Target][]) {
 
   let attempts = 0
   while (true) {
-    a = new Vec2(Math.random() * state.world.w, Math.random() * state.world.h)
+    a = new Vec2(
+      Math.random() * state.world.w,
+      Math.random() * state.world.h,
+    )
 
     if (isValid(a)) {
       break
     }
 
     if (++attempts > 10) {
-      throw Error('Exceeded 10 attempts while generating target pair')
+      throw Error(
+        'Exceeded 10 attempts while generating target pair',
+      )
     }
   }
 
@@ -98,7 +104,9 @@ export function addTargetPair(targets: [Target, Target][]) {
     }
 
     if (++attempts > 10) {
-      throw Error('Exceeded 10 attempts while generating target pair')
+      throw Error(
+        'Exceeded 10 attempts while generating target pair',
+      )
     }
   }
 

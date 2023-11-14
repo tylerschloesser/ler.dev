@@ -8,7 +8,11 @@ import {
 import { times } from 'lodash'
 import { useEffect } from 'react'
 import { styled } from 'styled-components'
-import { Engine, InitFn, RenderFn } from '../common/engine/index.js'
+import {
+  Engine,
+  InitFn,
+  RenderFn,
+} from '../common/engine/index.js'
 import { Vec2 } from '../common/vec2.js'
 import { NUM_COLS, NUM_ROWS } from './config.js'
 
@@ -42,9 +46,18 @@ const broadcastSetPixel = (cell: Vec2, color: string) => {
   batchDrawMessage.payload.push({ ...cell, color })
 }
 
-function setPixel(cell: Vec2, color: string, broadcast: boolean) {
+function setPixel(
+  cell: Vec2,
+  color: string,
+  broadcast: boolean,
+) {
   const { x: col, y: row } = cell
-  if (row < 0 || row >= NUM_ROWS || col < 0 || col >= NUM_COLS) {
+  if (
+    row < 0 ||
+    row >= NUM_ROWS ||
+    col < 0 ||
+    col >= NUM_COLS
+  ) {
     console.error(`Invalid cell: ${cell.toString()}`)
     return
   }
@@ -87,7 +100,10 @@ const init: InitFn = ({ canvas, signal }) => {
 const render: RenderFn = ({ context, viewport }) => {
   context.clearRect(0, 0, viewport.w, viewport.h)
 
-  cellSize = Math.min(viewport.w / NUM_COLS, viewport.h / NUM_ROWS)
+  cellSize = Math.min(
+    viewport.w / NUM_COLS,
+    viewport.h / NUM_ROWS,
+  )
 
   for (let row = 0; row < NUM_ROWS; row++) {
     for (let col = 0; col < NUM_COLS; col++) {
@@ -96,17 +112,29 @@ const render: RenderFn = ({ context, viewport }) => {
       const y = row * cellSize
       const w = cellSize
       const h = cellSize
-      context.fillRect(Math.round(x), Math.round(y), Math.ceil(w), Math.ceil(h))
+      context.fillRect(
+        Math.round(x),
+        Math.round(y),
+        Math.ceil(w),
+        Math.ceil(h),
+      )
     }
   }
 
   if (pointer) {
-    const { x, y } = pointerToCell(pointer, cellSize).mul(cellSize)
+    const { x, y } = pointerToCell(pointer, cellSize).mul(
+      cellSize,
+    )
     const w = cellSize
     const h = cellSize
     context.strokeStyle = 'white'
     context.lineWidth = 2
-    context.strokeRect(Math.round(x), Math.round(y), Math.ceil(w), Math.ceil(h))
+    context.strokeRect(
+      Math.round(x),
+      Math.round(y),
+      Math.ceil(w),
+      Math.ceil(h),
+    )
   }
 }
 
@@ -145,7 +173,9 @@ async function push() {
 
 export function Draw() {
   useEffect(() => {
-    webSocket = new WebSocket('wss://draw-api.staging.ty.ler.dev')
+    webSocket = new WebSocket(
+      'wss://draw-api.staging.ty.ler.dev',
+    )
     webSocket.addEventListener('open', () => {
       console.log('web socket open')
       const message: SyncRequestMessage = {
@@ -157,9 +187,13 @@ export function Draw() {
     webSocket.addEventListener('message', (ev) => {
       let message: WebSocketMessage
       try {
-        message = WebSocketMessage.parse(JSON.parse(ev.data))
+        message = WebSocketMessage.parse(
+          JSON.parse(ev.data),
+        )
       } catch (e) {
-        console.log("can't parse websocket message, ignoring...")
+        console.log(
+          "can't parse websocket message, ignoring...",
+        )
         return
       }
 
@@ -172,7 +206,9 @@ export function Draw() {
               const hue = 0
               const saturation = 50
               const lightness = 20 + Math.random() * 10
-              return `hsl(${hue}, ${saturation}%, ${lightness.toFixed(1)}%)`
+              return `hsl(${hue}, ${saturation}%, ${lightness.toFixed(
+                1,
+              )}%)`
             })
             push()
           }
@@ -188,7 +224,8 @@ export function Draw() {
     })
     let interval = window.setInterval(() => {
       if (
-        webSocket?.readyState === WebSocketReadyState.Open &&
+        webSocket?.readyState ===
+          WebSocketReadyState.Open &&
         batchDrawMessage.payload.length
       ) {
         const copy = { ...batchDrawMessage }

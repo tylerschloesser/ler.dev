@@ -3,7 +3,12 @@ import { RenderFn } from './config.js'
 
 const noise = createNoise3D()
 
-export const renderSimple: RenderFn = (canvas, context, config, timestamp) => {
+export const renderSimple: RenderFn = (
+  canvas,
+  context,
+  config,
+  timestamp,
+) => {
   context.clearRect(0, 0, canvas.width, canvas.height)
   context.fillStyle = 'hsl(0, 0%, 80%)'
 
@@ -22,9 +27,12 @@ export const renderSimple: RenderFn = (canvas, context, config, timestamp) => {
     let x = Math.sin(theta)
     let y = Math.cos(theta)
 
-    let radius = Math.min(canvas.width, canvas.height) * 0.15
+    let radius =
+      Math.min(canvas.width, canvas.height) * 0.15
     radius +=
-      ((noise(x * xScale, y * yScale, timestamp * zScale) + 1) / 2) *
+      ((noise(x * xScale, y * yScale, timestamp * zScale) +
+        1) /
+        2) *
       (radius / 1)
 
     x *= radius

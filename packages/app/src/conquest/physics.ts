@@ -29,7 +29,9 @@ function updateClosestFlagProgress(args: UpdateArgs) {
 
 function updateBallPosition(args: UpdateArgs) {
   const { elapsed } = args
-  state.ball.p = state.ball.p.add(state.ball.v.mul(toSeconds(elapsed)))
+  state.ball.p = state.ball.p.add(
+    state.ball.v.mul(toSeconds(elapsed)),
+  )
 
   if (state.ball.p.x < 0) {
     state.ball.p.x = state.world.size.x + state.ball.p.x
@@ -46,7 +48,11 @@ function updateBallPosition(args: UpdateArgs) {
 }
 
 function findClosestFlagInfo(): State['closestFlagInfo'] {
-  let closest: { index: number; dist: number; modifier: Vec2 } | null = null
+  let closest: {
+    index: number
+    dist: number
+    modifier: Vec2
+  } | null = null
 
   for (const modifier of [
     new Vec2(0, 0),
@@ -61,8 +67,12 @@ function findClosestFlagInfo(): State['closestFlagInfo'] {
   ]) {
     for (let i = 0; i < state.world.flags.length; i++) {
       const flag = state.world.flags[i]!
-      const dist = state.ball.p.sub(modifier.add(flag.p)).length()
-      if (dist < (closest?.dist ?? Number.POSITIVE_INFINITY)) {
+      const dist = state.ball.p
+        .sub(modifier.add(flag.p))
+        .length()
+      if (
+        dist < (closest?.dist ?? Number.POSITIVE_INFINITY)
+      ) {
         closest = { index: i, dist, modifier }
       }
     }

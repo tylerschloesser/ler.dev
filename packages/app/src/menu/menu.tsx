@@ -43,7 +43,9 @@ interface ButtonProps {
 }
 
 function Button({ onClick }: ButtonProps) {
-  const [ref, setRef] = useState<HTMLButtonElement | null>(null)
+  const [ref, setRef] = useState<HTMLButtonElement | null>(
+    null,
+  )
 
   const size = useMemo<null | number>(() => {
     if (!ref) {
@@ -94,7 +96,10 @@ function Button({ onClick }: ButtonProps) {
       }
     >
       {size && (
-        <ButtonText viewBox={`0 0 ${size} ${size}`} overflow="visible">
+        <ButtonText
+          viewBox={`0 0 ${size} ${size}`}
+          overflow="visible"
+        >
           <path
             id="circle"
             fill="none"
@@ -125,7 +130,11 @@ function Button({ onClick }: ButtonProps) {
               }),
             ].join('')}
           />
-          <text transform={`rotate(${rotate}, ${size / 2}, ${size / 2})`}>
+          <text
+            transform={`rotate(${rotate}, ${size / 2}, ${
+              size / 2
+            })`}
+          >
             <textPath fill="white" href="#circle">
               Menu
             </textPath>

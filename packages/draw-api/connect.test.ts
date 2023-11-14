@@ -1,7 +1,9 @@
 import { execSync } from 'child_process'
 import { handler } from './index'
 
-const connectionId = execSync('openssl rand -base64 12').toString('utf8').trim()
+const connectionId = execSync('openssl rand -base64 12')
+  .toString('utf8')
+  .trim()
 
 console.log({ connectionId })
 

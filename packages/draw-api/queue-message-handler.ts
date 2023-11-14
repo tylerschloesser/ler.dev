@@ -9,7 +9,9 @@ export const handler: SQSHandler = async (event) => {
   logger.info(`event: ${pretty(event)}`)
 
   event.Records.forEach((record) => {
-    const message = DrawQueueMessage.parse(JSON.parse(record.body))
+    const message = DrawQueueMessage.parse(
+      JSON.parse(record.body),
+    )
   })
 
   await sqs.deleteMessageBatch({

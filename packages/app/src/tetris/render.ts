@@ -1,8 +1,17 @@
 import { cloneDeep } from 'lodash'
 import { RenderFn } from '../common/engine/index.js'
-import { NUM_COLS, NUM_ROWS, state, updateState } from './state.js'
+import {
+  NUM_COLS,
+  NUM_ROWS,
+  state,
+  updateState,
+} from './state.js'
 
-export const render: RenderFn = ({ context, viewport, elapsed }) => {
+export const render: RenderFn = ({
+  context,
+  viewport,
+  elapsed,
+}) => {
   updateState({ elapsed })
 
   const board = cloneDeep(state.board)
@@ -30,8 +39,14 @@ export const render: RenderFn = ({ context, viewport, elapsed }) => {
   context.translate(padding, padding)
 
   context.translate(
-    Math.max((viewport.w - size * NUM_COLS - padding * 2) / 2, 0),
-    Math.max((viewport.h - size * NUM_ROWS - padding * 2) / 2, 0),
+    Math.max(
+      (viewport.w - size * NUM_COLS - padding * 2) / 2,
+      0,
+    ),
+    Math.max(
+      (viewport.h - size * NUM_ROWS - padding * 2) / 2,
+      0,
+    ),
   )
 
   context.fillStyle = 'hsl(0, 0%, 20%)'

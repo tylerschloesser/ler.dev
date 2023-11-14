@@ -1,5 +1,9 @@
 import { RenderFn } from '../common/engine/index.js'
-import { initDebug, preventScroll, updateSize } from './util.js'
+import {
+  initDebug,
+  preventScroll,
+  updateSize,
+} from './util.js'
 
 type Milliseconds = number
 
@@ -35,7 +39,9 @@ export class EngineV2 {
 
   start() {
     this.lastFrame = window.performance.now()
-    window.requestAnimationFrame(this.handleFrame.bind(this))
+    window.requestAnimationFrame(
+      this.handleFrame.bind(this),
+    )
   }
 
   private handleFrame(timestamp: Milliseconds) {
@@ -43,7 +49,10 @@ export class EngineV2 {
       return
     }
 
-    if (Math.floor(this.lastFrame / 1000) !== Math.floor(timestamp / 1000)) {
+    if (
+      Math.floor(this.lastFrame / 1000) !==
+      Math.floor(timestamp / 1000)
+    ) {
       this.debug.textContent = `FPS: ${this.frames}`
       this.frames = 0
     }
@@ -65,6 +74,8 @@ export class EngineV2 {
       viewport: null!,
     })
 
-    window.requestAnimationFrame(this.handleFrame.bind(this))
+    window.requestAnimationFrame(
+      this.handleFrame.bind(this),
+    )
   }
 }

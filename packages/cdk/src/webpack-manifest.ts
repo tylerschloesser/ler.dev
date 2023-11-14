@@ -7,7 +7,8 @@ export type WebpackManifest = {
   'index.html': string
 } & Record<string, string>
 
-export const WEBPACK_MANIFEST_FILE_NAME: string = 'manifest.json'
+export const WEBPACK_MANIFEST_FILE_NAME: string =
+  'manifest.json'
 
 export function getWebpackDistPath(): string {
   return path.join(
@@ -19,7 +20,10 @@ export function getWebpackDistPath(): string {
 function getWebpackManifest(): WebpackManifest {
   return JSON.parse(
     fs.readFileSync(
-      path.join(getWebpackDistPath(), WEBPACK_MANIFEST_FILE_NAME),
+      path.join(
+        getWebpackDistPath(),
+        WEBPACK_MANIFEST_FILE_NAME,
+      ),
       'utf8',
     ),
   )
@@ -30,7 +34,11 @@ export function getDefaultRootObject(): string {
 
   // should look like /index.9c763277af2205a9b76d.html
   // (beginning slash depends on publicPath)
-  invariant(manifest['index.html'].match(/^\/?index\.[a-z0-9]{20}\.html$/))
+  invariant(
+    manifest['index.html'].match(
+      /^\/?index\.[a-z0-9]{20}\.html$/,
+    ),
+  )
 
   return path.basename(manifest['index.html'])
 }

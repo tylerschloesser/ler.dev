@@ -44,7 +44,9 @@ const MainContainer = styled.div`
   }
 `
 
-const images = shuffle(times(5)).map((i) => ({ src: `menu-demo-${i + 1}.jpg` }))
+const images = shuffle(times(5)).map((i) => ({
+  src: `menu-demo-${i + 1}.jpg`,
+}))
 
 export function Demo() {
   const [open, setOpen] = useState(false)
@@ -55,11 +57,15 @@ export function Demo() {
 
   return (
     <>
-      <MainContainer className={open ? 'menu-open' : undefined}>
+      <MainContainer
+        className={open ? 'menu-open' : undefined}
+      >
         <Title>
-          {'The future is futuristic'.split(' ').map((line) => (
-            <TitleLine key={line}>{line}</TitleLine>
-          ))}
+          {'The future is futuristic'
+            .split(' ')
+            .map((line) => (
+              <TitleLine key={line}>{line}</TitleLine>
+            ))}
         </Title>
         <ImageList>
           {images.map(({ src }) => (

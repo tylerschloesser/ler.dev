@@ -8,7 +8,9 @@ export type InitFn = (args: {
   context: CanvasRenderingContext2D
   viewport: Viewport
   signal: AbortSignal
-  updateConfig(fn: (prev: RenderConfig) => RenderConfig): void
+  updateConfig(
+    fn: (prev: RenderConfig) => RenderConfig,
+  ): void
 }) => void
 
 export type RenderFn = (args: {
@@ -63,8 +65,13 @@ const DEFAULT_CONFIG: RenderConfig = {
   debugFontColor: 'black',
 }
 
-export function Engine({ init, render, resize = defaultResize }: EngineProps) {
-  const [canvas, setCanvas] = useState<HTMLCanvasElement | null>()
+export function Engine({
+  init,
+  render,
+  resize = defaultResize,
+}: EngineProps) {
+  const [canvas, setCanvas] =
+    useState<HTMLCanvasElement | null>()
   const initialized = useRef(false)
   const config = useRef<RenderConfig>(DEFAULT_CONFIG)
   const controllerRef = useRef(new AbortController())
@@ -111,7 +118,11 @@ export function Engine({ init, render, resize = defaultResize }: EngineProps) {
         return
       }
 
-      if (last && Math.floor(last / 1000) !== Math.floor(timestamp / 1000)) {
+      if (
+        last &&
+        Math.floor(last / 1000) !==
+          Math.floor(timestamp / 1000)
+      ) {
         console.log(frames)
         fps = frames
         frames = 0
@@ -162,7 +173,11 @@ export function Engine({ init, render, resize = defaultResize }: EngineProps) {
         context.font = '16px sans-serif'
         const text = `FPS: ${fps}`
         const metrics = context.measureText(text)
-        context.fillText(text, viewport.w - metrics.width, 16)
+        context.fillText(
+          text,
+          viewport.w - metrics.width,
+          16,
+        )
       }
 
       if (!controllerRef.current.signal.aborted) {

@@ -2,7 +2,11 @@ import { InitFn } from '../common/engine/index.js'
 import { generateFlags } from './generate-flags.js'
 import { handlePointer, handleWheel } from './input.js'
 
-export const init: InitFn = ({ canvas, signal, updateConfig }) => {
+export const init: InitFn = ({
+  canvas,
+  signal,
+  updateConfig,
+}) => {
   const showDebug = location.hostname === 'localhost'
   const showFps = true
 
@@ -25,8 +29,17 @@ export const init: InitFn = ({ canvas, signal, updateConfig }) => {
     }
   })
 
-  canvas.addEventListener('pointerdown', handlePointer, { signal })
-  canvas.addEventListener('pointermove', handlePointer, { signal })
-  canvas.addEventListener('pointerup', handlePointer, { signal })
-  canvas.addEventListener('wheel', handleWheel, { signal, passive: true })
+  canvas.addEventListener('pointerdown', handlePointer, {
+    signal,
+  })
+  canvas.addEventListener('pointermove', handlePointer, {
+    signal,
+  })
+  canvas.addEventListener('pointerup', handlePointer, {
+    signal,
+  })
+  canvas.addEventListener('wheel', handleWheel, {
+    signal,
+    passive: true,
+  })
 }

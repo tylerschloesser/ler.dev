@@ -5,7 +5,10 @@ export function preventScroll(signal: AbortSignal) {
   })
 }
 
-export function updateSize(container: HTMLElement, canvas: HTMLCanvasElement) {
+export function updateSize(
+  container: HTMLElement,
+  canvas: HTMLCanvasElement,
+) {
   const rect = container.getBoundingClientRect()
   canvas.width = rect.width
   canvas.style.width = `${rect.width}px`

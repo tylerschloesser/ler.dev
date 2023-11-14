@@ -19,7 +19,11 @@ import {
   Vec2,
   initKeyboardFn,
 } from './types.js'
-import { getNetwork, getNetworks, iterateNetwork } from './util.js'
+import {
+  getNetwork,
+  getNetworks,
+  iterateNetwork,
+} from './util.js'
 
 const TILE_SIZE = 40
 
@@ -40,7 +44,11 @@ const tiles: Record<string, Tile> = {}
 function getEnergy(network: Set<Gear>): number {
   let energy = 0
   for (const node of network) {
-    energy += (1 / 4) * node.mass * node.radius ** 2 * node.velocity ** 2
+    energy +=
+      (1 / 4) *
+      node.mass *
+      node.radius ** 2 *
+      node.velocity ** 2
   }
   return energy
 }
@@ -55,8 +63,14 @@ function accelerateGear({
   elapsed: number
 }): void {
   root.velocity += acceleration * elapsed
-  for (const { gear, sign } of iterateNetwork(root, gears)) {
-    gear.velocity = sign * Math.abs(root.velocity) * (root.radius / gear.radius)
+  for (const { gear, sign } of iterateNetwork(
+    root,
+    gears,
+  )) {
+    gear.velocity =
+      sign *
+      Math.abs(root.velocity) *
+      (root.radius / gear.radius)
   }
 }
 
@@ -77,7 +91,8 @@ function applyFriction({
   for (const node of network) {
     sum += (1 / 4) * node.mass * root.radius ** 2
   }
-  root.velocity = Math.sign(root.velocity) * Math.sqrt(energy / sum)
+  root.velocity =
+    Math.sign(root.velocity) * Math.sqrt(energy / sum)
 
   for (const node of network) {
     node.velocity =
@@ -116,7 +131,8 @@ function initSimulator({
       invariant(gear)
       accelerateGear({
         root: gear,
-        acceleration: pointer.current.acceleration * ACCELERATION,
+        acceleration:
+          pointer.current.acceleration * ACCELERATION,
         elapsed,
       })
     }
@@ -214,8 +230,16 @@ function addGear({
 
   gears[gear.id] = gear
 
-  for (let x = -((size - 1) / 2); x <= (size - 1) / 2; x++) {
-    for (let y = -((size - 1) / 2); y <= (size - 1) / 2; y++) {
+  for (
+    let x = -((size - 1) / 2);
+    x <= (size - 1) / 2;
+    x++
+  ) {
+    for (
+      let y = -((size - 1) / 2);
+      y <= (size - 1) / 2;
+      y++
+    ) {
       invariant(x === Math.floor(x))
       invariant(y === Math.floor(y))
 
@@ -272,8 +296,10 @@ function getConnections({
     invariant(gear)
 
     if (
-      gear.position.x + -((gear.radius - 0.5) * delta.x) === point.x &&
-      gear.position.y + -((gear.radius - 0.5) * delta.y) === point.y
+      gear.position.x + -((gear.radius - 0.5) * delta.x) ===
+        point.x &&
+      gear.position.y + -((gear.radius - 0.5) * delta.y) ===
+        point.y
     ) {
       connections.add(tile.gearId)
     }
@@ -290,14 +316,16 @@ type UpdatePointerFn<T extends Pointer> = (args: {
   pointer: T
 }) => void
 
-const updateApplyForcePointer: UpdatePointerFn<ApplyForcePointer> = ({
-  e,
-  canvas,
-  pointer,
-}) => {
+const updateApplyForcePointer: UpdatePointerFn<
+  ApplyForcePointer
+> = ({ e, canvas, pointer }) => {
   const position = {
-    x: Math.floor((e.offsetX - canvas.width / 2) / TILE_SIZE),
-    y: Math.floor((e.offsetY - canvas.height / 2) / TILE_SIZE),
+    x: Math.floor(
+      (e.offsetX - canvas.width / 2) / TILE_SIZE,
+    ),
+    y: Math.floor(
+      (e.offsetY - canvas.height / 2) / TILE_SIZE,
+    ),
   }
 
   const tileId = `${position.x}.${position.y}`
@@ -313,14 +341,16 @@ const updateApplyForcePointer: UpdatePointerFn<ApplyForcePointer> = ({
   }
 }
 
-const updateAddGearPointer: UpdatePointerFn<AddGearPointer> = ({
-  e,
-  canvas,
-  pointer,
-}) => {
+const updateAddGearPointer: UpdatePointerFn<
+  AddGearPointer
+> = ({ e, canvas, pointer }) => {
   const position = {
-    x: Math.floor((e.offsetX - canvas.width / 2) / TILE_SIZE),
-    y: Math.floor((e.offsetY - canvas.height / 2) / TILE_SIZE),
+    x: Math.floor(
+      (e.offsetX - canvas.width / 2) / TILE_SIZE,
+    ),
+    y: Math.floor(
+      (e.offsetY - canvas.height / 2) / TILE_SIZE,
+    ),
   }
 
   const { size } = pointer
@@ -364,8 +394,12 @@ const updateAddGearWithChainPointer: UpdatePointerFn<
   AddGearWithChainPointer
 > = ({ e, canvas, pointer }) => {
   const position = {
-    x: Math.floor((e.offsetX - canvas.width / 2) / TILE_SIZE),
-    y: Math.floor((e.offsetY - canvas.height / 2) / TILE_SIZE),
+    x: Math.floor(
+      (e.offsetX - canvas.width / 2) / TILE_SIZE,
+    ),
+    y: Math.floor(
+      (e.offsetY - canvas.height / 2) / TILE_SIZE,
+    ),
   }
 
   const source = gears[pointer.sourceId]
@@ -395,17 +429,29 @@ const updateAddGearWithChainPointer: UpdatePointerFn<
   }
 }
 
-const initPointer: InitPointerFn = ({ canvas, pointer, signal }) => {
+const initPointer: InitPointerFn = ({
+  canvas,
+  pointer,
+  signal,
+}) => {
   canvas.addEventListener(
     'pointermove',
     (e) => {
       switch (pointer.current.type) {
         case PointerType.AddGear: {
-          updateAddGearPointer({ e, canvas, pointer: pointer.current })
+          updateAddGearPointer({
+            e,
+            canvas,
+            pointer: pointer.current,
+          })
           break
         }
         case PointerType.AddGearWithChain: {
-          updateAddGearWithChainPointer({ e, canvas, pointer: pointer.current })
+          updateAddGearWithChainPointer({
+            e,
+            canvas,
+            pointer: pointer.current,
+          })
           break
         }
         case PointerType.ApplyForce: {
@@ -432,7 +478,11 @@ const initPointer: InitPointerFn = ({ canvas, pointer, signal }) => {
     (e) => {
       switch (pointer.current.type) {
         case PointerType.AddGear: {
-          updateAddGearPointer({ e, canvas, pointer: pointer.current })
+          updateAddGearPointer({
+            e,
+            canvas,
+            pointer: pointer.current,
+          })
           if (pointer.current.state?.chain) {
             pointer.current = {
               type: PointerType.AddGearWithChain,
@@ -446,10 +496,17 @@ const initPointer: InitPointerFn = ({ canvas, pointer, signal }) => {
             })
           } else if (pointer.current.state?.valid) {
             const { size } = pointer.current
-            addGear({ position: pointer.current.state.position, size })
+            addGear({
+              position: pointer.current.state.position,
+              size,
+            })
 
             // update again in case we need to show chain option
-            updateAddGearPointer({ e, canvas, pointer: pointer.current })
+            updateAddGearPointer({
+              e,
+              canvas,
+              pointer: pointer.current,
+            })
           }
           break
         }
@@ -468,7 +525,11 @@ const initPointer: InitPointerFn = ({ canvas, pointer, signal }) => {
               size: 1,
               state: null,
             }
-            updateAddGearPointer({ e, canvas, pointer: pointer.current })
+            updateAddGearPointer({
+              e,
+              canvas,
+              pointer: pointer.current,
+            })
           }
           break
         }
@@ -489,7 +550,11 @@ const initPointer: InitPointerFn = ({ canvas, pointer, signal }) => {
     (e) => {
       switch (pointer.current.type) {
         case PointerType.ApplyForce: {
-          updateApplyForcePointer({ e, canvas, pointer: pointer.current })
+          updateApplyForcePointer({
+            e,
+            canvas,
+            pointer: pointer.current,
+          })
           break
         }
       }
@@ -498,7 +563,10 @@ const initPointer: InitPointerFn = ({ canvas, pointer, signal }) => {
   )
 }
 
-const initKeyboard: initKeyboardFn = ({ signal, pointer }) => {
+const initKeyboard: initKeyboardFn = ({
+  signal,
+  pointer,
+}) => {
   window.addEventListener(
     'keyup',
     (e) => {
@@ -513,7 +581,11 @@ const initKeyboard: initKeyboardFn = ({ signal, pointer }) => {
   )
 }
 
-const initCanvas: InitCanvasFn = ({ canvas, pointer, signal }) => {
+const initCanvas: InitCanvasFn = ({
+  canvas,
+  pointer,
+  signal,
+}) => {
   const rect = canvas.getBoundingClientRect()
   canvas.width = rect.width
   canvas.height = rect.height
@@ -554,12 +626,20 @@ const initCanvas: InitCanvasFn = ({ canvas, pointer, signal }) => {
 
     let grid = {
       tl: {
-        x: Math.floor(-canvas.width / 2 / TILE_SIZE) * TILE_SIZE,
-        y: Math.floor(-canvas.height / 2 / TILE_SIZE) * TILE_SIZE,
+        x:
+          Math.floor(-canvas.width / 2 / TILE_SIZE) *
+          TILE_SIZE,
+        y:
+          Math.floor(-canvas.height / 2 / TILE_SIZE) *
+          TILE_SIZE,
       },
       br: {
-        x: Math.ceil(canvas.width / 2 / TILE_SIZE) * TILE_SIZE,
-        y: Math.ceil(canvas.height / 2 / TILE_SIZE) * TILE_SIZE,
+        x:
+          Math.ceil(canvas.width / 2 / TILE_SIZE) *
+          TILE_SIZE,
+        y:
+          Math.ceil(canvas.height / 2 / TILE_SIZE) *
+          TILE_SIZE,
       },
     }
 
@@ -578,7 +658,10 @@ const initCanvas: InitCanvasFn = ({ canvas, pointer, signal }) => {
     context.closePath()
 
     function renderGear(
-      gear: Pick<Gear, 'radius' | 'position' | 'angle' | 'connections'>,
+      gear: Pick<
+        Gear,
+        'radius' | 'position' | 'angle' | 'connections'
+      >,
       tint?: string,
     ): void {
       invariant(context)
@@ -613,14 +696,19 @@ const initCanvas: InitCanvasFn = ({ canvas, pointer, signal }) => {
       context.closePath()
 
       context.save()
-      context.translate(gear.radius * TILE_SIZE, gear.radius * TILE_SIZE)
+      context.translate(
+        gear.radius * TILE_SIZE,
+        gear.radius * TILE_SIZE,
+      )
       context.beginPath()
       context.lineWidth = 2
       context.strokeStyle = 'white'
       const teeth = gear.radius * 10
       for (let i = 0; i < teeth; i++) {
         context.save()
-        context.rotate(gear.angle + (i / teeth) * Math.PI * 2)
+        context.rotate(
+          gear.angle + (i / teeth) * Math.PI * 2,
+        )
         context.moveTo((gear.radius - 0.25) * TILE_SIZE, 0)
         context.lineTo(gear.radius * TILE_SIZE, 0)
         context.stroke()
@@ -650,10 +738,16 @@ const initCanvas: InitCanvasFn = ({ canvas, pointer, signal }) => {
           context.strokeStyle = 'hsla(0, 50%, 50%, .75)'
           context.lineWidth = 2
           context.strokeRect(
-            Math.min(peer.position.x, gear.position.x) * TILE_SIZE,
-            Math.min(peer.position.y, gear.position.y) * TILE_SIZE,
-            (Math.abs(peer.position.x - gear.position.x) + 1) * TILE_SIZE,
-            (Math.abs(peer.position.y - gear.position.y) + 1) * TILE_SIZE,
+            Math.min(peer.position.x, gear.position.x) *
+              TILE_SIZE,
+            Math.min(peer.position.y, gear.position.y) *
+              TILE_SIZE,
+            (Math.abs(peer.position.x - gear.position.x) +
+              1) *
+              TILE_SIZE,
+            (Math.abs(peer.position.y - gear.position.y) +
+              1) *
+              TILE_SIZE,
           )
           context.closePath()
         } else {
@@ -678,7 +772,10 @@ const initCanvas: InitCanvasFn = ({ canvas, pointer, signal }) => {
       renderGear(gear)
     }
 
-    if (pointer.current.type === PointerType.AddGear && pointer.current.state) {
+    if (
+      pointer.current.type === PointerType.AddGear &&
+      pointer.current.state
+    ) {
       const { size, state } = pointer.current
       if (state.chain) {
         context.beginPath()
@@ -699,7 +796,9 @@ const initCanvas: InitCanvasFn = ({ canvas, pointer, signal }) => {
             angle: 0,
             connections: state.connections,
           },
-          state.valid ? `hsla(120, 50%, 50%, .5)` : `hsla(0, 50%, 50%, .5)`,
+          state.valid
+            ? `hsla(120, 50%, 50%, .5)`
+            : `hsla(0, 50%, 50%, .5)`,
         )
       }
     }
@@ -724,7 +823,9 @@ const initCanvas: InitCanvasFn = ({ canvas, pointer, signal }) => {
       context.closePath()
     }
 
-    if (pointer.current.type === PointerType.AddGearWithChain) {
+    if (
+      pointer.current.type === PointerType.AddGearWithChain
+    ) {
       const source = gears[pointer.current.sourceId]
       invariant(source)
 
@@ -744,7 +845,9 @@ const initCanvas: InitCanvasFn = ({ canvas, pointer, signal }) => {
             angle: 0,
             connections: [], // TODO
           },
-          state.valid ? `hsla(120, 50%, 50%, .5)` : `hsla(0, 50%, 50%, .5)`,
+          state.valid
+            ? `hsla(120, 50%, 50%, .5)`
+            : `hsla(0, 50%, 50%, .5)`,
         )
 
         if (state.valid) {
@@ -780,7 +883,8 @@ export function DemoGear() {
     size: GEAR_SIZES[0]!,
     state: null,
   })
-  const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null)
+  const [canvas, setCanvas] =
+    useState<HTMLCanvasElement | null>(null)
   useEffect(() => {
     if (canvas) {
       const controller = new AbortController()

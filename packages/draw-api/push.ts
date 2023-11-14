@@ -11,7 +11,11 @@ const SIDE_EFFECTS = {
 
 export type SideEffects = typeof SIDE_EFFECTS
 
-export const handler: Handler<SideEffects, unknown, unknown> = async (
+export const handler: Handler<
+  SideEffects,
+  unknown,
+  unknown
+> = async (
   event,
   _context: unknown,
   _callback: unknown,
@@ -21,7 +25,8 @@ export const handler: Handler<SideEffects, unknown, unknown> = async (
     sendMessageToPeer,
   }: SideEffects = SIDE_EFFECTS,
 ) => {
-  const { connectionId, callbackUrl } = util.transformEvent(event)
+  const { connectionId, callbackUrl } =
+    util.transformEvent(event)
   const request = PushRequest.parse(JSON.parse(event.body!))
 
   logger.debug(

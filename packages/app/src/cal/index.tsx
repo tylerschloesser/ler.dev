@@ -19,7 +19,8 @@ const Cell = styled.div`
 `
 
 export function Cal() {
-  const [_, setContainer] = useState<HTMLDivElement | null>()
+  const [_, setContainer] =
+    useState<HTMLDivElement | null>()
 
   return (
     <Container ref={setContainer}>

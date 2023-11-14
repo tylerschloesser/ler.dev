@@ -1,7 +1,15 @@
 import invariant from 'tiny-invariant'
-import { ConnectionType, Gear, GearId, Network } from './types.js'
+import {
+  ConnectionType,
+  Gear,
+  GearId,
+  Network,
+} from './types.js'
 
-export function* iterateNetwork(root: Gear, gears: Record<GearId, Gear>) {
+export function* iterateNetwork(
+  root: Gear,
+  gears: Record<GearId, Gear>,
+) {
   const seen = new Set<Gear>()
   const stack = new Array<{ gear: Gear; sign: number }>({
     gear: root,
@@ -24,13 +32,20 @@ export function* iterateNetwork(root: Gear, gears: Record<GearId, Gear>) {
       invariant(neighbor)
       stack.push({
         gear: neighbor,
-        sign: node.sign * (connection.type === ConnectionType.Chain ? 1 : -1),
+        sign:
+          node.sign *
+          (connection.type === ConnectionType.Chain
+            ? 1
+            : -1),
       })
     })
   }
 }
 
-export function getNetwork(root: Gear, gears: Record<GearId, Gear>): Network {
+export function getNetwork(
+  root: Gear,
+  gears: Record<GearId, Gear>,
+): Network {
   const network = new Set<Gear>()
 
   const stack = new Array<Gear>(root)
@@ -53,7 +68,9 @@ export function getNetwork(root: Gear, gears: Record<GearId, Gear>): Network {
   return network
 }
 
-export function getNetworks(gears: Record<GearId, Gear>): Network[] {
+export function getNetworks(
+  gears: Record<GearId, Gear>,
+): Network[] {
   const networks = new Array<Network>()
 
   const seen = new Set<Gear>()

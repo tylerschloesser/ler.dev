@@ -48,7 +48,9 @@ describe('draw', () => {
         ReturnType<SideEffects['getPeerConnectionIds']>,
         Parameters<SideEffects['getPeerConnectionIds']>
       >()
-      getPeerConnectionIds.mockReturnValue(Promise.resolve(['a', 'b']))
+      getPeerConnectionIds.mockReturnValue(
+        Promise.resolve(['a', 'b']),
+      )
 
       const sendMessageToPeer = jest.fn<
         ReturnType<SideEffects['sendMessageToPeer']>,
@@ -60,7 +62,9 @@ describe('draw', () => {
         sendMessageToPeer,
       }
 
-      expect(await handler(event, null, null, sideEffects)).toEqual({
+      expect(
+        await handler(event, null, null, sideEffects),
+      ).toEqual({
         statusCode: 200,
       })
 

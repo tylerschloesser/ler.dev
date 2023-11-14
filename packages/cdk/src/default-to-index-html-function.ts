@@ -1,4 +1,7 @@
-import { Function, FunctionCode } from 'aws-cdk-lib/aws-cloudfront'
+import {
+  Function,
+  FunctionCode,
+} from 'aws-cdk-lib/aws-cloudfront'
 import { Construct } from 'constructs'
 import { getExtensions } from './webpack-manifest.js'
 

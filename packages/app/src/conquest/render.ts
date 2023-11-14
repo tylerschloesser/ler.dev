@@ -39,7 +39,12 @@ const renderWorld: RenderFn = ({ context, config }) => {
       if (config.showDebug) {
         context.strokeStyle = WHITE.toString()
         const { x, y } = translate
-        context.strokeRect(x, y, state.world.size.x, state.world.size.y)
+        context.strokeRect(
+          x,
+          y,
+          state.world.size.x,
+          state.world.size.y,
+        )
       }
 
       // render ball
@@ -86,7 +91,14 @@ const renderDrag: RenderFn = ({ context }) => {
 }
 
 export const render: RenderFn = (args) => {
-  const { context, scale, viewport, timestamp, elapsed, debug } = args
+  const {
+    context,
+    scale,
+    viewport,
+    timestamp,
+    elapsed,
+    debug,
+  } = args
 
   context.clearRect(0, 0, viewport.w, viewport.h)
   update({ timestamp, elapsed })

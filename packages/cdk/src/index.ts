@@ -12,10 +12,10 @@ function stackId(...parts: string[]): string {
   return [STACK_ID_PREFIX, ...parts].join('-')
 }
 
-function stackProps<R extends Region, T extends { region: R }>({
-  region,
-  ...props
-}: T) {
+function stackProps<
+  R extends Region,
+  T extends { region: R },
+>({ region, ...props }: T) {
   return {
     env: {
       account: ACCOUNT_ID,
@@ -50,7 +50,10 @@ new CdnStack(
   stackId('Prod', 'CDN'),
   stackProps({
     bucketName: DomainName.TyLerDev,
-    hostedZones: [zones[DomainName.LerDev], zones[DomainName.TyLerDev]],
+    hostedZones: [
+      zones[DomainName.LerDev],
+      zones[DomainName.TyLerDev],
+    ],
     certificate: certificates[DomainName.LerDev],
     domainNames: [DomainName.LerDev, DomainName.TyLerDev],
     region: Region.US_WEST_2,

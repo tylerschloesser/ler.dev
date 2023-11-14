@@ -153,9 +153,17 @@ export const state: State = (() => {
 
 function isValid(piece: Piece): boolean {
   return piece.cells
-    .map(([row, col]) => [row + piece.position.row, col + piece.position.col])
+    .map(([row, col]) => [
+      row + piece.position.row,
+      col + piece.position.col,
+    ])
     .every(([row, col]) => {
-      if (row! < 0 || row! >= NUM_ROWS || col! < 0 || col! >= NUM_COLS) {
+      if (
+        row! < 0 ||
+        row! >= NUM_ROWS ||
+        col! < 0 ||
+        col! >= NUM_COLS
+      ) {
         return false
       }
       if (state.board[row!]![col!]) {
@@ -206,7 +214,10 @@ function movePiece(direction: 'left' | 'right' | 'down') {
 
 function rotatePiece() {
   const next = cloneDeep(state.piece)
-  next.cells = next.cells.map(([row, col]) => [col, 2 - row])
+  next.cells = next.cells.map(([row, col]) => [
+    col,
+    2 - row,
+  ])
   if (isValid(next)) {
     state.piece = next
   } else {
@@ -214,7 +225,10 @@ function rotatePiece() {
   }
 }
 
-export function handleInput(input: Input, type: 'keyup' | 'keydown') {
+export function handleInput(
+  input: Input,
+  type: 'keyup' | 'keydown',
+) {
   switch (input) {
     case Input.MoveLeft:
     case Input.MoveRight:
@@ -236,7 +250,11 @@ export function handleInput(input: Input, type: 'keyup' | 'keydown') {
   }
 }
 
-export function updateState({ elapsed }: { elapsed: number }) {
+export function updateState({
+  elapsed,
+}: {
+  elapsed: number
+}) {
   state.piece.lastDrop += elapsed
 
   // TODO refactor to not need this
@@ -251,8 +269,12 @@ export function updateState({ elapsed }: { elapsed: number }) {
 
     // move piece immediately, then wait Xms before moving every Yms
     // aka manual debounce
-    if (input === Input.MoveLeft || input === Input.MoveRight) {
-      const direction = input === Input.MoveLeft ? 'left' : 'right'
+    if (
+      input === Input.MoveLeft ||
+      input === Input.MoveRight
+    ) {
+      const direction =
+        input === Input.MoveLeft ? 'left' : 'right'
       if (value === 0) {
         movePiece(direction)
       } else if (
@@ -262,7 +284,9 @@ export function updateState({ elapsed }: { elapsed: number }) {
         movePiece(direction)
       }
     } else if (input === Input.MoveDown) {
-      if (Math.floor(value / 50) !== Math.floor(next / 50)) {
+      if (
+        Math.floor(value / 50) !== Math.floor(next / 50)
+      ) {
         movePiece('down')
         movedDown = true
       }

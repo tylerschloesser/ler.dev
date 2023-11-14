@@ -5,11 +5,19 @@ import { RenderFn } from './config.js'
 
 const noise = createNoise3D()
 
-export const renderBezier: RenderFn = (canvas, context, config, timestamp) => {
+export const renderBezier: RenderFn = (
+  canvas,
+  context,
+  config,
+  timestamp,
+) => {
   context.clearRect(0, 0, canvas.width, canvas.height)
   context.fillStyle = 'hsl(0, 0%, 80%)'
 
-  const translate = new Vec2(canvas.width / 2, canvas.height / 2)
+  const translate = new Vec2(
+    canvas.width / 2,
+    canvas.height / 2,
+  )
 
   context.beginPath()
 
@@ -21,9 +29,16 @@ export const renderBezier: RenderFn = (canvas, context, config, timestamp) => {
     const theta = ((Math.PI * 2) / parts) * i
     let p = new Vec2(Math.sin(theta), Math.cos(theta))
 
-    let radius = Math.min(canvas.width, canvas.height) * 0.15
+    let radius =
+      Math.min(canvas.width, canvas.height) * 0.15
     radius +=
-      ((noise(p.x * xScale, p.y * yScale, timestamp * zScale) + 1) / 2) *
+      ((noise(
+        p.x * xScale,
+        p.y * yScale,
+        timestamp * zScale,
+      ) +
+        1) /
+        2) *
       (radius / 1)
 
     p = p.mul(radius)
@@ -50,7 +65,14 @@ export const renderBezier: RenderFn = (canvas, context, config, timestamp) => {
       const dist = p.sub(points[i - 1]!).length()
       return p.sub(dir.mul(dist / Math.PI))
     })()
-    context.bezierCurveTo(cp1.x, cp1.y, cp2.x, cp2.y, p.x, p.y)
+    context.bezierCurveTo(
+      cp1.x,
+      cp1.y,
+      cp2.x,
+      cp2.y,
+      p.x,
+      p.y,
+    )
 
     controlPoints.push(cp1, cp2)
   }
