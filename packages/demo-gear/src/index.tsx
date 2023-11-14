@@ -499,7 +499,20 @@ const initPointer: InitPointerFn = ({ canvas, pointer, signal }) => {
   )
 }
 
-const initKeyboard: initKeyboardFn = ({}) => {}
+const initKeyboard: initKeyboardFn = ({ signal, pointer }) => {
+  window.addEventListener(
+    'keyup',
+    (e) => {
+      if (e.key === 'q') {
+        pointer.current = {
+          type: PointerType.Null,
+          state: null,
+        }
+      }
+    },
+    { signal },
+  )
+}
 
 const initCanvas: InitCanvasFn = ({ canvas, pointer, signal }) => {
   const rect = canvas.getBoundingClientRect()
