@@ -32,6 +32,7 @@ export interface AddGearPointer {
     position: Vec2
     valid: boolean
     chain: GearId | null
+    attach: GearId | null
     connections: Connection[]
   } | null
 }

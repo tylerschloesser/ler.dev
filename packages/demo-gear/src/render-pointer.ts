@@ -25,9 +25,19 @@ const renderAddGearPointer: RenderPointerFn<
     return
   }
   if (state.chain) {
+    renderGear({
+      gear: {
+        position: state.position,
+        radius: size / 2,
+        angle: 0,
+      },
+      tint: `hsla(120, 50%, 50%, .5)`,
+      context,
+    })
+
     context.beginPath()
     context.lineWidth = 2
-    context.strokeStyle = 'white'
+    context.strokeStyle = 'hsla(0, 50%, 50%, .75)'
     context.strokeRect(
       state.position.x * TILE_SIZE,
       state.position.y * TILE_SIZE,
@@ -135,7 +145,7 @@ const renderAddGearWithChainPointer: RenderPointerFn<
 
   context.beginPath()
   context.lineWidth = 2
-  context.strokeStyle = 'white'
+  context.strokeStyle = 'hsla(0, 50%, 50%, .75)'
   context.strokeRect(
     chain.x * TILE_SIZE,
     chain.y * TILE_SIZE,

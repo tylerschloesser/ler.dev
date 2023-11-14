@@ -92,6 +92,7 @@ const updateAddGearPointer: UpdatePointerFn<
     connections,
     valid,
     chain,
+    attach: null,
   }
 }
 
