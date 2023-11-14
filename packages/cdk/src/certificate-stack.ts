@@ -27,7 +27,10 @@ export class CertificateStack extends Stack {
     const root = new Certificate(this, 'Certificate-LerDev', {
       domainName: DomainName.LerDev,
       subjectAlternativeNames: [DomainName.TyLerDev],
-      validation: CertificateValidation.fromDns(zones[DomainName.LerDev]),
+      validation: CertificateValidation.fromDnsMultiZone({
+        [DomainName.LerDev]: zones[DomainName.LerDev],
+        [DomainName.TyLerDev]: zones[DomainName.TyLerDev],
+      }),
     })
 
     this.certificates = {
