@@ -24,6 +24,9 @@ const renderAddGearPointer: RenderPointerFn<
   if (!state) {
     return
   }
+
+  invariant(!(state.chain && state.attach))
+
   if (state.chain) {
     renderGear({
       gear: {
