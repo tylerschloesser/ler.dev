@@ -305,6 +305,7 @@ const updateAddGearPointer: UpdatePointerFn<AddGearPointer> = ({
   const { size } = pointer
   const radius = (size - 1) / 2
 
+  let chain = false
   let valid = true
   for (let x = -radius; x <= radius && valid; x++) {
     for (let y = -radius; y <= radius && valid; y++) {
@@ -312,8 +313,15 @@ const updateAddGearPointer: UpdatePointerFn<AddGearPointer> = ({
       invariant(y === Math.floor(y))
 
       const tileId = `${position.x + x}.${position.y + y}`
-      if (tiles[tileId]) {
+      const tile = tiles[tileId]
+      if (tile) {
         valid = false
+
+        const gear = gears[tile.gearId]
+        invariant(gear)
+        if (pointer.size === 1 && gear.radius === 0.5) {
+          chain = true
+        }
       }
     }
   }
@@ -327,7 +335,7 @@ const updateAddGearPointer: UpdatePointerFn<AddGearPointer> = ({
     position,
     connections,
     valid,
-    chain: false,
+    chain,
   }
 }
 
@@ -376,6 +384,7 @@ const initPointer: InitPointerFn = ({ canvas, pointer }) => {
           const { size } = pointer.current
           addGear({ position: pointer.current.state.position, size })
         }
+        updateAddGearPointer({ e, canvas, pointer: pointer.current })
         break
       }
       case PointerType.ApplyForce: {
@@ -553,15 +562,28 @@ const initCanvas: InitCanvasFn = ({ canvas, pointer }) => {
 
     if (pointer.current.type === PointerType.AddGear && pointer.current.state) {
       const { size, state } = pointer.current
-      renderGear(
-        {
-          position: state.position,
-          radius: size / 2,
-          angle: 0,
-          connections: state.connections,
-        },
-        state.valid ? `hsla(120, 50%, 50%, .5)` : `hsla(0, 50%, 50%, .5)`,
-      )
+      if (state.chain) {
+        context.beginPath()
+        context.lineWidth = 2
+        context.strokeStyle = 'white'
+        context.strokeRect(
+          state.position.x * TILE_SIZE,
+          state.position.y * TILE_SIZE,
+          TILE_SIZE,
+          TILE_SIZE,
+        )
+        context.closePath()
+      } else {
+        renderGear(
+          {
+            position: state.position,
+            radius: size / 2,
+            angle: 0,
+            connections: state.connections,
+          },
+          state.valid ? `hsla(120, 50%, 50%, .5)` : `hsla(0, 50%, 50%, .5)`,
+        )
+      }
     }
 
     if (
