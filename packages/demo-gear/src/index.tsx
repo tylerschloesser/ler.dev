@@ -479,7 +479,7 @@ const initPointer: InitPointerFn = ({ canvas, pointer }) => {
   })
 }
 
-const initKeyboard: initKeyboardFn = () => {}
+const initKeyboard: initKeyboardFn = ({}) => {}
 
 const initCanvas: InitCanvasFn = ({ canvas, pointer }) => {
   const rect = canvas.getBoundingClientRect()
@@ -490,7 +490,7 @@ const initCanvas: InitCanvasFn = ({ canvas, pointer }) => {
   invariant(context)
 
   initPointer({ canvas, pointer })
-  initKeyboard({ canvas })
+  initKeyboard({ canvas, pointer })
   initSimulator({ pointer })
 
   addGear({

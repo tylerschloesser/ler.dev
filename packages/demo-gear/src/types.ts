@@ -57,11 +57,16 @@ export type InitCanvasFn = (args: {
   canvas: HTMLCanvasElement
   pointer: React.MutableRefObject<Pointer>
 }) => void
+
 export type InitPointerFn = (args: {
   canvas: HTMLCanvasElement
   pointer: React.MutableRefObject<Pointer>
 }) => void
-export type initKeyboardFn = (args: { canvas: HTMLCanvasElement }) => void
+
+export type initKeyboardFn = (args: {
+  canvas: HTMLCanvasElement
+  pointer: React.MutableRefObject<Pointer>
+}) => void
 
 export enum ConnectionType {
   Direct = 'direct',
