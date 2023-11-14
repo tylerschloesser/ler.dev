@@ -327,6 +327,7 @@ const updateAddGearPointer: UpdatePointerFn<AddGearPointer> = ({
     position,
     connections,
     valid,
+    chain: false,
   }
 }
 
@@ -590,7 +591,8 @@ const initCanvas: InitCanvasFn = ({ canvas, pointer }) => {
 
 export function DemoGear() {
   const pointer = useRef<Pointer>({
-    type: PointerType.Null,
+    type: PointerType.AddGear,
+    size: GEAR_SIZES[0]!,
     state: null,
   })
   const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null)

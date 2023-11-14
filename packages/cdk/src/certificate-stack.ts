@@ -15,7 +15,10 @@ export interface CertificateStackProps extends CommonStackProps {
 }
 
 export class CertificateStack extends Stack {
-  public readonly certificates: Record<DomainName, Certificate>
+  public readonly certificates: Record<
+    DomainName.LerDev | DomainName.TyLerDev | DomainName.StagingTyLerDev,
+    Certificate
+  >
 
   constructor(
     scope: Construct,
@@ -43,26 +46,6 @@ export class CertificateStack extends Stack {
           domainName: DomainName.StagingTyLerDev,
           validation: CertificateValidation.fromDns(
             zones[DomainName.StagingTyLerDev],
-          ),
-        },
-      ),
-      [DomainName.DrawApiTyLerDev]: new Certificate(
-        this,
-        'Certificate-DrawApiTyLerDev',
-        {
-          domainName: DomainName.DrawApiTyLerDev,
-          validation: CertificateValidation.fromDns(
-            zones[DomainName.DrawApiTyLerDev],
-          ),
-        },
-      ),
-      [DomainName.DrawApiStagingTyLerDev]: new Certificate(
-        this,
-        'Certificate-DrawApiStagingTyLerDev',
-        {
-          domainName: DomainName.DrawApiStagingTyLerDev,
-          validation: CertificateValidation.fromDns(
-            zones[DomainName.DrawApiStagingTyLerDev],
           ),
         },
       ),

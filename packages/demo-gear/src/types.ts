@@ -23,6 +23,7 @@ export interface AddGearPointer {
   state: {
     position: Vec2
     valid: boolean
+    chain: boolean
     connections: Connection[]
   } | null
 }
