@@ -1,25 +1,11 @@
-import { useEffect, useState } from 'react'
-import { useInputState } from './state.js'
 import styles from './toolbar.module.scss'
-import { GEAR_SIZES, PointerMode } from './types.js'
+import { GEAR_SIZES, Pointer, PointerType } from './types.js'
 
-export function Toolbar() {
-  const { inputState, saveInputState } = useInputState()
-  const [gearSize, setGearSize] = useState<number>(inputState.current.gearSize)
-  const [pointerMode, setPointerMode] = useState<PointerMode>(
-    inputState.current.pointerMode,
-  )
-  const [acceleration, setAcceleration] = useState<number>(
-    inputState.current.acceleration,
-  )
+export interface ToolbarProps {
+  pointer: React.MutableRefObject<Pointer>
+}
 
-  useEffect(() => {
-    inputState.current.gearSize = gearSize
-    inputState.current.pointerMode = pointerMode
-    inputState.current.acceleration = acceleration
-    saveInputState()
-  }, [gearSize, pointerMode, acceleration])
-
+export function Toolbar({ pointer }: ToolbarProps) {
   return (
     <div className={styles.container}>
       <div>
@@ -28,8 +14,11 @@ export function Toolbar() {
           <button
             key={size}
             onPointerUp={() => {
-              setGearSize(size)
-              setPointerMode(PointerMode.AddGear)
+              pointer.current = {
+                type: PointerType.AddGear,
+                size,
+                state: null,
+              }
             }}
           >
             {size}
@@ -42,8 +31,11 @@ export function Toolbar() {
           <button
             key={acceleration}
             onPointerUp={() => {
-              setAcceleration(acceleration)
-              setPointerMode(PointerMode.ApplyForce)
+              pointer.current = {
+                type: PointerType.ApplyForce,
+                acceleration,
+                state: null,
+              }
             }}
           >
             {acceleration}

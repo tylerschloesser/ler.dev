@@ -1,4 +1,7 @@
 import {
+  AddGearPointer,
+  AddGearWithChainPointer,
+  ApplyForcePointer,
   Connection,
   ConnectionType,
   GEAR_SIZES,
@@ -6,17 +9,16 @@ import {
   GearId,
   InitCanvasFn,
   InitPointerFn,
-  InputState,
   Network,
-  PointerMode,
+  Pointer,
+  PointerType,
   Vec2,
   initKeyboardFn,
 } from './types.js'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import invariant from 'tiny-invariant'
 import styles from './index.module.scss'
-import { useInputState } from './state.js'
 import { Toolbar } from './toolbar.js'
 import { getNetwork, getNetworks, iterateNetwork } from './util.js'
 
@@ -27,30 +29,6 @@ const DRAW_GEAR_BOX = false
 
 const FRICTION = 1 // energy/sec
 const ACCELERATION = 2
-
-interface BasePointer {
-  position: Vec2
-}
-
-interface AddGearPointer extends BasePointer {
-  mode: PointerMode.AddGear
-  valid: boolean
-  connections: Connection[]
-}
-
-interface AddGearWithChainPointer extends BasePointer {
-  mode: PointerMode.AddGearWithChain
-}
-
-interface ApplyForcePointer extends BasePointer {
-  mode: PointerMode.ApplyForce
-  active: boolean
-  gearId?: string
-}
-
-type Pointer = AddGearPointer | AddGearWithChainPointer | ApplyForcePointer
-
-let pointer: Pointer | null = null
 
 const gears: Record<string, Gear> = {}
 
@@ -111,9 +89,9 @@ function applyFriction({
 }
 
 function initSimulator({
-  inputState,
+  pointer,
 }: {
-  inputState: React.MutableRefObject<InputState>
+  pointer: React.MutableRefObject<Pointer>
 }) {
   let prev: number = performance.now()
   function tick() {
@@ -131,15 +109,15 @@ function initSimulator({
     prev = now
 
     if (
-      pointer?.mode === PointerMode.ApplyForce &&
-      pointer.active &&
-      pointer.gearId
+      pointer.current.type === PointerType.ApplyForce &&
+      pointer.current.state?.active &&
+      pointer.current.state.gearId
     ) {
-      const gear = gears[pointer.gearId]
+      const gear = gears[pointer.current.state.gearId]
       invariant(gear)
       accelerateGear({
         root: gear,
-        acceleration: inputState.current.acceleration * ACCELERATION,
+        acceleration: pointer.current.acceleration * ACCELERATION,
         elapsed,
       })
     }
@@ -164,7 +142,7 @@ function addGear({ size, position }: { size: number; position: Vec2 }): void {
   invariant(gears[gearId] === undefined)
 
   const connections = getConnections({
-    gearSize: size,
+    size,
     position,
   })
 
@@ -246,10 +224,10 @@ function addGear({ size, position }: { size: number; position: Vec2 }): void {
 }
 
 function getConnections({
-  gearSize,
+  size,
   position,
 }: {
-  gearSize: number
+  size: number
   position: Vec2
 }): Connection[] {
   const connections = new Set<GearId>()
@@ -261,8 +239,8 @@ function getConnections({
     { x: -1, y: 0 },
   ]) {
     const point = {
-      x: position.x + ((gearSize - 1) / 2 + 1) * delta.x,
-      y: position.y + ((gearSize - 1) / 2 + 1) * delta.y,
+      x: position.x + ((size - 1) / 2 + 1) * delta.x,
+      y: position.y + ((size - 1) / 2 + 1) * delta.y,
     }
     const tileId = `${point.x}.${point.y}`
     const tile = tiles[tileId]
@@ -285,15 +263,16 @@ function getConnections({
   }))
 }
 
-type GetPointerFn<T extends Pointer> = (args: {
+type UpdatePointerFn<T extends Pointer> = (args: {
   e: PointerEvent
   canvas: HTMLCanvasElement
-  inputState: React.MutableRefObject<InputState>
-}) => T
+  pointer: T
+}) => void
 
-const getApplyForcePointer: GetPointerFn<ApplyForcePointer> = ({
+const updateApplyForcePointer: UpdatePointerFn<ApplyForcePointer> = ({
   e,
   canvas,
+  pointer,
 }) => {
   const position = {
     x: Math.floor((e.offsetX - canvas.width / 2) / TILE_SIZE),
@@ -306,25 +285,29 @@ const getApplyForcePointer: GetPointerFn<ApplyForcePointer> = ({
   const gearId = tile?.gearId
 
   const active = Boolean(e.buttons)
-
-  return { mode: PointerMode.ApplyForce, position, gearId, active }
+  pointer.state = {
+    position,
+    active,
+    gearId,
+  }
 }
 
-const getAddGearPointer: GetPointerFn<AddGearPointer> = ({
+const updateAddGearPointer: UpdatePointerFn<AddGearPointer> = ({
   e,
   canvas,
-  inputState,
+  pointer,
 }) => {
-  const { gearSize } = inputState.current
-
   const position = {
     x: Math.floor((e.offsetX - canvas.width / 2) / TILE_SIZE),
     y: Math.floor((e.offsetY - canvas.height / 2) / TILE_SIZE),
   }
 
+  const { size } = pointer
+  const radius = (size - 1) / 2
+
   let valid = true
-  for (let x = -((gearSize - 1) / 2); x <= (gearSize - 1) / 2 && valid; x++) {
-    for (let y = -((gearSize - 1) / 2); y <= (gearSize - 1) / 2 && valid; y++) {
+  for (let x = -radius; x <= radius && valid; x++) {
+    for (let y = -radius; y <= radius && valid; y++) {
       invariant(x === Math.floor(x))
       invariant(y === Math.floor(y))
 
@@ -337,65 +320,77 @@ const getAddGearPointer: GetPointerFn<AddGearPointer> = ({
 
   let connections: Connection[] = []
   if (valid) {
-    connections = getConnections({ position, gearSize })
+    connections = getConnections({ position, size })
   }
 
-  return { mode: PointerMode.AddGear, position, valid, connections }
+  pointer.state = {
+    position,
+    connections,
+    valid,
+  }
 }
 
-const getAddGearWithChainPointer: GetPointerFn<AddGearWithChainPointer> = ({
-  e,
-  canvas,
-  inputState,
-}) => {
+const updateAddGearWithChainPointer: UpdatePointerFn<
+  AddGearWithChainPointer
+> = ({ e, canvas, pointer }) => {
   const position = {
     x: Math.floor((e.offsetX - canvas.width / 2) / TILE_SIZE),
     y: Math.floor((e.offsetY - canvas.height / 2) / TILE_SIZE),
   }
 
-  return { mode: PointerMode.AddGearWithChain, position }
+  pointer.state = {
+    position,
+  }
 }
 
-const initPointer: InitPointerFn = ({ canvas, inputState }) => {
+const initPointer: InitPointerFn = ({ canvas, pointer }) => {
   canvas.addEventListener('pointermove', (e) => {
-    switch (inputState.current.pointerMode) {
-      case PointerMode.AddGear: {
-        pointer = getAddGearPointer({ e, canvas, inputState })
+    switch (pointer.current.type) {
+      case PointerType.AddGear: {
+        updateAddGearPointer({ e, canvas, pointer: pointer.current })
         break
       }
-      case PointerMode.AddGearWithChain: {
-        pointer = getAddGearWithChainPointer({ e, canvas, inputState })
+      case PointerType.AddGearWithChain: {
+        updateAddGearWithChainPointer({ e, canvas, pointer: pointer.current })
         break
       }
-      case PointerMode.ApplyForce: {
-        pointer = getApplyForcePointer({ e, canvas, inputState })
+      case PointerType.ApplyForce: {
+        updateApplyForcePointer({
+          e,
+          canvas,
+          pointer: pointer.current,
+        })
         break
       }
     }
   })
   canvas.addEventListener('pointerleave', () => {
-    pointer = null
+    pointer.current.state = null
   })
   canvas.addEventListener('pointerup', (e) => {
-    switch (inputState.current.pointerMode) {
-      case PointerMode.AddGear: {
-        pointer = getAddGearPointer({ e, canvas, inputState })
-        if (pointer.valid) {
-          const { gearSize } = inputState.current
-          addGear({ position: pointer.position, size: gearSize })
+    switch (pointer.current.type) {
+      case PointerType.AddGear: {
+        updateAddGearPointer({ e, canvas, pointer: pointer.current })
+        if (pointer.current.state?.valid) {
+          const { size } = pointer.current
+          addGear({ position: pointer.current.state.position, size })
         }
         break
       }
-      case PointerMode.ApplyForce: {
-        pointer = getApplyForcePointer({ e, canvas, inputState })
+      case PointerType.ApplyForce: {
+        updateApplyForcePointer({
+          e,
+          canvas,
+          pointer: pointer.current,
+        })
         break
       }
     }
   })
   canvas.addEventListener('pointerdown', (e) => {
-    switch (inputState.current.pointerMode) {
-      case PointerMode.ApplyForce: {
-        pointer = getApplyForcePointer({ e, canvas, inputState })
+    switch (pointer.current.type) {
+      case PointerType.ApplyForce: {
+        updateApplyForcePointer({ e, canvas, pointer: pointer.current })
         break
       }
     }
@@ -404,7 +399,7 @@ const initPointer: InitPointerFn = ({ canvas, inputState }) => {
 
 const initKeyboard: initKeyboardFn = () => {}
 
-const initCanvas: InitCanvasFn = ({ canvas, inputState }) => {
+const initCanvas: InitCanvasFn = ({ canvas, pointer }) => {
   const rect = canvas.getBoundingClientRect()
   canvas.width = rect.width
   canvas.height = rect.height
@@ -412,9 +407,9 @@ const initCanvas: InitCanvasFn = ({ canvas, inputState }) => {
   const context = canvas.getContext('2d')
   invariant(context)
 
-  initPointer({ canvas, inputState })
+  initPointer({ canvas, pointer })
   initKeyboard({ canvas })
-  initSimulator({ inputState })
+  initSimulator({ pointer })
 
   addGear({
     position: {
@@ -555,26 +550,30 @@ const initCanvas: InitCanvasFn = ({ canvas, inputState }) => {
       renderGear(gear)
     }
 
-    if (pointer?.mode === PointerMode.AddGear) {
-      const { gearSize } = inputState.current
+    if (pointer.current.type === PointerType.AddGear && pointer.current.state) {
+      const { size, state } = pointer.current
       renderGear(
         {
-          position: pointer.position,
-          radius: gearSize / 2,
+          position: state.position,
+          radius: size / 2,
           angle: 0,
-          connections: pointer.connections,
+          connections: state.connections,
         },
-        pointer.valid ? `hsla(120, 50%, 50%, .5)` : `hsla(0, 50%, 50%, .5)`,
+        state.valid ? `hsla(120, 50%, 50%, .5)` : `hsla(0, 50%, 50%, .5)`,
       )
     }
 
-    if (pointer?.mode === PointerMode.ApplyForce && pointer.gearId) {
-      const gear = gears[pointer.gearId]
+    if (
+      pointer.current.type === PointerType.ApplyForce &&
+      pointer.current.state?.gearId
+    ) {
+      const gear = gears[pointer.current.state.gearId]
+      const { active } = pointer.current.state
       invariant(gear)
 
       context.beginPath()
       context.lineWidth = 2
-      context.strokeStyle = pointer.active ? 'green' : 'white'
+      context.strokeStyle = active ? 'green' : 'white'
       context.strokeRect(
         (gear.position.x - (gear.radius - 0.5)) * TILE_SIZE,
         (gear.position.y - (gear.radius - 0.5)) * TILE_SIZE,
@@ -590,17 +589,20 @@ const initCanvas: InitCanvasFn = ({ canvas, inputState }) => {
 }
 
 export function DemoGear() {
-  const { inputState } = useInputState()
+  const pointer = useRef<Pointer>({
+    type: PointerType.Null,
+    state: null,
+  })
   const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null)
   useEffect(() => {
     if (canvas) {
-      initCanvas({ canvas, inputState })
+      initCanvas({ canvas, pointer })
     }
   }, [canvas])
   return (
     <div className={styles.container}>
       <div className={styles.toolbar}>
-        <Toolbar />
+        <Toolbar pointer={pointer} />
       </div>
       <canvas className={styles.canvas} ref={setCanvas} />
     </div>
