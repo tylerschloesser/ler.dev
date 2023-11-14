@@ -25,16 +25,44 @@ export interface NullPointer {
   state: null
 }
 
-export interface AddGearPointer {
+export enum AddGearPointerStateType {
+  Normal = 'normal',
+  Chain = 'chain',
+  Attach = 'attach',
+}
+
+interface BaseAddGearPointerState {
+  position: Vec2
+  connections: Connection[]
+}
+
+export interface NormalAddGearPointerState
+  extends BaseAddGearPointerState {
+  type: AddGearPointerStateType.Normal
+  valid: boolean
+}
+
+export interface ChainAddGearPointerState
+  extends BaseAddGearPointerState {
+  type: AddGearPointerStateType.Chain
+  chain: GearId
+}
+
+export interface AttachAddGearPointerState
+  extends BaseAddGearPointerState {
+  type: AddGearPointerStateType.Attach
+  attach: GearId
+}
+
+export type AddGearPointerState =
+  | NormalAddGearPointerState
+  | ChainAddGearPointerState
+  | AttachAddGearPointerState
+
+export type AddGearPointer = {
   type: PointerType.AddGear
   size: number
-  state: {
-    position: Vec2
-    valid: boolean
-    chain: GearId | null
-    attach: GearId | null
-    connections: Connection[]
-  } | null
+  state: AddGearPointerState | null
 }
 
 export interface AddGearWithChainPointer {

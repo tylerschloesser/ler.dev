@@ -4,6 +4,7 @@ import { renderConnection } from './render-connection.js'
 import { renderGear } from './render-gear.js'
 import {
   AddGearPointer,
+  AddGearPointerStateType,
   AddGearWithChainPointer,
   ApplyForcePointer,
   Pointer,
@@ -25,61 +26,66 @@ const renderAddGearPointer: RenderPointerFn<
     return
   }
 
-  invariant(!(state.chain && state.attach))
-
-  if (state.chain) {
-    renderGear({
-      gear: {
-        position: state.position,
-        radius: size / 2,
-        angle: 0,
-      },
-      tint: `hsla(120, 50%, 50%, .5)`,
-      context,
-    })
-
-    context.beginPath()
-    context.lineWidth = 2
-    context.strokeStyle = 'hsla(0, 50%, 50%, .75)'
-    context.strokeRect(
-      state.position.x * TILE_SIZE,
-      state.position.y * TILE_SIZE,
-      TILE_SIZE,
-      TILE_SIZE,
-    )
-    context.closePath()
-  } else if (state.attach) {
-    renderGear({
-      gear: {
-        position: state.position,
-        radius: size / 2,
-        angle: 0,
-      },
-      tint: `hsla(120, 50%, 50%, .5)`,
-      context,
-    })
-  } else {
-    renderGear({
-      gear: {
-        position: state.position,
-        radius: size / 2,
-        angle: 0,
-      },
-      tint: state.valid
-        ? `hsla(120, 50%, 50%, .5)`
-        : `hsla(0, 50%, 50%, .5)`,
-      context,
-    })
-
-    for (const connection of state.connections) {
-      const gear2 = world.gears[connection.gearId]
-      invariant(gear2)
-      renderConnection({
+  switch (state.type) {
+    case AddGearPointerStateType.Normal: {
+      renderGear({
+        gear: {
+          position: state.position,
+          radius: size / 2,
+          angle: 0,
+        },
+        tint: state.valid
+          ? `hsla(120, 50%, 50%, .5)`
+          : `hsla(0, 50%, 50%, .5)`,
         context,
-        gear1: { position: state.position },
-        gear2,
-        type: connection.type,
       })
+
+      for (const connection of state.connections) {
+        const gear2 = world.gears[connection.gearId]
+        invariant(gear2)
+        renderConnection({
+          context,
+          gear1: { position: state.position },
+          gear2,
+          type: connection.type,
+        })
+      }
+      break
+    }
+    case AddGearPointerStateType.Chain: {
+      renderGear({
+        gear: {
+          position: state.position,
+          radius: size / 2,
+          angle: 0,
+        },
+        tint: `hsla(120, 50%, 50%, .5)`,
+        context,
+      })
+
+      context.beginPath()
+      context.lineWidth = 2
+      context.strokeStyle = 'hsla(0, 50%, 50%, .75)'
+      context.strokeRect(
+        state.position.x * TILE_SIZE,
+        state.position.y * TILE_SIZE,
+        TILE_SIZE,
+        TILE_SIZE,
+      )
+      context.closePath()
+      break
+    }
+    case AddGearPointerStateType.Attach: {
+      renderGear({
+        gear: {
+          position: state.position,
+          radius: size / 2,
+          angle: 0,
+        },
+        tint: `hsla(120, 50%, 50%, .5)`,
+        context,
+      })
+      break
     }
   }
 }

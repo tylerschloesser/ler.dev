@@ -4,6 +4,8 @@ import {
   Gear,
   GearId,
   Network,
+  Vec2,
+  World,
 } from './types.js'
 
 export function* iterateConnections(
@@ -67,6 +69,28 @@ export function* iterateNetwork(
             : -1),
       })
     })
+  }
+}
+
+export function* iterateGearTiles(
+  position: Vec2,
+  size: number,
+  world: World,
+) {
+  const radius = (size - 1) / 2
+
+  for (let x = -radius; x <= radius; x++) {
+    for (let y = -radius; y <= radius; y++) {
+      invariant(x === Math.floor(x))
+      invariant(y === Math.floor(y))
+
+      const tileId = `${position.x + x}.${position.y + y}`
+      const tile = world.tiles[tileId]
+
+      if (tile) {
+        yield tile
+      }
+    }
   }
 }
 
