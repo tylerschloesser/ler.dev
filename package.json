@@ -1,8 +1,11 @@
 {
   "name": "@ler.dev/root",
   "scripts": {
+    "test": "npm run lint",
+    "lint": "prettier --check . --log-level warn",
     "build": "npm run build -w packages/app",
-    "deploy": "npm run deploy -w packages/cdk"
+    "deploy": "npm run deploy -w packages/cdk",
+    "prepare": "husky install"
   },
   "dependencies": {
     "@trivago/prettier-plugin-sort-imports": "^4.3.0",
@@ -13,5 +16,8 @@
   },
   "workspaces": [
     "packages/*"
-  ]
+  ],
+  "devDependencies": {
+    "husky": "^8.0.3"
+  }
 }
