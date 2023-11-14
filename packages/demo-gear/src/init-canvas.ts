@@ -1,12 +1,8 @@
 import invariant from 'tiny-invariant'
-import { DRAW_GEAR_BOX, TILE_SIZE } from './const.js'
+import { TILE_SIZE } from './const.js'
+import { renderGear } from './render-gear.js'
 import { renderGrid } from './render-grid.js'
-import {
-  ConnectionType,
-  Gear,
-  InitCanvasFn,
-  PointerType,
-} from './types.js'
+import { InitCanvasFn, PointerType } from './types.js'
 
 export const initCanvas: InitCanvasFn = ({
   canvas,
@@ -39,119 +35,8 @@ export const initCanvas: InitCanvasFn = ({
 
     renderGrid({ canvas, context })
 
-    function renderGear(
-      gear: Pick<
-        Gear,
-        'radius' | 'position' | 'angle' | 'connections'
-      >,
-      tint?: string,
-    ): void {
-      invariant(context)
-
-      context.save()
-      context.translate(
-        (gear.position.x - (gear.radius - 0.5)) * TILE_SIZE,
-        (gear.position.y - (gear.radius - 0.5)) * TILE_SIZE,
-      )
-
-      if (DRAW_GEAR_BOX) {
-        context.fillStyle = 'grey'
-        context.fillRect(
-          0,
-          0,
-          TILE_SIZE * gear.radius * 2,
-          TILE_SIZE * gear.radius * 2,
-        )
-      }
-
-      context.strokeStyle = 'white'
-      context.fillStyle = 'blue'
-      context.beginPath()
-      context.arc(
-        gear.radius * TILE_SIZE,
-        gear.radius * TILE_SIZE,
-        gear.radius * TILE_SIZE,
-        0,
-        Math.PI * 2,
-      )
-      context.fill()
-      context.closePath()
-
-      context.save()
-      context.translate(
-        gear.radius * TILE_SIZE,
-        gear.radius * TILE_SIZE,
-      )
-      context.beginPath()
-      context.lineWidth = 2
-      context.strokeStyle = 'white'
-      const teeth = gear.radius * 10
-      for (let i = 0; i < teeth; i++) {
-        context.save()
-        context.rotate(
-          gear.angle + (i / teeth) * Math.PI * 2,
-        )
-        context.moveTo((gear.radius - 0.25) * TILE_SIZE, 0)
-        context.lineTo(gear.radius * TILE_SIZE, 0)
-        context.stroke()
-        context.restore()
-      }
-      context.closePath()
-      context.restore()
-
-      if (tint) {
-        context.fillStyle = tint
-        context.fillRect(
-          0,
-          0,
-          TILE_SIZE * gear.radius * 2,
-          TILE_SIZE * gear.radius * 2,
-        )
-      }
-
-      context.restore()
-
-      for (const connection of gear.connections) {
-        const peer = world.gears[connection.gearId]
-        invariant(peer)
-
-        if (connection.type === ConnectionType.Chain) {
-          context.beginPath()
-          context.strokeStyle = 'hsla(0, 50%, 50%, .75)'
-          context.lineWidth = 2
-          context.strokeRect(
-            Math.min(peer.position.x, gear.position.x) *
-              TILE_SIZE,
-            Math.min(peer.position.y, gear.position.y) *
-              TILE_SIZE,
-            (Math.abs(peer.position.x - gear.position.x) +
-              1) *
-              TILE_SIZE,
-            (Math.abs(peer.position.y - gear.position.y) +
-              1) *
-              TILE_SIZE,
-          )
-          context.closePath()
-        } else {
-          context.beginPath()
-          context.strokeStyle = 'hsla(0, 50%, 50%, .75)'
-          context.lineWidth = 2
-          context.moveTo(
-            (gear.position.x + 0.5) * TILE_SIZE,
-            (gear.position.y + 0.5) * TILE_SIZE,
-          )
-          context.lineTo(
-            (peer.position.x + 0.5) * TILE_SIZE,
-            (peer.position.y + 0.5) * TILE_SIZE,
-          )
-          context.stroke()
-          context.closePath()
-        }
-      }
-    }
-
     for (const gear of Object.values(world.gears)) {
-      renderGear(gear)
+      renderGear({ gear, context, world })
     }
 
     if (
@@ -171,17 +56,19 @@ export const initCanvas: InitCanvasFn = ({
         )
         context.closePath()
       } else {
-        renderGear(
-          {
+        renderGear({
+          gear: {
             position: state.position,
             radius: size / 2,
             angle: 0,
             connections: state.connections,
           },
-          state.valid
+          tint: state.valid
             ? `hsla(120, 50%, 50%, .5)`
             : `hsla(0, 50%, 50%, .5)`,
-        )
+          context,
+          world,
+        })
       }
     }
 
@@ -220,17 +107,19 @@ export const initCanvas: InitCanvasFn = ({
 
       const { state } = pointer.current
       if (state) {
-        renderGear(
-          {
+        renderGear({
+          gear: {
             position: state.position,
             radius: 0.5,
             angle: 0,
             connections: [], // TODO
           },
-          state.valid
+          tint: state.valid
             ? `hsla(120, 50%, 50%, .5)`
             : `hsla(0, 50%, 50%, .5)`,
-        )
+          world,
+          context,
+        })
 
         if (state.valid) {
           chain = {
