@@ -8,8 +8,8 @@ export function renderConnection({
   type,
   context,
 }: {
-  gear1: Gear
-  gear2: Gear
+  gear1: Pick<Gear, 'position'>
+  gear2: Pick<Gear, 'position'>
   type: ConnectionType
   context: CanvasRenderingContext2D
 }): void {

@@ -7,10 +7,7 @@ export function renderGear({
   tint,
   context,
 }: {
-  gear: Pick<
-    Gear,
-    'radius' | 'position' | 'angle' | 'connections'
-  >
+  gear: Pick<Gear, 'radius' | 'position' | 'angle'>
   tint?: string
   context: CanvasRenderingContext2D
 }): void {

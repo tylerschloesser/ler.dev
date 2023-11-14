@@ -1,5 +1,6 @@
 import invariant from 'tiny-invariant'
 import { TILE_SIZE } from './const.js'
+import { renderConnection } from './render-connection.js'
 import { renderGear } from './render-gear.js'
 import { Pointer, PointerType, World } from './types.js'
 
@@ -34,13 +35,23 @@ export function renderPointer({
           position: state.position,
           radius: size / 2,
           angle: 0,
-          connections: state.connections,
         },
         tint: state.valid
           ? `hsla(120, 50%, 50%, .5)`
           : `hsla(0, 50%, 50%, .5)`,
         context,
       })
+
+      for (const connection of state.connections) {
+        const gear2 = world.gears[connection.gearId]
+        invariant(gear2)
+        renderConnection({
+          context,
+          gear1: { position: state.position },
+          gear2,
+          type: connection.type,
+        })
+      }
     }
   }
 
@@ -82,13 +93,23 @@ export function renderPointer({
           position: state.position,
           radius: 0.5,
           angle: 0,
-          connections: state.connections,
         },
         tint: state.valid
           ? `hsla(120, 50%, 50%, .5)`
           : `hsla(0, 50%, 50%, .5)`,
         context,
       })
+
+      for (const connection of state.connections) {
+        const gear2 = world.gears[connection.gearId]
+        invariant(gear2)
+        renderConnection({
+          context,
+          gear1: { position: state.position },
+          gear2,
+          type: connection.type,
+        })
+      }
 
       if (state.valid) {
         chain = {
