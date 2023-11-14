@@ -2,8 +2,9 @@
   "name": "@ler.dev/cdk",
   "type": "module",
   "scripts": {
-    "deploy-prod": "cdk deploy LerDevDns LerDev",
-    "deploy-staging": "cdk deploy StagingTyLerDev"
+    "deploy": "npm run deploy-prod",
+    "deploy-prod": "cdk deploy LerDev-Prod-*",
+    "deploy-staging": "cdk deploy LerDev-Staging-*"
   },
   "dependencies": {
     "@aws-cdk/aws-apigatewayv2-alpha": "^2.107.0-alpha.0",
