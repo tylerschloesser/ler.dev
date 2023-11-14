@@ -612,19 +612,33 @@ const initCanvas: InitCanvasFn = ({ canvas, pointer }) => {
       for (const connection of gear.connections) {
         const peer = gears[connection.gearId]
         invariant(peer)
-        context.beginPath()
-        context.strokeStyle = 'hsla(0, 50%, 50%, .75)'
-        context.lineWidth = 2
-        context.moveTo(
-          (gear.position.x + 0.5) * TILE_SIZE,
-          (gear.position.y + 0.5) * TILE_SIZE,
-        )
-        context.lineTo(
-          (peer.position.x + 0.5) * TILE_SIZE,
-          (peer.position.y + 0.5) * TILE_SIZE,
-        )
-        context.stroke()
-        context.closePath()
+
+        if (connection.type === ConnectionType.Chain) {
+          context.beginPath()
+          context.strokeStyle = 'hsla(0, 50%, 50%, .75)'
+          context.lineWidth = 2
+          context.strokeRect(
+            Math.min(peer.position.x, gear.position.x) * TILE_SIZE,
+            Math.min(peer.position.y, gear.position.y) * TILE_SIZE,
+            (Math.abs(peer.position.x - gear.position.x) + 1) * TILE_SIZE,
+            (Math.abs(peer.position.y - gear.position.y) + 1) * TILE_SIZE,
+          )
+          context.closePath()
+        } else {
+          context.beginPath()
+          context.strokeStyle = 'hsla(0, 50%, 50%, .75)'
+          context.lineWidth = 2
+          context.moveTo(
+            (gear.position.x + 0.5) * TILE_SIZE,
+            (gear.position.y + 0.5) * TILE_SIZE,
+          )
+          context.lineTo(
+            (peer.position.x + 0.5) * TILE_SIZE,
+            (peer.position.y + 0.5) * TILE_SIZE,
+          )
+          context.stroke()
+          context.closePath()
+        }
       }
     }
 

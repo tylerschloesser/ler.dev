@@ -84,7 +84,7 @@ new DrawApiStack(
   app,
   stackId('Staging', 'DrawApi'),
   stackProps({
-    stage: Stage.Prod,
+    stage: Stage.Staging,
     domainName: DomainName.DrawApiStagingTyLerDev,
     hostedZone: zones[DomainName.DrawApiStagingTyLerDev],
     region: Region.US_WEST_2,
