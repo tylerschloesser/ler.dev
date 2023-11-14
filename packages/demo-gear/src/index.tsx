@@ -16,6 +16,7 @@ import {
   Network,
   Pointer,
   PointerType,
+  Tile,
   Vec2,
   initKeyboardFn,
 } from './types.js'
@@ -34,10 +35,6 @@ const FRICTION = 1 // energy/sec
 const ACCELERATION = 2
 
 const gears: Record<string, Gear> = {}
-
-interface Tile {
-  gearId: string
-}
 
 const tiles: Record<string, Tile> = {}
 

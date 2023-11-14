@@ -5,6 +5,10 @@ export type GearId = string
 
 export const GEAR_SIZES = [1, 3, 5, 7]
 
+export interface Tile {
+  gearId: string
+}
+
 export enum PointerType {
   Null = 'null',
   AddGear = 'add-gear',
