@@ -46,7 +46,7 @@ export function getConnections({
     }
   }
   return [...connections].map((gearId) => ({
-    type: ConnectionType.Direct,
+    type: ConnectionType.Teeth,
     gearId,
   }))
 }

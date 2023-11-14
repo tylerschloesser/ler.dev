@@ -42,6 +42,7 @@ export interface AddGearWithChainPointer {
   state: {
     position: Vec2
     valid: boolean
+    connections: Connection[]
   } | null
 }
 
@@ -88,7 +89,7 @@ export type InitSimulatorFn = (args: {
 }) => void
 
 export enum ConnectionType {
-  Direct = 'direct',
+  Teeth = 'teeth',
   Chain = 'chain',
 }
 

@@ -128,9 +128,19 @@ const updateAddGearWithChainPointer: UpdatePointerFn<
     }
   }
 
+  let connections: Connection[] = []
+  if (valid) {
+    connections = getConnections({
+      position,
+      size: 1,
+      world,
+    })
+  }
+
   pointer.state = {
     position,
     valid,
+    connections,
   }
 }
 export const initPointer: InitPointerFn = ({

@@ -83,7 +83,7 @@ export function renderPointer({
           position: state.position,
           radius: 0.5,
           angle: 0,
-          connections: [], // TODO
+          connections: state.connections,
         },
         tint: state.valid
           ? `hsla(120, 50%, 50%, .5)`

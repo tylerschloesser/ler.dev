@@ -51,7 +51,7 @@ export function addGear({
 
     neighbors.forEach((neighbor) => {
       neighbor.connections.push({
-        type: ConnectionType.Direct,
+        type: ConnectionType.Teeth,
         gearId,
       })
     })
