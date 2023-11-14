@@ -84,6 +84,7 @@ export type initKeyboardFn = (args: {
 export type InitSimulatorFn = (args: {
   pointer: React.MutableRefObject<Pointer>
   world: World
+  signal: AbortSignal
 }) => void
 
 export enum ConnectionType {

@@ -100,6 +100,7 @@ function applyFriction({
 const initSimulator: InitSimulatorFn = ({
   pointer,
   world,
+  signal,
 }) => {
   let prev: number = performance.now()
   function tick() {
@@ -141,7 +142,11 @@ const initSimulator: InitSimulatorFn = ({
       gear.angle += gear.velocity * elapsed
     }
   }
-  self.setInterval(tick, TICK_DURATION)
+  const interval = self.setInterval(tick, TICK_DURATION)
+
+  signal.addEventListener('abort', () => {
+    self.clearInterval(interval)
+  })
 }
 
 function addGear({
@@ -608,11 +613,11 @@ const initCanvas: InitCanvasFn = ({
   const context = canvas.getContext('2d')
   invariant(context)
 
-  initPointer({ canvas, pointer, signal, world })
-  initKeyboard({ canvas, pointer, signal })
-  initSimulator({ pointer, world })
-
   function render() {
+    if (signal.aborted) {
+      return
+    }
+
     invariant(context)
 
     context.resetTransform()
@@ -927,6 +932,18 @@ export function DemoGear() {
         pointer,
         signal,
         world: world.current,
+      })
+      initPointer({
+        canvas,
+        pointer,
+        signal,
+        world: world.current,
+      })
+      initKeyboard({ canvas, pointer, signal })
+      initSimulator({
+        pointer,
+        world: world.current,
+        signal,
       })
       return () => {
         controller.abort()
