@@ -396,87 +396,107 @@ const updateAddGearWithChainPointer: UpdatePointerFn<
   }
 }
 
-const initPointer: InitPointerFn = ({ canvas, pointer }) => {
-  canvas.addEventListener('pointermove', (e) => {
-    switch (pointer.current.type) {
-      case PointerType.AddGear: {
-        updateAddGearPointer({ e, canvas, pointer: pointer.current })
-        break
-      }
-      case PointerType.AddGearWithChain: {
-        updateAddGearWithChainPointer({ e, canvas, pointer: pointer.current })
-        break
-      }
-      case PointerType.ApplyForce: {
-        updateApplyForcePointer({
-          e,
-          canvas,
-          pointer: pointer.current,
-        })
-        break
-      }
-    }
-  })
-  canvas.addEventListener('pointerleave', () => {
-    pointer.current.state = null
-  })
-  canvas.addEventListener('pointerup', (e) => {
-    switch (pointer.current.type) {
-      case PointerType.AddGear: {
-        updateAddGearPointer({ e, canvas, pointer: pointer.current })
-        if (pointer.current.state?.chain) {
-          pointer.current = {
-            type: PointerType.AddGearWithChain,
-            sourceId: pointer.current.state.chain,
-            state: null,
-          }
+const initPointer: InitPointerFn = ({ canvas, pointer, signal }) => {
+  canvas.addEventListener(
+    'pointermove',
+    (e) => {
+      switch (pointer.current.type) {
+        case PointerType.AddGear: {
+          updateAddGearPointer({ e, canvas, pointer: pointer.current })
+          break
+        }
+        case PointerType.AddGearWithChain: {
           updateAddGearWithChainPointer({ e, canvas, pointer: pointer.current })
-        } else if (pointer.current.state?.valid) {
-          const { size } = pointer.current
-          addGear({ position: pointer.current.state.position, size })
-
-          // update again in case we need to show chain option
-          updateAddGearPointer({ e, canvas, pointer: pointer.current })
+          break
         }
-        break
-      }
-      case PointerType.AddGearWithChain: {
-        if (pointer.current.state?.valid) {
-          const chain = gears[pointer.current.sourceId]
-          invariant(chain)
-          addGear({
-            position: pointer.current.state.position,
-            size: 1,
-            chain,
+        case PointerType.ApplyForce: {
+          updateApplyForcePointer({
+            e,
+            canvas,
+            pointer: pointer.current,
           })
-
-          pointer.current = {
-            type: PointerType.AddGear,
-            size: 1,
-            state: null,
-          }
-          updateAddGearPointer({ e, canvas, pointer: pointer.current })
+          break
         }
-        break
       }
-      case PointerType.ApplyForce: {
-        updateApplyForcePointer({
-          e,
-          canvas,
-          pointer: pointer.current,
-        })
-        break
+    },
+    { signal },
+  )
+  canvas.addEventListener(
+    'pointerleave',
+    () => {
+      pointer.current.state = null
+    },
+    { signal },
+  )
+  canvas.addEventListener(
+    'pointerup',
+    (e) => {
+      switch (pointer.current.type) {
+        case PointerType.AddGear: {
+          updateAddGearPointer({ e, canvas, pointer: pointer.current })
+          if (pointer.current.state?.chain) {
+            pointer.current = {
+              type: PointerType.AddGearWithChain,
+              sourceId: pointer.current.state.chain,
+              state: null,
+            }
+            updateAddGearWithChainPointer({
+              e,
+              canvas,
+              pointer: pointer.current,
+            })
+          } else if (pointer.current.state?.valid) {
+            const { size } = pointer.current
+            addGear({ position: pointer.current.state.position, size })
+
+            // update again in case we need to show chain option
+            updateAddGearPointer({ e, canvas, pointer: pointer.current })
+          }
+          break
+        }
+        case PointerType.AddGearWithChain: {
+          if (pointer.current.state?.valid) {
+            const chain = gears[pointer.current.sourceId]
+            invariant(chain)
+            addGear({
+              position: pointer.current.state.position,
+              size: 1,
+              chain,
+            })
+
+            pointer.current = {
+              type: PointerType.AddGear,
+              size: 1,
+              state: null,
+            }
+            updateAddGearPointer({ e, canvas, pointer: pointer.current })
+          }
+          break
+        }
+        case PointerType.ApplyForce: {
+          updateApplyForcePointer({
+            e,
+            canvas,
+            pointer: pointer.current,
+          })
+          break
+        }
       }
-    }
-  })
-  canvas.addEventListener('pointerdown', (e) => {
-    switch (pointer.current.type) {
-      case PointerType.ApplyForce: {
-        updateApplyForcePointer({ e, canvas, pointer: pointer.current })
-        break
+    },
+    { signal },
+  )
+  canvas.addEventListener(
+    'pointerdown',
+    (e) => {
+      switch (pointer.current.type) {
+        case PointerType.ApplyForce: {
+          updateApplyForcePointer({ e, canvas, pointer: pointer.current })
+          break
+        }
       }
-    }
-  })
+    },
+    { signal },
+  )
 }
 
 const initKeyboard: initKeyboardFn = ({}) => {}
