@@ -33,6 +33,7 @@ export interface AddGearWithChainPointer {
   sourceId: GearId
   state: {
     position: Vec2
+    valid: boolean
   } | null
 }
 

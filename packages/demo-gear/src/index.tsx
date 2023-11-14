@@ -347,8 +347,30 @@ const updateAddGearWithChainPointer: UpdatePointerFn<
     y: Math.floor((e.offsetY - canvas.height / 2) / TILE_SIZE),
   }
 
+  const source = gears[pointer.sourceId]
+  invariant(source)
+
+  const tileId = `${position.x}.${position.y}`
+  const tile = tiles[tileId]
+
+  let valid = true
+
+  if (tile) {
+    valid = false
+  } else {
+    const dx = position.x - source.position.x
+    const dy = position.y - source.position.y
+
+    if (!(dx === 0 || dy === 0)) {
+      valid = false
+    } else if (!(Math.abs(dx) > 1 || Math.abs(dy) > 1)) {
+      valid = false
+    }
+  }
+
   pointer.state = {
     position,
+    valid,
   }
 }
 
@@ -384,10 +406,9 @@ const initPointer: InitPointerFn = ({ canvas, pointer }) => {
           pointer.current = {
             type: PointerType.AddGearWithChain,
             sourceId: pointer.current.state.chain,
-            state: {
-              position: pointer.current.state.position,
-            },
+            state: null,
           }
+          updateAddGearWithChainPointer({ e, canvas, pointer: pointer.current })
         } else if (pointer.current.state?.valid) {
           const { size } = pointer.current
           addGear({ position: pointer.current.state.position, size })
@@ -620,13 +641,44 @@ const initCanvas: InitCanvasFn = ({ canvas, pointer }) => {
       const source = gears[pointer.current.sourceId]
       invariant(source)
 
+      let chain = {
+        x: source.position.x,
+        y: source.position.y,
+        w: 1,
+        h: 1,
+      }
+
+      const { state } = pointer.current
+      if (state) {
+        renderGear(
+          {
+            position: state.position,
+            radius: 0.5,
+            angle: 0,
+            connections: [], // TODO
+          },
+          state.valid ? `hsla(120, 50%, 50%, .5)` : `hsla(0, 50%, 50%, .5)`,
+        )
+
+        if (state.valid) {
+          chain = {
+            x: Math.min(chain.x, state.position.x),
+            y: Math.min(chain.y, state.position.y),
+            w: Math.abs(chain.x - state.position.x) + 1,
+            h: Math.abs(chain.y - state.position.y) + 1,
+          }
+        }
+      }
+
       context.beginPath()
       context.lineWidth = 2
       context.strokeStyle = 'white'
-
-      invariant(source.radius === .5)
-
-      context.strokeRect(source.position.x * TILE_SIZE, source.position.y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
+      context.strokeRect(
+        chain.x * TILE_SIZE,
+        chain.y * TILE_SIZE,
+        chain.w * TILE_SIZE,
+        chain.h * TILE_SIZE,
+      )
       context.closePath()
     }
 
