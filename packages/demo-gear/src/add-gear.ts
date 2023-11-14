@@ -83,10 +83,10 @@ export function addGear(args: AddGearArgs): void {
     }
     case ConnectionType.Chain: {
       const { chain } = args
-      // TODO
 
       sign = Math.sign(chain.velocity)
 
+      // TODO allow other connections
       connections = [
         {
           gearId: chain.id,
@@ -98,6 +98,7 @@ export function addGear(args: AddGearArgs): void {
         gearId,
         type: ConnectionType.Chain,
       })
+      break
     }
     case ConnectionType.Attached: {
       invariant(false)
