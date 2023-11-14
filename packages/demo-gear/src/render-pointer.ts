@@ -48,6 +48,16 @@ const renderAddGearPointer: RenderPointerFn<
       TILE_SIZE,
     )
     context.closePath()
+  } else if (state.attach) {
+    renderGear({
+      gear: {
+        position: state.position,
+        radius: size / 2,
+        angle: 0,
+      },
+      tint: `hsla(120, 50%, 50%, .5)`,
+      context,
+    })
   } else {
     renderGear({
       gear: {
