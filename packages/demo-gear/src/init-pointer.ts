@@ -238,6 +238,7 @@ const handlePointerUp: HandlePointerEventFn = ({
     pointer: pointer.current,
     world,
   })
+  let needsUpdate = false
   switch (pointer.current.type) {
     case PointerType.AddGear: {
       switch (pointer.current.state?.type) {
@@ -248,13 +249,7 @@ const handlePointerUp: HandlePointerEventFn = ({
               size: pointer.current.size,
               world,
             })
-            // update again in case we need to show chain option
-            updatePointer({
-              e,
-              canvas,
-              pointer: pointer.current,
-              world,
-            })
+            needsUpdate = true
           }
           break
         }
@@ -264,6 +259,7 @@ const handlePointerUp: HandlePointerEventFn = ({
             sourceId: pointer.current.state.chain,
             state: null,
           }
+          needsUpdate = true
           break
         }
         case AddGearPointerStateType.Attach: {
@@ -283,30 +279,23 @@ const handlePointerUp: HandlePointerEventFn = ({
           chain,
           world,
         })
-
         pointer.current = {
           type: PointerType.AddGear,
           size: 1,
           state: null,
         }
-        updateAddGearPointer({
-          e,
-          canvas,
-          pointer: pointer.current,
-          world,
-        })
+        needsUpdate = true
       }
       break
     }
-    case PointerType.ApplyForce: {
-      updateApplyForcePointer({
-        e,
-        canvas,
-        pointer: pointer.current,
-        world,
-      })
-      break
-    }
+  }
+  if (needsUpdate) {
+    updatePointer({
+      e,
+      canvas,
+      pointer: pointer.current,
+      world,
+    })
   }
 }
 
