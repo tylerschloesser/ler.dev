@@ -7,8 +7,8 @@ import {
   RecordType,
 } from 'aws-cdk-lib/aws-route53'
 import { Construct } from 'constructs'
-import { DomainName } from './types.js'
 import invariant from 'tiny-invariant'
+import { DomainName } from './types.js'
 
 export class DnsStack extends Stack {
   readonly zones: Record<DomainName, IPublicHostedZone>

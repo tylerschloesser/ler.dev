@@ -23,9 +23,9 @@ import { Queue } from 'aws-cdk-lib/aws-sqs'
 import { Construct } from 'constructs'
 import { camelCase, capitalize, upperFirst } from 'lodash-es'
 import * as path from 'path'
-
 import * as url from 'url'
 import { Stage } from './types.js'
+
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url))
 
 enum Route {

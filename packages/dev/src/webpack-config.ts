@@ -1,8 +1,8 @@
 import HtmlWebpackPlugin from 'html-webpack-plugin'
+import * as path from 'path'
+import * as url from 'url'
 import { Configuration } from 'webpack'
 import 'webpack-dev-server'
-import * as url from 'url'
-import * as path from 'path'
 
 export function getWebpackConfig(): Configuration {
   return {

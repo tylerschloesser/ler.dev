@@ -1,3 +1,7 @@
+import { useEffect, useRef, useState } from 'react'
+import invariant from 'tiny-invariant'
+import styles from './index.module.scss'
+import { Toolbar } from './toolbar.js'
 import {
   AddGearPointer,
   AddGearWithChainPointer,
@@ -15,11 +19,6 @@ import {
   Vec2,
   initKeyboardFn,
 } from './types.js'
-
-import { useEffect, useRef, useState } from 'react'
-import invariant from 'tiny-invariant'
-import styles from './index.module.scss'
-import { Toolbar } from './toolbar.js'
 import { getNetwork, getNetworks, iterateNetwork } from './util.js'
 
 const TILE_SIZE = 40
