@@ -205,6 +205,111 @@ const updatePointer: UpdatePointerFn<Pointer> = ({
   }
 }
 
+type HandlePointerEventFn = (args: {
+  e: PointerEvent
+  canvas: HTMLCanvasElement
+  pointer: React.MutableRefObject<Pointer>
+  world: World
+}) => void
+
+const handlePointerMove: HandlePointerEventFn = ({
+  e,
+  canvas,
+  pointer,
+  world,
+}) => {
+  updatePointer({
+    e,
+    canvas,
+    pointer: pointer.current,
+    world,
+  })
+}
+
+const handlePointerUp: HandlePointerEventFn = ({
+  e,
+  canvas,
+  pointer,
+  world,
+}) => {
+  updatePointer({
+    e,
+    canvas,
+    pointer: pointer.current,
+    world,
+  })
+  switch (pointer.current.type) {
+    case PointerType.AddGear: {
+      switch (pointer.current.state?.type) {
+        case AddGearPointerStateType.Normal: {
+          if (pointer.current.state.valid) {
+            addGear({
+              position: pointer.current.state.position,
+              size: pointer.current.size,
+              world,
+            })
+            // update again in case we need to show chain option
+            updatePointer({
+              e,
+              canvas,
+              pointer: pointer.current,
+              world,
+            })
+          }
+          break
+        }
+        case AddGearPointerStateType.Chain: {
+          pointer.current = {
+            type: PointerType.AddGearWithChain,
+            sourceId: pointer.current.state.chain,
+            state: null,
+          }
+          break
+        }
+        case AddGearPointerStateType.Attach: {
+          console.log('TODO')
+          break
+        }
+      }
+      break
+    }
+    case PointerType.AddGearWithChain: {
+      if (pointer.current.state?.valid) {
+        const chain = world.gears[pointer.current.sourceId]
+        invariant(chain)
+        addGear({
+          position: pointer.current.state.position,
+          size: 1,
+          chain,
+          world,
+        })
+
+        pointer.current = {
+          type: PointerType.AddGear,
+          size: 1,
+          state: null,
+        }
+        updateAddGearPointer({
+          e,
+          canvas,
+          pointer: pointer.current,
+          world,
+        })
+      }
+      break
+    }
+    case PointerType.ApplyForce: {
+      updateApplyForcePointer({
+        e,
+        canvas,
+        pointer: pointer.current,
+        world,
+      })
+      break
+    }
+  }
+}
+
 export const initPointer: InitPointerFn = ({
   canvas,
   pointer,
@@ -214,14 +319,11 @@ export const initPointer: InitPointerFn = ({
   canvas.addEventListener(
     'pointermove',
     (e) => {
-      updatePointer({
-        e,
-        canvas,
-        pointer: pointer.current,
-        world,
-      })
+      handlePointerMove({ e, canvas, pointer, world })
     },
-    { signal },
+    {
+      signal,
+    },
   )
   canvas.addEventListener(
     'pointerleave',
@@ -233,85 +335,11 @@ export const initPointer: InitPointerFn = ({
   canvas.addEventListener(
     'pointerup',
     (e) => {
-      updatePointer({
-        e,
-        canvas,
-        pointer: pointer.current,
-        world,
-      })
-      switch (pointer.current.type) {
-        case PointerType.AddGear: {
-          switch (pointer.current.state?.type) {
-            case AddGearPointerStateType.Normal: {
-              if (pointer.current.state.valid) {
-                addGear({
-                  position: pointer.current.state.position,
-                  size: pointer.current.size,
-                  world,
-                })
-                // update again in case we need to show chain option
-                updatePointer({
-                  e,
-                  canvas,
-                  pointer: pointer.current,
-                  world,
-                })
-              }
-              break
-            }
-            case AddGearPointerStateType.Chain: {
-              pointer.current = {
-                type: PointerType.AddGearWithChain,
-                sourceId: pointer.current.state.chain,
-                state: null,
-              }
-              break
-            }
-            case AddGearPointerStateType.Attach: {
-              console.log('TODO')
-              break
-            }
-          }
-          break
-        }
-        case PointerType.AddGearWithChain: {
-          if (pointer.current.state?.valid) {
-            const chain =
-              world.gears[pointer.current.sourceId]
-            invariant(chain)
-            addGear({
-              position: pointer.current.state.position,
-              size: 1,
-              chain,
-              world,
-            })
-
-            pointer.current = {
-              type: PointerType.AddGear,
-              size: 1,
-              state: null,
-            }
-            updateAddGearPointer({
-              e,
-              canvas,
-              pointer: pointer.current,
-              world,
-            })
-          }
-          break
-        }
-        case PointerType.ApplyForce: {
-          updateApplyForcePointer({
-            e,
-            canvas,
-            pointer: pointer.current,
-            world,
-          })
-          break
-        }
-      }
+      handlePointerUp({ e, canvas, pointer, world })
     },
-    { signal },
+    {
+      signal,
+    },
   )
   canvas.addEventListener(
     'pointerdown',
