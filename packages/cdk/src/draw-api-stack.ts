@@ -5,7 +5,10 @@ import {
 } from '@aws-cdk/aws-apigatewayv2-alpha'
 import { WebSocketLambdaIntegration } from '@aws-cdk/aws-apigatewayv2-integrations-alpha'
 import { Duration, Stack, StackProps } from 'aws-cdk-lib'
-import { Certificate } from 'aws-cdk-lib/aws-certificatemanager'
+import {
+  Certificate,
+  CertificateValidation,
+} from 'aws-cdk-lib/aws-certificatemanager'
 import { AttributeType, Table } from 'aws-cdk-lib/aws-dynamodb'
 import { Runtime } from 'aws-cdk-lib/aws-lambda'
 import { SqsEventSource } from 'aws-cdk-lib/aws-lambda-event-sources'
@@ -41,7 +44,6 @@ type RouteToConstructs = Record<
 interface DrawApiStackProps extends StackProps {
   domainName: string
   hostedZone: IPublicHostedZone
-  certificate: Certificate
   stage: Stage
 }
 
@@ -84,7 +86,7 @@ export class DrawApiStack extends Stack {
   constructor(
     scope: Construct,
     id: string,
-    { domainName, certificate, hostedZone, stage, ...props }: DrawApiStackProps,
+    { domainName, hostedZone, stage, ...props }: DrawApiStackProps,
   ) {
     super(scope, id, props)
 
@@ -100,7 +102,10 @@ export class DrawApiStack extends Stack {
 
     const domain = new DomainName(this, 'WebSocketDomainName', {
       domainName,
-      certificate,
+      certificate: new Certificate(this, 'Certificate', {
+        domainName: domainName,
+        validation: CertificateValidation.fromDns(hostedZone),
+      }),
     })
 
     const asyncStuff = new AsyncStuff(this, 'AsyncStuff', {

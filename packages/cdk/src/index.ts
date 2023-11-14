@@ -77,7 +77,6 @@ new DrawApiStack(
     domainName: DomainName.DrawApiTyLerDev,
     hostedZone: zones[DomainName.DrawApiTyLerDev],
     region: Region.US_WEST_2,
-    certificate: certificates[DomainName.DrawApiTyLerDev],
   }),
 )
 
@@ -89,6 +88,5 @@ new DrawApiStack(
     domainName: DomainName.DrawApiStagingTyLerDev,
     hostedZone: zones[DomainName.DrawApiStagingTyLerDev],
     region: Region.US_WEST_2,
-    certificate: certificates[DomainName.DrawApiStagingTyLerDev],
   }),
 )
