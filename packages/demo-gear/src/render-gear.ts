@@ -32,7 +32,10 @@ export function renderGear({
     )
   }
 
-  context.strokeStyle = 'white'
+  //
+  // background
+  //
+
   context.fillStyle = 'blue'
   context.beginPath()
   context.arc(
@@ -45,6 +48,10 @@ export function renderGear({
   context.fill()
   context.closePath()
 
+  //
+  // teeth
+  //
+
   context.save()
   context.translate(
     gear.radius * TILE_SIZE,
@@ -53,6 +60,7 @@ export function renderGear({
   context.beginPath()
   context.lineWidth = 2
   context.strokeStyle = 'white'
+
   const teeth = gear.radius * 10
   for (let i = 0; i < teeth; i++) {
     context.save()
