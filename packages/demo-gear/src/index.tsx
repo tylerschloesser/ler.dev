@@ -134,7 +134,15 @@ function initSimulator({
   self.setInterval(tick, TICK_DURATION)
 }
 
-function addGear({ size, position }: { size: number; position: Vec2 }): void {
+function addGear({
+  size,
+  position,
+  chain,
+}: {
+  size: number
+  position: Vec2
+  chain?: Gear
+}): void {
   invariant(position.x === Math.floor(position.x))
   invariant(position.y === Math.floor(position.y))
 
@@ -145,9 +153,6 @@ function addGear({ size, position }: { size: number; position: Vec2 }): void {
     size,
     position,
   })
-
-  // TODO allow loops?
-  // invariant(connections.length === 0 || connections.length === 1)
 
   let sign = 0
   if (connections.length > 0) {
@@ -172,6 +177,23 @@ function addGear({ size, position }: { size: number; position: Vec2 }): void {
         type: ConnectionType.Direct,
         gearId,
       })
+    })
+  }
+
+  if (chain) {
+    // TODO
+    invariant(connections.length === 0)
+
+    sign = Math.sign(chain.velocity)
+
+    connections.push({
+      gearId: chain.id,
+      type: ConnectionType.Chain,
+    })
+
+    chain.connections.push({
+      gearId,
+      type: ConnectionType.Chain,
     })
   }
 
@@ -414,6 +436,25 @@ const initPointer: InitPointerFn = ({ canvas, pointer }) => {
           addGear({ position: pointer.current.state.position, size })
 
           // update again in case we need to show chain option
+          updateAddGearPointer({ e, canvas, pointer: pointer.current })
+        }
+        break
+      }
+      case PointerType.AddGearWithChain: {
+        if (pointer.current.state?.valid) {
+          const chain = gears[pointer.current.sourceId]
+          invariant(chain)
+          addGear({
+            position: pointer.current.state.position,
+            size: 1,
+            chain,
+          })
+
+          pointer.current = {
+            type: PointerType.AddGear,
+            size: 1,
+            state: null,
+          }
           updateAddGearPointer({ e, canvas, pointer: pointer.current })
         }
         break
