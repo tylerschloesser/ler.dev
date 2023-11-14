@@ -5,27 +5,24 @@ import {
 } from '@aws-cdk/aws-apigatewayv2-alpha'
 import { WebSocketLambdaIntegration } from '@aws-cdk/aws-apigatewayv2-integrations-alpha'
 import { Duration, Stack, StackProps } from 'aws-cdk-lib'
-import {
-  Certificate,
-  CertificateValidation,
-} from 'aws-cdk-lib/aws-certificatemanager'
+import { Certificate } from 'aws-cdk-lib/aws-certificatemanager'
 import { AttributeType, Table } from 'aws-cdk-lib/aws-dynamodb'
 import { Runtime } from 'aws-cdk-lib/aws-lambda'
 import { SqsEventSource } from 'aws-cdk-lib/aws-lambda-event-sources'
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs'
 import {
   ARecord,
-  PublicHostedZone,
+  IPublicHostedZone,
   RecordTarget,
 } from 'aws-cdk-lib/aws-route53'
 import { ApiGatewayv2DomainProperties } from 'aws-cdk-lib/aws-route53-targets'
 import { Queue } from 'aws-cdk-lib/aws-sqs'
 import { Construct } from 'constructs'
-import { camelCase, upperFirst } from 'lodash-es'
+import { camelCase, capitalize, upperFirst } from 'lodash-es'
 import * as path from 'path'
-import { Stage, capitalize } from './util.js'
 
 import * as url from 'url'
+import { Stage } from './types.js'
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url))
 
 enum Route {
@@ -42,9 +39,10 @@ type RouteToConstructs = Record<
 >
 
 interface DrawApiStackProps extends StackProps {
+  domainName: string
+  hostedZone: IPublicHostedZone
+  certificate: Certificate
   stage: Stage
-  prodDrawApiZone: PublicHostedZone
-  stagingDrawApiZone: PublicHostedZone
 }
 
 interface AsyncStuffProps {
@@ -83,30 +81,26 @@ class AsyncStuff extends Construct {
 }
 
 export class DrawApiStack extends Stack {
-  constructor(scope: Construct, id: string, props: DrawApiStackProps) {
+  constructor(
+    scope: Construct,
+    id: string,
+    { domainName, certificate, hostedZone, stage, ...props }: DrawApiStackProps,
+  ) {
     super(scope, id, props)
-    const { stage, prodDrawApiZone, stagingDrawApiZone } = props
 
-    const dynamoTable = new Table(this, `${stage}DrawApiTable`, {
+    const prefix = `DrawApi-${capitalize(stage)}`
+
+    const dynamoTable = new Table(this, 'Table', {
+      tableName: `${prefix}-Table`,
       partitionKey: {
         name: 'id',
         type: AttributeType.STRING,
       },
     })
 
-    const domainName = `draw-api.${
-      stage === Stage.Staging ? 'staging.' : ''
-    }ty.ler.dev`
-
-    const hostedZone =
-      stage === Stage.Staging ? stagingDrawApiZone : prodDrawApiZone
-
     const domain = new DomainName(this, 'WebSocketDomainName', {
       domainName,
-      certificate: new Certificate(this, 'DrawApiCertificate', {
-        domainName,
-        validation: CertificateValidation.fromDns(hostedZone),
-      }),
+      certificate,
     })
 
     const asyncStuff = new AsyncStuff(this, 'AsyncStuff', {
@@ -147,7 +141,7 @@ export class DrawApiStack extends Stack {
     )
 
     const webSocketApi = new WebSocketApi(this, 'WebSocketApi', {
-      apiName: `${capitalize(stage)}DrawWebSocketApi`,
+      apiName: `${prefix}-WebSocketApi`,
       routeSelectionExpression: '$request.body.action',
       connectRouteOptions: {
         integration: routeToConstructs[Route.Connect].integration,
@@ -180,7 +174,7 @@ export class DrawApiStack extends Stack {
       },
     )
 
-    new ARecord(this, 'TyLerDevAliasRecord', {
+    new ARecord(this, 'ARecord', {
       zone: hostedZone,
       target: RecordTarget.fromAlias(
         new ApiGatewayv2DomainProperties(

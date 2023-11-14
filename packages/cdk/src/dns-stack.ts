@@ -1,103 +1,89 @@
-import { Duration, Stack, StackProps } from 'aws-cdk-lib'
+import { Stack, StackProps } from 'aws-cdk-lib'
 import {
+  IPublicHostedZone,
   PublicHostedZone,
   RecordSet,
   RecordTarget,
   RecordType,
 } from 'aws-cdk-lib/aws-route53'
 import { Construct } from 'constructs'
+import { DomainName } from './types.js'
+import invariant from 'tiny-invariant'
 
 export class DnsStack extends Stack {
-  readonly rootZone: PublicHostedZone
-  readonly tyZone: PublicHostedZone
-  readonly stagingZone: PublicHostedZone
-
-  readonly prodDrawApiZone: PublicHostedZone
-  readonly stagingDrawApiZone: PublicHostedZone
+  readonly zones: Record<DomainName, IPublicHostedZone>
 
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props)
 
-    this.rootZone = new PublicHostedZone(this, 'PublicHostedZone', {
-      zoneName: 'ler.dev',
-    })
+    this.zones = {
+      [DomainName.LerDev]: PublicHostedZone.fromLookup(
+        this,
+        'HostedZone-LerDev',
+        {
+          domainName: DomainName.LerDev,
+        },
+      ),
+      [DomainName.TyLerDev]: PublicHostedZone.fromLookup(
+        this,
+        'HostedZone-TyLerDev',
+        {
+          domainName: DomainName.TyLerDev,
+        },
+      ),
+      [DomainName.StagingTyLerDev]: new PublicHostedZone(
+        this,
+        'HostedZone-StagingTyLerDev',
+        {
+          zoneName: DomainName.StagingTyLerDev,
+        },
+      ),
+      [DomainName.DrawApiTyLerDev]: new PublicHostedZone(
+        this,
+        'HostedZone-DrawApiTyLerDev',
+        {
+          zoneName: DomainName.DrawApiTyLerDev,
+        },
+      ),
+      [DomainName.DrawApiStagingTyLerDev]: new PublicHostedZone(
+        this,
+        'HostedZone-DrawApiStagingTyLerDev',
+        {
+          zoneName: DomainName.DrawApiStagingTyLerDev,
+        },
+      ),
+    }
 
-    //
-    // ty.ler.dev
-    //
-
-    this.tyZone = new PublicHostedZone(this, 'TyLerDevPublicHostedZone', {
-      zoneName: 'ty.ler.dev',
-    })
-
-    new RecordSet(this, 'TyLerDevNsRecord', {
-      recordName: this.tyZone.zoneName,
-      recordType: RecordType.NS,
-      target: RecordTarget.fromValues(...this.tyZone.hostedZoneNameServers!),
-      zone: this.rootZone,
-    })
-
-    //
-    // staging.ty.ler.dev
-    //
-
-    this.stagingZone = new PublicHostedZone(
-      this,
-      'StagingTyLerDevPublicHostedZone',
-      {
-        zoneName: 'staging.ty.ler.dev',
-      },
-    )
-
-    new RecordSet(this, 'StagingTyLerDevNsRecord', {
-      recordName: this.stagingZone.zoneName,
+    invariant(this.zones[DomainName.StagingTyLerDev].hostedZoneNameServers)
+    new RecordSet(this, 'NsRecord-StagingTyLerDev', {
+      recordName: DomainName.StagingTyLerDev,
       recordType: RecordType.NS,
       target: RecordTarget.fromValues(
-        ...this.stagingZone.hostedZoneNameServers!,
+        ...this.zones[DomainName.StagingTyLerDev].hostedZoneNameServers,
       ),
-      zone: this.tyZone,
+      zone: this.zones[DomainName.TyLerDev],
     })
 
-    //
-    // draw-api.ty.ler.dev
-    //
-
-    this.prodDrawApiZone = new PublicHostedZone(
-      this,
-      'ProdDrawApiPublicHostedZone',
-      {
-        zoneName: 'draw-api.ty.ler.dev',
-      },
-    )
-
-    new RecordSet(this, 'ProdDrawApiNsRecord', {
-      recordName: this.prodDrawApiZone.zoneName,
+    invariant(this.zones[DomainName.DrawApiTyLerDev].hostedZoneNameServers)
+    new RecordSet(this, 'NsRecord-DrawApiTyLerDev', {
+      recordName: DomainName.DrawApiTyLerDev,
       recordType: RecordType.NS,
       target: RecordTarget.fromValues(
-        ...this.prodDrawApiZone.hostedZoneNameServers!,
+        ...this.zones[DomainName.DrawApiTyLerDev].hostedZoneNameServers,
       ),
-      zone: this.tyZone,
+      zone: this.zones[DomainName.TyLerDev],
     })
 
-    //
-    // draw-api.staging.ty.ler.dev
-    //
-
-    this.stagingDrawApiZone = new PublicHostedZone(
-      this,
-      'StagingDrawApiPublicHostedZone',
-      {
-        zoneName: 'draw-api.staging.ty.ler.dev',
-      },
+    invariant(
+      this.zones[DomainName.DrawApiStagingTyLerDev].hostedZoneNameServers,
     )
-
-    new RecordSet(this, 'StagingDrawApiNsRecord', {
-      recordName: this.stagingDrawApiZone.zoneName,
+    new RecordSet(this, 'NsRecord-DrawApiStagingTyLerDev', {
+      recordName: DomainName.DrawApiStagingTyLerDev,
       recordType: RecordType.NS,
       target: RecordTarget.fromValues(
-        ...this.stagingDrawApiZone.hostedZoneNameServers!,
+        ...this.zones[DomainName.DrawApiStagingTyLerDev].hostedZoneNameServers,
       ),
-      zone: this.stagingZone,
+      zone: this.zones[DomainName.StagingTyLerDev],
     })
   }
 }
