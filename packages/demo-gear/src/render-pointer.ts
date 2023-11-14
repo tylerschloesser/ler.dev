@@ -40,7 +40,6 @@ export function renderPointer({
           ? `hsla(120, 50%, 50%, .5)`
           : `hsla(0, 50%, 50%, .5)`,
         context,
-        world,
       })
     }
   }
@@ -88,7 +87,6 @@ export function renderPointer({
         tint: state.valid
           ? `hsla(120, 50%, 50%, .5)`
           : `hsla(0, 50%, 50%, .5)`,
-        world,
         context,
       })
 

@@ -91,6 +91,7 @@ export type InitSimulatorFn = (args: {
 export enum ConnectionType {
   Teeth = 'teeth',
   Chain = 'chain',
+  Attached = 'attached',
 }
 
 export interface Connection {

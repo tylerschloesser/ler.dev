@@ -1,12 +1,11 @@
 import invariant from 'tiny-invariant'
 import { DRAW_GEAR_BOX, TILE_SIZE } from './const.js'
-import { ConnectionType, Gear, World } from './types.js'
+import { Gear } from './types.js'
 
 export function renderGear({
   gear,
   tint,
   context,
-  world,
 }: {
   gear: Pick<
     Gear,
@@ -14,7 +13,6 @@ export function renderGear({
   >
   tint?: string
   context: CanvasRenderingContext2D
-  world: World // TODO refactor
 }): void {
   invariant(context)
 
@@ -78,40 +76,4 @@ export function renderGear({
   }
 
   context.restore()
-
-  for (const connection of gear.connections) {
-    const peer = world.gears[connection.gearId]
-    invariant(peer)
-
-    if (connection.type === ConnectionType.Chain) {
-      context.beginPath()
-      context.strokeStyle = 'hsla(0, 50%, 50%, .75)'
-      context.lineWidth = 2
-      context.strokeRect(
-        Math.min(peer.position.x, gear.position.x) *
-          TILE_SIZE,
-        Math.min(peer.position.y, gear.position.y) *
-          TILE_SIZE,
-        (Math.abs(peer.position.x - gear.position.x) + 1) *
-          TILE_SIZE,
-        (Math.abs(peer.position.y - gear.position.y) + 1) *
-          TILE_SIZE,
-      )
-      context.closePath()
-    } else {
-      context.beginPath()
-      context.strokeStyle = 'hsla(0, 50%, 50%, .75)'
-      context.lineWidth = 2
-      context.moveTo(
-        (gear.position.x + 0.5) * TILE_SIZE,
-        (gear.position.y + 0.5) * TILE_SIZE,
-      )
-      context.lineTo(
-        (peer.position.x + 0.5) * TILE_SIZE,
-        (peer.position.y + 0.5) * TILE_SIZE,
-      )
-      context.stroke()
-      context.closePath()
-    }
-  }
 }

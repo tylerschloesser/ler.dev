@@ -6,6 +6,34 @@ import {
   Network,
 } from './types.js'
 
+export function* iterateConnections(
+  gears: Record<GearId, Gear>,
+) {
+  const seen = new Map<string, ConnectionType>()
+  for (const gear of Object.values(gears)) {
+    for (const connection of gear.connections) {
+      const id = [gear.id, connection.gearId]
+        .sort()
+        .join('.')
+      if (seen.has(id)) {
+        // sanity check the connection type
+        invariant(seen.get(id) === connection.type)
+        continue
+      }
+      seen.set(id, connection.type)
+
+      const peer = gears[connection.gearId]
+      invariant(peer)
+
+      yield {
+        gear1: gear,
+        gear2: peer,
+        type: connection.type,
+      }
+    }
+  }
+}
+
 export function* iterateNetwork(
   root: Gear,
   gears: Record<GearId, Gear>,

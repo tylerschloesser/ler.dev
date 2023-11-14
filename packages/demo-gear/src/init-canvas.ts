@@ -1,8 +1,10 @@
 import invariant from 'tiny-invariant'
+import { renderConnection } from './render-connection.js'
 import { renderGear } from './render-gear.js'
 import { renderGrid } from './render-grid.js'
 import { renderPointer } from './render-pointer.js'
 import { InitCanvasFn } from './types.js'
+import { iterateConnections } from './util.js'
 
 export const initCanvas: InitCanvasFn = ({
   canvas,
@@ -36,7 +38,13 @@ export const initCanvas: InitCanvasFn = ({
     renderGrid({ canvas, context })
 
     for (const gear of Object.values(world.gears)) {
-      renderGear({ gear, context, world })
+      renderGear({ gear, context })
+    }
+
+    for (const { gear1, gear2, type } of iterateConnections(
+      world.gears,
+    )) {
+      renderConnection({ gear1, gear2, type, context })
     }
 
     renderPointer({
