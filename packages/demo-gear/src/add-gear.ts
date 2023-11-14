@@ -8,17 +8,33 @@ import {
 } from './types.js'
 import { getEnergy, getNetwork } from './util.js'
 
-export function addGear({
-  size,
-  position,
-  chain,
-  world,
-}: {
+interface BaseAddGearArgs {
   size: number
   position: Vec2
-  chain?: Gear
   world: World
-}): void {
+}
+
+interface NormalAddGearArgs extends BaseAddGearArgs {
+  connectionType: ConnectionType.Teeth
+}
+
+interface ChainAddGearArgs extends BaseAddGearArgs {
+  connectionType: ConnectionType.Chain
+  chain: Gear
+}
+
+interface AttachAddGearArgs extends BaseAddGearArgs {
+  connectionType: ConnectionType.Attached
+  attach: Gear
+}
+
+export type AddGearArgs =
+  | NormalAddGearArgs
+  | ChainAddGearArgs
+  | AttachAddGearArgs
+
+export function addGear(args: AddGearArgs): void {
+  const { size, position, world } = args
   invariant(position.x === Math.floor(position.x))
   invariant(position.y === Math.floor(position.y))
 
@@ -57,7 +73,8 @@ export function addGear({
     })
   }
 
-  if (chain) {
+  if (args.connectionType === ConnectionType.Chain) {
+    const { chain } = args
     // TODO
     invariant(connections.length === 0)
 
