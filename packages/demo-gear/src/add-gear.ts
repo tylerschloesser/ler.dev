@@ -1,6 +1,7 @@
 import invariant from 'tiny-invariant'
 import { getConnections } from './get-connections.js'
 import {
+  Connection,
   ConnectionType,
   Gear,
   Vec2,
@@ -41,54 +42,66 @@ export function addGear(args: AddGearArgs): void {
   const gearId = `${position.x}.${position.y}`
   invariant(world.gears[gearId] === undefined)
 
-  const connections = getConnections({
-    size,
-    position,
-    world,
-  })
-
+  let connections: Connection[]
   let sign = 0
-  if (connections.length > 0) {
-    const neighbors = connections.map((connection) => {
-      const neighbor = world.gears[connection.gearId]
-      invariant(neighbor)
-      return neighbor
-    })
 
-    const [first, ...rest] = neighbors
-    invariant(first)
-
-    // sign is the opposite of the neighbor
-    sign = Math.sign(first.velocity) * -1
-
-    for (const neighbor of rest) {
-      invariant(sign === Math.sign(neighbor.velocity) * -1)
-    }
-
-    neighbors.forEach((neighbor) => {
-      neighbor.connections.push({
-        type: ConnectionType.Teeth,
-        gearId,
+  switch (args.connectionType) {
+    case ConnectionType.Teeth: {
+      connections = getConnections({
+        size,
+        position,
+        world,
       })
-    })
-  }
 
-  if (args.connectionType === ConnectionType.Chain) {
-    const { chain } = args
-    // TODO
-    invariant(connections.length === 0)
+      if (connections.length > 0) {
+        const neighbors = connections.map((connection) => {
+          const neighbor = world.gears[connection.gearId]
+          invariant(neighbor)
+          return neighbor
+        })
 
-    sign = Math.sign(chain.velocity)
+        const [first, ...rest] = neighbors
+        invariant(first)
 
-    connections.push({
-      gearId: chain.id,
-      type: ConnectionType.Chain,
-    })
+        // sign is the opposite of the neighbor
+        sign = Math.sign(first.velocity) * -1
 
-    chain.connections.push({
-      gearId,
-      type: ConnectionType.Chain,
-    })
+        for (const neighbor of rest) {
+          invariant(
+            sign === Math.sign(neighbor.velocity) * -1,
+          )
+        }
+
+        neighbors.forEach((neighbor) => {
+          neighbor.connections.push({
+            type: ConnectionType.Teeth,
+            gearId,
+          })
+        })
+      }
+      break
+    }
+    case ConnectionType.Chain: {
+      const { chain } = args
+      // TODO
+
+      sign = Math.sign(chain.velocity)
+
+      connections = [
+        {
+          gearId: chain.id,
+          type: ConnectionType.Chain,
+        },
+      ]
+
+      chain.connections.push({
+        gearId,
+        type: ConnectionType.Chain,
+      })
+    }
+    case ConnectionType.Attached: {
+      invariant(false)
+    }
   }
 
   const mass = Math.PI * size ** 2
