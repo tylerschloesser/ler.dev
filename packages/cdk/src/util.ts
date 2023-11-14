@@ -1,6 +1,9 @@
 import * as fs from 'fs'
 import * as path from 'path'
 
+import * as url from 'url'
+const __dirname = url.fileURLToPath(new URL('.', import.meta.url))
+
 export function getAssetPath(): string {
   return path.join(__dirname, '../../ty/dist')
 }
@@ -22,5 +25,8 @@ export enum Stage {
 }
 
 export function capitalize(str: string) {
-  return str[0].toUpperCase() + str.slice(1)
+  if (str.length === 0) {
+    return str
+  }
+  return str[0]!.toUpperCase() + str.slice(1)
 }

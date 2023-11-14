@@ -21,9 +21,12 @@ import {
 import { ApiGatewayv2DomainProperties } from 'aws-cdk-lib/aws-route53-targets'
 import { Queue } from 'aws-cdk-lib/aws-sqs'
 import { Construct } from 'constructs'
-import { camelCase, upperFirst } from 'lodash'
+import { camelCase, upperFirst } from 'lodash-es'
 import * as path from 'path'
-import { capitalize, Stage } from './util'
+import { Stage, capitalize } from './util.js'
+
+import * as url from 'url'
+const __dirname = url.fileURLToPath(new URL('.', import.meta.url))
 
 enum Route {
   Connect = 'connect',

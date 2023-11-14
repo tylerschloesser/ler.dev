@@ -1,10 +1,9 @@
 import { App } from 'aws-cdk-lib'
-import 'source-map-support/register'
-import { DnsStack } from '../lib/dns-stack'
-import { DrawApiStack } from '../lib/draw-api-stack'
-import { ProdStack } from '../lib/prod-stack'
-import { StagingStack } from '../lib/staging-stack'
-import { capitalize, Stage } from '../lib/util'
+import { DnsStack } from './dns-stack.js'
+import { DrawApiStack } from './draw-api-stack.js'
+import { ProdStack } from './prod-stack.js'
+import { StagingStack } from './staging-stack.js'
+import { capitalize, Stage } from './util.js'
 
 const app = new App()
 const dnsStack = new DnsStack(app, 'LerDevDns')
