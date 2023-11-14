@@ -533,7 +533,7 @@ const initCanvas: InitCanvasFn = ({ canvas, pointer }) => {
 
     context.beginPath()
     context.lineWidth = 1
-    context.strokeStyle = 'grey'
+    context.strokeStyle = 'hsl(0, 0%, 10%)'
     for (let y = grid.tl.y; y < grid.br.y; y += TILE_SIZE) {
       context.moveTo(grid.tl.x, y)
       context.lineTo(grid.br.x, y)
