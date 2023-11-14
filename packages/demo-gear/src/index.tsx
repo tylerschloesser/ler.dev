@@ -612,23 +612,6 @@ const initCanvas: InitCanvasFn = ({
   initKeyboard({ canvas, pointer, signal })
   initSimulator({ pointer, world })
 
-  addGear({
-    position: {
-      x: 0,
-      y: 0,
-    },
-    size: GEAR_SIZES[1]!,
-    world,
-  })
-  addGear({
-    position: {
-      x: 5,
-      y: 0,
-    },
-    size: GEAR_SIZES[3]!,
-    world,
-  })
-
   function render() {
     invariant(context)
 
@@ -894,6 +877,36 @@ const initCanvas: InitCanvasFn = ({
   window.requestAnimationFrame(render)
 }
 
+function useWorld(): React.MutableRefObject<World> {
+  return useRef(
+    (() => {
+      const world: World = {
+        gears: {},
+        tiles: {},
+      }
+
+      addGear({
+        position: {
+          x: 0,
+          y: 0,
+        },
+        size: GEAR_SIZES[1]!,
+        world,
+      })
+      addGear({
+        position: {
+          x: 5,
+          y: 0,
+        },
+        size: GEAR_SIZES[3]!,
+        world,
+      })
+
+      return world
+    })(),
+  )
+}
+
 export function DemoGear() {
   const pointer = useRef<Pointer>({
     type: PointerType.AddGear,
@@ -902,10 +915,9 @@ export function DemoGear() {
   })
   const [canvas, setCanvas] =
     useState<HTMLCanvasElement | null>(null)
-  const world = useRef<World>({
-    gears: {},
-    tiles: {},
-  })
+
+  const world = useWorld()
+
   useEffect(() => {
     if (canvas) {
       const controller = new AbortController()
