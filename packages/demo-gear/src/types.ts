@@ -4,8 +4,6 @@ export type Network = Set<Gear>
 export type GearId = string
 export type TileId = string
 
-export const GEAR_SIZES = [1, 3, 5, 7]
-
 export interface Tile {
   gearId: GearId
 }

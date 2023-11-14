@@ -1,5 +1,13 @@
 import { useEffect, useRef, useState } from 'react'
 import invariant from 'tiny-invariant'
+import {
+  ACCELERATION,
+  DRAW_GEAR_BOX,
+  FRICTION,
+  GEAR_SIZES,
+  TICK_DURATION,
+  TILE_SIZE,
+} from './const.js'
 import styles from './index.module.scss'
 import { Toolbar } from './toolbar.js'
 import {
@@ -8,7 +16,6 @@ import {
   ApplyForcePointer,
   Connection,
   ConnectionType,
-  GEAR_SIZES,
   Gear,
   GearId,
   InitCanvasFn,
@@ -26,14 +33,6 @@ import {
   getNetworks,
   iterateNetwork,
 } from './util.js'
-
-const TILE_SIZE = 40
-
-const TICK_DURATION = 50
-const DRAW_GEAR_BOX = false
-
-const FRICTION = 1 // energy/sec
-const ACCELERATION = 2
 
 function getEnergy(network: Set<Gear>): number {
   let energy = 0
