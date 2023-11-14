@@ -481,7 +481,7 @@ const initPointer: InitPointerFn = ({ canvas, pointer }) => {
 
 const initKeyboard: initKeyboardFn = ({}) => {}
 
-const initCanvas: InitCanvasFn = ({ canvas, pointer }) => {
+const initCanvas: InitCanvasFn = ({ canvas, pointer, signal }) => {
   const rect = canvas.getBoundingClientRect()
   canvas.width = rect.width
   canvas.height = rect.height
@@ -489,8 +489,8 @@ const initCanvas: InitCanvasFn = ({ canvas, pointer }) => {
   const context = canvas.getContext('2d')
   invariant(context)
 
-  initPointer({ canvas, pointer })
-  initKeyboard({ canvas, pointer })
+  initPointer({ canvas, pointer, signal })
+  initKeyboard({ canvas, pointer, signal })
   initSimulator({ pointer })
 
   addGear({
@@ -751,7 +751,12 @@ export function DemoGear() {
   const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null)
   useEffect(() => {
     if (canvas) {
-      initCanvas({ canvas, pointer })
+      const controller = new AbortController()
+      const { signal } = controller
+      initCanvas({ canvas, pointer, signal })
+      return () => {
+        controller.abort()
+      }
     }
   }, [canvas])
   return (

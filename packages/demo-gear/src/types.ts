@@ -56,16 +56,19 @@ export type Pointer =
 export type InitCanvasFn = (args: {
   canvas: HTMLCanvasElement
   pointer: React.MutableRefObject<Pointer>
+  signal: AbortSignal
 }) => void
 
 export type InitPointerFn = (args: {
   canvas: HTMLCanvasElement
   pointer: React.MutableRefObject<Pointer>
+  signal: AbortSignal
 }) => void
 
 export type initKeyboardFn = (args: {
   canvas: HTMLCanvasElement
   pointer: React.MutableRefObject<Pointer>
+  signal: AbortSignal
 }) => void
 
 export enum ConnectionType {
