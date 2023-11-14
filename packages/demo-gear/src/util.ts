@@ -19,8 +19,8 @@ export function* iterateNetwork(root: Gear, gears: Record<GearId, Gear>) {
     yield node
 
     const { connections } = node.gear
-    connections.forEach((id) => {
-      const neighbor = gears[id]
+    connections.forEach((connection) => {
+      const neighbor = gears[connection.gearId]
       invariant(neighbor)
       stack.push({
         gear: neighbor,
@@ -43,8 +43,8 @@ export function getNetwork(root: Gear, gears: Record<GearId, Gear>): Network {
 
     network.add(gear)
 
-    for (const neighborId of gear.connections) {
-      const neighbor = gears[neighborId]
+    for (const connection of gear.connections) {
+      const neighbor = gears[connection.gearId]
       invariant(neighbor)
       stack.push(neighbor)
     }

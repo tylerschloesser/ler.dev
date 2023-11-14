@@ -1,4 +1,6 @@
 import {
+  Connection,
+  ConnectionType,
   GEAR_SIZES,
   Gear,
   GearId,
@@ -33,7 +35,7 @@ interface BasePointer {
 interface AddGearPointer extends BasePointer {
   mode: PointerMode.AddGear
   valid: boolean
-  connections: GearId[]
+  connections: Connection[]
 }
 
 interface ApplyForcePointer extends BasePointer {
@@ -167,8 +169,8 @@ function addGear({ size, position }: { size: number; position: Vec2 }): void {
 
   let sign = 0
   if (connections.length > 0) {
-    const neighbors = connections.map((id) => {
-      const neighbor = gears[id]
+    const neighbors = connections.map((connection) => {
+      const neighbor = gears[connection.gearId]
       invariant(neighbor)
       return neighbor
     })
@@ -184,7 +186,10 @@ function addGear({ size, position }: { size: number; position: Vec2 }): void {
     }
 
     neighbors.forEach((neighbor) => {
-      neighbor.connections.push(gearId)
+      neighbor.connections.push({
+        type: ConnectionType.Direct,
+        gearId,
+      })
     })
   }
 
@@ -242,7 +247,7 @@ function getConnections({
 }: {
   gearSize: number
   position: Vec2
-}): GearId[] {
+}): Connection[] {
   const connections = new Set<GearId>()
 
   for (const delta of [
@@ -270,7 +275,10 @@ function getConnections({
       connections.add(tile.gearId)
     }
   }
-  return [...connections]
+  return [...connections].map((gearId) => ({
+    type: ConnectionType.Direct,
+    gearId,
+  }))
 }
 
 type GetPointerFn<T extends Pointer> = (args: {
@@ -323,7 +331,7 @@ const getAddGearPointer: GetPointerFn<AddGearPointer> = ({
     }
   }
 
-  let connections: GearId[] = []
+  let connections: Connection[] = []
   if (valid) {
     connections = getConnections({ position, gearSize })
   }
@@ -504,7 +512,7 @@ const initCanvas: InitCanvasFn = ({ canvas, inputState }) => {
       context.restore()
 
       for (const connection of gear.connections) {
-        const peer = gears[connection]
+        const peer = gears[connection.gearId]
         invariant(peer)
         context.beginPath()
         context.strokeStyle = 'hsla(0, 50%, 50%, .75)'

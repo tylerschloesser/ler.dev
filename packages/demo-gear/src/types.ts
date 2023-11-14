@@ -26,6 +26,16 @@ export type InitPointerFn = (args: {
 }) => void
 export type initKeyboardFn = (args: { canvas: HTMLCanvasElement }) => void
 
+export enum ConnectionType {
+  Direct = 'direct',
+  Chain = 'chain',
+}
+
+export interface Connection {
+  type: ConnectionType
+  gearId: GearId
+}
+
 export interface Gear {
   id: GearId
   position: Vec2
@@ -33,5 +43,5 @@ export interface Gear {
   angle: number
   velocity: number
   mass: number
-  connections: GearId[]
+  connections: Connection[]
 }
