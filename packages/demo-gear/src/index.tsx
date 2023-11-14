@@ -3,33 +3,11 @@ import { addGear } from './add-gear.js'
 import { GEAR_SIZES } from './const.js'
 import styles from './index.module.scss'
 import { initCanvas } from './init-canvas.js'
+import { initKeyboard } from './init-keyboard.js'
 import { initPointer } from './init-pointer.js'
 import { initSimulator } from './init-simulator.js'
 import { Toolbar } from './toolbar.js'
-import {
-  Pointer,
-  PointerType,
-  World,
-  initKeyboardFn,
-} from './types.js'
-
-const initKeyboard: initKeyboardFn = ({
-  signal,
-  pointer,
-}) => {
-  window.addEventListener(
-    'keyup',
-    (e) => {
-      if (e.key === 'q') {
-        pointer.current = {
-          type: PointerType.Null,
-          state: null,
-        }
-      }
-    },
-    { signal },
-  )
-}
+import { Pointer, PointerType, World } from './types.js'
 
 function useWorld(): React.MutableRefObject<World> {
   return useRef(
