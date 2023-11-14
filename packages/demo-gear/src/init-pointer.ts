@@ -62,6 +62,7 @@ const updateAddGearPointer: UpdatePointerFn<
   const radius = (size - 1) / 2
 
   let chain: GearId | null = null
+  let attach: GearId | null = null
   let valid = true
   for (let x = -radius; x <= radius && valid; x++) {
     for (let y = -radius; y <= radius && valid; y++) {
@@ -77,6 +78,13 @@ const updateAddGearPointer: UpdatePointerFn<
         invariant(gear)
         if (pointer.size === 1 && gear.radius === 0.5) {
           chain = gear.id
+        } else if (
+          pointer.size === 1 &&
+          gear.radius > 0.5 &&
+          gear.position.x === position.x &&
+          gear.position.y === position.y
+        ) {
+          attach = gear.id
         }
       }
     }
@@ -92,7 +100,7 @@ const updateAddGearPointer: UpdatePointerFn<
     connections,
     valid,
     chain,
-    attach: null,
+    attach,
   }
 }
 
