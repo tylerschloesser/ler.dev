@@ -1,6 +1,6 @@
 import { useRef } from 'react'
 import { addGear } from './add-gear.js'
-import { GEAR_SIZES } from './const.js'
+import { GEAR_RADIUSES } from './const.js'
 import { ConnectionType, World } from './types.js'
 
 export function useWorld(): React.MutableRefObject<World> {
@@ -16,16 +16,16 @@ export function useWorld(): React.MutableRefObject<World> {
           x: 0,
           y: 0,
         },
-        size: GEAR_SIZES[1]!,
+        radius: GEAR_RADIUSES[1]!,
         world,
         connections: [],
       })
       addGear({
         position: {
-          x: 5,
+          x: 10,
           y: 0,
         },
-        size: GEAR_SIZES[3]!,
+        radius: GEAR_RADIUSES[3]!,
         world,
         connections: [
           {

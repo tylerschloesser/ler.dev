@@ -35,47 +35,33 @@ export function* iterateConnections(
   }
 }
 
-export function* iterateNetwork(
-  root: Gear,
-  gears: Record<GearId, Gear>,
-) {
+export function* iterateNetwork(root: Gear, world: World) {
   const seen = new Set<Gear>()
-  const stack = new Array<{ gear: Gear; sign: number }>({
-    gear: root,
-    sign: Math.sign(root.velocity),
-  })
+  const stack = new Array<Gear>(root)
 
   while (stack.length) {
     const node = stack.pop()
     invariant(node)
-    if (seen.has(node.gear)) {
+    if (seen.has(node)) {
       continue
     }
-    seen.add(node.gear)
+    seen.add(node)
 
     yield node
 
-    const { connections } = node.gear
+    const { connections } = node
     connections.forEach((connection) => {
-      const neighbor = gears[connection.gearId]
+      const neighbor = world.gears[connection.gearId]
       invariant(neighbor)
-      stack.push({
-        gear: neighbor,
-        sign:
-          node.sign *
-          (connection.type === ConnectionType.Chain
-            ? 1
-            : -1),
-      })
+      stack.push(neighbor)
     })
   }
 }
 
 export function* iterateGearTileIds(
   position: Vec2,
-  size: number,
+  radius: number,
 ) {
-  const radius = (size - 1) / 2
   for (let x = -radius; x <= radius; x++) {
     for (let y = -radius; y <= radius; y++) {
       invariant(x === Math.floor(x))
@@ -88,10 +74,13 @@ export function* iterateGearTileIds(
 
 export function* iterateGearTiles(
   position: Vec2,
-  size: number,
+  radius: number,
   world: World,
 ) {
-  for (const tileId of iterateGearTileIds(position, size)) {
+  for (const tileId of iterateGearTileIds(
+    position,
+    radius,
+  )) {
     const tile = world.tiles[tileId]
     if (tile) {
       yield tile

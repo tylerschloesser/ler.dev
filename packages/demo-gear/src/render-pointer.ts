@@ -21,7 +21,7 @@ type RenderPointerFn<T extends Pointer> = (args: {
 const renderAddGearPointer: RenderPointerFn<
   AddGearPointer
 > = ({ pointer, context, world }) => {
-  const { size, state } = pointer
+  const { radius, state } = pointer
   if (!state) {
     return
   }
@@ -31,7 +31,7 @@ const renderAddGearPointer: RenderPointerFn<
       renderGear({
         gear: {
           position: state.position,
-          radius: size / 2,
+          radius,
           angle: 0,
         },
         tint: state.valid
@@ -45,7 +45,7 @@ const renderAddGearPointer: RenderPointerFn<
         invariant(gear2)
         renderConnection({
           context,
-          gear1: { position: state.position },
+          gear1: { position: state.position, radius },
           gear2,
           type: connection.type,
         })
@@ -56,7 +56,7 @@ const renderAddGearPointer: RenderPointerFn<
       renderGear({
         gear: {
           position: state.position,
-          radius: size / 2,
+          radius,
           angle: 0,
         },
         tint: `hsla(120, 50%, 50%, .5)`,
@@ -79,7 +79,7 @@ const renderAddGearPointer: RenderPointerFn<
       renderGear({
         gear: {
           position: state.position,
-          radius: size / 2,
+          radius,
           angle: 0,
         },
         tint: `hsla(120, 50%, 50%, .5)`,
@@ -106,8 +106,8 @@ const renderApplyForcePointer: RenderPointerFn<
   context.lineWidth = 2
   context.strokeStyle = active ? 'green' : 'white'
   context.strokeRect(
-    (gear.position.x - (gear.radius - 0.5)) * TILE_SIZE,
-    (gear.position.y - (gear.radius - 0.5)) * TILE_SIZE,
+    (gear.position.x - gear.radius) * TILE_SIZE,
+    (gear.position.y - gear.radius) * TILE_SIZE,
     TILE_SIZE * gear.radius * 2,
     TILE_SIZE * gear.radius * 2,
   )
@@ -129,10 +129,11 @@ const renderAddGearWithChainPointer: RenderPointerFn<
 
   const { state } = pointer
   if (state) {
+    const radius = 1
     renderGear({
       gear: {
         position: state.position,
-        radius: 0.5,
+        radius,
         angle: 0,
       },
       tint: state.valid
@@ -146,7 +147,7 @@ const renderAddGearWithChainPointer: RenderPointerFn<
       invariant(gear2)
       renderConnection({
         context,
-        gear1: { position: state.position },
+        gear1: { position: state.position, radius },
         gear2,
         type: connection.type,
       })

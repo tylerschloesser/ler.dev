@@ -15,8 +15,8 @@ export function renderGear({
 
   context.save()
   context.translate(
-    (gear.position.x - (gear.radius - 0.5)) * TILE_SIZE,
-    (gear.position.y - (gear.radius - 0.5)) * TILE_SIZE,
+    (gear.position.x - gear.radius) * TILE_SIZE,
+    (gear.position.y - gear.radius) * TILE_SIZE,
   )
 
   if (DRAW_GEAR_BOX) {

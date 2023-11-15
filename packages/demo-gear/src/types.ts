@@ -60,7 +60,7 @@ export type AddGearPointerState =
 
 export type AddGearPointer = {
   type: PointerType.AddGear
-  size: number
+  radius: number
   state: AddGearPointerState | null
 }
 

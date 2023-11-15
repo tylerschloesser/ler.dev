@@ -6,14 +6,14 @@ import {
 } from './util.js'
 
 interface AddGearArgs {
-  size: number
+  radius: number
   position: Vec2
   world: World
   connections: Connection[]
 }
 
 export function addGear({
-  size,
+  radius,
   position,
   world,
   connections,
@@ -21,11 +21,10 @@ export function addGear({
   invariant(position.x === Math.floor(position.x))
   invariant(position.y === Math.floor(position.y))
 
-  const gearId = `${position.x}.${position.y}.${size}`
+  const gearId = `${position.x}.${position.y}.${radius}`
   invariant(world.gears[gearId] === undefined)
 
-  const mass = Math.PI * size ** 2
-  const radius = size / 2
+  const mass = Math.PI * radius ** 2
 
   const gear: Gear = {
     id: gearId,
@@ -42,7 +41,10 @@ export function addGear({
 
   world.gears[gear.id] = gear
 
-  for (const tileId of iterateGearTileIds(position, size)) {
+  for (const tileId of iterateGearTileIds(
+    position,
+    radius,
+  )) {
     let tile = world.tiles[tileId]
     if (!tile) {
       tile = world.tiles[tileId] = { gearIds: [] }
@@ -62,8 +64,8 @@ export function addGear({
     })
   }
 
-  for (const node of iterateNetwork(gear, world.gears)) {
-    node.gear.velocity = 0
+  for (const node of iterateNetwork(gear, world)) {
+    node.velocity = 0
   }
 
   return gear

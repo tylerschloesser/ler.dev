@@ -50,7 +50,7 @@ const handlePointerUp: HandlePointerEventFn = ({
           if (pointer.current.state.valid) {
             addGear({
               position: pointer.current.state.position,
-              size: pointer.current.size,
+              radius: pointer.current.radius,
               world,
               connections:
                 pointer.current.state.connections,
@@ -71,7 +71,7 @@ const handlePointerUp: HandlePointerEventFn = ({
         case AddGearPointerStateType.Attach: {
           addGear({
             position: pointer.current.state.position,
-            size: pointer.current.size,
+            radius: pointer.current.radius,
             world,
             connections: pointer.current.state.connections,
           })
@@ -87,13 +87,13 @@ const handlePointerUp: HandlePointerEventFn = ({
         invariant(chain)
         addGear({
           position: pointer.current.state.position,
-          size: 1,
+          radius: 1,
           world,
           connections: pointer.current.state.connections,
         })
         pointer.current = {
           type: PointerType.AddGear,
-          size: 1,
+          radius: 1,
           state: null,
         }
         needsUpdate = true

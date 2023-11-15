@@ -8,11 +8,11 @@ import {
 } from './types.js'
 
 export function getConnections({
-  size,
+  radius,
   position,
   world,
 }: {
-  size: number
+  radius: number
   position: Vec2
   world: World
 }): Connection[] {
@@ -25,8 +25,8 @@ export function getConnections({
     { x: -1, y: 0 },
   ]) {
     const point = {
-      x: position.x + ((size - 1) / 2 + 1) * delta.x,
-      y: position.y + ((size - 1) / 2 + 1) * delta.y,
+      x: position.x + (radius + 1) * delta.x,
+      y: position.y + (radius + 1) * delta.y,
     }
     const tileId = `${point.x}.${point.y}`
     const tile = world.tiles[tileId]

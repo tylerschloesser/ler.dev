@@ -1,4 +1,4 @@
-import { GEAR_SIZES } from './const.js'
+import { GEAR_RADIUSES } from './const.js'
 import styles from './toolbar.module.scss'
 import { Pointer, PointerType } from './types.js'
 
@@ -11,18 +11,18 @@ export function Toolbar({ pointer }: ToolbarProps) {
     <div className={styles.container}>
       <div>
         <div>Add Gear:</div>
-        {GEAR_SIZES.map((size) => (
+        {GEAR_RADIUSES.map((radius) => (
           <button
-            key={size}
+            key={radius}
             onPointerUp={() => {
               pointer.current = {
                 type: PointerType.AddGear,
-                size,
+                radius,
                 state: null,
               }
             }}
           >
-            {size}
+            {radius}
           </button>
         ))}
       </div>

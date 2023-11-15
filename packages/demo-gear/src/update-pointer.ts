@@ -64,7 +64,7 @@ const updateAddGearPointer: UpdatePointerFn<
     ),
   }
 
-  const { size } = pointer
+  const { radius } = pointer
 
   let chain: GearId | null = null
   let attach: GearId | null = null
@@ -72,7 +72,7 @@ const updateAddGearPointer: UpdatePointerFn<
 
   for (const tile of iterateGearTiles(
     position,
-    size,
+    radius,
     world,
   )) {
     valid = false
@@ -89,16 +89,16 @@ const updateAddGearPointer: UpdatePointerFn<
       const gearId = tile.gearIds[1]
       invariant(gearId)
       gear = world.gears[gearId]
-      invariant(gear?.radius === 0.5)
+      invariant(gear?.radius === 1)
     }
 
     invariant(gear)
 
-    if (pointer.size === 1 && gear.radius === 0.5) {
+    if (pointer.radius === 1 && gear.radius === 1) {
       chain = gear.id
     } else if (
-      pointer.size === 1 &&
-      gear.radius > 0.5 &&
+      pointer.radius === 1 &&
+      gear.radius > 1 &&
       gear.position.x === position.x &&
       gear.position.y === position.y
     ) {
@@ -108,7 +108,11 @@ const updateAddGearPointer: UpdatePointerFn<
 
   let connections: Connection[] = []
   if (valid) {
-    connections = getConnections({ position, size, world })
+    connections = getConnections({
+      position,
+      radius,
+      world,
+    })
   }
 
   invariant(!(chain && attach))
@@ -184,7 +188,7 @@ const updateAddGearWithChainPointer: UpdatePointerFn<
   if (valid) {
     connections = getConnections({
       position,
-      size: 1,
+      radius: 1,
       world,
     })
   }
