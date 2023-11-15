@@ -3,7 +3,6 @@ import {
   ConnectionType,
   Gear,
   GearId,
-  Network,
   Vec2,
   World,
 } from './types.js'
@@ -98,80 +97,4 @@ export function* iterateGearTiles(
       yield tile
     }
   }
-}
-
-export function getNetwork(
-  root: Gear,
-  gears: Record<GearId, Gear>,
-): Network {
-  const network = new Set<Gear>()
-
-  const stack = new Array<Gear>(root)
-  while (stack.length) {
-    const gear = stack.pop()
-    invariant(gear)
-    if (network.has(gear)) {
-      continue
-    }
-
-    network.add(gear)
-
-    for (const connection of gear.connections) {
-      const neighbor = gears[connection.gearId]
-      invariant(neighbor)
-      stack.push(neighbor)
-    }
-  }
-
-  return network
-}
-
-export function getNetworks(
-  gears: Record<GearId, Gear>,
-): Network[] {
-  const networks = new Array<Network>()
-
-  const seen = new Set<Gear>()
-  for (const root of Object.values(gears)) {
-    if (seen.has(root)) {
-      continue
-    }
-    const network = getNetwork(root, gears)
-    network.forEach((node) => seen.add(node))
-    networks.push(network)
-  }
-
-  return networks
-}
-
-export function getEnergy(
-  root: Gear,
-  world: World,
-): number {
-  let energy = 0
-  const stack = new Array<Gear>(root)
-  const seen = new Set<Gear>()
-
-  while (stack.length) {
-    const gear = stack.pop()
-    invariant(gear)
-    if (seen.has(gear)) {
-      continue
-    }
-    seen.add(gear)
-
-    energy +=
-      (1 / 4) *
-      gear.radius ** 2 *
-      gear.velocity ** 2 *
-      gear.mass
-
-    for (const connection of gear.connections) {
-      const peer = world.gears[connection.gearId]
-      invariant(peer)
-      stack.push(peer)
-    }
-  }
-
-  return energy
 }

@@ -1,6 +1,5 @@
 export type Vec2 = { x: number; y: number }
 
-export type Network = Set<Gear>
 export type GearId = string
 export type TileId = string
 
