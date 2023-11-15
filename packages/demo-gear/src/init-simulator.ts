@@ -5,6 +5,7 @@ import {
   TICK_DURATION,
 } from './const.js'
 import {
+  ConnectionType,
   Gear,
   InitSimulatorFn,
   Network,
@@ -81,14 +82,55 @@ function accelerateGear({
   world: World
 }): void {
   root.velocity += acceleration * elapsed
-  for (const { gear, sign } of iterateNetwork(
-    root,
-    world.gears,
-  )) {
-    gear.velocity =
-      sign *
-      Math.abs(root.velocity) *
-      (root.radius / gear.radius)
+
+  const seen = new Set<Gear>()
+  function recurse({
+    from,
+    to,
+    type,
+  }: {
+    from: Gear
+    to: Gear
+    type: ConnectionType
+  }): void {
+    if (seen.has(to)) {
+      // TODO validate
+      return
+    }
+
+    seen.add(to)
+    let n
+    switch (type) {
+      case ConnectionType.Teeth:
+        n = (from.radius / to.radius) * -1
+        break
+      case ConnectionType.Chain:
+        n = from.radius / to.radius
+        break
+      case ConnectionType.Attached:
+        n = 1
+    }
+    to.velocity = from.velocity * n
+
+    for (const connection of to.connections) {
+      const toto = world.gears[connection.gearId]
+      invariant(toto)
+      recurse({
+        from: to,
+        to: toto,
+        type: connection.type,
+      })
+    }
+  }
+
+  for (const connection of root.connections) {
+    const to = world.gears[connection.gearId]
+    invariant(to)
+    recurse({
+      from: root,
+      to,
+      type: connection.type,
+    })
   }
 }
 
