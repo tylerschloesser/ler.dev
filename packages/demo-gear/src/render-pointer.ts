@@ -65,15 +65,14 @@ const renderAddGearPointer: RenderPointerFn<
         context,
       })
 
-      // TODO refactor to renderConnection
       context.beginPath()
       context.lineWidth = 2
       context.strokeStyle = Color.Connection
       context.strokeRect(
-        state.position.x * TILE_SIZE,
-        state.position.y * TILE_SIZE,
-        TILE_SIZE,
-        TILE_SIZE,
+        (state.position.x - radius) * TILE_SIZE,
+        (state.position.y - radius) * TILE_SIZE,
+        radius * 2 * TILE_SIZE,
+        radius * 2 * TILE_SIZE,
       )
       context.closePath()
       break
@@ -85,7 +84,7 @@ const renderAddGearPointer: RenderPointerFn<
           radius,
           angle: 0,
         },
-        tint: Color.Connection,
+        tint: Color.AddGearValid,
         context,
       })
       break
