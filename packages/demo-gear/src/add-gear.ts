@@ -21,7 +21,7 @@ export function addGear({
   invariant(position.x === Math.floor(position.x))
   invariant(position.y === Math.floor(position.y))
 
-  const gearId = `${position.x}.${position.y}`
+  const gearId = `${position.x}.${position.y}.${size}`
   invariant(world.gears[gearId] === undefined)
 
   const mass = Math.PI * size ** 2
@@ -43,8 +43,14 @@ export function addGear({
   world.gears[gear.id] = gear
 
   for (const tileId of iterateGearTileIds(position, size)) {
-    invariant(world.tiles[tileId] === undefined)
-    world.tiles[tileId] = { gearId }
+    let tile = world.tiles[tileId]
+    if (!tile) {
+      tile = world.tiles[tileId] = { gearIds: [] }
+    }
+
+    invariant(!tile.gearIds.includes(gearId))
+
+    tile.gearIds.push(gearId)
   }
 
   for (const connection of connections) {

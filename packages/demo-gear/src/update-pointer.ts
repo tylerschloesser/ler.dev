@@ -8,6 +8,7 @@ import {
   ApplyForcePointer,
   Connection,
   ConnectionType,
+  Gear,
   GearId,
   Pointer,
   PointerType,
@@ -37,7 +38,11 @@ const updateApplyForcePointer: UpdatePointerFn<
   const tileId = `${position.x}.${position.y}`
   const tile = world.tiles[tileId]
 
-  const gearId = tile?.gearId
+  // gears only overlap if there attached, in which
+  // case it doesn't matter which one we accelerate,
+  // so pick the first
+  //
+  const gearId = tile?.gearIds[0]
 
   const active = Boolean(e.buttons)
   pointer.state = {
@@ -72,7 +77,21 @@ const updateAddGearPointer: UpdatePointerFn<
   )) {
     valid = false
 
-    const gear = world.gears[tile.gearId]
+    let gear: Gear | undefined
+
+    if (tile.gearIds.length === 1) {
+      const gearId = tile.gearIds[0]
+      invariant(gearId)
+      gear = world.gears[gearId]
+    } else {
+      invariant(tile.gearIds.length === 2)
+      // TODO don't assume the second is the smaller gear?
+      const gearId = tile.gearIds[1]
+      invariant(gearId)
+      gear = world.gears[gearId]
+      invariant(gear?.radius === 0.5)
+    }
+
     invariant(gear)
 
     if (pointer.size === 1 && gear.radius === 0.5) {

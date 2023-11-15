@@ -33,7 +33,12 @@ export function getConnections({
     if (!tile) {
       continue
     }
-    const gear = world.gears[tile.gearId]
+
+    // TODO handle not first gear ID
+    const gearId = tile.gearIds[0]
+    invariant(gearId)
+
+    const gear = world.gears[gearId]
     invariant(gear)
 
     if (
@@ -42,7 +47,7 @@ export function getConnections({
       gear.position.y + -((gear.radius - 0.5) * delta.y) ===
         point.y
     ) {
-      connections.add(tile.gearId)
+      connections.add(gearId)
     }
   }
   return [...connections].map((gearId) => ({

@@ -4,7 +4,7 @@ export type GearId = string
 export type TileId = string
 
 export interface Tile {
-  gearId: GearId
+  gearIds: GearId[]
 }
 
 export interface World {
