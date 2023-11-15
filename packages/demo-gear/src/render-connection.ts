@@ -1,3 +1,4 @@
+import { Color } from './color.js'
 import { TILE_SIZE } from './const.js'
 import { ConnectionType, Gear } from './types.js'
 
@@ -15,32 +16,37 @@ export function renderConnection({
   switch (type) {
     case ConnectionType.Chain: {
       context.beginPath()
-      context.strokeStyle = 'hsla(0, 50%, 50%, .75)'
-      context.lineWidth = 2
-      context.strokeRect(
+      ;(context.strokeStyle = Color.Connection),
+        (context.lineWidth = 2)
+
+      const x =
         Math.min(
           gear1.position.x - gear1.radius,
           gear2.position.x - gear2.radius,
-        ) * TILE_SIZE,
+        ) * TILE_SIZE
+      const y =
         Math.min(
           gear1.position.y - gear1.radius,
           gear2.position.y - gear2.radius,
-        ) * TILE_SIZE,
+        ) * TILE_SIZE
+      const w =
         Math.max(
           gear1.position.x + gear1.radius,
           gear2.position.x + gear2.radius,
-        ) * TILE_SIZE,
+        ) * TILE_SIZE
+      const h =
         Math.max(
           gear1.position.y + gear1.radius,
           gear2.position.y + gear2.radius,
-        ) * TILE_SIZE,
-      )
+        ) * TILE_SIZE
+      console.log(x, y, w, h)
+      context.strokeRect(x, y, w, h)
       context.closePath()
       break
     }
     case ConnectionType.Teeth: {
       context.beginPath()
-      context.strokeStyle = 'hsla(0, 50%, 50%, .75)'
+      context.strokeStyle = Color.Connection
       context.lineWidth = 2
       context.moveTo(
         gear1.position.x * TILE_SIZE,

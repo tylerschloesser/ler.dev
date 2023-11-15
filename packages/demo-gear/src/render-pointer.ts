@@ -1,4 +1,5 @@
 import invariant from 'tiny-invariant'
+import { Color } from './color.js'
 import { TILE_SIZE } from './const.js'
 import { renderConnection } from './render-connection.js'
 import { renderGear } from './render-gear.js'
@@ -7,6 +8,7 @@ import {
   AddGearPointerStateType,
   AddGearWithChainPointer,
   ApplyForcePointer,
+  ConnectionType,
   Pointer,
   PointerType,
   World,
@@ -35,8 +37,8 @@ const renderAddGearPointer: RenderPointerFn<
           angle: 0,
         },
         tint: state.valid
-          ? `hsla(120, 50%, 50%, .5)`
-          : `hsla(0, 50%, 50%, .5)`,
+          ? Color.AddGearValid
+          : Color.AddGearInvalid,
         context,
       })
 
@@ -59,13 +61,14 @@ const renderAddGearPointer: RenderPointerFn<
           radius,
           angle: 0,
         },
-        tint: `hsla(120, 50%, 50%, .5)`,
+        tint: Color.AddGearValid,
         context,
       })
 
+      // TODO refactor to renderConnection
       context.beginPath()
       context.lineWidth = 2
-      context.strokeStyle = 'hsla(0, 50%, 50%, .75)'
+      context.strokeStyle = Color.Connection
       context.strokeRect(
         state.position.x * TILE_SIZE,
         state.position.y * TILE_SIZE,
@@ -82,7 +85,7 @@ const renderAddGearPointer: RenderPointerFn<
           radius,
           angle: 0,
         },
-        tint: `hsla(120, 50%, 50%, .5)`,
+        tint: Color.Connection,
         context,
       })
       break
@@ -104,7 +107,9 @@ const renderApplyForcePointer: RenderPointerFn<
 
   context.beginPath()
   context.lineWidth = 2
-  context.strokeStyle = active ? 'green' : 'white'
+  context.strokeStyle = active
+    ? Color.ApplyForceActive
+    : Color.ApplyForceInactive
   context.strokeRect(
     (gear.position.x - gear.radius) * TILE_SIZE,
     (gear.position.y - gear.radius) * TILE_SIZE,
@@ -120,13 +125,6 @@ const renderAddGearWithChainPointer: RenderPointerFn<
   const source = world.gears[pointer.sourceId]
   invariant(source)
 
-  let chain = {
-    x: source.position.x,
-    y: source.position.y,
-    w: 1,
-    h: 1,
-  }
-
   const { state } = pointer
   if (state) {
     const radius = 1
@@ -137,10 +135,18 @@ const renderAddGearWithChainPointer: RenderPointerFn<
         angle: 0,
       },
       tint: state.valid
-        ? `hsla(120, 50%, 50%, .5)`
-        : `hsla(0, 50%, 50%, .5)`,
+        ? Color.AddGearValid
+        : Color.AddGearInvalid,
       context,
     })
+
+    const connections = [...state.connections]
+    if (state.valid) {
+      connections.push({
+        gearId: source.id,
+        type: ConnectionType.Chain,
+      })
+    }
 
     for (const connection of state.connections) {
       const gear2 = world.gears[connection.gearId]
@@ -152,27 +158,7 @@ const renderAddGearWithChainPointer: RenderPointerFn<
         type: connection.type,
       })
     }
-
-    if (state.valid) {
-      chain = {
-        x: Math.min(chain.x, state.position.x),
-        y: Math.min(chain.y, state.position.y),
-        w: Math.abs(chain.x - state.position.x) + 1,
-        h: Math.abs(chain.y - state.position.y) + 1,
-      }
-    }
   }
-
-  context.beginPath()
-  context.lineWidth = 2
-  context.strokeStyle = 'hsla(0, 50%, 50%, .75)'
-  context.strokeRect(
-    chain.x * TILE_SIZE,
-    chain.y * TILE_SIZE,
-    chain.w * TILE_SIZE,
-    chain.h * TILE_SIZE,
-  )
-  context.closePath()
 }
 
 export function renderPointer({
