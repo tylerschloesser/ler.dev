@@ -7,6 +7,7 @@ import {
   AddGearWithChainPointer,
   ApplyForcePointer,
   Connection,
+  ConnectionType,
   GearId,
   Pointer,
   PointerType,
@@ -94,6 +95,11 @@ const updateAddGearPointer: UpdatePointerFn<
   invariant(!(chain && attach))
 
   if (chain) {
+    connections.push({
+      gearId: chain,
+      type: ConnectionType.Chain,
+    })
+
     pointer.state = {
       type: AddGearPointerStateType.Chain,
       chain,
@@ -101,6 +107,11 @@ const updateAddGearPointer: UpdatePointerFn<
       connections,
     }
   } else if (attach) {
+    connections.push({
+      gearId: attach,
+      type: ConnectionType.Attached,
+    })
+
     pointer.state = {
       type: AddGearPointerStateType.Attach,
       attach,
@@ -158,6 +169,11 @@ const updateAddGearWithChainPointer: UpdatePointerFn<
       world,
     })
   }
+
+  connections.push({
+    gearId: source.id,
+    type: ConnectionType.Chain,
+  })
 
   pointer.state = {
     position,
