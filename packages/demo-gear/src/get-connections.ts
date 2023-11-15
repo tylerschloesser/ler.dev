@@ -42,9 +42,9 @@ export function getConnections({
     invariant(gear)
 
     if (
-      gear.position.x + -((gear.radius - 0.5) * delta.x) ===
+      gear.position.x + -((gear.radius - 1) * delta.x) ===
         point.x &&
-      gear.position.y + -((gear.radius - 0.5) * delta.y) ===
+      gear.position.y + -((gear.radius - 1) * delta.y) ===
         point.y
     ) {
       connections.add(gearId)
