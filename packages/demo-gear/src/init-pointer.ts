@@ -69,16 +69,13 @@ const handlePointerUp: HandlePointerEventFn = ({
           break
         }
         case AddGearPointerStateType.Attach: {
-          const attach =
-            world.gears[pointer.current.state.attach]
-          invariant(attach)
           addGear({
             position: pointer.current.state.position,
             size: pointer.current.size,
             world,
             connections: pointer.current.state.connections,
           })
-          console.log('TODO')
+          needsUpdate = true
           break
         }
       }
