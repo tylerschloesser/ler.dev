@@ -62,8 +62,8 @@ export function* iterateGearTileIds(
   position: Vec2,
   radius: number,
 ) {
-  for (let x = -radius; x <= radius; x++) {
-    for (let y = -radius; y <= radius; y++) {
+  for (let x = -radius; x < radius; x++) {
+    for (let y = -radius; y < radius; y++) {
       invariant(x === Math.floor(x))
       invariant(y === Math.floor(y))
       const tileId = `${position.x + x}.${position.y + y}`
