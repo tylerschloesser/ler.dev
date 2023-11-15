@@ -144,14 +144,34 @@ export function getNetworks(
   return networks
 }
 
-export function getEnergy(network: Network): number {
+export function getEnergy(
+  root: Gear,
+  world: World,
+): number {
   let energy = 0
-  for (const node of network) {
+  const stack = new Array<Gear>(root)
+  const seen = new Set<Gear>()
+
+  while (stack.length) {
+    const gear = stack.pop()
+    invariant(gear)
+    if (seen.has(gear)) {
+      continue
+    }
+    seen.add(gear)
+
     energy +=
       (1 / 4) *
-      node.mass *
-      node.radius ** 2 *
-      node.velocity ** 2
+      gear.radius ** 2 *
+      gear.velocity ** 2 *
+      gear.mass
+
+    for (const connection of gear.connections) {
+      const peer = world.gears[connection.gearId]
+      invariant(peer)
+      stack.push(peer)
+    }
   }
+
   return energy
 }

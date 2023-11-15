@@ -8,15 +8,9 @@ import {
   ConnectionType,
   Gear,
   InitSimulatorFn,
-  Network,
   PointerType,
   World,
 } from './types.js'
-import {
-  getEnergy,
-  getNetworks,
-  iterateNetwork,
-} from './util.js'
 
 export const initSimulator: InitSimulatorFn = ({
   pointer,
@@ -54,10 +48,7 @@ export const initSimulator: InitSimulatorFn = ({
       })
     }
 
-    const networks = getNetworks(world.gears)
-    for (const network of networks) {
-      applyFriction({ network, elapsed })
-    }
+    applyFriction({ elapsed, world })
 
     for (const gear of Object.values(world.gears)) {
       gear.angle += gear.velocity * elapsed
@@ -137,29 +128,108 @@ function accelerateGear({
 }
 
 function applyFriction({
-  network,
   elapsed,
+  world,
 }: {
-  network: Network
   elapsed: number
+  world: World
 }): void {
-  let energy = getEnergy(network)
-  energy -= energy * FRICTION * elapsed
+  const seen = new Set<Gear>()
 
-  const [root] = [...network]
-  invariant(root)
+  for (const root of Object.values(world.gears)) {
+    if (seen.has(root)) {
+      // TODO validate?
+      continue
+    }
 
-  let sum = 0
-  for (const node of network) {
-    sum += (1 / 4) * node.mass * root.radius ** 2
+    let energy = 0
+    let sum = 0
+    const nmap = new Map<Gear, number>()
+
+    {
+      const stack = new Array<{ gear: Gear; n: number }>({
+        gear: root,
+        n: 1,
+      })
+      while (stack.length) {
+        const { gear, n } = stack.pop()!
+
+        if (seen.has(gear)) {
+          // TODO validate?
+          continue
+        }
+        seen.add(gear)
+        nmap.set(gear, n)
+
+        sum += gear.radius ** 2 * gear.mass * n ** -2
+
+        energy +=
+          (1 / 4) *
+          gear.radius ** 2 *
+          gear.velocity ** 2 *
+          gear.mass
+
+        for (const connection of gear.connections) {
+          const peer = world.gears[connection.gearId]
+          invariant(peer)
+
+          stack.push({
+            gear: peer,
+            n:
+              n *
+              (() => {
+                switch (connection.type) {
+                  case ConnectionType.Teeth:
+                    return (peer.radius / gear.radius) * -1
+                  case ConnectionType.Chain:
+                    return peer.radius / gear.radius
+                  case ConnectionType.Attached:
+                    return 1
+                }
+              })(),
+          })
+        }
+      }
+    }
+
+    // TODO set to 0 at some point
+    energy -= energy * FRICTION * elapsed
+
+    root.velocity =
+      Math.sign(root.velocity) *
+      Math.sqrt((4 * energy) / sum)
+    propogateRootVelocity({ root, nmap, world })
   }
-  root.velocity =
-    Math.sign(root.velocity) * Math.sqrt(energy / sum)
+}
 
-  for (const node of network) {
-    node.velocity =
-      Math.sign(node.velocity) *
-      (root.radius / node.radius) *
-      Math.abs(root.velocity)
+function propogateRootVelocity({
+  root,
+  nmap,
+  world,
+}: {
+  root: Gear
+  nmap: Map<Gear, number>
+  world: World
+}): void {
+  const seen = new Set<Gear>()
+  const stack = new Array<Gear>(root)
+  while (stack.length) {
+    const gear = stack.pop()
+    invariant(gear)
+
+    if (seen.has(gear)) {
+      continue
+    }
+    seen.add(gear)
+
+    const n = nmap.get(gear)
+    invariant(n !== undefined)
+    gear.velocity = root.velocity * n ** -1
+
+    for (const connection of gear.connections) {
+      const peer = world.gears[connection.gearId]
+      invariant(peer)
+      stack.push(peer)
+    }
   }
 }
