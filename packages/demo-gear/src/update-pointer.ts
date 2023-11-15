@@ -166,20 +166,30 @@ const updateAddGearWithChainPointer: UpdatePointerFn<
   const source = world.gears[pointer.sourceId]
   invariant(source)
 
-  const tileId = `${position.x}.${position.y}`
-  const tile = world.tiles[tileId]
-
   let valid = true
+  const radius = 1
 
-  if (tile) {
+  for (const _ of iterateGearTiles(
+    position,
+    radius,
+    world,
+  )) {
     valid = false
-  } else {
+    break
+  }
+
+  if (valid) {
     const dx = position.x - source.position.x
     const dy = position.y - source.position.y
 
     if (!(dx === 0 || dy === 0)) {
       valid = false
-    } else if (!(Math.abs(dx) > 1 || Math.abs(dy) > 1)) {
+    } else if (
+      !(
+        Math.abs(dx) !== radius * 2 ||
+        Math.abs(dy) !== radius * 2
+      )
+    ) {
       valid = false
     }
   }

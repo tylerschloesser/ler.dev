@@ -16,8 +16,8 @@ export function renderConnection({
   switch (type) {
     case ConnectionType.Chain: {
       context.beginPath()
-      ;(context.strokeStyle = Color.Connection),
-        (context.lineWidth = 2)
+      context.strokeStyle = Color.Connection
+      context.lineWidth = 2
 
       const x =
         Math.min(
@@ -33,13 +33,16 @@ export function renderConnection({
         Math.max(
           gear1.position.x + gear1.radius,
           gear2.position.x + gear2.radius,
-        ) * TILE_SIZE
+        ) *
+          TILE_SIZE -
+        x
       const h =
         Math.max(
           gear1.position.y + gear1.radius,
           gear2.position.y + gear2.radius,
-        ) * TILE_SIZE
-      console.log(x, y, w, h)
+        ) *
+          TILE_SIZE -
+        y
       context.strokeRect(x, y, w, h)
       context.closePath()
       break
