@@ -93,12 +93,6 @@ function accelerateGear({
     to: Gear
     type: ConnectionType
   }): void {
-    if (seen.has(to)) {
-      // TODO validate
-      return
-    }
-
-    seen.add(to)
     let n
     switch (type) {
       case ConnectionType.Teeth:
@@ -110,6 +104,14 @@ function accelerateGear({
       case ConnectionType.Attached:
         n = 1
     }
+
+    if (seen.has(to)) {
+      const diff = to.velocity - from.velocity * n
+      invariant(Math.abs(diff) < Number.EPSILON * 1e2)
+      return
+    }
+    seen.add(to)
+
     to.velocity = from.velocity * n
 
     for (const connection of to.connections) {
