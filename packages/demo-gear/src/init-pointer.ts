@@ -2,7 +2,6 @@ import invariant from 'tiny-invariant'
 import { addGear } from './add-gear.js'
 import {
   AddGearPointerStateType,
-  ConnectionType,
   InitPointerFn,
   Pointer,
   PointerType,
@@ -53,7 +52,8 @@ const handlePointerUp: HandlePointerEventFn = ({
               position: pointer.current.state.position,
               size: pointer.current.size,
               world,
-              connectionType: ConnectionType.Teeth,
+              connections:
+                pointer.current.state.connections,
             })
             needsUpdate = true
           }
@@ -76,8 +76,7 @@ const handlePointerUp: HandlePointerEventFn = ({
             position: pointer.current.state.position,
             size: pointer.current.size,
             world,
-            connectionType: ConnectionType.Attached,
-            attach,
+            connections: pointer.current.state.connections,
           })
           console.log('TODO')
           break
@@ -92,9 +91,8 @@ const handlePointerUp: HandlePointerEventFn = ({
         addGear({
           position: pointer.current.state.position,
           size: 1,
-          chain,
           world,
-          connectionType: ConnectionType.Chain,
+          connections: pointer.current.state.connections,
         })
         pointer.current = {
           type: PointerType.AddGear,

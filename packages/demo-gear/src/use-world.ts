@@ -11,14 +11,14 @@ export function useWorld(): React.MutableRefObject<World> {
         tiles: {},
       }
 
-      addGear({
+      const gear1 = addGear({
         position: {
           x: 0,
           y: 0,
         },
         size: GEAR_SIZES[1]!,
         world,
-        connectionType: ConnectionType.Teeth,
+        connections: [],
       })
       addGear({
         position: {
@@ -27,7 +27,12 @@ export function useWorld(): React.MutableRefObject<World> {
         },
         size: GEAR_SIZES[3]!,
         world,
-        connectionType: ConnectionType.Teeth,
+        connections: [
+          {
+            gearId: gear1.id,
+            type: ConnectionType.Teeth,
+          },
+        ],
       })
 
       return world
