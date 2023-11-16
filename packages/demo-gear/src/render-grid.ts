@@ -27,12 +27,42 @@ export function renderGrid({
 
   context.beginPath()
   context.lineWidth = 1
-  context.strokeStyle = 'hsl(0, 0%, 10%)'
-  for (let y = grid.tl.y; y < grid.br.y; y += TILE_SIZE) {
+  context.strokeStyle = 'hsl(0, 0%, 2%)'
+  for (
+    let y = grid.tl.y - TILE_SIZE;
+    y < grid.br.y;
+    y += TILE_SIZE * 2
+  ) {
     context.moveTo(grid.tl.x, y)
     context.lineTo(grid.br.x, y)
   }
-  for (let x = grid.tl.x; x < grid.br.x; x += TILE_SIZE) {
+  for (
+    let x = grid.tl.x - TILE_SIZE;
+    x < grid.br.x;
+    x += TILE_SIZE * 2
+  ) {
+    context.moveTo(x, grid.tl.y)
+    context.lineTo(x, grid.br.y)
+  }
+  context.stroke()
+  context.closePath()
+
+  context.beginPath()
+  context.lineWidth = 1
+  context.strokeStyle = 'hsl(0, 0%, 16%)'
+  for (
+    let y = grid.tl.y;
+    y < grid.br.y;
+    y += TILE_SIZE * 2
+  ) {
+    context.moveTo(grid.tl.x, y)
+    context.lineTo(grid.br.x, y)
+  }
+  for (
+    let x = grid.tl.x;
+    x < grid.br.x;
+    x += TILE_SIZE * 2
+  ) {
     context.moveTo(x, grid.tl.y)
     context.lineTo(x, grid.br.y)
   }
