@@ -1,12 +1,12 @@
 import { useMemo, useRef } from 'react'
 import invariant from 'tiny-invariant'
 import { addGear } from './add-gear.js'
-import { GEAR_RADIUSES } from './const.js'
+import { GEAR_RADIUSES, WORLD_KEY } from './const.js'
 import { getConnections } from './get-connections.js'
 import { World } from './types.js'
 
 function loadWorld(): World {
-  const json = localStorage.getItem('world')
+  const json = localStorage.getItem(WORLD_KEY)
   if (json) {
     try {
       return World.parse(JSON.parse(json))
@@ -17,7 +17,7 @@ function loadWorld(): World {
           'Invalid saved world. Clear and reload?',
         )
       ) {
-        self.localStorage.removeItem('world')
+        self.localStorage.removeItem(WORLD_KEY)
         self.location.reload()
       }
     }

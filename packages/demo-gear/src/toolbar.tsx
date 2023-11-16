@@ -1,4 +1,4 @@
-import { GEAR_RADIUSES } from './const.js'
+import { GEAR_RADIUSES, WORLD_KEY } from './const.js'
 import styles from './toolbar.module.scss'
 import { Pointer, PointerType } from './types.js'
 
@@ -48,7 +48,7 @@ export function Toolbar({ pointer, save }: ToolbarProps) {
       <button
         onPointerUp={() => {
           if (self.confirm('Are you sure?')) {
-            self.localStorage.removeItem('world')
+            self.localStorage.removeItem(WORLD_KEY)
             self.location.reload()
           }
         }}
