@@ -147,8 +147,6 @@ export const initPointer: InitPointerFn = ({
         return
       }
 
-      console.log(`[${position.x},${position.y}]`)
-
       handlePointerMove({
         e,
         position,
