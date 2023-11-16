@@ -61,7 +61,14 @@ export function renderConnection({
     const c1 = g2.sub(g1)
     const d = c1.len()
     const n = Math.floor(d / (2 * s1)) * 2
-    const s2 = d / n
+    const s2 = (2 * d) / n - s1
+
+    context.lineWidth = 1
+    context.strokeText(
+      'G1',
+      g1.x * TILE_SIZE,
+      g1.y * TILE_SIZE,
+    )
 
     invariant(s2 >= s1)
 
@@ -72,10 +79,10 @@ export function renderConnection({
     const C = g2.add(c2.rotate(Math.PI / 2))
     const D = g1.add(c2.rotate(Math.PI / 2))
 
-    context.setLineDash([s2 * TILE_SIZE])
+    context.setLineDash([s1 * TILE_SIZE, s2 * TILE_SIZE])
 
     // context.lineDashOffset = 0
-    context.lineDashOffset = angle * radius * TILE_SIZE * -1
+    // context.lineDashOffset = angle * radius * TILE_SIZE * -1
 
     context.beginPath()
     context.lineWidth = 2
@@ -95,7 +102,7 @@ export function renderConnection({
 
     context.lineDashOffset = 0
 
-    context.lineDashOffset = angle * radius * TILE_SIZE * -1
+    // context.lineDashOffset = angle * radius * TILE_SIZE * -1
     context.setLineDash([s1 * TILE_SIZE])
 
     context.beginPath()
