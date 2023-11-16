@@ -1,3 +1,4 @@
+import invariant from 'tiny-invariant'
 import { Color } from './color.js'
 import { TILE_SIZE } from './const.js'
 import { ConnectionType, Gear } from './types.js'
@@ -45,5 +46,10 @@ export function renderConnection({
   }
 
   if (type === ConnectionType.enum.Chain && valid) {
+    invariant(gear1.radius === gear2.radius)
+    invariant(gear1.radius === 1)
+
+    const t = gear1.radius * 10
+    const s1 = (Math.PI * 2 * gear1.radius) / t
   }
 }

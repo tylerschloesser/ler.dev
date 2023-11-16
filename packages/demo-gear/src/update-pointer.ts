@@ -1,5 +1,4 @@
 import invariant from 'tiny-invariant'
-import { TILE_SIZE } from './const.js'
 import { getConnections } from './get-connections.js'
 import {
   AddGearPointer,
@@ -12,14 +11,14 @@ import {
   GearId,
   Pointer,
   PointerType,
-  Vec2,
+  SimpleVec2,
   World,
 } from './types.js'
 import { iterateGearTiles } from './util.js'
 
 export type UpdatePointerFn<T extends Pointer> = (args: {
   e: PointerEvent
-  position: Vec2
+  position: SimpleVec2
   pointer: T
   world: World
 }) => void

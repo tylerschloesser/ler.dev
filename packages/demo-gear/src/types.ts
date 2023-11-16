@@ -1,10 +1,10 @@
 import * as z from 'zod'
 
-export const Vec2 = z.object({
+export const SimpleVec2 = z.object({
   x: z.number(),
   y: z.number(),
 })
-export type Vec2 = z.infer<typeof Vec2>
+export type SimpleVec2 = z.infer<typeof SimpleVec2>
 
 export const GearId = z.string()
 export type GearId = z.infer<typeof GearId>
@@ -32,7 +32,7 @@ export type Connection = z.infer<typeof Connection>
 
 export const Gear = z.object({
   id: GearId,
-  position: Vec2,
+  position: SimpleVec2,
   radius: z.number(),
   angle: z.number(),
   velocity: z.number(),
@@ -68,7 +68,7 @@ export enum AddGearPointerStateType {
 }
 
 interface BaseAddGearPointerState {
-  position: Vec2
+  position: SimpleVec2
   connections: Connection[]
 }
 
@@ -105,7 +105,7 @@ export interface AddGearWithChainPointer {
   type: PointerType.AddGearWithChain
   sourceId: GearId
   state: {
-    position: Vec2
+    position: SimpleVec2
     valid: boolean
     connections: Connection[]
   } | null
@@ -115,7 +115,7 @@ export interface ApplyForcePointer {
   type: PointerType.ApplyForce
   acceleration: number
   state: {
-    position: Vec2
+    position: SimpleVec2
     active: boolean
     gearId?: GearId
   } | null

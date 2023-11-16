@@ -6,14 +6,14 @@ import {
   InitPointerFn,
   Pointer,
   PointerType,
-  Vec2,
+  SimpleVec2,
   World,
 } from './types.js'
 import { updatePointer } from './update-pointer.js'
 
 type HandlePointerEventFn = (args: {
   e: PointerEvent
-  position: Vec2
+  position: SimpleVec2
   pointer: React.MutableRefObject<Pointer>
   world: World
 }) => void
@@ -116,7 +116,7 @@ const handlePointerUp: HandlePointerEventFn = ({
 function getPointerPosition(
   e: PointerEvent,
   canvas: HTMLCanvasElement,
-): Vec2 {
+): SimpleVec2 {
   return {
     x: Math.floor(
       (e.offsetX - canvas.width / 2) / TILE_SIZE,

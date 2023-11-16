@@ -1,5 +1,10 @@
 import invariant from 'tiny-invariant'
-import { Connection, Gear, Vec2, World } from './types.js'
+import {
+  Connection,
+  Gear,
+  SimpleVec2,
+  World,
+} from './types.js'
 import {
   iterateGearTileIds,
   iterateNetwork,
@@ -7,7 +12,7 @@ import {
 
 interface AddGearArgs {
   radius: number
-  position: Vec2
+  position: SimpleVec2
   world: World
   connections: Connection[]
 }

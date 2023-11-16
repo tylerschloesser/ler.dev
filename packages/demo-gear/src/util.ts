@@ -3,7 +3,7 @@ import {
   ConnectionType,
   Gear,
   GearId,
-  Vec2,
+  SimpleVec2,
   World,
 } from './types.js'
 
@@ -59,7 +59,7 @@ export function* iterateNetwork(root: Gear, world: World) {
 }
 
 export function* iterateGearTileIds(
-  position: Vec2,
+  position: SimpleVec2,
   radius: number,
 ) {
   for (let x = -radius; x < radius; x++) {
@@ -73,7 +73,7 @@ export function* iterateGearTileIds(
 }
 
 export function* iterateGearTiles(
-  position: Vec2,
+  position: SimpleVec2,
   radius: number,
   world: World,
 ) {

@@ -3,7 +3,7 @@ import {
   Connection,
   ConnectionType,
   GearId,
-  Vec2,
+  SimpleVec2,
   World,
 } from './types.js'
 
@@ -13,7 +13,7 @@ export function getConnections({
   world,
 }: {
   radius: number
-  position: Vec2
+  position: SimpleVec2
   world: World
 }): Connection[] {
   const connections = new Set<GearId>()
