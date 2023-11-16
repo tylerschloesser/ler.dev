@@ -1,4 +1,9 @@
-import { useEffect, useRef, useState } from 'react'
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 import { GEAR_RADIUSES } from './const.js'
 import styles from './index.module.scss'
 import { initCanvas } from './init-canvas.js'
@@ -47,10 +52,18 @@ export function DemoGear() {
       }
     }
   }, [canvas])
+
+  const save = useCallback(() => {
+    localStorage.setItem(
+      'world',
+      JSON.stringify(world.current),
+    )
+  }, [world])
+
   return (
     <div className={styles.container}>
       <div className={styles.toolbar}>
-        <Toolbar pointer={pointer} />
+        <Toolbar pointer={pointer} save={save} />
       </div>
       <canvas className={styles.canvas} ref={setCanvas} />
     </div>

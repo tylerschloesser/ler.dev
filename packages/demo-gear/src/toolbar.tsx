@@ -4,9 +4,10 @@ import { Pointer, PointerType } from './types.js'
 
 export interface ToolbarProps {
   pointer: React.MutableRefObject<Pointer>
+  save(): void
 }
 
-export function Toolbar({ pointer }: ToolbarProps) {
+export function Toolbar({ pointer, save }: ToolbarProps) {
   return (
     <div className={styles.container}>
       <div>
@@ -43,6 +44,7 @@ export function Toolbar({ pointer }: ToolbarProps) {
           </button>
         ))}
       </div>
+      <button onPointerUp={save}>Save</button>
     </div>
   )
 }
