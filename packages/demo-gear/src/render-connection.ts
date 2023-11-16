@@ -103,6 +103,8 @@ export function renderConnection({
       context.closePath()
     }
 
+    // context.arc(gear1.position.x * TILE_SIZE, ), y, radius, startAngle, endAngle)
+
     context.setLineDash([])
   }
 }

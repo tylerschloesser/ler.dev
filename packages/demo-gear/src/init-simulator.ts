@@ -48,7 +48,9 @@ export const initSimulator: InitSimulatorFn = ({
       })
     }
 
-    applyFriction({ elapsed, world })
+    if (FRICTION !== 0) {
+      applyFriction({ elapsed, world })
+    }
 
     for (const gear of Object.values(world.gears)) {
       gear.angle += gear.velocity * elapsed
