@@ -183,6 +183,7 @@ function getChainId({
   gear1: PartialGear
   gear2: PartialGear
 }): ChainId {
+  // this assumes we'll always render with gears in the same order...
   return [
     'gear1',
     `${gear1.position.x}`,
