@@ -6,4 +6,7 @@ export enum Color {
 
   ApplyForceActive = 'green',
   ApplyForceInactive = 'white',
+
+  GridEven = 'hsl(0, 0%, 20%)',
+  GridOdd = 'hsl(0, 0%, 10%)',
 }
