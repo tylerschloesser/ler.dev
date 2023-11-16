@@ -11,7 +11,7 @@ import { initKeyboard } from './init-keyboard.js'
 import { initPointer } from './init-pointer.js'
 import { initSimulator } from './init-simulator.js'
 import { Toolbar } from './toolbar.js'
-import { Pointer, PointerType } from './types.js'
+import { Pointer, PointerType, World } from './types.js'
 import { useWorld } from './use-world.js'
 
 export function DemoGear() {
@@ -25,6 +25,38 @@ export function DemoGear() {
 
   const world = useWorld()
 
+  useInit({ canvas, pointer, world })
+
+  const save = useCallback(() => {
+    localStorage.setItem(
+      'world',
+      JSON.stringify(world.current),
+    )
+  }, [world])
+
+  return (
+    <div className={styles.container}>
+      <div className={styles.toolbar}>
+        <Toolbar
+          pointer={pointer}
+          save={save}
+          world={world}
+        />
+      </div>
+      <canvas className={styles.canvas} ref={setCanvas} />
+    </div>
+  )
+}
+
+function useInit({
+  canvas,
+  world,
+  pointer,
+}: {
+  canvas: HTMLCanvasElement | null
+  world: React.MutableRefObject<World>
+  pointer: React.MutableRefObject<Pointer>
+}) {
   useEffect(() => {
     if (canvas) {
       const controller = new AbortController()
@@ -52,24 +84,4 @@ export function DemoGear() {
       }
     }
   }, [canvas])
-
-  const save = useCallback(() => {
-    localStorage.setItem(
-      'world',
-      JSON.stringify(world.current),
-    )
-  }, [world])
-
-  return (
-    <div className={styles.container}>
-      <div className={styles.toolbar}>
-        <Toolbar
-          pointer={pointer}
-          save={save}
-          world={world}
-        />
-      </div>
-      <canvas className={styles.canvas} ref={setCanvas} />
-    </div>
-  )
 }
