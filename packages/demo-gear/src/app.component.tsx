@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
+import styles from './app.module.scss'
 import { GEAR_RADIUSES } from './const.js'
-import styles from './index.module.scss'
 import { initCanvas } from './init-canvas.js'
 import { initKeyboard } from './init-keyboard.js'
 import { initPointer } from './init-pointer.js'
@@ -9,7 +9,7 @@ import { Toolbar } from './toolbar.js'
 import { Pointer, PointerType, World } from './types.js'
 import { useWorld } from './use-world.js'
 
-export function DemoGear() {
+export function App() {
   const pointer = useRef<Pointer>({
     type: PointerType.AddGear,
     radius: GEAR_RADIUSES[0]!,
