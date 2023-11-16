@@ -11,7 +11,19 @@ import { Vec2 } from './vec2.js'
 
 type ChainId = string
 
-interface RenderVars {}
+interface RenderVars {
+  s1: number
+  s2: number
+  radius: number
+  angle: number
+  A: Vec2
+  B: Vec2
+  C: Vec2
+  D: Vec2
+  g1: Vec2
+  g2: Vec2
+  c1: Vec2
+}
 
 function getRenderVars({
   gear1,
@@ -19,7 +31,7 @@ function getRenderVars({
 }: {
   gear1: PartialGear
   gear2: PartialGear
-}) {
+}): RenderVars {
   invariant(gear1.radius === gear2.radius)
   invariant(gear1.radius === 1)
 
