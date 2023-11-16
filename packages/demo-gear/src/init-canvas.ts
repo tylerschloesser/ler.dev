@@ -66,36 +66,4 @@ export const initCanvas: InitCanvasFn = ({
     window.requestAnimationFrame(render)
   }
   window.requestAnimationFrame(render)
-
-  //   const angle = new Vec2(1, 0).angle()
-  //
-  //   const radius = 100
-  //
-  //   const center = new Vec2(canvas.width, canvas.height).div(
-  //     2,
-  //   )
-  //   const s = (radius * PI) / 10
-  //   context.setLineDash([s])
-  //
-  //   context.lineDashOffset = s * 0.5
-  //
-  //   context.lineWidth = 2
-  //   context.strokeStyle = 'white'
-  //
-  //   context.beginPath()
-  //   context.arc(
-  //     center.x,
-  //     center.y,
-  //     radius,
-  //     angle + HALF_PI,
-  //     angle + HALF_PI + PI,
-  //   )
-  //   context.stroke()
-  //   context.closePath()
-  //
-  //   context.beginPath()
-  //   context.moveTo(center.x + 0, center.y + radius)
-  //   context.lineTo(center.x + -radius * PI, center.y + radius)
-  //   context.stroke()
-  //   context.closePath()
 }
