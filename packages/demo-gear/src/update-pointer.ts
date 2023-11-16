@@ -12,29 +12,21 @@ import {
   GearId,
   Pointer,
   PointerType,
+  Vec2,
   World,
 } from './types.js'
 import { iterateGearTiles } from './util.js'
 
 export type UpdatePointerFn<T extends Pointer> = (args: {
   e: PointerEvent
-  canvas: HTMLCanvasElement
+  position: Vec2
   pointer: T
   world: World
 }) => void
 
 const updateApplyForcePointer: UpdatePointerFn<
   ApplyForcePointer
-> = ({ e, canvas, pointer, world }) => {
-  const position = {
-    x: Math.floor(
-      (e.offsetX - canvas.width / 2) / TILE_SIZE,
-    ),
-    y: Math.floor(
-      (e.offsetY - canvas.height / 2) / TILE_SIZE,
-    ),
-  }
-
+> = ({ e, position, pointer, world }) => {
   const tileId = `${position.x}.${position.y}`
   const tile = world.tiles[tileId]
 
@@ -54,16 +46,7 @@ const updateApplyForcePointer: UpdatePointerFn<
 
 const updateAddGearPointer: UpdatePointerFn<
   AddGearPointer
-> = ({ e, canvas, pointer, world }) => {
-  const position = {
-    x: Math.floor(
-      (e.offsetX - canvas.width / 2) / TILE_SIZE,
-    ),
-    y: Math.floor(
-      (e.offsetY - canvas.height / 2) / TILE_SIZE,
-    ),
-  }
-
+> = ({ position, pointer, world }) => {
   const { radius } = pointer
 
   let chain: GearId | null = null
@@ -158,16 +141,7 @@ const updateAddGearPointer: UpdatePointerFn<
 
 const updateAddGearWithChainPointer: UpdatePointerFn<
   AddGearWithChainPointer
-> = ({ e, canvas, pointer, world }) => {
-  const position = {
-    x: Math.floor(
-      (e.offsetX - canvas.width / 2) / TILE_SIZE,
-    ),
-    y: Math.floor(
-      (e.offsetY - canvas.height / 2) / TILE_SIZE,
-    ),
-  }
-
+> = ({ position, pointer, world }) => {
   const source = world.gears[pointer.sourceId]
   invariant(source)
 
@@ -222,7 +196,7 @@ const updateAddGearWithChainPointer: UpdatePointerFn<
 
 export const updatePointer: UpdatePointerFn<Pointer> = ({
   e,
-  canvas,
+  position,
   pointer,
   world,
 }) => {
@@ -230,7 +204,7 @@ export const updatePointer: UpdatePointerFn<Pointer> = ({
     case PointerType.AddGear: {
       updateAddGearPointer({
         e,
-        canvas,
+        position,
         pointer,
         world,
       })
@@ -239,7 +213,7 @@ export const updatePointer: UpdatePointerFn<Pointer> = ({
     case PointerType.AddGearWithChain: {
       updateAddGearWithChainPointer({
         e,
-        canvas,
+        position,
         pointer,
         world,
       })
@@ -248,7 +222,7 @@ export const updatePointer: UpdatePointerFn<Pointer> = ({
     case PointerType.ApplyForce: {
       updateApplyForcePointer({
         e,
-        canvas,
+        position,
         pointer,
         world,
       })

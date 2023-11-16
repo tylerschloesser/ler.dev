@@ -1,30 +1,32 @@
 import invariant from 'tiny-invariant'
 import { addGear } from './add-gear.js'
+import { TILE_SIZE } from './const.js'
 import {
   AddGearPointerStateType,
   InitPointerFn,
   Pointer,
   PointerType,
+  Vec2,
   World,
 } from './types.js'
 import { updatePointer } from './update-pointer.js'
 
 type HandlePointerEventFn = (args: {
   e: PointerEvent
-  canvas: HTMLCanvasElement
+  position: Vec2
   pointer: React.MutableRefObject<Pointer>
   world: World
 }) => void
 
 const handlePointerMove: HandlePointerEventFn = ({
   e,
-  canvas,
+  position,
   pointer,
   world,
 }) => {
   updatePointer({
     e,
-    canvas,
+    position,
     pointer: pointer.current,
     world,
   })
@@ -32,13 +34,13 @@ const handlePointerMove: HandlePointerEventFn = ({
 
 const handlePointerUp: HandlePointerEventFn = ({
   e,
-  canvas,
+  position,
   pointer,
   world,
 }) => {
   updatePointer({
     e,
-    canvas,
+    position,
     pointer: pointer.current,
     world,
   })
@@ -104,10 +106,24 @@ const handlePointerUp: HandlePointerEventFn = ({
   if (needsUpdate) {
     updatePointer({
       e,
-      canvas,
+      position,
       pointer: pointer.current,
       world,
     })
+  }
+}
+
+function getPointerPosition(
+  e: PointerEvent,
+  canvas: HTMLCanvasElement,
+): Vec2 {
+  return {
+    x: Math.floor(
+      (e.offsetX - canvas.width / 2) / TILE_SIZE,
+    ),
+    y: Math.floor(
+      (e.offsetY - canvas.height / 2) / TILE_SIZE,
+    ),
   }
 }
 
@@ -120,7 +136,13 @@ export const initPointer: InitPointerFn = ({
   canvas.addEventListener(
     'pointermove',
     (e) => {
-      handlePointerMove({ e, canvas, pointer, world })
+      const position = getPointerPosition(e, canvas)
+      handlePointerMove({
+        e,
+        position,
+        pointer,
+        world,
+      })
     },
     {
       signal,
@@ -136,7 +158,13 @@ export const initPointer: InitPointerFn = ({
   canvas.addEventListener(
     'pointerup',
     (e) => {
-      handlePointerUp({ e, canvas, pointer, world })
+      const position = getPointerPosition(e, canvas)
+      handlePointerUp({
+        e,
+        position,
+        pointer,
+        world,
+      })
     },
     {
       signal,
@@ -145,11 +173,12 @@ export const initPointer: InitPointerFn = ({
   canvas.addEventListener(
     'pointerdown',
     (e) => {
+      const position = getPointerPosition(e, canvas)
       switch (pointer.current.type) {
         case PointerType.ApplyForce: {
           updatePointer({
             e,
-            canvas,
+            position,
             pointer: pointer.current,
             world,
           })
