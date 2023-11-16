@@ -1,7 +1,9 @@
 import { useRef } from 'react'
+import invariant from 'tiny-invariant'
 import { addGear } from './add-gear.js'
 import { GEAR_RADIUSES } from './const.js'
-import { ConnectionType, World } from './types.js'
+import { getConnections } from './get-connections.js'
+import { World } from './types.js'
 
 export function useWorld(): React.MutableRefObject<World> {
   return useRef(
@@ -11,29 +13,28 @@ export function useWorld(): React.MutableRefObject<World> {
         tiles: {},
       }
 
-      const gear1 = addGear({
-        position: {
-          x: 0,
-          y: 0,
+      for (const { position, radius } of [
+        {
+          position: { x: 0, y: 0 },
+          radius: 1,
         },
-        radius: GEAR_RADIUSES[1]!,
-        world,
-        connections: [],
-      })
-      addGear({
-        position: {
-          x: 10,
-          y: 0,
+        {
+          position: { x: 3, y: 0 },
+          radius: 2,
         },
-        radius: GEAR_RADIUSES[3]!,
-        world,
-        connections: [
-          {
-            gearId: gear1.id,
-            type: ConnectionType.Teeth,
-          },
-        ],
-      })
+      ]) {
+        invariant(GEAR_RADIUSES.includes(radius))
+        addGear({
+          position,
+          radius,
+          world,
+          connections: getConnections({
+            position,
+            radius,
+            world,
+          }),
+        })
+      }
 
       return world
     })(),
