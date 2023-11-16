@@ -49,7 +49,10 @@ export function renderConnection({
   if (type === ConnectionType.enum.Chain && valid) {
     invariant(gear1.radius === gear2.radius)
     invariant(gear1.radius === 1)
-    const { radius } = gear1
+
+    invariant(gear1.angle === gear2.angle)
+
+    const { radius, angle } = gear1
 
     const g1 = new Vec2(gear1.position.x, gear1.position.y)
     const g2 = new Vec2(gear2.position.x, gear2.position.y)
@@ -71,6 +74,9 @@ export function renderConnection({
 
     context.setLineDash([s2 * TILE_SIZE])
 
+    // context.lineDashOffset = 0
+    context.lineDashOffset = angle * radius * TILE_SIZE * -1
+
     context.beginPath()
     context.lineWidth = 2
     context.strokeStyle = 'white'
@@ -87,6 +93,9 @@ export function renderConnection({
     context.stroke()
     context.closePath()
 
+    context.lineDashOffset = 0
+
+    context.lineDashOffset = angle * radius * TILE_SIZE * -1
     context.setLineDash([s1 * TILE_SIZE])
 
     context.beginPath()
@@ -96,6 +105,17 @@ export function renderConnection({
       radius * TILE_SIZE,
       c1.angle() + Math.PI / 2,
       c1.angle() + Math.PI / 2 + Math.PI,
+    )
+    context.stroke()
+    context.closePath()
+
+    context.beginPath()
+    context.arc(
+      g2.x * TILE_SIZE,
+      g2.y * TILE_SIZE,
+      radius * TILE_SIZE,
+      c1.angle() + Math.PI / -2,
+      c1.angle() + Math.PI / -2 + Math.PI,
     )
     context.stroke()
     context.closePath()

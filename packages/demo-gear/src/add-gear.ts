@@ -71,6 +71,7 @@ export function addGear({
 
   for (const node of iterateNetwork(gear, world)) {
     node.velocity = 0
+    node.angle = 0
   }
 
   return gear
