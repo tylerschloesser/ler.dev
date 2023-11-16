@@ -30,90 +30,6 @@ interface RenderVars {
 
 const cache = new Map<ChainId, RenderVars>()
 
-function getChainId({
-  gear1,
-  gear2,
-}: {
-  gear1: PartialGear
-  gear2: PartialGear
-}): ChainId {
-  return [
-    'gear1',
-    `${gear1.position.x}`,
-    `${gear1.position.y}`,
-    'gear2',
-    `${gear2.position.x}`,
-    `${gear2.position.y}`,
-  ].join('.')
-}
-
-function getRenderVars({
-  gear1,
-  gear2,
-}: {
-  gear1: PartialGear
-  gear2: PartialGear
-}): RenderVars {
-  const chainId = getChainId({ gear1, gear2 })
-  const cached = cache.get(chainId)
-  if (cached) {
-    return cached
-  }
-
-  invariant(gear1.radius === gear2.radius)
-  invariant(gear1.radius === 1)
-  const { radius } = gear1
-
-  const g1 = new Vec2(gear1.position.x, gear1.position.y)
-  const g2 = new Vec2(gear2.position.x, gear2.position.y)
-  const t = radius * TEETH
-
-  // gear segment size aka. size of a single tooth
-  const s1 = (TWO_PI * radius) / t
-
-  // vector from center of gear 1 to gear 2
-  const c1 = g2.sub(g1)
-
-  // distance from gear 1 to gear 2
-  const d = c1.len()
-
-  // number of segments across distance d
-  // must be divisible by 2
-  const n = Math.floor(d / (2 * s1)) * 2
-
-  // "gap" size in chain, because d will not be
-  // a perfect multiple of s1
-  const s2 = (2 * d) / n - s1
-
-  invariant(s2 >= s1)
-
-  // c1 with length radius
-  const c2 = c1.norm().mul(radius)
-
-  const A = g1.add(c2.rotate(-HALF_PI))
-  const B = g2.add(c2.rotate(-HALF_PI))
-
-  const C = g2.add(c2.rotate(HALF_PI))
-  const D = g1.add(c2.rotate(HALF_PI))
-
-  const vars: RenderVars = {
-    s1,
-    s2,
-    radius,
-    A,
-    B,
-    C,
-    D,
-    g1,
-    g2,
-    c1,
-  }
-
-  cache.set(chainId, vars)
-
-  return vars
-}
-
 export function renderChain({
   gear1,
   gear2,
@@ -191,4 +107,88 @@ export function renderChain({
   context.closePath()
 
   context.setLineDash([])
+}
+
+function getRenderVars({
+  gear1,
+  gear2,
+}: {
+  gear1: PartialGear
+  gear2: PartialGear
+}): RenderVars {
+  const chainId = getChainId({ gear1, gear2 })
+  const cached = cache.get(chainId)
+  if (cached) {
+    return cached
+  }
+
+  invariant(gear1.radius === gear2.radius)
+  invariant(gear1.radius === 1)
+  const { radius } = gear1
+
+  const g1 = new Vec2(gear1.position.x, gear1.position.y)
+  const g2 = new Vec2(gear2.position.x, gear2.position.y)
+  const t = radius * TEETH
+
+  // gear segment size aka. size of a single tooth
+  const s1 = (TWO_PI * radius) / t
+
+  // vector from center of gear 1 to gear 2
+  const c1 = g2.sub(g1)
+
+  // distance from gear 1 to gear 2
+  const d = c1.len()
+
+  // number of segments across distance d
+  // must be divisible by 2
+  const n = Math.floor(d / (2 * s1)) * 2
+
+  // "gap" size in chain, because d will not be
+  // a perfect multiple of s1
+  const s2 = (2 * d) / n - s1
+
+  invariant(s2 >= s1)
+
+  // c1 with length radius
+  const c2 = c1.norm().mul(radius)
+
+  const A = g1.add(c2.rotate(-HALF_PI))
+  const B = g2.add(c2.rotate(-HALF_PI))
+
+  const C = g2.add(c2.rotate(HALF_PI))
+  const D = g1.add(c2.rotate(HALF_PI))
+
+  const vars: RenderVars = {
+    s1,
+    s2,
+    radius,
+    A,
+    B,
+    C,
+    D,
+    g1,
+    g2,
+    c1,
+  }
+
+  cache.set(chainId, vars)
+
+  return vars
+}
+
+function getChainId({
+  gear1,
+  gear2,
+}: {
+  gear1: PartialGear
+  gear2: PartialGear
+}): ChainId {
+  return [
+    'gear1',
+    `${gear1.position.x}`,
+    `${gear1.position.y}`,
+    'gear2',
+    `${gear2.position.x}`,
+    `${gear2.position.y}`,
+  ].join('.')
 }
