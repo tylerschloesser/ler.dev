@@ -152,3 +152,8 @@ export type InitSimulatorFn = (args: {
   world: World
   signal: AbortSignal
 }) => void
+
+export type PartialGear = Pick<
+  Gear,
+  'position' | 'radius' | 'angle'
+>
