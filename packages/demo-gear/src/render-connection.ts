@@ -14,30 +14,34 @@ export function renderConnection({
   type,
   context,
   valid,
+  debug,
 }: {
   gear1: PartialGear
   gear2: PartialGear
   type: ConnectionType
   context: CanvasRenderingContext2D
   valid: boolean
+  debug: boolean
 }): void {
-  switch (type) {
-    case ConnectionType.enum.Chain:
-    case ConnectionType.enum.Teeth: {
-      context.beginPath()
-      context.strokeStyle = Color.Connection
-      context.lineWidth = 2
-      context.moveTo(
-        gear1.position.x * TILE_SIZE,
-        gear1.position.y * TILE_SIZE,
-      )
-      context.lineTo(
-        gear2.position.x * TILE_SIZE,
-        gear2.position.y * TILE_SIZE,
-      )
-      context.stroke()
-      context.closePath()
-      break
+  if (debug) {
+    switch (type) {
+      case ConnectionType.enum.Chain:
+      case ConnectionType.enum.Teeth: {
+        context.beginPath()
+        context.strokeStyle = Color.Connection
+        context.lineWidth = 2
+        context.moveTo(
+          gear1.position.x * TILE_SIZE,
+          gear1.position.y * TILE_SIZE,
+        )
+        context.lineTo(
+          gear2.position.x * TILE_SIZE,
+          gear2.position.y * TILE_SIZE,
+        )
+        context.stroke()
+        context.closePath()
+        break
+      }
     }
   }
 

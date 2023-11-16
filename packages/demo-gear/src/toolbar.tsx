@@ -1,13 +1,21 @@
+import {useEffect, useState} from 'react'
 import { GEAR_RADIUSES, WORLD_KEY } from './const.js'
 import styles from './toolbar.module.scss'
-import { Pointer, PointerType } from './types.js'
+import { Pointer, PointerType, World } from './types.js'
 
 export interface ToolbarProps {
+  world: React.MutableRefObject<World>
   pointer: React.MutableRefObject<Pointer>
   save(): void
 }
 
-export function Toolbar({ pointer, save }: ToolbarProps) {
+export function Toolbar({ pointer, save, world }: ToolbarProps) {
+
+  const [debugConnections, setDebugConnections] = useState(world.current.debugConnections ?? false )
+  useEffect(() => {
+    world.current.debugConnections = debugConnections
+  }, [ debugConnections ])
+
   return (
     <div className={styles.container}>
       <div>
@@ -55,6 +63,12 @@ export function Toolbar({ pointer, save }: ToolbarProps) {
       >
         Reset
       </button>
+      <label>
+        <input type="checkbox" checked={debugConnections} onChange={() => {
+          setDebugConnections(prev => !prev)
+        }} />
+        Debug Connections
+      </label>
     </div>
   )
 }

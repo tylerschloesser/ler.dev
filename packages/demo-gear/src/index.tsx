@@ -63,7 +63,11 @@ export function DemoGear() {
   return (
     <div className={styles.container}>
       <div className={styles.toolbar}>
-        <Toolbar pointer={pointer} save={save} />
+        <Toolbar
+          pointer={pointer}
+          save={save}
+          world={world}
+        />
       </div>
       <canvas className={styles.canvas} ref={setCanvas} />
     </div>

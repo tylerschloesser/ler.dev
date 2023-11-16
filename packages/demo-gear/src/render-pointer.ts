@@ -55,6 +55,7 @@ const renderAddGearPointer: RenderPointerFn<
           gear2,
           type: connection.type,
           valid: state.valid,
+          debug: world.debugConnections ?? false,
         })
       }
       break
@@ -166,6 +167,7 @@ const renderAddGearWithChainPointer: RenderPointerFn<
         gear2,
         type: connection.type,
         valid: state.valid,
+        debug: world.debugConnections ?? false,
       })
     }
   }
