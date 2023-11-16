@@ -1,13 +1,11 @@
 import invariant from 'tiny-invariant'
 import { Color } from './color.js'
-import { HALF_PI, PI, TWO_PI } from './const.js'
 import { renderConnection } from './render-connection.js'
 import { renderGear } from './render-gear.js'
 import { renderGrid } from './render-grid.js'
 import { renderPointer } from './render-pointer.js'
 import { InitCanvasFn } from './types.js'
 import { iterateConnections } from './util.js'
-import { Vec2 } from './vec2.js'
 
 export const initCanvas: InitCanvasFn = ({
   canvas,
