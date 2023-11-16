@@ -15,7 +15,6 @@ interface RenderVars {
   s1: number
   s2: number
   radius: number
-  angle: number
   A: Vec2
   B: Vec2
   C: Vec2
@@ -25,6 +24,25 @@ interface RenderVars {
   c1: Vec2
 }
 
+const cache = new Map<ChainId, RenderVars>()
+
+function getChainId({
+  gear1,
+  gear2,
+}: {
+  gear1: PartialGear
+  gear2: PartialGear
+}): ChainId {
+  return [
+    'gear1',
+    `${gear1.position.x}`,
+    `${gear1.position.y}`,
+    'gear2',
+    `${gear2.position.x}`,
+    `${gear2.position.y}`,
+  ].join('.')
+}
+
 function getRenderVars({
   gear1,
   gear2,
@@ -32,12 +50,15 @@ function getRenderVars({
   gear1: PartialGear
   gear2: PartialGear
 }): RenderVars {
+  const chainId = getChainId({ gear1, gear2 })
+  const cached = cache.get(chainId)
+  if (cached) {
+    return cached
+  }
+
   invariant(gear1.radius === gear2.radius)
   invariant(gear1.radius === 1)
-
-  invariant(gear1.angle === gear2.angle)
-
-  const { radius, angle } = gear1
+  const { radius } = gear1
 
   const g1 = new Vec2(gear1.position.x, gear1.position.y)
   const g2 = new Vec2(gear2.position.x, gear2.position.y)
@@ -71,11 +92,10 @@ function getRenderVars({
   const C = g2.add(c2.rotate(HALF_PI))
   const D = g1.add(c2.rotate(HALF_PI))
 
-  return {
+  const vars: RenderVars = {
     s1,
     s2,
     radius,
-    angle,
     A,
     B,
     C,
@@ -84,6 +104,10 @@ function getRenderVars({
     g2,
     c1,
   }
+
+  cache.set(chainId, vars)
+
+  return vars
 }
 
 export function renderChain({
@@ -95,8 +119,11 @@ export function renderChain({
   gear2: PartialGear
   context: CanvasRenderingContext2D
 }): void {
-  const { s1, s2, radius, angle, A, B, C, D, g1, g2, c1 } =
+  const { s1, s2, radius, A, B, C, D, g1, g2, c1 } =
     getRenderVars({ gear1, gear2 })
+
+  invariant(gear1.angle === gear2.angle)
+  const { angle } = gear1
 
   //
   // Render straight portions of chain
