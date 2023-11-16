@@ -46,7 +46,9 @@ export function renderConnection({
       gear1.position.x - gear2.position.x,
     )
     const dy = Math.sign(
-      gear1.position.y - gear2.position.y,
+      // TODO different order than dx because it fixes
+      // the rendering... not sure why...
+      gear2.position.y - gear1.position.y,
     )
 
     invariant(!(dx === 0 && dy === 0))
@@ -65,28 +67,25 @@ export function renderConnection({
 
     context.setLineDash([len])
 
+    const sign = Math.sign(gear1.velocity)
+
     {
       context.beginPath()
       context.lineDashOffset =
-        gear1.angle *
-        gear1.radius *
-        TILE_SIZE *
-        Math.sign(gear1.velocity)
+        gear1.angle * gear1.radius * TILE_SIZE
 
       context.moveTo(
-        (gear1.position.x + gear1.radius * dy) * TILE_SIZE,
-        (gear1.position.y + gear1.radius * dx) * TILE_SIZE,
-      )
-
-      context.lineTo(
         (gear2.position.x + gear2.radius * dy) * TILE_SIZE,
         (gear2.position.y + gear2.radius * dx) * TILE_SIZE,
       )
 
+      context.lineTo(
+        (gear1.position.x + gear1.radius * dy) * TILE_SIZE,
+        (gear1.position.y + gear1.radius * dx) * TILE_SIZE,
+      )
+
       context.stroke()
       context.closePath()
-
-      context.lineDashOffset *= -1
 
       context.beginPath()
       context.moveTo(
