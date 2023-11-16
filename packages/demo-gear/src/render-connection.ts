@@ -69,13 +69,6 @@ export function renderConnection({
     const n = Math.floor(d / (2 * s1)) * 2
     const s2 = (2 * d) / n - s1
 
-    context.lineWidth = 1
-    context.strokeText(
-      'G1',
-      g1.x * TILE_SIZE,
-      g1.y * TILE_SIZE,
-    )
-
     invariant(s2 >= s1)
 
     const c2 = c1.norm().mul(radius)
@@ -86,8 +79,6 @@ export function renderConnection({
     const D = g1.add(c2.rotate(HALF_PI))
 
     context.setLineDash([s1 * TILE_SIZE, s2 * TILE_SIZE])
-
-    // context.lineDashOffset = 0
     context.lineDashOffset =
       -1 *
       radius *
@@ -110,8 +101,6 @@ export function renderConnection({
     context.lineTo(D.x * TILE_SIZE, D.y * TILE_SIZE)
     context.stroke()
     context.closePath()
-
-    context.lineDashOffset = 0
 
     context.setLineDash([s1 * TILE_SIZE])
     context.lineDashOffset =
