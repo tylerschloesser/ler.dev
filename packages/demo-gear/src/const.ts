@@ -11,3 +11,7 @@ export const ACCELERATION = 2
 export const WORLD_KEY = 'world'
 
 export const TEETH = 12
+
+export const PI = Math.PI
+export const TWO_PI = Math.PI * 2
+export const HALF_PI = Math.PI / 2

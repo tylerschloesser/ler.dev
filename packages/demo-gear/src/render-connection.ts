@@ -1,6 +1,11 @@
 import invariant from 'tiny-invariant'
 import { Color } from './color.js'
-import { TEETH, TILE_SIZE } from './const.js'
+import {
+  TWO_PI,
+  TEETH,
+  TILE_SIZE,
+  HALF_PI,
+} from './const.js'
 import { ConnectionType, Gear } from './types.js'
 import { Vec2 } from './vec2.js'
 
@@ -57,7 +62,7 @@ export function renderConnection({
     const g1 = new Vec2(gear1.position.x, gear1.position.y)
     const g2 = new Vec2(gear2.position.x, gear2.position.y)
     const t = radius * TEETH
-    const s1 = (Math.PI * 2 * radius) / t
+    const s1 = (TWO_PI * radius) / t
     const c1 = g2.sub(g1)
     const d = c1.len()
     const n = Math.floor(d / (2 * s1)) * 2
@@ -73,15 +78,15 @@ export function renderConnection({
     invariant(s2 >= s1)
 
     const c2 = c1.norm().mul(radius)
-    const A = g1.add(c2.rotate(Math.PI / -2))
-    const B = g2.add(c2.rotate(Math.PI / -2))
+    const A = g1.add(c2.rotate(-HALF_PI))
+    const B = g2.add(c2.rotate(-HALF_PI))
 
-    const C = g2.add(c2.rotate(Math.PI / 2))
-    const D = g1.add(c2.rotate(Math.PI / 2))
+    const C = g2.add(c2.rotate(HALF_PI))
+    const D = g1.add(c2.rotate(HALF_PI))
 
     context.setLineDash([s1 * TILE_SIZE, s2 * TILE_SIZE])
 
-    // context.lineDashOffset = 0
+    context.lineDashOffset = 0
     // context.lineDashOffset = angle * radius * TILE_SIZE * -1
 
     context.beginPath()
@@ -104,6 +109,7 @@ export function renderConnection({
 
     // context.lineDashOffset = angle * radius * TILE_SIZE * -1
     context.setLineDash([s1 * TILE_SIZE])
+    context.lineDashOffset = s1 * TILE_SIZE
 
     context.beginPath()
     context.arc(

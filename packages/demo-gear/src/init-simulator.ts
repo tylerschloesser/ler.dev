@@ -2,6 +2,7 @@ import invariant from 'tiny-invariant'
 import {
   ACCELERATION,
   FRICTION,
+  TWO_PI,
   TICK_DURATION,
 } from './const.js'
 import {
@@ -53,7 +54,8 @@ export const initSimulator: InitSimulatorFn = ({
     }
 
     for (const gear of Object.values(world.gears)) {
-      gear.angle += gear.velocity * elapsed
+      gear.angle =
+        (gear.angle + gear.velocity * elapsed) % TWO_PI
     }
   }
 
