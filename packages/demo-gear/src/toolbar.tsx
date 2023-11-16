@@ -1,24 +1,26 @@
 import { useEffect, useState } from 'react'
-import { GEAR_RADIUSES, WORLD_KEY } from './const.js'
+import { GEAR_RADIUSES } from './const.js'
 import styles from './toolbar.module.scss'
 import { Pointer, PointerType, World } from './types.js'
 
 export interface ToolbarProps {
-  world: React.MutableRefObject<World>
+  world: World
   pointer: React.MutableRefObject<Pointer>
-  save(): void
+  save(): Promise<void>
+  reset(): Promise<void>
 }
 
 export function Toolbar({
   pointer,
-  save,
   world,
+  save,
+  reset,
 }: ToolbarProps) {
   const [debugConnections, setDebugConnections] = useState(
-    world.current.debugConnections,
+    world.debugConnections,
   )
   useEffect(() => {
-    world.current.debugConnections = debugConnections
+    world.debugConnections = debugConnections
   }, [debugConnections])
 
   return (
@@ -61,8 +63,7 @@ export function Toolbar({
       <button
         onPointerUp={() => {
           if (self.confirm('Are you sure?')) {
-            self.localStorage.removeItem(WORLD_KEY)
-            self.location.reload()
+            reset()
           }
         }}
       >

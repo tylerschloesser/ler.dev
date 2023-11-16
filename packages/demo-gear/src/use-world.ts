@@ -1,61 +1,39 @@
-import { useMemo, useRef } from 'react'
-import invariant from 'tiny-invariant'
-import { addGear } from './add-gear.js'
-import { GEAR_RADIUSES, WORLD_KEY } from './const.js'
-import { getConnections } from './get-connections.js'
+import { useCallback, useEffect, useState } from 'react'
 import { World } from './types.js'
+import {
+  clearWorld,
+  getDefaultWorld,
+  initWorld,
+  saveWorld,
+} from './world.js'
 
-function loadWorld(): World {
-  const json = localStorage.getItem(WORLD_KEY)
-  if (json) {
-    try {
-      return World.parse(JSON.parse(json))
-    } catch (e) {
-      console.error(e)
-      if (
-        self.confirm(
-          'Invalid saved world. Clear and reload?',
-        )
-      ) {
-        self.localStorage.removeItem(WORLD_KEY)
-        self.location.reload()
-      }
-    }
-  }
-
-  const world: World = {
-    gears: {},
-    tiles: {},
-    debugConnections: false,
-  }
-
-  for (const { position, radius } of [
-    {
-      position: { x: 0, y: 0 },
-      radius: 1,
-    },
-    {
-      position: { x: 3, y: 0 },
-      radius: 2,
-    },
-  ]) {
-    invariant(GEAR_RADIUSES.includes(radius))
-    addGear({
-      position,
-      radius,
-      world,
-      connections: getConnections({
-        position,
-        radius,
-        world,
-      }),
-    })
-  }
-
-  return world
+export interface UseWorld {
+  save(): Promise<void>
+  reset(): Promise<void>
+  world: World | null
 }
 
-export function useWorld(): React.MutableRefObject<World> {
-  const world = useMemo(() => loadWorld(), [])
-  return useRef(world)
+export function useWorld(): UseWorld {
+  const [world, setWorld] = useState<World | null>(null)
+
+  useEffect(() => {
+    initWorld().then(setWorld)
+  }, [])
+
+  const save = useCallback(async () => {
+    if (world) {
+      await saveWorld(world)
+    }
+  }, [world])
+
+  const reset = useCallback(async () => {
+    await clearWorld()
+    setWorld(await getDefaultWorld())
+  }, [])
+
+  return {
+    save,
+    reset,
+    world,
+  }
 }

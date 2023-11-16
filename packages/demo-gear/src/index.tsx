@@ -23,24 +23,21 @@ export function DemoGear() {
   const [canvas, setCanvas] =
     useState<HTMLCanvasElement | null>(null)
 
-  const world = useWorld()
-
+  const { world, save, reset } = useWorld()
   useInit({ canvas, pointer, world })
 
-  const save = useCallback(() => {
-    localStorage.setItem(
-      'world',
-      JSON.stringify(world.current),
-    )
-  }, [world])
+  if (!world) {
+    return <>Loading...</>
+  }
 
   return (
     <div className={styles.container}>
       <div className={styles.toolbar}>
         <Toolbar
           pointer={pointer}
-          save={save}
           world={world}
+          save={save}
+          reset={reset}
         />
       </div>
       <canvas className={styles.canvas} ref={setCanvas} />
@@ -54,34 +51,34 @@ function useInit({
   pointer,
 }: {
   canvas: HTMLCanvasElement | null
-  world: React.MutableRefObject<World>
+  world: World | null
   pointer: React.MutableRefObject<Pointer>
 }) {
   useEffect(() => {
-    if (canvas) {
+    if (canvas && world) {
       const controller = new AbortController()
       const { signal } = controller
       initCanvas({
         canvas,
         pointer,
         signal,
-        world: world.current,
+        world,
       })
       initPointer({
         canvas,
         pointer,
         signal,
-        world: world.current,
+        world,
       })
       initKeyboard({ canvas, pointer, signal })
       initSimulator({
         pointer,
-        world: world.current,
+        world,
         signal,
       })
       return () => {
         controller.abort()
       }
     }
-  }, [canvas])
+  }, [canvas, world])
 }
