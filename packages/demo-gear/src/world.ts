@@ -1,4 +1,5 @@
 import invariant from 'tiny-invariant'
+import { ZodError } from 'zod'
 import { addGear } from './add-gear.js'
 import { GEAR_RADIUSES } from './const.js'
 import { getConnections } from './get-connections.js'
@@ -29,6 +30,7 @@ export async function getDefaultWorld(): Promise<World> {
     gears: {},
     tiles: {},
     debugConnections: false,
+    test: 1,
   }
 
   for (const { position, radius } of [
@@ -62,11 +64,19 @@ export async function initWorld(): Promise<World> {
   try {
     world = await loadWorld()
   } catch (e) {
-    console.error('Failed to load world', e)
-    if (self.confirm('Failed to load world. Reset?')) {
-      await clearWorld()
-    } else {
-      throw e
+    if (e instanceof ZodError) {
+      console.error(e)
+      if (
+        self.confirm(
+          'Saved world does not match schema. Reset?',
+        )
+      ) {
+        await clearWorld()
+        world = await getDefaultWorld()
+        await saveWorld(world)
+      } else {
+        throw e
+      }
     }
   }
 

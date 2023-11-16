@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@ler.dev/dev": "*",
-    "@ler.dev/tsconfig": "*"
+    "@ler.dev/tsconfig": "*",
+    "react-error-boundary": "^4.0.11"
   }
 }

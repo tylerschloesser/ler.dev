@@ -1,6 +1,6 @@
 import * as z from 'zod'
 
-export const SimpleVec2 = z.object({
+export const SimpleVec2 = z.strictObject({
   x: z.number(),
   y: z.number(),
 })
@@ -12,7 +12,7 @@ export type GearId = z.infer<typeof GearId>
 export const TileId = z.string()
 export type TileId = z.infer<typeof TileId>
 
-export const Tile = z.object({
+export const Tile = z.strictObject({
   gearIds: z.array(GearId),
 })
 export type Tile = z.infer<typeof Tile>
@@ -24,13 +24,13 @@ export const ConnectionType = z.enum([
 ])
 export type ConnectionType = z.infer<typeof ConnectionType>
 
-export const Connection = z.object({
+export const Connection = z.strictObject({
   type: ConnectionType,
   gearId: GearId,
 })
 export type Connection = z.infer<typeof Connection>
 
-export const Gear = z.object({
+export const Gear = z.strictObject({
   id: GearId,
   position: SimpleVec2,
   radius: z.number(),
@@ -41,11 +41,12 @@ export const Gear = z.object({
 })
 export type Gear = z.infer<typeof Gear>
 
-export const World = z.object({
+export const World = z.strictObject({
   gears: z.record(GearId, Gear),
   tiles: z.record(TileId, Tile),
 
   debugConnections: z.boolean(),
+  test: z.number(),
 })
 export type World = z.infer<typeof World>
 
