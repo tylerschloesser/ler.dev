@@ -1,9 +1,4 @@
-import {
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { GEAR_RADIUSES } from './const.js'
 import styles from './index.module.scss'
 import { initCanvas } from './init-canvas.js'
