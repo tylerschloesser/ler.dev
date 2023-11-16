@@ -77,6 +77,11 @@ const updateAddGearPointer: UpdatePointerFn<
   )) {
     valid = false
 
+    if (pointer.radius > 1) {
+      // don't bother checking other tiles
+      break
+    }
+
     let gear: Gear | undefined
 
     if (tile.gearIds.length === 1) {
@@ -94,15 +99,15 @@ const updateAddGearPointer: UpdatePointerFn<
 
     invariant(gear)
 
-    if (pointer.radius === 1 && gear.radius === 1) {
-      chain = gear.id
-    } else if (
-      pointer.radius === 1 &&
-      gear.radius > 1 &&
+    if (
       gear.position.x === position.x &&
       gear.position.y === position.y
     ) {
-      attach = gear.id
+      if (gear.radius === 1) {
+        chain = gear.id
+      } else {
+        attach = gear.id
+      }
     }
   }
 
