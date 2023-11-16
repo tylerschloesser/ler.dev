@@ -1,3 +1,4 @@
+import invariant from 'tiny-invariant'
 import { Color } from './color.js'
 import { TILE_SIZE } from './const.js'
 import { ConnectionType, Gear } from './types.js'
@@ -45,6 +46,17 @@ export function renderConnection({
       context.lineWidth = 2
       context.strokeRect(x, y, w, h)
       context.closePath()
+
+      const dx = Math.sign(
+        gear1.position.x - gear2.position.x,
+      )
+      const dy = Math.sign(
+        gear1.position.y - gear2.position.y,
+      )
+
+      invariant(!(dx === 0 && dy === 0))
+      invariant(dx === 0 || dy === 0)
+
       break
     }
     case ConnectionType.enum.Teeth: {
