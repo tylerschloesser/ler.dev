@@ -5,13 +5,14 @@ import {
   TEETH,
   TILE_SIZE,
   HALF_PI,
+  PI,
 } from './const.js'
 import { ConnectionType, Gear } from './types.js'
 import { Vec2 } from './vec2.js'
 
 export type PartialGear = Pick<
   Gear,
-  'position' | 'radius' | 'angle' | 'velocity'
+  'position' | 'radius' | 'angle'
 >
 
 export function renderConnection({
@@ -86,8 +87,13 @@ export function renderConnection({
 
     context.setLineDash([s1 * TILE_SIZE, s2 * TILE_SIZE])
 
-    context.lineDashOffset = 0
-    // context.lineDashOffset = angle * radius * TILE_SIZE * -1
+    // context.lineDashOffset = 0
+    context.lineDashOffset =
+      -1 *
+      radius *
+      TILE_SIZE *
+      ((angle % (s1 + s1)) / (s1 + s1)) *
+      (s1 + s2)
 
     context.beginPath()
     context.lineWidth = 2
@@ -107,17 +113,17 @@ export function renderConnection({
 
     context.lineDashOffset = 0
 
-    // context.lineDashOffset = angle * radius * TILE_SIZE * -1
     context.setLineDash([s1 * TILE_SIZE])
-    context.lineDashOffset = s1 * TILE_SIZE
+    context.lineDashOffset =
+      -1 * radius * TILE_SIZE * (angle % (s1 + s1))
 
     context.beginPath()
     context.arc(
       g1.x * TILE_SIZE,
       g1.y * TILE_SIZE,
       radius * TILE_SIZE,
-      c1.angle() + Math.PI / 2,
-      c1.angle() + Math.PI / 2 + Math.PI,
+      c1.angle() + HALF_PI,
+      c1.angle() + HALF_PI + PI,
     )
     context.stroke()
     context.closePath()
@@ -127,8 +133,8 @@ export function renderConnection({
       g2.x * TILE_SIZE,
       g2.y * TILE_SIZE,
       radius * TILE_SIZE,
-      c1.angle() + Math.PI / -2,
-      c1.angle() + Math.PI / -2 + Math.PI,
+      c1.angle() + -HALF_PI,
+      c1.angle() + -HALF_PI + PI,
     )
     context.stroke()
     context.closePath()

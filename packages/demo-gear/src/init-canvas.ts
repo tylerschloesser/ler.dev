@@ -1,11 +1,13 @@
 import invariant from 'tiny-invariant'
 import { Color } from './color.js'
+import { HALF_PI, PI, TWO_PI } from './const.js'
 import { renderConnection } from './render-connection.js'
 import { renderGear } from './render-gear.js'
 import { renderGrid } from './render-grid.js'
 import { renderPointer } from './render-pointer.js'
 import { InitCanvasFn } from './types.js'
 import { iterateConnections } from './util.js'
+import { Vec2 } from './vec2.js'
 
 export const initCanvas: InitCanvasFn = ({
   canvas,
@@ -64,4 +66,36 @@ export const initCanvas: InitCanvasFn = ({
     window.requestAnimationFrame(render)
   }
   window.requestAnimationFrame(render)
+
+  //   const angle = new Vec2(1, 0).angle()
+  //
+  //   const radius = 100
+  //
+  //   const center = new Vec2(canvas.width, canvas.height).div(
+  //     2,
+  //   )
+  //   const s = (radius * PI) / 10
+  //   context.setLineDash([s])
+  //
+  //   context.lineDashOffset = s * 0.5
+  //
+  //   context.lineWidth = 2
+  //   context.strokeStyle = 'white'
+  //
+  //   context.beginPath()
+  //   context.arc(
+  //     center.x,
+  //     center.y,
+  //     radius,
+  //     angle + HALF_PI,
+  //     angle + HALF_PI + PI,
+  //   )
+  //   context.stroke()
+  //   context.closePath()
+  //
+  //   context.beginPath()
+  //   context.moveTo(center.x + 0, center.y + radius)
+  //   context.lineTo(center.x + -radius * PI, center.y + radius)
+  //   context.stroke()
+  //   context.closePath()
 }

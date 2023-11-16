@@ -8,6 +8,7 @@ import {
   AddGearPointerStateType,
   AddGearWithChainPointer,
   ApplyForcePointer,
+  ConnectionType,
   Pointer,
   PointerType,
   World,
@@ -44,13 +45,17 @@ const renderAddGearPointer: RenderPointerFn<
       for (const connection of state.connections) {
         const gear2 = world.gears[connection.gearId]
         invariant(gear2)
+        let angle = gear2.angle
+        if (connection.type === ConnectionType.enum.Teeth) {
+          // TODO
+          angle = 0
+        }
         renderConnection({
           context,
           gear1: {
             position: state.position,
             radius,
-            angle: 0,
-            velocity: 0,
+            angle,
           },
           gear2,
           type: connection.type,
@@ -118,29 +123,24 @@ const renderAddGearWithChainPointer: RenderPointerFn<
 > = ({ pointer, context, world }) => {
   const source = world.gears[pointer.sourceId]
   invariant(source)
+  invariant(source.radius === 1)
 
   const { state } = pointer
   if (state) {
     const radius = 1
+    const angle = source.angle
+
     renderGear({
       gear: {
         position: state.position,
         radius,
-        angle: 0,
+        angle,
       },
       tint: state.valid
         ? Color.AddGearValid
         : Color.AddGearInvalid,
       context,
     })
-
-    // const connections = [...state.connections]
-    // if (state.valid) {
-    //   connections.push({
-    //     gearId: source.id,
-    //     type: ConnectionType.enum.Chain,
-    //   })
-    // }
 
     for (const connection of state.connections) {
       const gear2 = world.gears[connection.gearId]
@@ -150,8 +150,7 @@ const renderAddGearWithChainPointer: RenderPointerFn<
         gear1: {
           position: state.position,
           radius,
-          angle: 0,
-          velocity: 0,
+          angle,
         },
         gear2,
         type: connection.type,
