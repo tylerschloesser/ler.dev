@@ -15,10 +15,6 @@ export function renderConnection({
 }): void {
   switch (type) {
     case ConnectionType.Chain: {
-      context.beginPath()
-      context.strokeStyle = Color.Connection
-      context.lineWidth = 2
-
       const x =
         Math.min(
           gear1.position.x - gear1.radius,
@@ -43,6 +39,10 @@ export function renderConnection({
         ) *
           TILE_SIZE -
         y
+
+      context.beginPath()
+      context.strokeStyle = Color.Connection
+      context.lineWidth = 2
       context.strokeRect(x, y, w, h)
       context.closePath()
       break
