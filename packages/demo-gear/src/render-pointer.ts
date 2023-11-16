@@ -55,7 +55,7 @@ const renderAddGearPointer: RenderPointerFn<
           gear2,
           type: connection.type,
           valid: state.valid,
-          debug: world.debugConnections ?? false,
+          debug: world.debugConnections,
         })
       }
       break
@@ -70,17 +70,6 @@ const renderAddGearPointer: RenderPointerFn<
         tint: Color.AddGearValid,
         context,
       })
-
-      context.beginPath()
-      context.lineWidth = 2
-      context.strokeStyle = Color.Connection
-      context.strokeRect(
-        (state.position.x - radius) * TILE_SIZE,
-        (state.position.y - radius) * TILE_SIZE,
-        radius * 2 * TILE_SIZE,
-        radius * 2 * TILE_SIZE,
-      )
-      context.closePath()
       break
     }
     case AddGearPointerStateType.Attach: {
@@ -167,7 +156,7 @@ const renderAddGearWithChainPointer: RenderPointerFn<
         gear2,
         type: connection.type,
         valid: state.valid,
-        debug: world.debugConnections ?? false,
+        debug: world.debugConnections,
       })
     }
   }

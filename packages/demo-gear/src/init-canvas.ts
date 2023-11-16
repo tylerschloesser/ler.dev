@@ -51,7 +51,7 @@ export const initCanvas: InitCanvasFn = ({
         type,
         context,
         valid: true,
-        debug: world.debugConnections ?? false,
+        debug: world.debugConnections,
       })
     }
 

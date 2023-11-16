@@ -26,6 +26,7 @@ function loadWorld(): World {
   const world: World = {
     gears: {},
     tiles: {},
+    debugConnections: false,
   }
 
   for (const { position, radius } of [
