@@ -9,15 +9,17 @@ import {
 import { PartialGear } from './types.js'
 import { Vec2 } from './vec2.js'
 
-export function renderChain({
+type ChainId = string
+
+interface RenderVars {}
+
+function getRenderVars({
   gear1,
   gear2,
-  context,
 }: {
   gear1: PartialGear
   gear2: PartialGear
-  context: CanvasRenderingContext2D
-}): void {
+}) {
   invariant(gear1.radius === gear2.radius)
   invariant(gear1.radius === 1)
 
@@ -56,6 +58,33 @@ export function renderChain({
 
   const C = g2.add(c2.rotate(HALF_PI))
   const D = g1.add(c2.rotate(HALF_PI))
+
+  return {
+    s1,
+    s2,
+    radius,
+    angle,
+    A,
+    B,
+    C,
+    D,
+    g1,
+    g2,
+    c1,
+  }
+}
+
+export function renderChain({
+  gear1,
+  gear2,
+  context,
+}: {
+  gear1: PartialGear
+  gear2: PartialGear
+  context: CanvasRenderingContext2D
+}): void {
+  const { s1, s2, radius, angle, A, B, C, D, g1, g2, c1 } =
+    getRenderVars({ gear1, gear2 })
 
   //
   // Render straight portions of chain
