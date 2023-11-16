@@ -1,11 +1,11 @@
 import invariant from 'tiny-invariant'
 import { Color } from './color.js'
 import {
-  TWO_PI,
-  TEETH,
-  TILE_SIZE,
   HALF_PI,
   PI,
+  TEETH,
+  TILE_SIZE,
+  TWO_PI,
 } from './const.js'
 import { ConnectionType, Gear } from './types.js'
 import { Vec2 } from './vec2.js'
