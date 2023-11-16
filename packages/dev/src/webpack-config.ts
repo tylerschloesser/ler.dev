@@ -60,8 +60,17 @@ export function getWebpackConfig(): Configuration {
       }),
     ],
     devServer: {
+      hot: false,
+      watchFiles: ['./src/index.html'],
       historyApiFallback: true,
-      allowedHosts: ['.amazonaws.com'],
+      allowedHosts: ['.amazonaws.com', '.slg.dev'],
+      client: {
+        webSocketURL: 'auto://0.0.0.0:0/ws',
+      },
+      headers: {
+        'Cross-Origin-Opener-Policy': 'same-origin',
+        'Cross-Origin-Embedder-Policy': 'require-corp',
+      },
     },
   }
 }
