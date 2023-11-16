@@ -94,13 +94,13 @@ function accelerateGear({
   }): void {
     let n
     switch (type) {
-      case ConnectionType.Teeth:
+      case ConnectionType.enum.Teeth:
         n = (from.radius / to.radius) * -1
         break
-      case ConnectionType.Chain:
+      case ConnectionType.enum.Chain:
         n = from.radius / to.radius
         break
-      case ConnectionType.Attached:
+      case ConnectionType.enum.Attached:
         n = 1
     }
 
@@ -187,11 +187,11 @@ function applyFriction({
               n *
               (() => {
                 switch (connection.type) {
-                  case ConnectionType.Teeth:
+                  case ConnectionType.enum.Teeth:
                     return (peer.radius / gear.radius) * -1
-                  case ConnectionType.Chain:
+                  case ConnectionType.enum.Chain:
                     return peer.radius / gear.radius
-                  case ConnectionType.Attached:
+                  case ConnectionType.enum.Attached:
                     return 1
                 }
               })(),

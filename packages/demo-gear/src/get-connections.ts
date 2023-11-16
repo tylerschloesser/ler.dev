@@ -51,7 +51,7 @@ export function getConnections({
     }
   }
   return [...connections].map((gearId) => ({
-    type: ConnectionType.Teeth,
+    type: ConnectionType.enum.Teeth,
     gearId,
   }))
 }

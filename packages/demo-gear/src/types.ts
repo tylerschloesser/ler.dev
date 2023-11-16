@@ -1,16 +1,51 @@
-export type Vec2 = { x: number; y: number }
+import * as z from 'zod'
 
-export type GearId = string
-export type TileId = string
+export const Vec2 = z.object({
+  x: z.number(),
+  y: z.number(),
+})
+export type Vec2 = z.infer<typeof Vec2>
 
-export interface Tile {
-  gearIds: GearId[]
-}
+export const GearId = z.string()
+export type GearId = z.infer<typeof GearId>
 
-export interface World {
-  gears: Record<GearId, Gear>
-  tiles: Record<TileId, Tile>
-}
+export const TileId = z.string()
+export type TileId = z.infer<typeof TileId>
+
+export const Tile = z.object({
+  gearIds: z.array(GearId),
+})
+export type Tile = z.infer<typeof Tile>
+
+export const ConnectionType = z.enum([
+  'Teeth',
+  'Chain',
+  'Attached',
+])
+export type ConnectionType = z.infer<typeof ConnectionType>
+
+export const Connection = z.object({
+  type: ConnectionType,
+  gearId: GearId,
+})
+export type Connection = z.infer<typeof Connection>
+
+export const Gear = z.object({
+  id: GearId,
+  position: Vec2,
+  radius: z.number(),
+  angle: z.number(),
+  velocity: z.number(),
+  mass: z.number(),
+  connections: z.array(Connection),
+})
+export type Gear = z.infer<typeof Gear>
+
+export const World = z.object({
+  gears: z.record(GearId, Gear),
+  tiles: z.record(TileId, Tile),
+})
+export type World = z.infer<typeof World>
 
 export enum PointerType {
   Null = 'null',
@@ -115,24 +150,3 @@ export type InitSimulatorFn = (args: {
   world: World
   signal: AbortSignal
 }) => void
-
-export enum ConnectionType {
-  Teeth = 'teeth',
-  Chain = 'chain',
-  Attached = 'attached',
-}
-
-export interface Connection {
-  type: ConnectionType
-  gearId: GearId
-}
-
-export interface Gear {
-  id: GearId
-  position: Vec2
-  radius: number
-  angle: number
-  velocity: number
-  mass: number
-  connections: Connection[]
-}

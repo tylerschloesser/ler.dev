@@ -14,7 +14,7 @@ export function renderConnection({
   context: CanvasRenderingContext2D
 }): void {
   switch (type) {
-    case ConnectionType.Chain: {
+    case ConnectionType.enum.Chain: {
       const x =
         Math.min(
           gear1.position.x - gear1.radius,
@@ -47,7 +47,7 @@ export function renderConnection({
       context.closePath()
       break
     }
-    case ConnectionType.Teeth: {
+    case ConnectionType.enum.Teeth: {
       context.beginPath()
       context.strokeStyle = Color.Connection
       context.lineWidth = 2

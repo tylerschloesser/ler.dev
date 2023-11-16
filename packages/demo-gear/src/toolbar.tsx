@@ -45,6 +45,16 @@ export function Toolbar({ pointer, save }: ToolbarProps) {
         ))}
       </div>
       <button onPointerUp={save}>Save</button>
+      <button
+        onPointerUp={() => {
+          if (self.confirm('Are you sure?')) {
+            self.localStorage.removeItem('world')
+            self.location.reload()
+          }
+        }}
+      >
+        Reset
+      </button>
     </div>
   )
 }

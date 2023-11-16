@@ -143,7 +143,7 @@ const renderAddGearWithChainPointer: RenderPointerFn<
     if (state.valid) {
       connections.push({
         gearId: source.id,
-        type: ConnectionType.Chain,
+        type: ConnectionType.enum.Chain,
       })
     }
 

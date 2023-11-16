@@ -8,7 +8,19 @@ import { World } from './types.js'
 function loadWorld(): World {
   const json = localStorage.getItem('world')
   if (json) {
-    return JSON.parse(json)
+    try {
+      return World.parse(JSON.parse(json))
+    } catch (e) {
+      console.error(e)
+      if (
+        self.confirm(
+          'Invalid saved world. Clear and reload?',
+        )
+      ) {
+        self.localStorage.removeItem('world')
+        self.location.reload()
+      }
+    }
   }
 
   const world: World = {

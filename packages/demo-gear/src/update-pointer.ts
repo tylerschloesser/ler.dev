@@ -108,7 +108,7 @@ const updateAddGearPointer: UpdatePointerFn<
   if (chain) {
     connections.push({
       gearId: chain,
-      type: ConnectionType.Chain,
+      type: ConnectionType.enum.Chain,
     })
 
     pointer.state = {
@@ -120,7 +120,7 @@ const updateAddGearPointer: UpdatePointerFn<
   } else if (attach) {
     connections.push({
       gearId: attach,
-      type: ConnectionType.Attached,
+      type: ConnectionType.enum.Attached,
     })
 
     pointer.state = {
@@ -184,7 +184,7 @@ const updateAddGearWithChainPointer: UpdatePointerFn<
 
   connections.push({
     gearId: source.id,
-    type: ConnectionType.Chain,
+    type: ConnectionType.enum.Chain,
   })
 
   pointer.state = {
