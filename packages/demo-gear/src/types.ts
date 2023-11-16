@@ -46,7 +46,6 @@ export const World = z.strictObject({
   tiles: z.record(TileId, Tile),
 
   debugConnections: z.boolean(),
-  test: z.number(),
 })
 export type World = z.infer<typeof World>
 

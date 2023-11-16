@@ -15,10 +15,17 @@ export interface UseWorld {
 
 export function useWorld(): UseWorld {
   const [world, setWorld] = useState<World | null>(null)
+  const [error, setError] = useState<Error | null>(null)
 
   useEffect(() => {
-    initWorld().then(setWorld)
+    initWorld().then(setWorld).catch(setError)
   }, [])
+
+  useEffect(() => {
+    if (error) {
+      throw error
+    }
+  }, [error])
 
   const save = useCallback(async () => {
     if (world) {
