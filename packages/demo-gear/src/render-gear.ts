@@ -1,5 +1,5 @@
 import invariant from 'tiny-invariant'
-import { DRAW_GEAR_BOX, TILE_SIZE } from './const.js'
+import { DRAW_GEAR_BOX, TEETH, TILE_SIZE } from './const.js'
 import { Gear } from './types.js'
 
 export function renderGear({
@@ -58,7 +58,7 @@ export function renderGear({
   context.lineWidth = 2
   context.strokeStyle = 'white'
 
-  const teeth = gear.radius * 10
+  const teeth = gear.radius * TEETH
   for (let i = 0; i < teeth; i++) {
     context.save()
     context.rotate(gear.angle + (i / teeth) * Math.PI * 2)

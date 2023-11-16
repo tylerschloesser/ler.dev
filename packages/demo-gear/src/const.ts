@@ -9,3 +9,5 @@ export const FRICTION = 0 // energy/sec
 export const ACCELERATION = 2
 
 export const WORLD_KEY = 'world'
+
+export const TEETH = 12

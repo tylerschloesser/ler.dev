@@ -1,6 +1,6 @@
 import invariant from 'tiny-invariant'
 import { Color } from './color.js'
-import { TILE_SIZE } from './const.js'
+import { TEETH, TILE_SIZE } from './const.js'
 import { ConnectionType, Gear } from './types.js'
 import { Vec2 } from './vec2.js'
 
@@ -49,22 +49,27 @@ export function renderConnection({
   if (type === ConnectionType.enum.Chain && valid) {
     invariant(gear1.radius === gear2.radius)
     invariant(gear1.radius === 1)
+    const { radius } = gear1
 
     const g1 = new Vec2(gear1.position.x, gear1.position.y)
     const g2 = new Vec2(gear2.position.x, gear2.position.y)
-    const t = gear1.radius * 10
-    const s1 = (Math.PI * 2 * gear1.radius) / t
-    const c1 = g1.sub(g2)
+    const t = radius * TEETH
+    const s1 = (Math.PI * 2 * radius) / t
+    const c1 = g2.sub(g1)
     const d = c1.len()
     const n = Math.floor(d / (2 * s1)) * 2
-    const s2 = n * s1
+    const s2 = d / n
 
-    const c2 = c1.norm().mul(gear1.radius)
-    const A = g1.add(new Vec2(-c2.y, -c2.x))
-    const B = g2.add(new Vec2(-c2.y, -c2.x))
+    invariant(s2 >= s1)
 
-    const C = g2.add(new Vec2(c2.y, c2.x))
-    const D = g1.add(new Vec2(c2.y, c2.x))
+    const c2 = c1.norm().mul(radius)
+    const A = g1.add(c2.rotate(Math.PI / -2))
+    const B = g2.add(c2.rotate(Math.PI / -2))
+
+    const C = g2.add(c2.rotate(Math.PI / 2))
+    const D = g1.add(c2.rotate(Math.PI / 2))
+
+    context.setLineDash([s2 * TILE_SIZE])
 
     context.beginPath()
     context.lineWidth = 2
@@ -81,5 +86,20 @@ export function renderConnection({
     context.lineTo(D.x * TILE_SIZE, D.y * TILE_SIZE)
     context.stroke()
     context.closePath()
+
+    context.setLineDash([s1 * TILE_SIZE])
+
+    context.beginPath()
+    context.arc(
+      g1.x * TILE_SIZE,
+      g1.y * TILE_SIZE,
+      radius * TILE_SIZE,
+      c1.angle() + Math.PI / 2,
+      c1.angle() + Math.PI / 2 + Math.PI,
+    )
+    context.stroke()
+    context.closePath()
+
+    context.setLineDash([])
   }
 }
