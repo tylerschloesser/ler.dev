@@ -1,4 +1,6 @@
 export enum Color {
+  Background = 'black',
+
   AddGearValid = 'hsla(120, 50%, 50%, .5)',
   AddGearInvalid = 'hsla(0, 50%, 50%, .5)',
 

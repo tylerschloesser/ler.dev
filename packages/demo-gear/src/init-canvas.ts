@@ -1,4 +1,5 @@
 import invariant from 'tiny-invariant'
+import { Color } from './color.js'
 import { renderConnection } from './render-connection.js'
 import { renderGear } from './render-gear.js'
 import { renderGrid } from './render-grid.js'
@@ -30,7 +31,7 @@ export const initCanvas: InitCanvasFn = ({
 
     context.clearRect(0, 0, canvas.width, canvas.height)
 
-    context.fillStyle = 'black'
+    context.fillStyle = Color.Background
     context.fillRect(0, 0, canvas.width, canvas.height)
 
     context.translate(canvas.width / 2, canvas.height / 2)
