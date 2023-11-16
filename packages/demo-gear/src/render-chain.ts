@@ -24,6 +24,10 @@ interface RenderVars {
   c1: Vec2
 }
 
+//
+// cache render vars because for now they're static
+//
+
 const cache = new Map<ChainId, RenderVars>()
 
 function getChainId({
