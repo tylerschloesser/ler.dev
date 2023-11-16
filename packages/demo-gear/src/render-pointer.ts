@@ -8,7 +8,6 @@ import {
   AddGearPointerStateType,
   AddGearWithChainPointer,
   ApplyForcePointer,
-  ConnectionType,
   Pointer,
   PointerType,
   World,
@@ -55,6 +54,7 @@ const renderAddGearPointer: RenderPointerFn<
           },
           gear2,
           type: connection.type,
+          valid: state.valid,
         })
       }
       break
@@ -144,13 +144,13 @@ const renderAddGearWithChainPointer: RenderPointerFn<
       context,
     })
 
-    const connections = [...state.connections]
-    if (state.valid) {
-      connections.push({
-        gearId: source.id,
-        type: ConnectionType.enum.Chain,
-      })
-    }
+    // const connections = [...state.connections]
+    // if (state.valid) {
+    //   connections.push({
+    //     gearId: source.id,
+    //     type: ConnectionType.enum.Chain,
+    //   })
+    // }
 
     for (const connection of state.connections) {
       const gear2 = world.gears[connection.gearId]
@@ -165,6 +165,7 @@ const renderAddGearWithChainPointer: RenderPointerFn<
         },
         gear2,
         type: connection.type,
+        valid: state.valid,
       })
     }
   }

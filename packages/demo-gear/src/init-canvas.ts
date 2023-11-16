@@ -45,7 +45,13 @@ export const initCanvas: InitCanvasFn = ({
     for (const { gear1, gear2, type } of iterateConnections(
       world.gears,
     )) {
-      renderConnection({ gear1, gear2, type, context })
+      renderConnection({
+        gear1,
+        gear2,
+        type,
+        context,
+        valid: true,
+      })
     }
 
     renderPointer({
