@@ -137,6 +137,16 @@ export const initPointer: InitPointerFn = ({
     'pointermove',
     (e) => {
       const position = getPointerPosition(e, canvas)
+
+      if (
+        position.x === pointer.current.state?.position.x &&
+        position.y === pointer.current.state.position.y
+      ) {
+        // optimization. don't do anything until the pointer moves
+        // to a new tile
+        return
+      }
+
       handlePointerMove({
         e,
         position,
