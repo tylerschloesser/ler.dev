@@ -54,7 +54,15 @@ export const initSimulator: InitSimulatorFn = ({
       gear.angle += gear.velocity * elapsed
     }
   }
-  const interval = self.setInterval(tick, TICK_DURATION)
+
+  const interval = self.setInterval(() => {
+    try {
+      tick()
+    } catch (e) {
+      self.clearInterval(interval)
+      self.alert('Gears broke ☹️. Refresh to try again...')
+    }
+  }, TICK_DURATION)
 
   signal.addEventListener('abort', () => {
     self.clearInterval(interval)
