@@ -47,7 +47,12 @@ const renderAddGearPointer: RenderPointerFn<
         invariant(gear2)
         renderConnection({
           context,
-          gear1: { position: state.position, radius },
+          gear1: {
+            position: state.position,
+            radius,
+            angle: 0,
+            velocity: 0,
+          },
           gear2,
           type: connection.type,
         })
@@ -152,7 +157,12 @@ const renderAddGearWithChainPointer: RenderPointerFn<
       invariant(gear2)
       renderConnection({
         context,
-        gear1: { position: state.position, radius },
+        gear1: {
+          position: state.position,
+          radius,
+          angle: 0,
+          velocity: 0,
+        },
         gear2,
         type: connection.type,
       })
