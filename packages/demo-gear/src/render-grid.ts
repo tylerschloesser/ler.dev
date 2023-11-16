@@ -27,7 +27,7 @@ export function renderGrid({
 
   context.beginPath()
   context.lineWidth = 1
-  context.strokeStyle = 'hsl(0, 0%, 2%)'
+  context.strokeStyle = 'hsl(0, 0%, 10%)'
   for (
     let y = grid.tl.y - TILE_SIZE;
     y < grid.br.y;
@@ -49,7 +49,7 @@ export function renderGrid({
 
   context.beginPath()
   context.lineWidth = 1
-  context.strokeStyle = 'hsl(0, 0%, 16%)'
+  context.strokeStyle = 'hsl(0, 0%, 20%)'
   for (
     let y = grid.tl.y;
     y < grid.br.y;
