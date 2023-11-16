@@ -67,8 +67,6 @@ export function renderConnection({
 
     context.setLineDash([len])
 
-    const sign = Math.sign(gear1.velocity)
-
     {
       context.beginPath()
       context.lineDashOffset =
