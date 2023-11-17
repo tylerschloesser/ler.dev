@@ -48,6 +48,12 @@ export function App() {
     }
   }, [canvas, pointer, world, signal])
 
+  useEffect(() => {
+    return () => {
+      controller.abort()
+    }
+  }, [])
+
   const hover = useMediaQuery('(hover: hover)', signal)
 
   if (!world) {
