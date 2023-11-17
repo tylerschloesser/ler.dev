@@ -11,8 +11,6 @@
     "@react-three/fiber": "^8.15.11",
     "@types/color": "^3.0.6",
     "@types/lodash-es": "^4.17.11",
-    "@types/react": "^18.2.37",
-    "@types/react-dom": "^18.2.15",
     "@types/three": "^0.158.2",
     "@types/webpack-bundle-analyzer": "^4.6.3",
     "@types/webpack-manifest-plugin": "^3.0.8",
@@ -23,8 +21,6 @@
     "lodash-es": "^4.17.21",
     "postcss-loader": "^7.3.3",
     "postcss-preset-env": "^9.3.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
     "react-router-dom": "^6.18.0",
     "sass": "^1.69.5",
     "sass-loader": "^13.3.2",
@@ -38,6 +34,12 @@
     "webpack-cli": "^5.1.4",
     "webpack-dev-server": "^4.15.1",
     "webpack-manifest-plugin": "^5.0.0"
+  },
+  "peerDependencies": {
+    "react": "*",
+    "react-dom": "*",
+    "@types/react": "*",
+    "@types/react-dom": "*"
   },
   "sideEffects": false
 }
