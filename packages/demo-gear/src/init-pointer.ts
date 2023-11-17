@@ -3,7 +3,7 @@ import { addGear } from './add-gear.js'
 import { TILE_SIZE } from './const.js'
 import {
   AddGearPointerStateType,
-  InitPointerFn,
+  InitFn,
   Pointer,
   PointerType,
   SimpleVec2,
@@ -127,7 +127,7 @@ function getPointerPosition(
   }
 }
 
-export const initPointer: InitPointerFn = ({
+export const initPointer: InitFn = ({
   canvas,
   pointer,
   signal,

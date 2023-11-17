@@ -8,12 +8,12 @@ import {
 import {
   ConnectionType,
   Gear,
-  InitSimulatorFn,
+  InitFn,
   PointerType,
   World,
 } from './types.js'
 
-export const initSimulator: InitSimulatorFn = ({
+export const initSimulator: InitFn = ({
   pointer,
   world,
   signal,

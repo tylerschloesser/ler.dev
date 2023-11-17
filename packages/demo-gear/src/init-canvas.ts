@@ -4,10 +4,10 @@ import { renderConnection } from './render-connection.js'
 import { renderGear } from './render-gear.js'
 import { renderGrid } from './render-grid.js'
 import { renderPointer } from './render-pointer.js'
-import { InitCanvasFn } from './types.js'
+import { InitFn } from './types.js'
 import { iterateConnections } from './util.js'
 
-export const initCanvas: InitCanvasFn = ({
+export const initCanvas: InitFn = ({
   canvas,
   pointer,
   signal,

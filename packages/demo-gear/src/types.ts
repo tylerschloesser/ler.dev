@@ -127,31 +127,14 @@ export type Pointer =
   | AddGearWithChainPointer
   | ApplyForcePointer
 
-export type InitCanvasFn = (args: {
+export interface InitArgs {
   canvas: HTMLCanvasElement
   pointer: React.MutableRefObject<Pointer>
   signal: AbortSignal
   world: World
-}) => void
+}
 
-export type InitPointerFn = (args: {
-  canvas: HTMLCanvasElement
-  pointer: React.MutableRefObject<Pointer>
-  signal: AbortSignal
-  world: World
-}) => void
-
-export type initKeyboardFn = (args: {
-  canvas: HTMLCanvasElement
-  pointer: React.MutableRefObject<Pointer>
-  signal: AbortSignal
-}) => void
-
-export type InitSimulatorFn = (args: {
-  pointer: React.MutableRefObject<Pointer>
-  world: World
-  signal: AbortSignal
-}) => void
+export type InitFn = (args: InitArgs) => void
 
 export type PartialGear = Pick<
   Gear,

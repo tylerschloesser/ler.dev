@@ -6,8 +6,21 @@ import { initKeyboard } from './init-keyboard.js'
 import { initPointer } from './init-pointer.js'
 import { initSimulator } from './init-simulator.js'
 import { Toolbar } from './toolbar.js'
-import { Pointer, PointerType, World } from './types.js'
+import {
+  InitArgs,
+  InitFn,
+  Pointer,
+  PointerType,
+} from './types.js'
+import { useMediaQuery } from './use-media-query.js'
 import { useWorld } from './use-world.js'
+
+const INIT_FNS: InitFn[] = [
+  initCanvas,
+  initPointer,
+  initKeyboard,
+  initSimulator,
+]
 
 export function App() {
   const pointer = useRef<Pointer>({
@@ -17,9 +30,25 @@ export function App() {
   })
   const [canvas, setCanvas] =
     useState<HTMLCanvasElement | null>(null)
-
   const { world, save, reset } = useWorld()
-  useInit({ canvas, pointer, world })
+  const [controller] = useState(new AbortController())
+  const { signal } = controller
+
+  useEffect(() => {
+    if (canvas && world) {
+      const args: InitArgs = {
+        canvas,
+        pointer,
+        world,
+        signal,
+      }
+      for (const init of INIT_FNS) {
+        init(args)
+      }
+    }
+  }, [canvas, pointer, world, signal])
+
+  const hover = useMediaQuery('(hover: hover)', signal)
 
   if (!world) {
     return <>Loading...</>
@@ -38,42 +67,4 @@ export function App() {
       <canvas className={styles.canvas} ref={setCanvas} />
     </div>
   )
-}
-
-function useInit({
-  canvas,
-  world,
-  pointer,
-}: {
-  canvas: HTMLCanvasElement | null
-  world: World | null
-  pointer: React.MutableRefObject<Pointer>
-}) {
-  useEffect(() => {
-    if (canvas && world) {
-      const controller = new AbortController()
-      const { signal } = controller
-      initCanvas({
-        canvas,
-        pointer,
-        signal,
-        world,
-      })
-      initPointer({
-        canvas,
-        pointer,
-        signal,
-        world,
-      })
-      initKeyboard({ canvas, pointer, signal })
-      initSimulator({
-        pointer,
-        world,
-        signal,
-      })
-      return () => {
-        controller.abort()
-      }
-    }
-  }, [canvas, world])
 }

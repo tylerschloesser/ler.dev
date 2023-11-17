@@ -1,6 +1,6 @@
-import { PointerType, initKeyboardFn } from './types.js'
+import { InitFn, PointerType } from './types.js'
 
-export const initKeyboard: initKeyboardFn = ({
+export const initKeyboard: InitFn = ({
   signal,
   pointer,
 }) => {
