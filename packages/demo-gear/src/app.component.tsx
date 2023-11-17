@@ -22,7 +22,7 @@ export function App() {
   useInit({ canvas, pointer, world })
 
   if (!world) {
-    return null
+    return <>Loading...</>
   }
 
   return (
