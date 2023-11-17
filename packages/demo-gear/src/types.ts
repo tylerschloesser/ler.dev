@@ -1,4 +1,5 @@
 import * as z from 'zod'
+import { Vec2 } from './vec2.js'
 
 export const SimpleVec2 = z.strictObject({
   x: z.number(),
@@ -126,6 +127,38 @@ export type Pointer =
   | AddGearPointer
   | AddGearWithChainPointer
   | ApplyForcePointer
+
+export interface PointerState {
+  position: Vec2
+  down: boolean
+}
+
+export enum HoverStateType {
+  Null,
+  AddGear,
+  ApplyForce,
+}
+
+export interface NullHoverState {
+  type: HoverStateType.Null
+}
+
+export interface AddGearHoverState {
+  type: HoverStateType.AddGear
+  valid: boolean
+  radius: number
+  connections: Connection[]
+}
+
+export interface ApplyForceHoverState {
+  type: HoverStateType.ApplyForce
+  acceleration: number
+}
+
+export type HoverState =
+  | NullHoverState
+  | AddGearHoverState
+  | ApplyForceHoverState
 
 export interface InitArgs {
   canvas: HTMLCanvasElement

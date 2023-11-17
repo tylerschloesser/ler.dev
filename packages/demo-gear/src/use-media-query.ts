@@ -12,7 +12,6 @@ export function useMediaQuery(
     list.addEventListener(
       'change',
       (e) => {
-        console.log('udpating media query')
         setState(e.matches)
       },
       { signal },

@@ -62,14 +62,16 @@ export function App() {
 
   return (
     <div className={styles.container}>
-      <div className={styles.toolbar}>
-        <Toolbar
-          pointer={pointer}
-          world={world}
-          save={save}
-          reset={reset}
-        />
-      </div>
+      {hover && (
+        <div className={styles.toolbar}>
+          <Toolbar
+            pointer={pointer}
+            world={world}
+            save={save}
+            reset={reset}
+          />
+        </div>
+      )}
       <canvas className={styles.canvas} ref={setCanvas} />
     </div>
   )
