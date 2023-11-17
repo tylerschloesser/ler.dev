@@ -1,27 +1,23 @@
 import { useEffect, useState } from 'react'
 import { GEAR_RADIUSES } from './const.js'
 import styles from './toolbar.module.scss'
-import { Pointer, PointerType, World } from './types.js'
+import { AppState, HoverType } from './types.js'
+import { useResetWorld, useSaveWorld } from './use-world.js'
 
 export interface ToolbarProps {
-  world: World
-  pointer: React.MutableRefObject<Pointer>
-  save(): Promise<void>
-  reset(): Promise<void>
+  context: AppState
 }
 
-export function Toolbar({
-  pointer,
-  world,
-  save,
-  reset,
-}: ToolbarProps) {
+export function Toolbar({ context }: ToolbarProps) {
   const [debugConnections, setDebugConnections] = useState(
-    world.debugConnections,
+    context.world.debugConnections,
   )
   useEffect(() => {
-    world.debugConnections = debugConnections
+    context.world.debugConnections = debugConnections
   }, [debugConnections])
+
+  const save = useSaveWorld(context.world)
+  const reset = useResetWorld(context.setWorld)
 
   return (
     <div className={styles.container}>
@@ -31,10 +27,12 @@ export function Toolbar({
           <button
             key={radius}
             onPointerUp={() => {
-              pointer.current = {
-                type: PointerType.AddGear,
+              context.hover = {
+                type: HoverType.AddGear,
                 radius,
-                state: null,
+                connections: [],
+                valid: false,
+                reasons: [],
               }
             }}
           >
@@ -48,10 +46,9 @@ export function Toolbar({
           <button
             key={acceleration}
             onPointerUp={() => {
-              pointer.current = {
-                type: PointerType.ApplyForce,
+              context.hover = {
+                type: HoverType.ApplyForce,
                 acceleration,
-                state: null,
               }
             }}
           >

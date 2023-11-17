@@ -1,8 +1,4 @@
-import invariant from 'tiny-invariant'
 import { ZodError } from 'zod'
-import { addGear } from './add-gear.js'
-import { GEAR_RADIUSES } from './const.js'
-import { getConnections } from './get-connections.js'
 import { World } from './types.js'
 
 export const WORLD_KEY = 'world'
@@ -31,30 +27,6 @@ export async function getDefaultWorld(): Promise<World> {
     tiles: {},
     debugConnections: false,
   }
-
-  for (const { position, radius } of [
-    {
-      position: { x: 0, y: 0 },
-      radius: 1,
-    },
-    {
-      position: { x: 3, y: 0 },
-      radius: 2,
-    },
-  ]) {
-    invariant(GEAR_RADIUSES.includes(radius))
-    addGear({
-      position,
-      radius,
-      world,
-      connections: getConnections({
-        position,
-        radius,
-        world,
-      }),
-    })
-  }
-
   return world
 }
 

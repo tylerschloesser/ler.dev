@@ -14,7 +14,8 @@ export const TileId = z.string()
 export type TileId = z.infer<typeof TileId>
 
 export const Tile = z.strictObject({
-  gearIds: z.array(GearId),
+  gearId: GearId,
+  attachedGearId: GearId.optional(),
 })
 export type Tile = z.infer<typeof Tile>
 
@@ -50,124 +51,97 @@ export const World = z.strictObject({
 })
 export type World = z.infer<typeof World>
 
-export enum PointerType {
-  Null = 'null',
-  AddGear = 'add-gear',
-  AddGearWithChain = 'add-gear-with-chain',
-  ApplyForce = 'apply-force',
-}
-
-export interface NullPointer {
-  type: PointerType.Null
-  state: null
-}
-
-export enum AddGearPointerStateType {
-  Normal = 'normal',
-  Chain = 'chain',
-  Attach = 'attach',
-}
-
-interface BaseAddGearPointerState {
-  position: SimpleVec2
-  connections: Connection[]
-}
-
-export interface NormalAddGearPointerState
-  extends BaseAddGearPointerState {
-  type: AddGearPointerStateType.Normal
-  valid: boolean
-}
-
-export interface ChainAddGearPointerState
-  extends BaseAddGearPointerState {
-  type: AddGearPointerStateType.Chain
-  chain: GearId
-}
-
-export interface AttachAddGearPointerState
-  extends BaseAddGearPointerState {
-  type: AddGearPointerStateType.Attach
-  attach: GearId
-}
-
-export type AddGearPointerState =
-  | NormalAddGearPointerState
-  | ChainAddGearPointerState
-  | AttachAddGearPointerState
-
-export type AddGearPointer = {
-  type: PointerType.AddGear
-  radius: number
-  state: AddGearPointerState | null
-}
-
-export interface AddGearWithChainPointer {
-  type: PointerType.AddGearWithChain
-  sourceId: GearId
-  state: {
-    position: SimpleVec2
-    valid: boolean
-    connections: Connection[]
-  } | null
-}
-
-export interface ApplyForcePointer {
-  type: PointerType.ApplyForce
-  acceleration: number
-  state: {
-    position: SimpleVec2
-    active: boolean
-    gearId?: GearId
-  } | null
-}
-
-export type Pointer =
-  | NullPointer
-  | AddGearPointer
-  | AddGearWithChainPointer
-  | ApplyForcePointer
-
-export interface PointerState {
+export interface Pointer {
   position: Vec2
   down: boolean
 }
 
-export enum HoverStateType {
-  Null,
-  AddGear,
-  ApplyForce,
+export enum HoverType {
+  Null = 'null',
+  AddGear = 'add-gear',
+
+  ApplyForce = 'apply-force',
 }
 
-export interface NullHoverState {
-  type: HoverStateType.Null
+export enum AddGearStateType {
+  Normal = 'normal',
+  Attach = 'attach',
+  StartChain = 'start-chain',
+  EndChain = 'end-chain',
 }
 
-export interface AddGearHoverState {
-  type: HoverStateType.AddGear
-  valid: boolean
-  radius: number
+export interface NormalAddGearState {
+  type: AddGearStateType.Normal
   connections: Connection[]
 }
 
-export interface ApplyForceHoverState {
-  type: HoverStateType.ApplyForce
+export interface AttachAddGearState {
+  type: AddGearStateType.Attach
+  sourceId: GearId
+}
+
+export interface StartChainAddGearType {
+  type: AddGearStateType.StartChain
+  sourceId: GearId
+}
+
+export interface EndChainAddGearType {
+  type: AddGearStateType.EndChain
+  sourceId: GearId
+  connections: Connection[]
+}
+
+export type AddGearState =
+  | NormalAddGearState
+  | AttachAddGearState
+  | StartChainAddGearType
+  | EndChainAddGearType
+
+export interface NullHover {
+  type: HoverType.Null
+}
+
+export enum InvalidReasonType {
+  Overlaps = 'overlaps',
+}
+
+export interface OverlapsInvalidReason {
+  type: InvalidReasonType.Overlaps
+  gearId: GearId
+}
+
+export type InvalidReason = OverlapsInvalidReason
+
+export interface AddGearHover {
+  type: HoverType.AddGear
+  radius: number
+  connections: Connection[]
+  valid: boolean
+  reasons: InvalidReason[]
+}
+
+export interface ApplyForceHover {
+  type: HoverType.ApplyForce
   acceleration: number
 }
 
-export type HoverState =
-  | NullHoverState
-  | AddGearHoverState
-  | ApplyForceHoverState
+export type Hover =
+  | NullHover
+  | AddGearHover
+  | ApplyForceHover
 
-export interface InitArgs {
+export type SetWorldFn = (world: World) => void
+
+export interface AppState {
+  pointer: Pointer | null
+  hover: Hover | null
   canvas: HTMLCanvasElement
-  pointer: React.MutableRefObject<Pointer>
   signal: AbortSignal
   world: World
+  setWorld: SetWorldFn
 }
 
-export type InitFn = (args: InitArgs) => void
+export type InitFn = (state: AppState) => void
 
 export type PartialGear = Pick<
   Gear,

@@ -1,6 +1,7 @@
 import invariant from 'tiny-invariant'
 import {
   Connection,
+  ConnectionType,
   Gear,
   SimpleVec2,
   World,
@@ -46,18 +47,30 @@ export function addGear({
 
   world.gears[gear.id] = gear
 
+  let attach: Gear | undefined
+  for (const connection of connections) {
+    if (connection.type !== ConnectionType.enum.Attached) {
+      continue
+    }
+    invariant(attach === undefined)
+    attach = world.gears[connection.gearId]
+    invariant(attach)
+  }
+
   for (const tileId of iterateGearTileIds(
     position,
     radius,
   )) {
     let tile = world.tiles[tileId]
-    if (!tile) {
-      tile = world.tiles[tileId] = { gearIds: [] }
+
+    if (attach) {
+      invariant(tile?.gearId)
+      invariant(tile?.attachedGearId === undefined)
+      tile.attachedGearId = gearId
+    } else {
+      invariant(tile === undefined)
+      tile = world.tiles[tileId] = { gearId }
     }
-
-    invariant(!tile.gearIds.includes(gearId))
-
-    tile.gearIds.push(gearId)
   }
 
   for (const connection of connections) {

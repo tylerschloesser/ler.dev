@@ -2,24 +2,21 @@ import invariant from 'tiny-invariant'
 import {
   ACCELERATION,
   FRICTION,
-  TWO_PI,
   TICK_DURATION,
+  TWO_PI,
 } from './const.js'
 import {
   ConnectionType,
   Gear,
+  HoverType,
   InitFn,
-  PointerType,
   World,
 } from './types.js'
 
-export const initSimulator: InitFn = ({
-  pointer,
-  world,
-  signal,
-}) => {
+export const initSimulator: InitFn = (state) => {
   let prev: number = performance.now()
   function tick() {
+    const { pointer, hover, world } = state
     const now = performance.now()
 
     // cap the tick at 2x the duration
@@ -34,16 +31,20 @@ export const initSimulator: InitFn = ({
     prev = now
 
     if (
-      pointer.current.type === PointerType.ApplyForce &&
-      pointer.current.state?.active &&
-      pointer.current.state.gearId
+      hover?.type === HoverType.ApplyForce &&
+      pointer?.down
     ) {
-      const gear = world.gears[pointer.current.state.gearId]
+      const tileId = `${pointer.position.x}.${pointer.position.y}`
+      const tile = world.tiles[tileId]
+      if (!tile) {
+        return
+      }
+      const gear = world.gears[tile.gearId]
       invariant(gear)
+
       accelerateGear({
         root: gear,
-        acceleration:
-          pointer.current.acceleration * ACCELERATION,
+        acceleration: hover.acceleration * ACCELERATION,
         elapsed,
         world,
       })
@@ -68,7 +69,7 @@ export const initSimulator: InitFn = ({
     }
   }, TICK_DURATION)
 
-  signal.addEventListener('abort', () => {
+  state.signal.addEventListener('abort', () => {
     self.clearInterval(interval)
   })
 }

@@ -1,19 +1,13 @@
-import { InitFn, PointerType } from './types.js'
+import { HoverType, InitFn } from './types.js'
 
-export const initKeyboard: InitFn = ({
-  signal,
-  pointer,
-}) => {
+export const initKeyboard: InitFn = (state) => {
   window.addEventListener(
     'keyup',
     (e) => {
       if (e.key === 'q') {
-        pointer.current = {
-          type: PointerType.Null,
-          state: null,
-        }
+        state.hover = { type: HoverType.Null }
       }
     },
-    { signal },
+    { signal: state.signal },
   )
 }

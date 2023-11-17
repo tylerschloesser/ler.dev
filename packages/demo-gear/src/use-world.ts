@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { World } from './types.js'
+import { SetWorldFn, World } from './types.js'
 import {
   clearWorld,
   getDefaultWorld,
@@ -7,13 +7,7 @@ import {
   saveWorld,
 } from './world.js'
 
-export interface UseWorld {
-  save(): Promise<void>
-  reset(): Promise<void>
-  world: World | null
-}
-
-export function useWorld(): UseWorld {
+export function useWorld(): [World | null, SetWorldFn] {
   const [world, setWorld] = useState<World | null>(null)
   const [error, setError] = useState<Error | null>(null)
 
@@ -27,20 +21,26 @@ export function useWorld(): UseWorld {
     }
   }, [error])
 
-  const save = useCallback(async () => {
+  return [world, setWorld]
+}
+
+export type SaveWorldFn = () => Promise<void>
+export function useSaveWorld(
+  world: World | null,
+): SaveWorldFn {
+  return useCallback(async () => {
     if (world) {
       await saveWorld(world)
     }
   }, [world])
+}
 
-  const reset = useCallback(async () => {
+export type ResetWorldFn = () => Promise<void>
+export function useResetWorld(
+  setWorld: SetWorldFn,
+): ResetWorldFn {
+  return useCallback(async () => {
     await clearWorld()
     setWorld(await getDefaultWorld())
   }, [])
-
-  return {
-    save,
-    reset,
-    world,
-  }
 }

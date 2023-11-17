@@ -1,17 +1,11 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import styles from './app.module.scss'
-import { GEAR_RADIUSES } from './const.js'
 import { initCanvas } from './init-canvas.js'
 import { initKeyboard } from './init-keyboard.js'
 import { initPointer } from './init-pointer.js'
 import { initSimulator } from './init-simulator.js'
 import { Toolbar } from './toolbar.js'
-import {
-  InitArgs,
-  InitFn,
-  Pointer,
-  PointerType,
-} from './types.js'
+import { AppState, InitFn } from './types.js'
 import { useMediaQuery } from './use-media-query.js'
 import { useWorld } from './use-world.js'
 
@@ -22,54 +16,64 @@ const INIT_FNS: InitFn[] = [
   initSimulator,
 ]
 
-export function App() {
-  const pointer = useRef<Pointer>({
-    type: PointerType.AddGear,
-    radius: GEAR_RADIUSES[0]!,
-    state: null,
-  })
-  const [canvas, setCanvas] =
-    useState<HTMLCanvasElement | null>(null)
-  const { world, save, reset } = useWorld()
-  const [controller] = useState(new AbortController())
-  const { signal } = controller
+interface UseAppStateArgs {
+  canvas: HTMLCanvasElement | null
+  controller: AbortController
+}
 
+function useAppState({
+  canvas,
+  controller,
+}: UseAppStateArgs): AppState | null {
+  const [state, setState] = useState<AppState | null>(null)
+  const [world, setWorld] = useWorld()
   useEffect(() => {
-    if (canvas && world) {
-      const args: InitArgs = {
-        canvas,
-        pointer,
-        world,
-        signal,
-      }
-      for (const init of INIT_FNS) {
-        init(args)
-      }
+    if (!canvas || !world) {
+      return
     }
-  }, [canvas, pointer, world, signal])
-
-  useEffect(() => {
+    setState({
+      canvas,
+      world,
+      hover: null,
+      pointer: null,
+      setWorld,
+      signal: controller.signal,
+    })
     return () => {
       controller.abort()
     }
-  }, [])
+  }, [canvas, world, controller])
+
+  return state
+}
+
+export function App() {
+  const [canvas, setCanvas] =
+    useState<HTMLCanvasElement | null>(null)
+  const [controller] = useState(new AbortController())
+  const { signal } = controller
+
+  const state = useAppState({ canvas, controller })
+
+  useEffect(() => {
+    if (!state) {
+      return
+    }
+    for (const init of INIT_FNS) {
+      init(state)
+    }
+    return () => {
+      controller.abort()
+    }
+  }, [state, controller])
 
   const hover = useMediaQuery('(hover: hover)', signal)
 
-  if (!world) {
-    return <>Loading...</>
-  }
-
   return (
     <div className={styles.container}>
-      {hover && (
+      {state && hover && (
         <div className={styles.toolbar}>
-          <Toolbar
-            pointer={pointer}
-            world={world}
-            save={save}
-            reset={reset}
-          />
+          <Toolbar context={state} />
         </div>
       )}
       <canvas className={styles.canvas} ref={setCanvas} />

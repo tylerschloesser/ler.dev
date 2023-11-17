@@ -3,16 +3,13 @@ import { Color } from './color.js'
 import { renderConnection } from './render-connection.js'
 import { renderGear } from './render-gear.js'
 import { renderGrid } from './render-grid.js'
-import { renderPointer } from './render-pointer.js'
+import { renderHover } from './render-hover.js'
 import { InitFn } from './types.js'
 import { iterateConnections } from './util.js'
 
-export const initCanvas: InitFn = ({
-  canvas,
-  pointer,
-  signal,
-  world,
-}) => {
+export const initCanvas: InitFn = (state) => {
+  const { canvas, signal } = state
+
   const rect = canvas.getBoundingClientRect()
   canvas.width = rect.width
   canvas.height = rect.height
@@ -38,12 +35,12 @@ export const initCanvas: InitFn = ({
 
     renderGrid({ canvas, context })
 
-    for (const gear of Object.values(world.gears)) {
+    for (const gear of Object.values(state.world.gears)) {
       renderGear({ gear, context })
     }
 
     for (const { gear1, gear2, type } of iterateConnections(
-      world.gears,
+      state.world.gears,
     )) {
       renderConnection({
         gear1,
@@ -51,15 +48,11 @@ export const initCanvas: InitFn = ({
         type,
         context,
         valid: true,
-        debug: world.debugConnections,
+        debug: state.world.debugConnections,
       })
     }
 
-    renderPointer({
-      pointer: pointer.current,
-      context,
-      world,
-    })
+    renderHover({ context, state })
 
     window.requestAnimationFrame(render)
   }

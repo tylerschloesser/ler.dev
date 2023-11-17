@@ -1,15 +1,24 @@
 import invariant from 'tiny-invariant'
+import { SimpleVec2 } from './types.js'
 
 export class Vec2 {
   x: number
   y: number
 
-  constructor(x: number, y: number) {
-    this.x = x
-    this.y = y
+  constructor(x: number | SimpleVec2, y?: number) {
+    if (typeof x === 'number') {
+      this.x = x
+      this.y = y ?? x
+    } else {
+      this.x = x.x
+      this.y = x.y
+    }
   }
 
-  add(v: Vec2): Vec2 {
+  add(v: Vec2 | number): Vec2 {
+    if (typeof v === 'number') {
+      return new Vec2(this.x + v, this.y + v)
+    }
     return new Vec2(this.x + v.x, this.y + v.y)
   }
 
@@ -44,5 +53,16 @@ export class Vec2 {
       this.x * Math.cos(angle) - this.y * Math.sin(angle),
       this.x * Math.sin(angle) + this.y * Math.cos(angle),
     )
+  }
+
+  floor(): Vec2 {
+    return new Vec2(Math.floor(this.x), Math.floor(this.y))
+  }
+
+  static equal(
+    a: Vec2 | SimpleVec2,
+    b: Vec2 | SimpleVec2,
+  ): boolean {
+    return a.x === b.x && a.x === b.x
   }
 }

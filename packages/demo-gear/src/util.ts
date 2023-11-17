@@ -1,11 +1,15 @@
 import invariant from 'tiny-invariant'
+import { HALF_PI, PI, TWO_PI } from './const.js'
 import {
+  AddGearHover,
   ConnectionType,
   Gear,
   GearId,
+  Pointer,
   SimpleVec2,
   World,
 } from './types.js'
+import { Vec2 } from './vec2.js'
 
 export function* iterateConnections(
   gears: Record<GearId, Gear>,
@@ -85,5 +89,103 @@ export function* iterateGearTiles(
     if (tile) {
       yield tile
     }
+  }
+}
+
+export function* iterateOverlappingGears(
+  position: SimpleVec2,
+  radius: number,
+  world: World,
+) {
+  const seen = new Set<GearId>()
+
+  for (const tile of iterateGearTiles(
+    position,
+    radius,
+    world,
+  )) {
+    if (
+      tile.attachedGearId &&
+      !seen.has(tile.attachedGearId)
+    ) {
+      seen.add(tile.attachedGearId)
+      const attachedGear = world.gears[tile.attachedGearId]
+      invariant(attachedGear)
+      yield attachedGear
+    }
+
+    if (!seen.has(tile.gearId)) {
+      const gear = world.gears[tile.gearId]
+      invariant(gear)
+      yield gear
+    }
+    seen.add(tile.gearId)
+  }
+}
+
+function* iterateAdjacentGears({
+  pointer,
+  hover,
+  world,
+}: {
+  pointer: Pointer
+  hover: AddGearHover
+  world: World
+}) {
+  const v = new Vec2(hover.radius, 0)
+  for (const angle of [0, HALF_PI, PI, PI + HALF_PI]) {
+    const point = v.rotate(angle).floor()
+
+    const { x, y } = pointer.position.add(
+      v.add(0.5).rotate(angle).floor(),
+    )
+    const tileId = `${x}.${y}`
+    const tile = world.tiles[tileId]
+
+    if (!tile) {
+      continue
+    }
+
+    // ignore attached gears
+
+    const gear = world.gears[tile.gearId]
+    invariant(gear)
+
+    if (
+      Vec2.equal(
+        new Vec2(gear.position).add(
+          new Vec2(gear.radius).rotate(TWO_PI - angle),
+        ),
+        point,
+      )
+    ) {
+      yield gear.id
+    }
+  }
+}
+
+export function addTeethConnections({
+  pointer,
+  hover,
+  world,
+}: {
+  pointer: Pointer
+  hover: AddGearHover
+  world: World
+}): void {
+  const { connections } = hover
+  if (connections.length > 0) {
+    return
+  }
+
+  for (const gearId of iterateAdjacentGears({
+    pointer,
+    hover,
+    world,
+  })) {
+    connections.push({
+      type: ConnectionType.enum.Teeth,
+      gearId,
+    })
   }
 }
