@@ -1,23 +1,24 @@
 import { useEffect, useState } from 'react'
 import { GEAR_RADIUSES } from './const.js'
 import styles from './toolbar.module.scss'
-import { AppState, HoverType } from './types.js'
+import { AppState, PointerType } from './types.js'
 import { useResetWorld, useSaveWorld } from './use-world.js'
+import { Vec2 } from './vec2.js'
 
 export interface ToolbarProps {
-  context: AppState
+  state: AppState
 }
 
-export function Toolbar({ context }: ToolbarProps) {
+export function Toolbar({ state }: ToolbarProps) {
   const [debugConnections, setDebugConnections] = useState(
-    context.world.debugConnections,
+    state.world.debugConnections,
   )
   useEffect(() => {
-    context.world.debugConnections = debugConnections
+    state.world.debugConnections = debugConnections
   }, [debugConnections])
 
-  const save = useSaveWorld(context.world)
-  const reset = useResetWorld(context.setWorld)
+  const save = useSaveWorld(state.world)
+  const reset = useResetWorld(state.setWorld)
 
   return (
     <div className={styles.container}>
@@ -27,12 +28,14 @@ export function Toolbar({ context }: ToolbarProps) {
           <button
             key={radius}
             onPointerUp={() => {
-              context.hover = {
-                type: HoverType.AddGear,
+              state.pointer = {
+                type: PointerType.Build,
                 radius,
                 connections: [],
                 valid: false,
-                reasons: [],
+                attach: null,
+                chain: null,
+                position: new Vec2(0, 0),
               }
             }}
           >
@@ -46,9 +49,11 @@ export function Toolbar({ context }: ToolbarProps) {
           <button
             key={acceleration}
             onPointerUp={() => {
-              context.hover = {
-                type: HoverType.ApplyForce,
+              state.pointer = {
+                type: PointerType.ApplyForce,
                 acceleration,
+                gear: null,
+                position: new Vec2(0, 0),
               }
             }}
           >

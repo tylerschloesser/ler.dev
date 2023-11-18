@@ -34,7 +34,6 @@ function useAppState({
     setState({
       canvas,
       world,
-      hover: null,
       pointer: null,
       setWorld,
       signal: controller.signal,

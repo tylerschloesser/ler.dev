@@ -1,50 +1,35 @@
-import { addGear } from './add-gear.js'
-import { TILE_SIZE } from './const.js'
-import { HoverType, InitFn } from './types.js'
 import {
-  updateAddGearHover,
-  updateApplyForceHover,
-} from './update-hover.js'
-import { Vec2 } from './vec2.js'
+  applyForcePointerDown,
+  applyForcePointerMove,
+  applyForcePointerUp,
+} from './apply-force-pointer.js'
+import {
+  buildPointerDown,
+  buildPointerMove,
+  buildPointerUp,
+} from './build-pointer.js'
+import { TILE_SIZE } from './const.js'
+import { InitFn, Pointer, PointerType } from './types.js'
 
-export const initPointer: InitFn = (context) => {
-  const { canvas, world, signal } = context
+export const initPointer: InitFn = (state) => {
+  const { canvas, signal } = state
+
   canvas.addEventListener(
     'pointermove',
     (e) => {
-      const position = getPointerPosition(e, canvas)
-
-      if (
-        position.x === context.pointer?.position.x &&
-        position.y === context.pointer?.position.y
-      ) {
-        // optimization. don't do anything until the pointer moves
-        // to a new tile
+      if (!state.pointer) {
         return
       }
-
-      const pointer = (context.pointer = {
-        down: e.buttons !== 0,
-        position,
-      })
-
-      switch (context.hover?.type) {
-        case HoverType.AddGear: {
-          updateAddGearHover({
-            hover: context.hover,
-            pointer,
-            world,
-          })
+      if (!updatePosition(e, canvas, state.pointer)) {
+        return
+      }
+      switch (state.pointer.type) {
+        case PointerType.Build:
+          buildPointerMove(state, state.pointer)
           break
-        }
-        case HoverType.ApplyForce: {
-          updateApplyForceHover({
-            hover: context.hover,
-            pointer,
-            world,
-          })
+        case PointerType.ApplyForce:
+          applyForcePointerMove(state, state.pointer)
           break
-        }
       }
     },
     { signal },
@@ -52,67 +37,68 @@ export const initPointer: InitFn = (context) => {
   canvas.addEventListener(
     'pointerleave',
     () => {
-      context.pointer = null
+      state.pointer = null
     },
     { signal },
   )
   canvas.addEventListener(
     'pointerup',
     (e) => {
-      if (!context.pointer) {
+      if (!state.pointer) {
         return
       }
-      const position = getPointerPosition(e, canvas)
-      const pointer = (context.pointer = {
-        down: false,
-        position,
-      })
-
-      switch (context.hover?.type) {
-        case HoverType.AddGear: {
-          const { radius, connections, valid } =
-            context.hover
-          if (valid) {
-            addGear({
-              position,
-              radius,
-              world,
-              connections,
-            })
-            updateAddGearHover({
-              hover: context.hover,
-              pointer,
-              world,
-            })
-          }
+      updatePosition(e, canvas, state.pointer)
+      switch (state.pointer.type) {
+        case PointerType.Build:
+          buildPointerUp(state, state.pointer)
           break
-        }
+        case PointerType.ApplyForce:
+          applyForcePointerUp(state, state.pointer)
+          break
       }
     },
-    {
-      signal,
-    },
+    { signal },
   )
   canvas.addEventListener(
     'pointerdown',
     (e) => {
-      context.pointer = {
-        down: true,
-        position: getPointerPosition(e, canvas),
+      if (!state.pointer) {
+        return
+      }
+      updatePosition(e, canvas, state.pointer)
+      switch (state.pointer.type) {
+        case PointerType.Build:
+          buildPointerDown(state, state.pointer)
+          break
+        case PointerType.ApplyForce:
+          applyForcePointerDown(state, state.pointer)
+          break
       }
     },
     { signal },
   )
 }
 
-function getPointerPosition(
+function updatePosition(
   e: PointerEvent,
   canvas: HTMLCanvasElement,
-): Vec2 {
-  return new Vec2(
-    e.offsetX - canvas.width / 2,
-    e.offsetY - canvas.height / 2,
+  pointer: Pointer,
+): boolean {
+  const x = Math.floor(
+    (e.offsetX - canvas.width / 2) / TILE_SIZE,
   )
-    .div(TILE_SIZE)
-    .floor()
+  const y = Math.floor(
+    (e.offsetY - canvas.width / 2) / TILE_SIZE,
+  )
+
+  if (
+    pointer.position.x === x &&
+    pointer.position.y === y
+  ) {
+    return false
+  }
+
+  pointer.position.x = x
+  pointer.position.y = y
+  return true
 }

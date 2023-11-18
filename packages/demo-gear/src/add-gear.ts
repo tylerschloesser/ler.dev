@@ -1,36 +1,67 @@
 import invariant from 'tiny-invariant'
 import {
+  AppState,
   Connection,
   ConnectionType,
   Gear,
   SimpleVec2,
-  World,
 } from './types.js'
 import {
   iterateGearTileIds,
   iterateNetwork,
 } from './util.js'
 
-interface AddGearArgs {
-  radius: number
-  position: SimpleVec2
-  world: World
-  connections: Connection[]
+export function addChainConnection(
+  gear1: Gear,
+  gear2: Gear,
+  state: AppState,
+): void {
+  // TODO validate
+  gear1.connections.push({
+    type: ConnectionType.enum.Chain,
+    gearId: gear2.id,
+  })
+  gear2.connections.push({
+    type: ConnectionType.enum.Chain,
+    gearId: gear1.id,
+  })
 }
 
-export function addGear({
-  radius,
-  position,
-  world,
-  connections,
-}: AddGearArgs): Gear {
-  invariant(position.x === Math.floor(position.x))
-  invariant(position.y === Math.floor(position.y))
+export function addGear(
+  position: SimpleVec2,
+  radius: number,
+  chain: Gear | null,
+  attach: Gear | null,
+  connections: Connection[],
+  state: AppState,
+): void {
+  const { world } = state
 
   const gearId = `${position.x}.${position.y}.${radius}`
   invariant(world.gears[gearId] === undefined)
 
   const mass = Math.PI * radius ** 2
+
+  if (chain) {
+    connections.push({
+      type: ConnectionType.enum.Chain,
+      gearId: chain.id,
+    })
+    chain.connections.push({
+      type: ConnectionType.enum.Chain,
+      gearId,
+    })
+  }
+  if (attach) {
+    connections.push({
+      type: ConnectionType.enum.Attach,
+      gearId: attach.id,
+    })
+    attach.connections.push({
+      type: ConnectionType.enum.Attach,
+      gearId,
+    })
+  }
 
   const gear: Gear = {
     id: gearId,
@@ -46,16 +77,6 @@ export function addGear({
   }
 
   world.gears[gear.id] = gear
-
-  let attach: Gear | undefined
-  for (const connection of connections) {
-    if (connection.type !== ConnectionType.enum.Attached) {
-      continue
-    }
-    invariant(attach === undefined)
-    attach = world.gears[connection.gearId]
-    invariant(attach)
-  }
 
   for (const tileId of iterateGearTileIds(
     position,
@@ -73,19 +94,12 @@ export function addGear({
     }
   }
 
-  for (const connection of connections) {
-    const peer = world.gears[connection.gearId]
-    invariant(peer)
-    peer.connections.push({
-      gearId,
-      type: connection.type,
-    })
-  }
+  resetNetwork(gear, state)
+}
 
-  for (const node of iterateNetwork(gear, world)) {
+function resetNetwork(root: Gear, state: AppState): void {
+  for (const node of iterateNetwork(root, state.world)) {
     node.velocity = 0
     node.angle = 0
   }
-
-  return gear
 }

@@ -8,15 +8,15 @@ import {
 import {
   ConnectionType,
   Gear,
-  HoverType,
   InitFn,
+  PointerType,
   World,
 } from './types.js'
 
 export const initSimulator: InitFn = (state) => {
   let prev: number = performance.now()
   function tick() {
-    const { pointer, hover, world } = state
+    const { pointer, world } = state
     const now = performance.now()
 
     // cap the tick at 2x the duration
@@ -31,20 +31,12 @@ export const initSimulator: InitFn = (state) => {
     prev = now
 
     if (
-      hover?.type === HoverType.ApplyForce &&
-      pointer?.down
+      pointer?.type === PointerType.ApplyForce &&
+      pointer.gear
     ) {
-      const tileId = `${pointer.position.x}.${pointer.position.y}`
-      const tile = world.tiles[tileId]
-      if (!tile) {
-        return
-      }
-      const gear = world.gears[tile.gearId]
-      invariant(gear)
-
       accelerateGear({
-        root: gear,
-        acceleration: hover.acceleration * ACCELERATION,
+        root: pointer.gear,
+        acceleration: pointer.acceleration * ACCELERATION,
         elapsed,
         world,
       })
@@ -99,13 +91,13 @@ function accelerateGear({
   }): void {
     let n
     switch (type) {
-      case ConnectionType.enum.Teeth:
+      case ConnectionType.enum.Adjacent:
         n = (from.radius / to.radius) * -1
         break
       case ConnectionType.enum.Chain:
         n = from.radius / to.radius
         break
-      case ConnectionType.enum.Attached:
+      case ConnectionType.enum.Attach:
         n = 1
     }
 
@@ -192,11 +184,11 @@ function applyFriction({
               n *
               (() => {
                 switch (connection.type) {
-                  case ConnectionType.enum.Teeth:
+                  case ConnectionType.enum.Adjacent:
                     return (peer.radius / gear.radius) * -1
                   case ConnectionType.enum.Chain:
                     return peer.radius / gear.radius
-                  case ConnectionType.enum.Attached:
+                  case ConnectionType.enum.Attach:
                     return 1
                 }
               })(),

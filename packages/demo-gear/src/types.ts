@@ -20,9 +20,9 @@ export const Tile = z.strictObject({
 export type Tile = z.infer<typeof Tile>
 
 export const ConnectionType = z.enum([
-  'Teeth',
+  'Adjacent',
   'Chain',
-  'Attached',
+  'Attach',
 ])
 export type ConnectionType = z.infer<typeof ConnectionType>
 
@@ -51,90 +51,34 @@ export const World = z.strictObject({
 })
 export type World = z.infer<typeof World>
 
-export interface Pointer {
-  position: Vec2
-  down: boolean
-}
-
-export enum HoverType {
-  Null = 'null',
-  AddGear = 'add-gear',
-
+export enum PointerType {
+  Build = 'build',
   ApplyForce = 'apply-force',
 }
 
-export enum AddGearStateType {
-  Normal = 'normal',
-  Attach = 'attach',
-  StartChain = 'start-chain',
-  EndChain = 'end-chain',
-}
-
-export interface NormalAddGearState {
-  type: AddGearStateType.Normal
-  connections: Connection[]
-}
-
-export interface AttachAddGearState {
-  type: AddGearStateType.Attach
-  sourceId: GearId
-}
-
-export interface StartChainAddGearType {
-  type: AddGearStateType.StartChain
-  sourceId: GearId
-}
-
-export interface EndChainAddGearType {
-  type: AddGearStateType.EndChain
-  sourceId: GearId
-  connections: Connection[]
-}
-
-export type AddGearState =
-  | NormalAddGearState
-  | AttachAddGearState
-  | StartChainAddGearType
-  | EndChainAddGearType
-
-export interface NullHover {
-  type: HoverType.Null
-}
-
-export enum InvalidReasonType {
-  Overlaps = 'overlaps',
-}
-
-export interface OverlapsInvalidReason {
-  type: InvalidReasonType.Overlaps
-  gearId: GearId
-}
-
-export type InvalidReason = OverlapsInvalidReason
-
-export interface AddGearHover {
-  type: HoverType.AddGear
+export interface BuildPointer {
+  type: PointerType.Build
+  position: Vec2
   radius: number
-  connections: Connection[]
   valid: boolean
-  reasons: InvalidReason[]
+  chain: Gear | null
+  attach: Gear | null
+  connections: Connection[]
 }
 
-export interface ApplyForceHover {
-  type: HoverType.ApplyForce
+export interface ApplyForcePointer {
+  type: PointerType.ApplyForce
+  position: Vec2
   acceleration: number
+  gear: Gear | null
 }
 
-export type Hover =
-  | NullHover
-  | AddGearHover
-  | ApplyForceHover
+export type Pointer = BuildPointer | ApplyForcePointer
 
 export type SetWorldFn = (world: World) => void
 
 export interface AppState {
   pointer: Pointer | null
-  hover: Hover | null
   canvas: HTMLCanvasElement
   signal: AbortSignal
   world: World

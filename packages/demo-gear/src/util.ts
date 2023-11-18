@@ -1,15 +1,12 @@
 import invariant from 'tiny-invariant'
-import { HALF_PI, PI, TWO_PI } from './const.js'
 import {
-  AddGearHover,
+  Connection,
   ConnectionType,
   Gear,
   GearId,
-  Pointer,
   SimpleVec2,
   World,
 } from './types.js'
-import { Vec2 } from './vec2.js'
 
 export function* iterateConnections(
   gears: Record<GearId, Gear>,
@@ -123,69 +120,55 @@ export function* iterateOverlappingGears(
   }
 }
 
-function* iterateAdjacentGears({
-  pointer,
-  hover,
-  world,
-}: {
-  pointer: Pointer
-  hover: AddGearHover
-  world: World
-}) {
-  const v = new Vec2(hover.radius, 0)
-  for (const angle of [0, HALF_PI, PI, PI + HALF_PI]) {
-    const point = v.rotate(angle).floor()
+const DELTAS = [
+  [-1, 0],
+  [1, 0],
+  [0, -1],
+  [0, 1],
+]
 
-    const { x, y } = pointer.position.add(
-      v.add(0.5).rotate(angle).floor(),
-    )
-    const tileId = `${x}.${y}`
+function* iterateAdjacentGears(
+  position: SimpleVec2,
+  radius: number,
+  world: World,
+) {
+  for (const [dx, dy] of DELTAS) {
+    invariant(dx !== undefined)
+    invariant(dy !== undefined)
+    // prettier-ignore
+    const tileId = `${dx * (radius + 1)}.${dy * (radius + 1)}`
     const tile = world.tiles[tileId]
 
     if (!tile) {
       continue
     }
 
-    // ignore attached gears
-
     const gear = world.gears[tile.gearId]
     invariant(gear)
-
-    if (
-      Vec2.equal(
-        new Vec2(gear.position).add(
-          new Vec2(gear.radius).rotate(TWO_PI - angle),
-        ),
-        point,
-      )
-    ) {
-      yield gear.id
-    }
+    return (
+      gear.position.x + (gear.radius + radius) * -dx ===
+        position.x &&
+      gear.position.y + (gear.radius + radius) * -dy ===
+        position.y
+    )
   }
 }
 
-export function addTeethConnections({
-  pointer,
-  hover,
-  world,
-}: {
-  pointer: Pointer
-  hover: AddGearHover
-  world: World
-}): void {
-  const { connections } = hover
-  if (connections.length > 0) {
-    return
-  }
-
-  for (const gearId of iterateAdjacentGears({
-    pointer,
-    hover,
+export function getAdjacentConnections(
+  position: SimpleVec2,
+  radius: number,
+  world: World,
+): Connection[] {
+  const connections: Connection[] = []
+  for (const gearId of iterateAdjacentGears(
+    position,
+    radius,
     world,
-  })) {
+  )) {
     connections.push({
-      type: ConnectionType.enum.Teeth,
+      type: ConnectionType.enum.Adjacent,
       gearId,
     })
   }
+  return connections
 }
