@@ -20,7 +20,7 @@ export function buildPointerUp(
 ): void {
   invariant(pointer.position)
   updatePointer(state, pointer)
-  if (pointer.valid) {
+  if (!pointer.valid) {
     return
   }
 
@@ -57,6 +57,11 @@ export function buildPointerUp(
 
   updatePointer(state, pointer)
 }
+
+export function buildPointerDown(
+  state: AppState,
+  pointer: BuildPointer,
+): void {}
 
 function updatePointer(
   state: AppState,
@@ -101,8 +106,3 @@ function updatePointer(
     pointer.connections = []
   }
 }
-
-export function buildPointerDown(
-  state: AppState,
-  pointer: BuildPointer,
-): void {}

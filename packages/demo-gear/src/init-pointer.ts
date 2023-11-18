@@ -37,7 +37,9 @@ export const initPointer: InitFn = (state) => {
   canvas.addEventListener(
     'pointerleave',
     () => {
-      state.pointer = null
+      if (state.pointer) {
+        state.pointer.position = null
+      }
     },
     { signal },
   )
@@ -85,10 +87,10 @@ function updatePosition(
   pointer: Pointer,
 ): boolean {
   const x = Math.floor(
-    (e.offsetX - canvas.width / 2) / TILE_SIZE,
+    (e.offsetX - canvas.width / 2) / TILE_SIZE + 0.5,
   )
   const y = Math.floor(
-    (e.offsetY - canvas.width / 2) / TILE_SIZE,
+    (e.offsetY - canvas.height / 2) / TILE_SIZE + 0.5,
   )
 
   if (!pointer.position) {
