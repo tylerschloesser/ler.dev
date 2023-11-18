@@ -29,7 +29,7 @@ export const initSimulator: InitFn = (state) => {
     const elapsed = (now - prev) / 1000
     prev = now
 
-    if (state.accelerate?.gear) {
+    if (state.accelerate?.active && state.accelerate.gear) {
       accelerateGear({
         root: state.accelerate.gear,
         acceleration:

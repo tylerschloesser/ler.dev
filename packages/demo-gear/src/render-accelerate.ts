@@ -1,4 +1,3 @@
-import invariant from 'tiny-invariant'
 import { Color } from './color.js'
 import { TILE_SIZE } from './const.js'
 import { AppState } from './types.js'
@@ -8,22 +7,14 @@ export function renderAccelerate(
   context: CanvasRenderingContext2D,
 ): void {
   const { accelerate } = state
-  if (!accelerate?.position) {
+  if (!accelerate || !accelerate.gear) {
     return
   }
-  const { world } = state
-  const tileId = `${accelerate.position.x}.${accelerate.position.y}`
-  const tile = world.tiles[tileId]
-  if (!tile) {
-    return
-  }
-
-  const gear = world.gears[tile.gearId]
-  invariant(gear)
+  const { gear } = accelerate
 
   context.beginPath()
   context.lineWidth = 2
-  context.strokeStyle = accelerate.gear
+  context.strokeStyle = accelerate.active
     ? Color.ApplyForceActive
     : Color.ApplyForceInactive
   context.strokeRect(

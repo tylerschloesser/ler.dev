@@ -21,6 +21,8 @@ export function updateAcceleratePosition(
     accelerate.position = { x, y }
   }
 
+  accelerate.gear = null
+
   const tileId = `${accelerate.position.x}.${accelerate.position.y}`
   const tile = state.world.tiles[tileId]
   if (!tile) {
