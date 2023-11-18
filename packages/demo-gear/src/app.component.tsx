@@ -5,7 +5,7 @@ import { initKeyboard } from './init-keyboard.js'
 import { initPointer } from './init-pointer.js'
 import { initSimulator } from './init-simulator.js'
 import { Toolbar } from './toolbar.js'
-import { AppState, InitFn } from './types.js'
+import { AppState, InitFn, PointerMode } from './types.js'
 import { useMediaQuery } from './use-media-query.js'
 import { useWorld } from './use-world.js'
 
@@ -34,9 +34,16 @@ function useAppState({
     setState({
       canvas,
       world,
-      pointer: null,
       setWorld,
       signal: controller.signal,
+      build: null,
+      accelerate: null,
+      pointer: {
+        active: false,
+        down: false,
+        mode: PointerMode.Free,
+        position: { x: 0, y: 0 },
+      },
     })
     return () => {
       controller.abort()

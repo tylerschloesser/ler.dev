@@ -1,18 +1,18 @@
 import invariant from 'tiny-invariant'
 import { Color } from './color.js'
 import { TILE_SIZE } from './const.js'
-import { AppState, ApplyForcePointer } from './types.js'
+import { AppState } from './types.js'
 
-export function renderApplyForcePointer(
+export function renderAccelerate(
   state: AppState,
-  pointer: ApplyForcePointer,
   context: CanvasRenderingContext2D,
 ): void {
-  if (!pointer.position) {
+  const { accelerate } = state
+  if (!accelerate?.position) {
     return
   }
   const { world } = state
-  const tileId = `${pointer.position.x}.${pointer.position.y}`
+  const tileId = `${accelerate.position.x}.${accelerate.position.y}`
   const tile = world.tiles[tileId]
   if (!tile) {
     return
@@ -23,7 +23,7 @@ export function renderApplyForcePointer(
 
   context.beginPath()
   context.lineWidth = 2
-  context.strokeStyle = pointer.gear
+  context.strokeStyle = accelerate.gear
     ? Color.ApplyForceActive
     : Color.ApplyForceInactive
   context.strokeRect(

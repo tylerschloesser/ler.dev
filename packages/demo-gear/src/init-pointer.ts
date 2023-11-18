@@ -1,111 +1,111 @@
+import invariant from 'tiny-invariant'
 import {
-  applyForcePointerDown,
-  applyForcePointerMove,
-  applyForcePointerUp,
-} from './apply-force-pointer.js'
+  updateAccelerate,
+  updateAcceleratePosition,
+} from './accelerate.js'
 import {
-  buildPointerDown,
-  buildPointerMove,
-  buildPointerUp,
-} from './build-pointer.js'
+  executeBuild,
+  updateBuildPosition,
+} from './build.js'
 import { TILE_SIZE } from './const.js'
-import { InitFn, Pointer, PointerType } from './types.js'
+import { AppState, InitFn, PointerMode } from './types.js'
 
 export const initPointer: InitFn = (state) => {
   const { canvas, signal } = state
-
   canvas.addEventListener(
-    'pointermove',
-    (e) => {
-      if (!state.pointer) {
-        return
-      }
-      if (!updatePosition(e, canvas, state.pointer)) {
-        return
-      }
-      switch (state.pointer.type) {
-        case PointerType.Build:
-          buildPointerMove(state, state.pointer)
-          break
-        case PointerType.ApplyForce:
-          applyForcePointerMove(state, state.pointer)
-          break
-      }
-    },
+    'pointerenter',
+    (e) => handlePointer(e, state),
     { signal },
   )
   canvas.addEventListener(
-    'pointerleave',
-    () => {
-      if (state.pointer) {
-        state.pointer.position = null
-      }
-    },
+    'pointermove',
+    (e) => handlePointer(e, state),
     { signal },
   )
   canvas.addEventListener(
     'pointerup',
-    (e) => {
-      if (!state.pointer) {
-        return
-      }
-      updatePosition(e, canvas, state.pointer)
-      switch (state.pointer.type) {
-        case PointerType.Build:
-          buildPointerUp(state, state.pointer)
-          break
-        case PointerType.ApplyForce:
-          applyForcePointerUp(state, state.pointer)
-          break
-      }
-    },
+    (e) => handlePointer(e, state),
     { signal },
   )
   canvas.addEventListener(
     'pointerdown',
-    (e) => {
-      if (!state.pointer) {
-        return
-      }
-      updatePosition(e, canvas, state.pointer)
-      switch (state.pointer.type) {
-        case PointerType.Build:
-          buildPointerDown(state, state.pointer)
-          break
-        case PointerType.ApplyForce:
-          applyForcePointerDown(state, state.pointer)
-          break
-      }
-    },
+    (e) => handlePointer(e, state),
+    { signal },
+  )
+  canvas.addEventListener(
+    'pointerleave',
+    (e) => handlePointer(e, state),
     { signal },
   )
 }
 
 function updatePosition(
   e: PointerEvent,
-  canvas: HTMLCanvasElement,
-  pointer: Pointer,
-): boolean {
-  const x = Math.floor(
-    (e.offsetX - canvas.width / 2) / TILE_SIZE + 0.5,
-  )
-  const y = Math.floor(
-    (e.offsetY - canvas.height / 2) / TILE_SIZE + 0.5,
-  )
-
-  if (!pointer.position) {
-    pointer.position = { x, y }
-    return true
-  }
-
-  if (
-    pointer.position.x === x &&
-    pointer.position.y === y
-  ) {
-    return false
-  }
-
+  state: AppState,
+): void {
+  const { canvas, pointer } = state
+  const x = (e.offsetX - canvas.width / 2) / TILE_SIZE
+  const y = (e.offsetY - canvas.height / 2) / TILE_SIZE
   pointer.position.x = x
   pointer.position.y = y
-  return true
+}
+
+function handlePointer(
+  e: PointerEvent,
+  state: AppState,
+): void {
+  const { pointer } = state
+  updatePosition(e, state)
+  switch (e.type) {
+    case 'pointerenter': {
+      pointer.active = true
+      break
+    }
+    case 'pointerup': {
+      pointer.down = false
+      switch (pointer.mode) {
+        case PointerMode.Build: {
+          executeBuild(state)
+          break
+        }
+        case PointerMode.Accelerate: {
+          updateAccelerate(state)
+          break
+        }
+      }
+      break
+    }
+    case 'pointerdown': {
+      pointer.down = true
+      switch (pointer.mode) {
+        case PointerMode.Accelerate: {
+          updateAccelerate(state)
+          break
+        }
+      }
+      break
+    }
+    case 'pointermove': {
+      let tileX = Math.floor(pointer.position.x + 0.5)
+      let tileY = Math.floor(pointer.position.y + 0.5)
+      switch (pointer.mode) {
+        case PointerMode.Build: {
+          updateBuildPosition(state, tileX, tileY)
+          break
+        }
+        case PointerMode.Accelerate: {
+          updateAcceleratePosition(state, tileX, tileY)
+          break
+        }
+      }
+      break
+    }
+    case 'pointerleave': {
+      pointer.active = false
+      break
+    }
+    default: {
+      invariant(false)
+    }
+  }
 }

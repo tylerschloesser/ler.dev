@@ -50,13 +50,7 @@ export const World = z.strictObject({
 })
 export type World = z.infer<typeof World>
 
-export enum PointerType {
-  Build = 'build',
-  ApplyForce = 'apply-force',
-}
-
-export interface BuildPointer {
-  type: PointerType.Build
+export interface Build {
   position: SimpleVec2 | null
   radius: number
   valid: boolean
@@ -64,23 +58,37 @@ export interface BuildPointer {
   connections: Connection[]
 }
 
-export interface ApplyForcePointer {
-  type: PointerType.ApplyForce
+export interface Accelerate {
   position: SimpleVec2 | null
-  acceleration: number
+  active: boolean
+  direction: number
   gear: Gear | null
 }
 
-export type Pointer = BuildPointer | ApplyForcePointer
-
 export type SetWorldFn = (world: World) => void
 
+export enum PointerMode {
+  Free = 'free',
+  Build = 'build',
+  Accelerate = 'accelerate',
+}
+
+export interface Pointer {
+  active: boolean
+  position: SimpleVec2
+  down: boolean
+  mode: PointerMode
+}
+
 export interface AppState {
-  pointer: Pointer | null
   canvas: HTMLCanvasElement
   signal: AbortSignal
   world: World
   setWorld: SetWorldFn
+  pointer: Pointer
+
+  accelerate: Accelerate | null
+  build: Build | null
 }
 
 export type InitFn = (state: AppState) => void

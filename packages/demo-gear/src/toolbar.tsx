@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { GEAR_RADIUSES } from './const.js'
 import styles from './toolbar.module.scss'
-import { AppState, PointerType } from './types.js'
+import { AppState } from './types.js'
 import { useResetWorld, useSaveWorld } from './use-world.js'
 
 export interface ToolbarProps {
@@ -27,13 +27,12 @@ export function Toolbar({ state }: ToolbarProps) {
           <button
             key={radius}
             onPointerUp={() => {
-              state.pointer = {
-                type: PointerType.Build,
-                radius,
-                connections: [],
-                valid: false,
+              state.build = {
                 chain: null,
+                connections: [],
                 position: null,
+                radius,
+                valid: false,
               }
             }}
           >
@@ -47,9 +46,9 @@ export function Toolbar({ state }: ToolbarProps) {
           <button
             key={acceleration}
             onPointerUp={() => {
-              state.pointer = {
-                type: PointerType.ApplyForce,
-                acceleration,
+              state.accelerate = {
+                active: false,
+                direction: acceleration,
                 gear: null,
                 position: null,
               }

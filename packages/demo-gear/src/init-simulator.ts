@@ -9,14 +9,13 @@ import {
   ConnectionType,
   Gear,
   InitFn,
-  PointerType,
   World,
 } from './types.js'
 
 export const initSimulator: InitFn = (state) => {
   let prev: number = performance.now()
   function tick() {
-    const { pointer, world } = state
+    const { world } = state
     const now = performance.now()
 
     // cap the tick at 2x the duration
@@ -30,13 +29,11 @@ export const initSimulator: InitFn = (state) => {
     const elapsed = (now - prev) / 1000
     prev = now
 
-    if (
-      pointer?.type === PointerType.ApplyForce &&
-      pointer.gear
-    ) {
+    if (state.accelerate?.gear) {
       accelerateGear({
-        root: pointer.gear,
-        acceleration: pointer.acceleration * ACCELERATION,
+        root: state.accelerate.gear,
+        acceleration:
+          state.accelerate.direction * ACCELERATION,
         elapsed,
         world,
       })

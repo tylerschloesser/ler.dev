@@ -5,7 +5,8 @@ export const initKeyboard: InitFn = (state) => {
     'keyup',
     (e) => {
       if (e.key === 'q') {
-        state.pointer = null
+        state.build = null
+        state.accelerate = null
       }
     },
     { signal: state.signal },
