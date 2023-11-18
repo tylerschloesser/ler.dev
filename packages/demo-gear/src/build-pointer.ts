@@ -50,6 +50,7 @@ export function buildPointerUp(
       pointer.connections,
       state,
     )
+    pointer.chain = null
   }
   updatePointer(state, pointer)
 }

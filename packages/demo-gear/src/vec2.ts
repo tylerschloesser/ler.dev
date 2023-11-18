@@ -63,6 +63,6 @@ export class Vec2 {
     a: Vec2 | SimpleVec2,
     b: Vec2 | SimpleVec2,
   ): boolean {
-    return a.x === b.x && a.x === b.x
+    return a.x === b.x && a.y === b.y
   }
 }
