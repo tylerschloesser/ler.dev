@@ -135,8 +135,9 @@ function* iterateAdjacentGears(
   for (const [dx, dy] of DELTAS) {
     invariant(dx !== undefined)
     invariant(dy !== undefined)
-    // prettier-ignore
-    const tileId = `${dx * (radius + 1)}.${dy * (radius + 1)}`
+    const tileId =
+      `${position.x + dx * (radius + 1)}` +
+      `.${position.y + dy * (radius + 1)}`
     const tile = world.tiles[tileId]
 
     if (!tile) {
@@ -145,12 +146,14 @@ function* iterateAdjacentGears(
 
     const gear = world.gears[tile.gearId]
     invariant(gear)
-    return (
+    if (
       gear.position.x + (gear.radius + radius) * -dx ===
         position.x &&
       gear.position.y + (gear.radius + radius) * -dy ===
         position.y
-    )
+    ) {
+      yield gear
+    }
   }
 }
 
@@ -160,14 +163,14 @@ export function getAdjacentConnections(
   world: World,
 ): Connection[] {
   const connections: Connection[] = []
-  for (const gearId of iterateAdjacentGears(
+  for (const gear of iterateAdjacentGears(
     position,
     radius,
     world,
   )) {
     connections.push({
       type: ConnectionType.enum.Adjacent,
-      gearId,
+      gearId: gear.id,
     })
   }
   return connections

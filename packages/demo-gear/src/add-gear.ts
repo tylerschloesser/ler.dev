@@ -47,18 +47,19 @@ export function addGear(
       type: ConnectionType.enum.Chain,
       gearId: chain.id,
     })
-    chain.connections.push({
-      type: ConnectionType.enum.Chain,
-      gearId,
-    })
   }
   if (attach) {
     connections.push({
       type: ConnectionType.enum.Attach,
       gearId: attach.id,
     })
-    attach.connections.push({
-      type: ConnectionType.enum.Attach,
+  }
+
+  for (const connection of connections) {
+    const node = world.gears[connection.gearId]
+    invariant(node)
+    node.connections.push({
+      type: connection.type,
       gearId,
     })
   }
