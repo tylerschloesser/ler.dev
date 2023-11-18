@@ -80,12 +80,19 @@ export interface Pointer {
   mode: PointerMode
 }
 
+export interface Camera {
+  position: SimpleVec2
+  zoom: number
+}
+
 export interface AppState {
   canvas: HTMLCanvasElement
   signal: AbortSignal
   world: World
   setWorld: SetWorldFn
   pointer: Pointer
+
+  camera: Camera
 
   accelerate: Accelerate | null
   build: Build | null

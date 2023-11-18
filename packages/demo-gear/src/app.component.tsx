@@ -36,14 +36,18 @@ function useAppState({
       world,
       setWorld,
       signal: controller.signal,
-      build: null,
-      accelerate: null,
       pointer: {
         active: false,
         down: false,
         mode: PointerMode.Free,
         position: { x: 0, y: 0 },
       },
+      camera: {
+        position: { x: 0, y: 0 },
+        zoom: 0.5,
+      },
+      build: null,
+      accelerate: null,
     })
     return () => {
       controller.abort()
