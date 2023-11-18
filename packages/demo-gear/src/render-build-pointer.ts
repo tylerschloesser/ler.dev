@@ -2,7 +2,11 @@ import invariant from 'tiny-invariant'
 import { Color } from './color.js'
 import { renderConnection } from './render-connection.js'
 import { renderGear } from './render-gear.js'
-import { AppState, BuildPointer } from './types.js'
+import {
+  AppState,
+  BuildPointer,
+  ConnectionType,
+} from './types.js'
 
 export function renderBuildPointer(
   state: AppState,
@@ -39,6 +43,21 @@ export function renderBuildPointer(
       gear2,
       type: connection.type,
       valid: pointer.valid,
+      debug: world.debugConnections,
+    })
+  }
+
+  if (pointer.chain && pointer.valid) {
+    renderConnection({
+      context,
+      gear1: {
+        position: pointer.position,
+        radius: pointer.radius,
+        angle: pointer.chain.angle,
+      },
+      gear2: pointer.chain,
+      type: ConnectionType.enum.Chain,
+      valid: true,
       debug: world.debugConnections,
     })
   }

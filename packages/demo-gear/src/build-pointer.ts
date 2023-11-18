@@ -28,16 +28,13 @@ export function buildPointerUp(
   const tile = state.world.tiles[tileId]
 
   let gear: Gear | undefined
-  if (tile && !pointer.attach) {
-    if (tile.attachedGearId) {
-      gear = state.world.gears[tile.attachedGearId]
-    } else {
-      gear = state.world.gears[tile.gearId]
-    }
-    invariant(gear)
-    invariant(gear.radius === 1)
-    invariant(pointer.radius === 1)
+  if (tile?.attachedGearId) {
+    gear = state.world.gears[tile.attachedGearId]
+  } else if (tile?.gearId) {
+    gear = state.world.gears[tile.gearId]
+  }
 
+  if (gear?.radius === 1) {
     if (pointer.chain) {
       invariant(gear !== pointer.chain)
       addChainConnection(gear, pointer.chain, state)
@@ -49,12 +46,11 @@ export function buildPointerUp(
       pointer.position,
       pointer.radius,
       pointer.chain,
-      pointer.attach,
+      gear ?? null,
       pointer.connections,
       state,
     )
   }
-
   updatePointer(state, pointer)
 }
 

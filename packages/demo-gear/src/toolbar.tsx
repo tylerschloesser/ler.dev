@@ -32,7 +32,6 @@ export function Toolbar({ state }: ToolbarProps) {
                 radius,
                 connections: [],
                 valid: false,
-                attach: null,
                 chain: null,
                 position: null,
               }

@@ -1,5 +1,4 @@
 import * as z from 'zod'
-import { Vec2 } from './vec2.js'
 
 export const SimpleVec2 = z.strictObject({
   x: z.number(),
@@ -62,7 +61,6 @@ export interface BuildPointer {
   radius: number
   valid: boolean
   chain: Gear | null
-  attach: Gear | null
   connections: Connection[]
 }
 
