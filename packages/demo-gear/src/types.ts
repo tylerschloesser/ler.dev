@@ -58,7 +58,7 @@ export enum PointerType {
 
 export interface BuildPointer {
   type: PointerType.Build
-  position: Vec2
+  position: SimpleVec2 | null
   radius: number
   valid: boolean
   chain: Gear | null
@@ -68,7 +68,7 @@ export interface BuildPointer {
 
 export interface ApplyForcePointer {
   type: PointerType.ApplyForce
-  position: Vec2
+  position: SimpleVec2 | null
   acceleration: number
   gear: Gear | null
 }

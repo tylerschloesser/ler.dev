@@ -9,6 +9,9 @@ export function renderBuildPointer(
   pointer: BuildPointer,
   context: CanvasRenderingContext2D,
 ): void {
+  if (!pointer.position) {
+    return
+  }
   renderGear({
     gear: {
       position: pointer.position,

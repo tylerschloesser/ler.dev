@@ -91,6 +91,11 @@ function updatePosition(
     (e.offsetY - canvas.width / 2) / TILE_SIZE,
   )
 
+  if (!pointer.position) {
+    pointer.position = { x, y }
+    return true
+  }
+
   if (
     pointer.position.x === x &&
     pointer.position.y === y

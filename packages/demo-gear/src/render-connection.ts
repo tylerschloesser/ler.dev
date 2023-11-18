@@ -21,7 +21,7 @@ export function renderConnection({
   if (debug) {
     switch (type) {
       case ConnectionType.enum.Chain:
-      case ConnectionType.enum.Teeth: {
+      case ConnectionType.enum.Adjacent: {
         context.beginPath()
         context.strokeStyle = Color.Connection
         context.lineWidth = 2

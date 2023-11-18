@@ -72,7 +72,7 @@ export function App() {
     <div className={styles.container}>
       {state && hover && (
         <div className={styles.toolbar}>
-          <Toolbar context={state} />
+          <Toolbar state={state} />
         </div>
       )}
       <canvas className={styles.canvas} ref={setCanvas} />

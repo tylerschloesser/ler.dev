@@ -18,6 +18,7 @@ export function buildPointerUp(
   state: AppState,
   pointer: BuildPointer,
 ): void {
+  invariant(pointer.position)
   updatePointer(state, pointer)
   if (pointer.valid) {
     return
@@ -61,6 +62,7 @@ function updatePointer(
   state: AppState,
   pointer: BuildPointer,
 ): void {
+  invariant(pointer.position)
   pointer.valid = true
 
   for (const gear of iterateOverlappingGears(

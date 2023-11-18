@@ -1,10 +1,11 @@
 import invariant from 'tiny-invariant'
 import { Color } from './color.js'
+import { renderApplyForcePointer } from './render-apply-force-pointer.js'
+import { renderBuildPointer } from './render-build-pointer.js'
 import { renderConnection } from './render-connection.js'
 import { renderGear } from './render-gear.js'
 import { renderGrid } from './render-grid.js'
-import { renderHover } from './render-hover.js'
-import { InitFn } from './types.js'
+import { InitFn, PointerType } from './types.js'
 import { iterateConnections } from './util.js'
 
 export const initCanvas: InitFn = (state) => {
@@ -52,7 +53,20 @@ export const initCanvas: InitFn = (state) => {
       })
     }
 
-    renderHover({ context, state })
+    switch (state.pointer?.type) {
+      case PointerType.Build: {
+        renderBuildPointer(state, state.pointer, context)
+        break
+      }
+      case PointerType.ApplyForce: {
+        renderApplyForcePointer(
+          state,
+          state.pointer,
+          context,
+        )
+        break
+      }
+    }
 
     window.requestAnimationFrame(render)
   }

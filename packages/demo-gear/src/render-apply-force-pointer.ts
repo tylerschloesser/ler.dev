@@ -8,6 +8,9 @@ export function renderApplyForcePointer(
   pointer: ApplyForcePointer,
   context: CanvasRenderingContext2D,
 ): void {
+  if (!pointer.position) {
+    return
+  }
   const { world } = state
   const tileId = `${pointer.position.x}.${pointer.position.y}`
   const tile = world.tiles[tileId]

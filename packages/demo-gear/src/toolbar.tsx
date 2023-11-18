@@ -3,7 +3,6 @@ import { GEAR_RADIUSES } from './const.js'
 import styles from './toolbar.module.scss'
 import { AppState, PointerType } from './types.js'
 import { useResetWorld, useSaveWorld } from './use-world.js'
-import { Vec2 } from './vec2.js'
 
 export interface ToolbarProps {
   state: AppState
@@ -35,7 +34,7 @@ export function Toolbar({ state }: ToolbarProps) {
                 valid: false,
                 attach: null,
                 chain: null,
-                position: new Vec2(0, 0),
+                position: null,
               }
             }}
           >
@@ -53,7 +52,7 @@ export function Toolbar({ state }: ToolbarProps) {
                 type: PointerType.ApplyForce,
                 acceleration,
                 gear: null,
-                position: new Vec2(0, 0),
+                position: null,
               }
             }}
           >
