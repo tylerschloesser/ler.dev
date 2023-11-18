@@ -89,7 +89,7 @@ function updatePointer(
     pointer.valid =
       (dx === 0 || dy === 0) &&
       dx !== dy &&
-      dx + dy > pointer.radius + chain.radius
+      Math.abs(dx + dy) > pointer.radius + chain.radius
   }
 
   if (pointer.valid) {
