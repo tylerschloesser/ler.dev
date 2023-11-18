@@ -7,6 +7,7 @@ import {
   executeBuild,
   updateBuildPosition,
 } from './build.js'
+import { handlePointer as handlePointerFree } from './camera.js'
 import { TILE_SIZE } from './const.js'
 import { AppState, InitFn, PointerMode } from './types.js'
 
@@ -54,6 +55,11 @@ function handlePointer(
   e: PointerEvent,
   state: AppState,
 ): void {
+  if (state.pointer.mode === PointerMode.Free) {
+    handlePointerFree(e, state)
+    return
+  }
+
   const { pointer } = state
   updatePosition(e, state)
   switch (e.type) {
