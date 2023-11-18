@@ -1,3 +1,6 @@
 {
-  "extends": "@ler.dev/tsconfig"
+  "extends": "@ler.dev/tsconfig",
+  "compilerOptions": {
+    "types": ["node"]
+  }
 }
