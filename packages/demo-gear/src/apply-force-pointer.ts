@@ -1,3 +1,4 @@
+import invariant from 'tiny-invariant'
 import { AppState, ApplyForcePointer } from './types.js'
 
 export function applyForcePointerMove(
@@ -8,9 +9,21 @@ export function applyForcePointerMove(
 export function applyForcePointerUp(
   state: AppState,
   pointer: ApplyForcePointer,
-): void {}
+): void {
+  pointer.gear = null
+}
 
 export function applyForcePointerDown(
   state: AppState,
   pointer: ApplyForcePointer,
-): void {}
+): void {
+  invariant(pointer.position)
+  const tileId = `${pointer.position.x}.${pointer.position.y}`
+  const tile = state.world.tiles[tileId]
+  if (!tile) {
+    return
+  }
+  const gear = state.world.gears[tile.gearId]
+  invariant(gear)
+  pointer.gear = gear
+}
