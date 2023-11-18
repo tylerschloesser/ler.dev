@@ -1,0 +1,42 @@
+import invariant from 'tiny-invariant'
+import { Color } from './color.js'
+import { renderConnection } from './render-connection.js'
+import { renderGear } from './render-gear.js'
+import { AppState, BuildPointer } from './types.js'
+
+export function renderBuildPointer(
+  state: AppState,
+  pointer: BuildPointer,
+  context: CanvasRenderingContext2D,
+): void {
+  renderGear({
+    gear: {
+      position: pointer.position,
+      radius: pointer.radius,
+      angle: 0,
+    },
+    tint: pointer.valid
+      ? Color.AddGearValid
+      : Color.AddGearInvalid,
+    context,
+  })
+
+  const { world } = state
+  for (const connection of pointer.connections) {
+    const gear2 = world.gears[connection.gearId]
+    invariant(gear2)
+
+    renderConnection({
+      context,
+      gear1: {
+        position: pointer.position,
+        radius: pointer.radius,
+        angle: gear2.angle,
+      },
+      gear2,
+      type: connection.type,
+      valid: pointer.valid,
+      debug: world.debugConnections,
+    })
+  }
+}
