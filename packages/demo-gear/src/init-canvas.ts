@@ -39,7 +39,7 @@ export const initCanvas: InitFn = (state) => {
       -state.camera.position.y * TILE_SIZE,
     )
 
-    renderGrid({ canvas, context })
+    renderGrid(context, state)
 
     for (const gear of Object.values(state.world.gears)) {
       renderGear({ gear, context })

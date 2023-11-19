@@ -1,13 +1,12 @@
 import { Color } from './color.js'
 import { TILE_SIZE } from './const.js'
+import { AppState } from './types.js'
 
-export function renderGrid({
-  context,
-  canvas,
-}: {
-  context: CanvasRenderingContext2D
-  canvas: HTMLCanvasElement
-}): void {
+export function renderGrid(
+  context: CanvasRenderingContext2D,
+  state: AppState,
+): void {
+  const { canvas } = state
   const tlx =
     Math.floor(-canvas.width / 2 / TILE_SIZE) * TILE_SIZE
   const tly =
