@@ -20,7 +20,7 @@ export function renderGrid(
   context.lineWidth = 1
   context.strokeStyle = Color.GridOdd
   for (
-    let y = tly - TILE_SIZE;
+    let y = tly + TILE_SIZE;
     y < bry;
     y += TILE_SIZE * 2
   ) {
@@ -28,7 +28,7 @@ export function renderGrid(
     context.lineTo(brx, y)
   }
   for (
-    let x = tlx - TILE_SIZE;
+    let x = tlx + TILE_SIZE;
     x < brx;
     x += TILE_SIZE * 2
   ) {
