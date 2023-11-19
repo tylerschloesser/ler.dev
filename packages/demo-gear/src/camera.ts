@@ -48,6 +48,4 @@ function handlePointerOne(
 
   state.camera.position.x += -dx / TILE_SIZE
   state.camera.position.y += -dy / TILE_SIZE
-
-  console.log(state.camera.position)
 }
