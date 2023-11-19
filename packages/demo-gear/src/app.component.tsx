@@ -4,7 +4,8 @@ import { initCanvas } from './init-canvas.js'
 import { initKeyboard } from './init-keyboard.js'
 import { initPointer } from './init-pointer.js'
 import { initSimulator } from './init-simulator.js'
-import { Toolbar } from './toolbar.js'
+import { Toolbar as HoverToolbar } from './toolbar.js'
+import { TouchToolbar } from './touch-toolbar.component.js'
 import { AppState, InitFn, PointerMode } from './types.js'
 import { useMediaQuery } from './use-media-query.js'
 import { useWorld } from './use-world.js'
@@ -79,13 +80,11 @@ export function App() {
 
   const hover = useMediaQuery('(hover: hover)', signal)
 
+  const Toolbar = hover ? HoverToolbar : TouchToolbar
+
   return (
     <div className={styles.container}>
-      {state && hover && (
-        <div className={styles.toolbar}>
-          <Toolbar state={state} />
-        </div>
-      )}
+      {state && <Toolbar state={state} />}
       <canvas className={styles.canvas} ref={setCanvas} />
     </div>
   )
