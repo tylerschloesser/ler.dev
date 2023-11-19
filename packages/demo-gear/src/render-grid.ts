@@ -8,42 +8,33 @@ export function renderGrid({
   context: CanvasRenderingContext2D
   canvas: HTMLCanvasElement
 }): void {
-  let grid = {
-    tl: {
-      x:
-        Math.floor(-canvas.width / 2 / TILE_SIZE) *
-        TILE_SIZE,
-      y:
-        Math.floor(-canvas.height / 2 / TILE_SIZE) *
-        TILE_SIZE,
-    },
-    br: {
-      x:
-        Math.ceil(canvas.width / 2 / TILE_SIZE) * TILE_SIZE,
-      y:
-        Math.ceil(canvas.height / 2 / TILE_SIZE) *
-        TILE_SIZE,
-    },
-  }
+  const tlx =
+    Math.floor(-canvas.width / 2 / TILE_SIZE) * TILE_SIZE
+  const tly =
+    Math.floor(-canvas.height / 2 / TILE_SIZE) * TILE_SIZE
+  const brx =
+    Math.ceil(canvas.width / 2 / TILE_SIZE) * TILE_SIZE
+  const bry =
+    Math.ceil(canvas.height / 2 / TILE_SIZE) * TILE_SIZE
 
   context.beginPath()
   context.lineWidth = 1
   context.strokeStyle = Color.GridOdd
   for (
-    let y = grid.tl.y - TILE_SIZE;
-    y < grid.br.y;
+    let y = tly - TILE_SIZE;
+    y < bry;
     y += TILE_SIZE * 2
   ) {
-    context.moveTo(grid.tl.x, y)
-    context.lineTo(grid.br.x, y)
+    context.moveTo(tlx, y)
+    context.lineTo(brx, y)
   }
   for (
-    let x = grid.tl.x - TILE_SIZE;
-    x < grid.br.x;
+    let x = tlx - TILE_SIZE;
+    x < brx;
     x += TILE_SIZE * 2
   ) {
-    context.moveTo(x, grid.tl.y)
-    context.lineTo(x, grid.br.y)
+    context.moveTo(x, tly)
+    context.lineTo(x, bry)
   }
   context.stroke()
   context.closePath()
@@ -51,21 +42,13 @@ export function renderGrid({
   context.beginPath()
   context.lineWidth = 1
   context.strokeStyle = Color.GridEven
-  for (
-    let y = grid.tl.y;
-    y < grid.br.y;
-    y += TILE_SIZE * 2
-  ) {
-    context.moveTo(grid.tl.x, y)
-    context.lineTo(grid.br.x, y)
+  for (let y = tly; y < bry; y += TILE_SIZE * 2) {
+    context.moveTo(tlx, y)
+    context.lineTo(brx, y)
   }
-  for (
-    let x = grid.tl.x;
-    x < grid.br.x;
-    x += TILE_SIZE * 2
-  ) {
-    context.moveTo(x, grid.tl.y)
-    context.lineTo(x, grid.br.y)
+  for (let x = tlx; x < brx; x += TILE_SIZE * 2) {
+    context.moveTo(x, tly)
+    context.lineTo(x, bry)
   }
   context.stroke()
   context.closePath()

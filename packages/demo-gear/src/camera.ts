@@ -1,5 +1,5 @@
 import { TILE_SIZE } from './const.js'
-import { AppState, Pointer } from './types.js'
+import { AppState } from './types.js'
 
 type PointerId = number
 const pointerCache = new Map<PointerId, PointerEvent>()
