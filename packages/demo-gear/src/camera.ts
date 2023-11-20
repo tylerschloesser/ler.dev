@@ -17,8 +17,8 @@ type PointerId = number
 const pointerCache = new Map<PointerId, PointerEvent>()
 
 export function handlePointer(
-  e: PointerEvent,
   state: AppState,
+  e: PointerEvent,
 ): void {
   switch (e.type) {
     case 'pointerup': {
@@ -55,8 +55,8 @@ export function handlePointer(
 }
 
 export function handleWheel(
-  e: WheelEvent,
   state: AppState,
+  e: WheelEvent,
 ): void {
   const { camera } = state
   const pz = camera.zoom

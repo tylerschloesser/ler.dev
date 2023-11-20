@@ -64,7 +64,7 @@ function handlePointer(
   state: AppState,
 ): void {
   if (state.pointer.mode === PointerMode.Free) {
-    handlePointerFree(e, state)
+    handlePointerFree(state, e)
     return
   }
 

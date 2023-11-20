@@ -7,7 +7,7 @@ export const initWheel: InitFn = (state) => {
     'wheel',
     (e) => {
       e.preventDefault()
-      handleWheel(e, state)
+      handleWheel(state, e)
     },
     {
       signal,
