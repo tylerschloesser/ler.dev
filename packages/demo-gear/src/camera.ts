@@ -69,6 +69,8 @@ export function handleWheel(
   camera.position.x = sx / prevTileSize - sx / nextTileSize
   camera.position.y = sy / prevTileSize - sy / nextTileSize
   camera.zoom = nextZoom
+
+  state.tileSize = nextTileSize
 }
 
 function handlePointerOne(

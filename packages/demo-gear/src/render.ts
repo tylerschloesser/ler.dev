@@ -1,5 +1,4 @@
 import { Color } from './color.js'
-import { TILE_SIZE } from './const.js'
 import { renderAccelerate } from './render-accelerate.js'
 import { renderBuild } from './render-build.js'
 import { renderConnection } from './render-connection.js'
@@ -12,7 +11,7 @@ export function render(
   state: AppState,
   context: CanvasRenderingContext2D,
 ): void {
-  const { canvas } = state
+  const { canvas, tileSize } = state
 
   context.resetTransform()
 
@@ -23,8 +22,8 @@ export function render(
 
   context.translate(canvas.width / 2, canvas.height / 2)
   context.translate(
-    -state.camera.position.x * TILE_SIZE,
-    -state.camera.position.y * TILE_SIZE,
+    -state.camera.position.x * tileSize,
+    -state.camera.position.y * tileSize,
   )
 
   renderGrid(context, state)

@@ -93,6 +93,7 @@ export interface AppState {
   pointer: Pointer
 
   camera: Camera
+  tileSize: number
 
   accelerate: Accelerate | null
   build: Build | null
