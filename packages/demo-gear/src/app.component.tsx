@@ -4,6 +4,7 @@ import { initCanvas } from './init-canvas.js'
 import { initKeyboard } from './init-keyboard.js'
 import { initPointer } from './init-pointer.js'
 import { initSimulator } from './init-simulator.js'
+import { initWheel } from './init-wheel.js'
 import { Toolbar as HoverToolbar } from './toolbar.js'
 import { TouchToolbar } from './touch-toolbar.component.js'
 import { AppState, InitFn, PointerMode } from './types.js'
@@ -13,6 +14,7 @@ import { useWorld } from './use-world.js'
 const INIT_FNS: InitFn[] = [
   initCanvas,
   initPointer,
+  initWheel,
   initKeyboard,
   initSimulator,
 ]

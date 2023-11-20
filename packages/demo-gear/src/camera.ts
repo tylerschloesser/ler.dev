@@ -38,6 +38,11 @@ export function handlePointer(
   }
 }
 
+export function handleWheel(
+  e: WheelEvent,
+  state: AppState,
+): void {}
+
 function handlePointerOne(
   prev: PointerEvent,
   next: PointerEvent,
