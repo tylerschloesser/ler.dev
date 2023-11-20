@@ -8,6 +8,7 @@ import {
 import {
   ConnectionType,
   Gear,
+  HandType,
   InitFn,
   World,
 } from './types.js'
@@ -29,11 +30,15 @@ export const initSimulator: InitFn = (state) => {
     const elapsed = (now - prev) / 1000
     prev = now
 
-    if (state.accelerate?.active && state.accelerate.gear) {
+    const { hand } = state
+    if (
+      hand?.type === HandType.Accelerate &&
+      hand.active &&
+      hand.gear
+    ) {
       accelerateGear({
-        root: state.accelerate.gear,
-        acceleration:
-          state.accelerate.direction * ACCELERATION,
+        root: hand.gear,
+        acceleration: hand.direction * ACCELERATION,
         elapsed,
         world,
       })

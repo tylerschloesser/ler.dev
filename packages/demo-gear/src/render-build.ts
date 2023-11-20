@@ -4,6 +4,7 @@ import { renderConnection } from './render-connection.js'
 import { renderGear } from './render-gear.js'
 import {
   AppState,
+  BuildHand,
   ConnectionType,
   PartialGear,
 } from './types.js'
@@ -18,10 +19,10 @@ const partial: PartialGear = {
 }
 
 export function renderBuild(
-  state: AppState,
   context: CanvasRenderingContext2D,
+  state: AppState,
+  build: BuildHand,
 ): void {
-  const { build } = state
   if (!build?.position) {
     return
   }

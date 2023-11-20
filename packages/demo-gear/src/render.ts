@@ -4,14 +4,14 @@ import { renderBuild } from './render-build.js'
 import { renderConnection } from './render-connection.js'
 import { renderGear } from './render-gear.js'
 import { renderGrid } from './render-grid.js'
-import { AppState } from './types.js'
+import { AppState, HandType } from './types.js'
 import { iterateConnections } from './util.js'
 
 export function render(
   state: AppState,
   context: CanvasRenderingContext2D,
 ): void {
-  const { canvas, camera, tileSize } = state
+  const { canvas, camera, tileSize, hand } = state
 
   context.resetTransform()
 
@@ -46,10 +46,14 @@ export function render(
     )
   }
 
-  if (state.build?.position) {
-    renderBuild(state, context)
-  }
-  if (state.accelerate?.position) {
-    renderAccelerate(state, context)
+  switch (hand?.type) {
+    case HandType.Build: {
+      renderBuild(context, state, hand)
+      break
+    }
+    case HandType.Accelerate: {
+      renderAccelerate(context, state, hand)
+      break
+    }
   }
 }

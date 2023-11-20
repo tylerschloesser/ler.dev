@@ -1,6 +1,6 @@
 import invariant from 'tiny-invariant'
 import { addChainConnection, addGear } from './add-gear.js'
-import { AppState, Gear } from './types.js'
+import { AppState, BuildHand, Gear } from './types.js'
 import {
   getAdjacentConnections,
   iterateOverlappingGears,
@@ -9,33 +9,32 @@ import { Vec2 } from './vec2.js'
 
 export function updateBuildPosition(
   state: AppState,
+  hand: BuildHand,
   x: number,
   y: number,
 ): void {
-  invariant(state.build)
-  if (
-    state.build.position?.x === x &&
-    state.build.position.y === y
-  ) {
+  if (hand.position?.x === x && hand.position.y === y) {
     return
   }
-  if (!state.build.position) {
-    state.build.position = { x, y }
+  if (!hand.position) {
+    hand.position = { x, y }
   } else {
-    state.build.position.x = x
-    state.build.position.y = y
+    hand.position.x = x
+    hand.position.y = y
   }
-  updateBuild(state)
+  updateBuild(state, hand)
 }
 
-export function executeBuild(state: AppState): void {
-  const { build } = state
-  invariant(build?.position)
-  if (!build.valid) {
+export function executeBuild(
+  state: AppState,
+  hand: BuildHand,
+): void {
+  invariant(hand.position)
+  if (!hand.valid) {
     return
   }
 
-  const tileId = `${build.position.x}.${build.position.y}`
+  const tileId = `${hand.position.x}.${hand.position.y}`
   const tile = state.world.tiles[tileId]
 
   let gear: Gear | undefined
@@ -46,63 +45,65 @@ export function executeBuild(state: AppState): void {
   }
 
   if (gear?.radius === 1) {
-    if (build.chain) {
-      invariant(gear !== build.chain)
-      addChainConnection(gear, build.chain, state)
+    if (hand.chain) {
+      invariant(gear !== hand.chain)
+      addChainConnection(gear, hand.chain, state)
     } else {
-      build.chain = gear
+      hand.chain = gear
     }
   } else {
     addGear(
-      build.position,
-      build.radius,
-      build.chain,
+      hand.position,
+      hand.radius,
+      hand.chain,
       gear ?? null,
-      build.connections,
+      hand.connections,
       state,
     )
-    build.chain = null
+    hand.chain = null
   }
-  updateBuild(state)
+  updateBuild(state, hand)
 }
 
-function updateBuild(state: AppState): void {
-  const { build } = state
-  invariant(build?.position)
-  build.valid = true
+function updateBuild(
+  state: AppState,
+  hand: BuildHand,
+): void {
+  invariant(hand?.position)
+  hand.valid = true
   for (const gear of iterateOverlappingGears(
-    build.position,
-    build.radius,
+    hand.position,
+    hand.radius,
     state.world,
   )) {
     if (
       !(
-        build.radius === 1 &&
-        Vec2.equal(gear.position, build.position)
+        hand.radius === 1 &&
+        Vec2.equal(gear.position, hand.position)
       )
     ) {
-      build.valid = false
+      hand.valid = false
       break
     }
   }
 
-  if (build.valid && build.chain) {
-    const { chain } = build
-    const dx = build.position.x - chain.position.x
-    const dy = build.position.y - chain.position.y
-    build.valid =
+  if (hand.valid && hand.chain) {
+    const { chain } = hand
+    const dx = hand.position.x - chain.position.x
+    const dy = hand.position.y - chain.position.y
+    hand.valid =
       (dx === 0 || dy === 0) &&
       dx !== dy &&
-      Math.abs(dx + dy) > build.radius + chain.radius
+      Math.abs(dx + dy) > hand.radius + chain.radius
   }
 
-  if (build.valid) {
-    build.connections = getAdjacentConnections(
-      build.position,
-      build.radius,
+  if (hand.valid) {
+    hand.connections = getAdjacentConnections(
+      hand.position,
+      hand.radius,
       state.world,
     )
   } else {
-    build.connections = []
+    hand.connections = []
   }
 }

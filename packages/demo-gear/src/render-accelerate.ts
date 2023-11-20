@@ -1,12 +1,13 @@
 import { Color } from './color.js'
-import { AppState } from './types.js'
+import { AccelerateHand, AppState } from './types.js'
 
 export function renderAccelerate(
-  state: AppState,
   context: CanvasRenderingContext2D,
+  state: AppState,
+  accelerate: AccelerateHand,
 ): void {
-  const { accelerate, tileSize } = state
-  if (!accelerate || !accelerate.gear) {
+  const { tileSize } = state
+  if (!accelerate.gear) {
     return
   }
   const { gear } = accelerate

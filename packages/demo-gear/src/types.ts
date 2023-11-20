@@ -50,33 +50,26 @@ export const World = z.strictObject({
 })
 export type World = z.infer<typeof World>
 
-export interface Build {
+export enum HandType {
+  Build = 'build',
+  Accelerate = 'accelerate',
+}
+
+interface BaseHand<T extends HandType> {
+  type: T
   position: SimpleVec2 | null
+}
+
+export interface BuildHand
+  extends BaseHand<HandType.Build> {
   radius: number
   valid: boolean
   chain: Gear | null
   connections: Connection[]
 }
 
-export interface Accelerate {
-  position: SimpleVec2 | null
-  active: boolean
-  direction: number
-  gear: Gear | null
-}
-
-interface BaseHand {
-  position: SimpleVec2 | null
-}
-
-export interface BuildHand extends BaseHand {
-  radius: number
-  valid: boolean
-  chain: Gear | null
-  connections: Connection[]
-}
-
-export interface AccelerateHand extends BaseHand {
+export interface AccelerateHand
+  extends BaseHand<HandType.Accelerate> {
   active: boolean
   direction: number
   gear: Gear | null
@@ -88,8 +81,7 @@ export type SetWorldFn = (world: World) => void
 
 export enum PointerMode {
   Free = 'free',
-  Build = 'build',
-  Accelerate = 'accelerate',
+  Hand = 'hand',
 }
 
 export interface Pointer {
@@ -113,9 +105,6 @@ export interface AppState {
 
   camera: Camera
   tileSize: number
-
-  accelerate: Accelerate | null
-  build: Build | null
 }
 
 export type InitFn = (state: AppState) => void

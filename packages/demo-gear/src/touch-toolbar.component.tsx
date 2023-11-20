@@ -5,7 +5,7 @@ import {
   useState,
 } from 'react'
 import styles from './touch-toolbar.module.scss'
-import { AppState, PointerMode } from './types.js'
+import { AppState, HandType, PointerMode } from './types.js'
 
 export interface TouchToolbarProps {
   state: AppState
@@ -49,17 +49,16 @@ function AddGearView({
   setView: SetViewFn
 }) {
   useEffect(() => {
-    state.accelerate = null
-    state.build = {
+    state.hand = {
+      type: HandType.Build,
+      position: null,
       chain: null,
       connections: [],
-      position: null,
       radius: 1,
       valid: false,
     }
-
     return () => {
-      state.build = null
+      state.hand = null
     }
   }, [state])
 

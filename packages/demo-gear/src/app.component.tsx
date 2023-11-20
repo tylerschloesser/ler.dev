@@ -50,8 +50,6 @@ function useAppState({
       },
       hand: null,
       tileSize: 0,
-      build: null,
-      accelerate: null,
     })
     return () => {
       controller.abort()

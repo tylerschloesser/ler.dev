@@ -1,4 +1,5 @@
 import invariant from 'tiny-invariant'
+import { isLeftHandSideExpression } from 'typescript'
 import {
   updateAccelerate,
   updateAcceleratePosition,
@@ -8,7 +9,12 @@ import {
   updateBuildPosition,
 } from './build.js'
 import { handlePointer as handlePointerFree } from './camera.js'
-import { AppState, InitFn, PointerMode } from './types.js'
+import {
+  AppState,
+  HandType,
+  InitFn,
+  PointerMode,
+} from './types.js'
 
 export const initPointer: InitFn = (state) => {
   const { canvas, signal } = state
@@ -63,54 +69,76 @@ function handlePointer(
     return
   }
 
-  const { pointer } = state
+  const { pointer, hand } = state
   updatePosition(state, e)
   switch (e.type) {
     case 'pointerenter': {
       let tileX = Math.floor(pointer.position.x + 0.5)
       let tileY = Math.floor(pointer.position.y + 0.5)
-      if (state.build) {
-        updateBuildPosition(state, tileX, tileY)
-      }
-      if (state.accelerate) {
-        updateAcceleratePosition(state, tileX, tileY)
+      switch (hand?.type) {
+        case HandType.Build: {
+          updateBuildPosition(state, hand, tileX, tileY)
+          break
+        }
+        case HandType.Accelerate: {
+          updateAcceleratePosition(
+            state,
+            hand,
+            tileX,
+            tileY,
+          )
+          break
+        }
       }
       break
     }
     case 'pointerup': {
       pointer.down = false
-      if (state.build) {
-        executeBuild(state)
-      }
-      if (state.accelerate) {
-        updateAccelerate(state)
+      switch (hand?.type) {
+        case HandType.Build: {
+          executeBuild(state, hand)
+          break
+        }
+        case HandType.Accelerate: {
+          updateAccelerate(state, hand)
+          break
+        }
       }
       break
     }
     case 'pointerdown': {
       pointer.down = true
-      if (state.accelerate) {
-        updateAccelerate(state)
+      switch (hand?.type) {
+        case HandType.Accelerate: {
+          updateAccelerate(state, hand)
+          break
+        }
       }
       break
     }
     case 'pointermove': {
       let tileX = Math.floor(pointer.position.x + 0.5)
       let tileY = Math.floor(pointer.position.y + 0.5)
-      if (state.build) {
-        updateBuildPosition(state, tileX, tileY)
-      }
-      if (state.accelerate) {
-        updateAcceleratePosition(state, tileX, tileY)
+      switch (hand?.type) {
+        case HandType.Build: {
+          updateBuildPosition(state, hand, tileX, tileY)
+          break
+        }
+        case HandType.Accelerate: {
+          updateAcceleratePosition(
+            state,
+            hand,
+            tileX,
+            tileY,
+          )
+          break
+        }
       }
       break
     }
     case 'pointerleave': {
-      if (state.build) {
-        state.build.position = null
-      }
-      if (state.accelerate) {
-        state.accelerate.position = null
+      if (hand) {
+        hand.position = null
       }
       break
     }

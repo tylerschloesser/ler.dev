@@ -6,8 +6,7 @@ export const initKeyboard: InitFn = (state) => {
     (e) => {
       if (e.key === 'q') {
         state.pointer.mode = PointerMode.Free
-        state.build = null
-        state.accelerate = null
+        state.hand = null
       }
     },
     { signal: state.signal },
