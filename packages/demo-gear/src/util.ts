@@ -1,4 +1,5 @@
 import invariant from 'tiny-invariant'
+import { MAX_ZOOM, MIN_ZOOM } from './const.js'
 import {
   Connection,
   ConnectionType,
@@ -174,4 +175,16 @@ export function getAdjacentConnections(
     })
   }
   return connections
+}
+
+export function clamp(
+  v: number,
+  min: number,
+  max: number,
+): number {
+  return Math.min(max, Math.max(v, min))
+}
+
+export function clampZoom(zoom: number): number {
+  return clamp(zoom, MIN_ZOOM, MAX_ZOOM)
 }
