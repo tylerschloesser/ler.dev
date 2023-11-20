@@ -105,7 +105,7 @@ export interface AppState {
   signal: AbortSignal
   world: World
   setWorld: SetWorldFn
-  pointer: Pointer
+  pointerMode: PointerMode
   hand: Hand | null
 
   camera: Camera

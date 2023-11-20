@@ -40,10 +40,7 @@ function useAppState({
       world,
       setWorld,
       signal: controller.signal,
-      pointer: {
-        mode: PointerMode.Free,
-        position: { x: 0, y: 0 },
-      },
+      pointerMode: PointerMode.Free,
       camera: {
         position: { x: 0, y: 0 },
         zoom: 0.5,

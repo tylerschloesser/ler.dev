@@ -7,10 +7,10 @@ export function updatePointerMode(
   state: AppState,
   mode: PointerMode,
 ): void {
-  if (state.pointer.mode === mode) {
+  if (state.pointerMode === mode) {
     return
   }
-  state.pointer.mode = mode
+  state.pointerMode
 
   switch (mode) {
     case PointerMode.Free: {

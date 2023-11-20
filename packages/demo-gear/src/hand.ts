@@ -11,15 +11,21 @@ import {
   AppState,
   HandType,
   PointerListenerFn,
+  SimpleVec2,
 } from './types.js'
 
+const pointerPosition: SimpleVec2 = {
+  x: 0,
+  y: 0,
+}
+
 export const moveHand: PointerListenerFn = (state, e) => {
-  const { pointer, hand } = state
-  updatePosition(state, e)
+  const { hand } = state
+  updatePointerPosition(state, e)
   switch (e.type) {
     case 'pointerenter': {
-      const tileX = Math.floor(pointer.position.x + 0.5)
-      const tileY = Math.floor(pointer.position.y + 0.5)
+      const tileX = Math.floor(pointerPosition.x + 0.5)
+      const tileY = Math.floor(pointerPosition.y + 0.5)
       switch (hand?.type) {
         case HandType.Build: {
           updateBuildPosition(state, hand, tileX, tileY)
@@ -60,8 +66,8 @@ export const moveHand: PointerListenerFn = (state, e) => {
       break
     }
     case 'pointermove': {
-      const tileX = Math.floor(pointer.position.x + 0.5)
-      const tileY = Math.floor(pointer.position.y + 0.5)
+      const tileX = Math.floor(pointerPosition.x + 0.5)
+      const tileY = Math.floor(pointerPosition.y + 0.5)
       switch (hand?.type) {
         case HandType.Build: {
           updateBuildPosition(state, hand, tileX, tileY)
@@ -91,17 +97,17 @@ export const moveHand: PointerListenerFn = (state, e) => {
   }
 }
 
-function updatePosition(
+function updatePointerPosition(
   state: AppState,
   e: PointerEvent,
 ): void {
-  const { canvas, pointer, tileSize, camera } = state
+  const { canvas, tileSize, camera } = state
   const vx = canvas.width
   const vy = canvas.height
   const x =
     (e.offsetX - vx / 2) / tileSize + camera.position.x
   const y =
     (e.offsetY - vy / 2) / tileSize + camera.position.y
-  pointer.position.x = x
-  pointer.position.y = y
+  pointerPosition.x = x
+  pointerPosition.y = y
 }
