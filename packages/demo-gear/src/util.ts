@@ -9,15 +9,17 @@ import {
   World,
 } from './types.js'
 
+function getConnectionId(a: GearId, b: GearId) {
+  return a < b ? `${a}.${b}` : `${b}.${a}`
+}
+
 export function* iterateConnections(
   gears: Record<GearId, Gear>,
 ) {
   const seen = new Map<string, ConnectionType>()
   for (const gear of Object.values(gears)) {
     for (const connection of gear.connections) {
-      const id = [gear.id, connection.gearId]
-        .sort()
-        .join('.')
+      const id = getConnectionId(gear.id, connection.gearId)
       if (seen.has(id)) {
         // sanity check the connection type
         invariant(seen.get(id) === connection.type)
