@@ -69,69 +69,48 @@ function handlePointer(
     case 'pointerenter': {
       let tileX = Math.floor(pointer.position.x + 0.5)
       let tileY = Math.floor(pointer.position.y + 0.5)
-      switch (pointer.mode) {
-        case PointerMode.Build: {
-          updateBuildPosition(state, tileX, tileY)
-          break
-        }
-        case PointerMode.Accelerate: {
-          updateAcceleratePosition(state, tileX, tileY)
-          break
-        }
+      if (state.build) {
+        updateBuildPosition(state, tileX, tileY)
+      }
+      if (state.accelerate) {
+        updateAcceleratePosition(state, tileX, tileY)
       }
       break
     }
     case 'pointerup': {
       pointer.down = false
-      switch (pointer.mode) {
-        case PointerMode.Build: {
-          executeBuild(state)
-          break
-        }
-        case PointerMode.Accelerate: {
-          updateAccelerate(state)
-          break
-        }
+      if (state.build) {
+        executeBuild(state)
+      }
+      if (state.accelerate) {
+        updateAccelerate(state)
       }
       break
     }
     case 'pointerdown': {
       pointer.down = true
-      switch (pointer.mode) {
-        case PointerMode.Accelerate: {
-          updateAccelerate(state)
-          break
-        }
+      if (state.accelerate) {
+        updateAccelerate(state)
       }
       break
     }
     case 'pointermove': {
       let tileX = Math.floor(pointer.position.x + 0.5)
       let tileY = Math.floor(pointer.position.y + 0.5)
-      switch (pointer.mode) {
-        case PointerMode.Build: {
-          updateBuildPosition(state, tileX, tileY)
-          break
-        }
-        case PointerMode.Accelerate: {
-          updateAcceleratePosition(state, tileX, tileY)
-          break
-        }
+      if (state.build) {
+        updateBuildPosition(state, tileX, tileY)
+      }
+      if (state.accelerate) {
+        updateAcceleratePosition(state, tileX, tileY)
       }
       break
     }
     case 'pointerleave': {
-      switch (pointer.mode) {
-        case PointerMode.Build: {
-          invariant(state.build)
-          state.build.position = null
-          break
-        }
-        case PointerMode.Accelerate: {
-          invariant(state.accelerate)
-          state.accelerate.position = null
-          break
-        }
+      if (state.build) {
+        state.build.position = null
+      }
+      if (state.accelerate) {
+        state.accelerate.position = null
       }
       break
     }
