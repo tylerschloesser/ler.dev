@@ -1,5 +1,10 @@
 import invariant from 'tiny-invariant'
-import { MAX_ZOOM, MIN_ZOOM } from './const.js'
+import {
+  MAX_TILE_SIZE_FACTOR,
+  MAX_ZOOM,
+  MIN_TILE_SIZE_FACTOR,
+  MIN_ZOOM,
+} from './const.js'
 import {
   Connection,
   ConnectionType,
@@ -190,4 +195,25 @@ export function clamp(
 
 export function clampZoom(zoom: number): number {
   return clamp(zoom, MIN_ZOOM, MAX_ZOOM)
+}
+
+export function clampTileSize(
+  tileSize: number,
+  vx: number,
+  vy: number,
+) {
+  const minTileSize =
+    Math.min(vx, vy) * MIN_TILE_SIZE_FACTOR
+  const maxTileSize =
+    Math.min(vx, vy) * MAX_TILE_SIZE_FACTOR
+  return clamp(tileSize, minTileSize, maxTileSize)
+}
+
+export function dist(
+  ax: number,
+  ay: number,
+  bx: number,
+  by: number,
+): number {
+  return Math.sqrt((ax - bx) ** 2 + (ay - by) ** 2)
 }

@@ -1,7 +1,7 @@
 import invariant from 'tiny-invariant'
+import { zoomToTileSize } from './camera.js'
 import { render } from './render.js'
 import { AppState, InitFn } from './types.js'
-import { zoomToTileSize } from './zoom-to-tile-size.js'
 
 export const initCanvas: InitFn = (state) => {
   const { canvas, signal } = state
