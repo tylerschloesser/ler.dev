@@ -29,7 +29,7 @@ export function render(
   renderGrid(context, state)
 
   for (const gear of Object.values(state.world.gears)) {
-    renderGear(context, gear)
+    renderGear(context, state, gear)
   }
 
   for (const { gear1, gear2, type } of iterateConnections(
@@ -37,6 +37,7 @@ export function render(
   )) {
     renderConnection(
       context,
+      state,
       type,
       gear1,
       gear2,

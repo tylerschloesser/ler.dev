@@ -1,12 +1,6 @@
 import invariant from 'tiny-invariant'
-import {
-  HALF_PI,
-  PI,
-  TEETH,
-  TILE_SIZE,
-  TWO_PI,
-} from './const.js'
-import { PartialGear } from './types.js'
+import { HALF_PI, PI, TEETH, TWO_PI } from './const.js'
+import { AppState, PartialGear } from './types.js'
 import { Vec2 } from './vec2.js'
 
 type ChainId = string
@@ -30,15 +24,13 @@ interface RenderVars {
 
 const cache = new Map<ChainId, RenderVars>()
 
-export function renderChain({
-  gear1,
-  gear2,
-  context,
-}: {
-  gear1: PartialGear
-  gear2: PartialGear
-  context: CanvasRenderingContext2D
-}): void {
+export function renderChain(
+  context: CanvasRenderingContext2D,
+  state: AppState,
+  gear1: PartialGear,
+  gear2: PartialGear,
+): void {
+  const { tileSize } = state
   const { s1, s2, radius, A, B, C, D, g1, g2, c1 } =
     getRenderVars(gear1, gear2)
 
@@ -50,12 +42,12 @@ export function renderChain({
   //
 
   // TODO cache the array?
-  context.setLineDash([s1 * TILE_SIZE, s2 * TILE_SIZE])
+  context.setLineDash([s1 * tileSize, s2 * tileSize])
   context.lineDashOffset =
     // because offset is "backwards"
     -1 *
     radius *
-    TILE_SIZE *
+    tileSize *
     // how much progress have we made through 2 segments
     ((angle % (s1 + s1)) / (s1 + s1)) *
     // scale to the potentially larger chain segment size
@@ -64,16 +56,16 @@ export function renderChain({
   context.beginPath()
   context.lineWidth = 2
   context.strokeStyle = 'white'
-  context.moveTo(A.x * TILE_SIZE, A.y * TILE_SIZE)
-  context.lineTo(B.x * TILE_SIZE, B.y * TILE_SIZE)
+  context.moveTo(A.x * tileSize, A.y * tileSize)
+  context.lineTo(B.x * tileSize, B.y * tileSize)
   context.stroke()
   context.closePath()
 
   context.beginPath()
   context.lineWidth = 2
   context.strokeStyle = 'white'
-  context.moveTo(C.x * TILE_SIZE, C.y * TILE_SIZE)
-  context.lineTo(D.x * TILE_SIZE, D.y * TILE_SIZE)
+  context.moveTo(C.x * tileSize, C.y * tileSize)
+  context.lineTo(D.x * tileSize, D.y * tileSize)
   context.stroke()
   context.closePath()
 
@@ -81,15 +73,15 @@ export function renderChain({
   // Render curved portions of chain
   //
 
-  context.setLineDash([s1 * TILE_SIZE])
+  context.setLineDash([s1 * tileSize])
   context.lineDashOffset =
-    -1 * radius * TILE_SIZE * (angle % (s1 + s1))
+    -1 * radius * tileSize * (angle % (s1 + s1))
 
   context.beginPath()
   context.arc(
-    g1.x * TILE_SIZE,
-    g1.y * TILE_SIZE,
-    radius * TILE_SIZE,
+    g1.x * tileSize,
+    g1.y * tileSize,
+    radius * tileSize,
     c1.angle() + HALF_PI,
     c1.angle() + HALF_PI + PI,
   )
@@ -98,9 +90,9 @@ export function renderChain({
 
   context.beginPath()
   context.arc(
-    g2.x * TILE_SIZE,
-    g2.y * TILE_SIZE,
-    radius * TILE_SIZE,
+    g2.x * tileSize,
+    g2.y * tileSize,
+    radius * tileSize,
     c1.angle() + -HALF_PI,
     c1.angle() + -HALF_PI + PI,
   )

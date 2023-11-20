@@ -1,15 +1,14 @@
 import { Color } from './color.js'
-import { TILE_SIZE } from './const.js'
 import { AppState } from './types.js'
 
 export function renderGrid(
   context: CanvasRenderingContext2D,
   state: AppState,
 ): void {
-  const { canvas, camera } = state
+  const { canvas, camera, tileSize } = state
 
-  const vx = canvas.width / TILE_SIZE
-  const vy = canvas.height / TILE_SIZE
+  const vx = canvas.width / tileSize
+  const vy = canvas.height / tileSize
 
   const tlx = Math.floor(
     Math.floor((camera.position.x - vx / 2) / 2) * 2,
@@ -28,12 +27,12 @@ export function renderGrid(
   context.lineWidth = 1
   context.strokeStyle = Color.GridOdd
   for (let y = tly + 1; y < bry; y += 2) {
-    context.moveTo(tlx * TILE_SIZE, y * TILE_SIZE)
-    context.lineTo(brx * TILE_SIZE, y * TILE_SIZE)
+    context.moveTo(tlx * tileSize, y * tileSize)
+    context.lineTo(brx * tileSize, y * tileSize)
   }
   for (let x = tlx + 1; x < brx; x += 2) {
-    context.moveTo(x * TILE_SIZE, tly * TILE_SIZE)
-    context.lineTo(x * TILE_SIZE, bry * TILE_SIZE)
+    context.moveTo(x * tileSize, tly * tileSize)
+    context.lineTo(x * tileSize, bry * tileSize)
   }
   context.stroke()
   context.closePath()
@@ -42,12 +41,12 @@ export function renderGrid(
   context.lineWidth = 1
   context.strokeStyle = Color.GridEven
   for (let y = tly; y <= bry; y += 2) {
-    context.moveTo(tlx * TILE_SIZE, y * TILE_SIZE)
-    context.lineTo(brx * TILE_SIZE, y * TILE_SIZE)
+    context.moveTo(tlx * tileSize, y * tileSize)
+    context.lineTo(brx * tileSize, y * tileSize)
   }
   for (let x = tlx; x <= brx; x += 2) {
-    context.moveTo(x * TILE_SIZE, tly * TILE_SIZE)
-    context.lineTo(x * TILE_SIZE, bry * TILE_SIZE)
+    context.moveTo(x * tileSize, tly * tileSize)
+    context.lineTo(x * tileSize, bry * tileSize)
   }
   context.stroke()
   context.closePath()

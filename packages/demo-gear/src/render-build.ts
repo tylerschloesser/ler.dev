@@ -32,6 +32,7 @@ export function renderBuild(
 
   renderGear(
     context,
+    state,
     partial,
     build.valid ? Color.AddGearValid : Color.AddGearInvalid,
   )
@@ -45,6 +46,7 @@ export function renderBuild(
 
     renderConnection(
       context,
+      state,
       connection.type,
       partial,
       gear2,
@@ -57,6 +59,7 @@ export function renderBuild(
     partial.angle = build.chain.angle
     renderConnection(
       context,
+      state,
       ConnectionType.enum.Chain,
       partial,
       build.chain,

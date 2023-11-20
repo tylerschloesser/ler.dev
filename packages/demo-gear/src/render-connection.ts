@@ -1,16 +1,21 @@
 import { Color } from './color.js'
-import { TILE_SIZE } from './const.js'
 import { renderChain } from './render-chain.js'
-import { ConnectionType, PartialGear } from './types.js'
+import {
+  AppState,
+  ConnectionType,
+  PartialGear,
+} from './types.js'
 
 export function renderConnection(
   context: CanvasRenderingContext2D,
+  state: AppState,
   type: ConnectionType,
   gear1: PartialGear,
   gear2: PartialGear,
   valid: boolean,
   debug: boolean,
 ): void {
+  const { tileSize } = state
   if (debug) {
     switch (type) {
       case ConnectionType.enum.Chain:
@@ -19,12 +24,12 @@ export function renderConnection(
         context.strokeStyle = Color.Connection
         context.lineWidth = 2
         context.moveTo(
-          gear1.position.x * TILE_SIZE,
-          gear1.position.y * TILE_SIZE,
+          gear1.position.x * tileSize,
+          gear1.position.y * tileSize,
         )
         context.lineTo(
-          gear2.position.x * TILE_SIZE,
-          gear2.position.y * TILE_SIZE,
+          gear2.position.x * tileSize,
+          gear2.position.y * tileSize,
         )
         context.stroke()
         context.closePath()
@@ -34,6 +39,6 @@ export function renderConnection(
   }
 
   if (type === ConnectionType.enum.Chain && valid) {
-    renderChain({ gear1, gear2, context })
+    renderChain(context, state, gear1, gear2)
   }
 }
