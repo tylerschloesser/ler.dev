@@ -114,7 +114,7 @@ function getRenderVars(
   gear1: PartialGear,
   gear2: PartialGear,
 ): RenderVars {
-  const chainId = getChainId({ gear1, gear2 })
+  const chainId = getChainId(gear1, gear2)
   const cached = cache.get(chainId)
   if (cached) {
     return cached
@@ -174,13 +174,10 @@ function getRenderVars(
   return vars
 }
 
-function getChainId({
-  gear1,
-  gear2,
-}: {
-  gear1: PartialGear
-  gear2: PartialGear
-}): ChainId {
+function getChainId(
+  gear1: PartialGear,
+  gear2: PartialGear,
+): ChainId {
   // this assumes we'll always render with gears in the same order...
   return [
     'gear1',
