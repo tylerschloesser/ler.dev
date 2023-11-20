@@ -18,8 +18,8 @@ export const moveHand: PointerListenerFn = (state, e) => {
   updatePosition(state, e)
   switch (e.type) {
     case 'pointerenter': {
-      let tileX = Math.floor(pointer.position.x + 0.5)
-      let tileY = Math.floor(pointer.position.y + 0.5)
+      const tileX = Math.floor(pointer.position.x + 0.5)
+      const tileY = Math.floor(pointer.position.y + 0.5)
       switch (hand?.type) {
         case HandType.Build: {
           updateBuildPosition(state, hand, tileX, tileY)
@@ -62,8 +62,8 @@ export const moveHand: PointerListenerFn = (state, e) => {
       break
     }
     case 'pointermove': {
-      let tileX = Math.floor(pointer.position.x + 0.5)
-      let tileY = Math.floor(pointer.position.y + 0.5)
+      const tileX = Math.floor(pointer.position.x + 0.5)
+      const tileY = Math.floor(pointer.position.y + 0.5)
       switch (hand?.type) {
         case HandType.Build: {
           updateBuildPosition(state, hand, tileX, tileY)

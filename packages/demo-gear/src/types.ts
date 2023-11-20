@@ -113,6 +113,7 @@ export interface AppState {
   tileSize: number
 
   pointerListeners: Set<PointerListenerFn>
+  cameraListeners: Set<CameraListenerFn>
 }
 
 export type InitFn = (state: AppState) => void

@@ -52,6 +52,7 @@ function useAppState({
       hand: null,
       tileSize: 0,
       pointerListeners: new Set([moveCamera]),
+      cameraListeners: new Set(),
     })
     return () => {
       controller.abort()
