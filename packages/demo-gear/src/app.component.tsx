@@ -41,7 +41,6 @@ function useAppState({
       setWorld,
       signal: controller.signal,
       pointer: {
-        down: false,
         mode: PointerMode.Free,
         position: { x: 0, y: 0 },
       },

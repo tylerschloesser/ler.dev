@@ -38,24 +38,22 @@ export const moveHand: PointerListenerFn = (state, e) => {
       break
     }
     case 'pointerup': {
-      pointer.down = false
       switch (hand?.type) {
         case HandType.Build: {
           executeBuild(state, hand)
           break
         }
         case HandType.Accelerate: {
-          updateAccelerate(state, hand)
+          updateAccelerate(state, hand, false)
           break
         }
       }
       break
     }
     case 'pointerdown': {
-      pointer.down = true
       switch (hand?.type) {
         case HandType.Accelerate: {
-          updateAccelerate(state, hand)
+          updateAccelerate(state, hand, true)
           break
         }
       }

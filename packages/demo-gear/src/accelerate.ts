@@ -29,8 +29,9 @@ export function updateAcceleratePosition(
 }
 
 export function updateAccelerate(
-  state: AppState,
+  _state: AppState,
   hand: AccelerateHand,
+  active: boolean,
 ): void {
-  hand.active = state.pointer.down
+  hand.active = active
 }
