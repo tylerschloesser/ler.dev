@@ -10,7 +10,6 @@ import { TouchToolbar } from './touch-toolbar.component.js'
 import { AppState, InitFn, PointerMode } from './types.js'
 import { useMediaQuery } from './use-media-query.js'
 import { useWorld } from './use-world.js'
-import { zoomToTileSize } from './zoom-to-tile-size.js'
 
 const INIT_FNS: InitFn[] = [
   initCanvas,
@@ -35,12 +34,6 @@ function useAppState({
     if (!canvas || !world) {
       return
     }
-
-    const zoom = 0.5
-    const vx = canvas.width
-    const vy = canvas.height
-    const tileSize = zoomToTileSize(zoom, vx, vy)
-
     setState({
       canvas,
       world,
@@ -54,9 +47,9 @@ function useAppState({
       },
       camera: {
         position: { x: 0, y: 0 },
-        zoom,
+        zoom: 0.5,
       },
-      tileSize,
+      tileSize: 0,
       build: null,
       accelerate: null,
     })

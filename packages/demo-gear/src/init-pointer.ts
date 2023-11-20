@@ -8,7 +8,6 @@ import {
   updateBuildPosition,
 } from './build.js'
 import { handlePointer as handlePointerFree } from './camera.js'
-import { TILE_SIZE } from './const.js'
 import { AppState, InitFn, PointerMode } from './types.js'
 
 export const initPointer: InitFn = (state) => {
@@ -41,12 +40,12 @@ export const initPointer: InitFn = (state) => {
 }
 
 function updatePosition(
-  e: PointerEvent,
   state: AppState,
+  e: PointerEvent,
 ): void {
-  const { canvas, pointer } = state
-  const x = (e.offsetX - canvas.width / 2) / TILE_SIZE
-  const y = (e.offsetY - canvas.height / 2) / TILE_SIZE
+  const { canvas, pointer, tileSize } = state
+  const x = (e.offsetX - canvas.width / 2) / tileSize
+  const y = (e.offsetY - canvas.height / 2) / tileSize
   pointer.position.x = x
   pointer.position.y = y
 }
@@ -61,7 +60,7 @@ function handlePointer(
   }
 
   const { pointer } = state
-  updatePosition(e, state)
+  updatePosition(state, e)
   switch (e.type) {
     case 'pointerenter': {
       pointer.active = true

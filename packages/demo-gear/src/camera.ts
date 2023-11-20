@@ -70,6 +70,8 @@ export function handleWheel(
   camera.zoom = nextZoom
 
   state.tileSize = nextTileSize
+
+  console.log(nextTileSize)
 }
 
 function handlePointerOne(
