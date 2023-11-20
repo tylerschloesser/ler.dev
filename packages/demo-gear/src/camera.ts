@@ -59,32 +59,30 @@ export function handleWheel(
   state: AppState,
 ): void {
   const { camera } = state
-  const prevZoom = camera.zoom
-
+  const pz = camera.zoom
   const vx = state.canvas.width
   const vy = state.canvas.height
   const scale = vy * (1 + (1 - state.camera.zoom))
+  const nz = clampZoom(camera.zoom + -e.deltaY / scale)
 
-  const nextZoom = clampZoom(
-    camera.zoom + -e.deltaY / scale,
-  )
-
-  if (prevZoom === nextZoom) {
+  if (pz === nz) {
     return
   }
 
-  // new center in pixel/screen coordinates
-  const sx = e.offsetX - vx / 2
-  const sy = e.offsetY - vy / 2
+  // the point, relative to the center of the screen,
+  // at which the change in position due to change
+  // in tile size
+  const rx = e.offsetX - vx / 2
+  const ry = e.offsetY - vy / 2
 
-  const prevTileSize = zoomToTileSize(prevZoom, vx, vy)
-  const nextTileSize = zoomToTileSize(nextZoom, vx, vy)
+  const pts = state.tileSize
+  const nts = zoomToTileSize(nz, vx, vy)
 
-  camera.position.x += sx / prevTileSize - sx / nextTileSize
-  camera.position.y += sy / prevTileSize - sy / nextTileSize
-  camera.zoom = nextZoom
+  camera.position.x += rx / pts - rx / nts
+  camera.position.y += ry / pts - ry / nts
+  camera.zoom = nz
 
-  state.tileSize = nextTileSize
+  state.tileSize = nts
 }
 
 function handlePointerOne(
@@ -136,16 +134,18 @@ function handlePointerTwo(
 
   // how far did the center move, aka how much to move
   // the camera in addition to the change in tile size
-  const mx = (ncx - pcx) / -nts
-  const my = (ncy - pcy) / -nts
+  const dcx = ncx - pcx
+  const dcy = ncy - pcy
 
-  // new center in pixel/screen coordinates
-  const sx = ncx - vx / 2
-  const sy = ncy - vy / 2
+  // the point, relative to the center of the screen,
+  // at which the change in position due to change
+  // in tile size
+  const rx = ncx - vx / 2
+  const ry = ncy - vy / 2
 
   // final camera movement
-  const dx = sx / pts - sx / nts + mx
-  const dy = sy / pts - sy / nts + my
+  const dx = rx / pts - (rx + dcx) / nts
+  const dy = ry / pts - (ry + dcy) / nts
 
   camera.position.x += dx
   camera.position.y += dy
