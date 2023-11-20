@@ -1,6 +1,7 @@
 import { TILE_SIZE } from './const.js'
 import { AppState } from './types.js'
 import { clampZoom } from './util.js'
+import { zoomToTileSize } from './zoom-to-tile-size.js'
 
 type PointerId = number
 const pointerCache = new Map<PointerId, PointerEvent>()
@@ -44,19 +45,30 @@ export function handleWheel(
   state: AppState,
 ): void {
   const { camera } = state
+  const prevZoom = camera.zoom
 
   const vx = state.canvas.width
   const vy = state.canvas.height
   const scale = vy * (1 + (1 - state.camera.zoom))
 
-  const next = clampZoom(camera.zoom + -e.deltaY / scale)
+  const nextZoom = clampZoom(
+    camera.zoom + -e.deltaY / scale,
+  )
 
-  if (camera.zoom === next) {
+  if (prevZoom === nextZoom) {
     return
   }
 
+  // screen x/y
   const sx = e.clientX - vx / 2
   const sy = e.clientY - vy / 2
+
+  const prevTileSize = zoomToTileSize(prevZoom, vx, vy)
+  const nextTileSize = zoomToTileSize(nextZoom, vx, vy)
+
+  camera.position.x = sx / prevTileSize - sx / nextTileSize
+  camera.position.y = sy / prevTileSize - sy / nextTileSize
+  camera.zoom = nextZoom
 }
 
 function handlePointerOne(
