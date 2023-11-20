@@ -74,7 +74,6 @@ export enum PointerMode {
 }
 
 export interface Pointer {
-  active: boolean
   position: SimpleVec2
   down: boolean
   mode: PointerMode

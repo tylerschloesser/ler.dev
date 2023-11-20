@@ -67,7 +67,18 @@ function handlePointer(
   updatePosition(state, e)
   switch (e.type) {
     case 'pointerenter': {
-      pointer.active = true
+      let tileX = Math.floor(pointer.position.x + 0.5)
+      let tileY = Math.floor(pointer.position.y + 0.5)
+      switch (pointer.mode) {
+        case PointerMode.Build: {
+          updateBuildPosition(state, tileX, tileY)
+          break
+        }
+        case PointerMode.Accelerate: {
+          updateAcceleratePosition(state, tileX, tileY)
+          break
+        }
+      }
       break
     }
     case 'pointerup': {
@@ -110,7 +121,18 @@ function handlePointer(
       break
     }
     case 'pointerleave': {
-      pointer.active = false
+      switch (pointer.mode) {
+        case PointerMode.Build: {
+          invariant(state.build)
+          state.build.position = null
+          break
+        }
+        case PointerMode.Accelerate: {
+          invariant(state.accelerate)
+          state.accelerate.position = null
+          break
+        }
+      }
       break
     }
     default: {

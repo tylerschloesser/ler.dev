@@ -46,8 +46,10 @@ export function render(
     )
   }
 
-  if (state.pointer.active) {
+  if (state.build?.position) {
     renderBuild(state, context)
+  }
+  if (state.accelerate?.position) {
     renderAccelerate(state, context)
   }
 }

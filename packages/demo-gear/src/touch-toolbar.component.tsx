@@ -57,11 +57,9 @@ function AddGearView({
       radius: 1,
       valid: false,
     }
-    state.pointer.mode = PointerMode.Build
 
     return () => {
       state.build = null
-      state.pointer.mode === PointerMode.Free
     }
   }, [state])
 
