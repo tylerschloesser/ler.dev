@@ -49,6 +49,7 @@ export function renderChain({
   // Render straight portions of chain
   //
 
+  // TODO cache the array?
   context.setLineDash([s1 * TILE_SIZE, s2 * TILE_SIZE])
   context.lineDashOffset =
     // because offset is "backwards"
