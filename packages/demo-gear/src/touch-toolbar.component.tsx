@@ -5,7 +5,7 @@ import {
   useState,
 } from 'react'
 import styles from './touch-toolbar.module.scss'
-import { AppState, HandType, PointerMode } from './types.js'
+import { AppState, HandType } from './types.js'
 
 export interface TouchToolbarProps {
   state: AppState
