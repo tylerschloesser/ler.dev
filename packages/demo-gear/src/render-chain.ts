@@ -40,7 +40,7 @@ export function renderChain({
   context: CanvasRenderingContext2D
 }): void {
   const { s1, s2, radius, A, B, C, D, g1, g2, c1 } =
-    getRenderVars({ gear1, gear2 })
+    getRenderVars(gear1, gear2)
 
   invariant(gear1.angle === gear2.angle)
   const { angle } = gear1
@@ -109,13 +109,10 @@ export function renderChain({
   context.setLineDash([])
 }
 
-function getRenderVars({
-  gear1,
-  gear2,
-}: {
-  gear1: PartialGear
-  gear2: PartialGear
-}): RenderVars {
+function getRenderVars(
+  gear1: PartialGear,
+  gear2: PartialGear,
+): RenderVars {
   const chainId = getChainId({ gear1, gear2 })
   const cached = cache.get(chainId)
   if (cached) {
