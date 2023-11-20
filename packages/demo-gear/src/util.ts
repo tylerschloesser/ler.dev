@@ -30,6 +30,7 @@ export function* iterateConnections(
       const peer = gears[connection.gearId]
       invariant(peer)
 
+      // TODO cleanup GC
       yield {
         gear1: gear,
         gear2: peer,
