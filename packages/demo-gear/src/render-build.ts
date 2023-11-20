@@ -2,7 +2,20 @@ import invariant from 'tiny-invariant'
 import { Color } from './color.js'
 import { renderConnection } from './render-connection.js'
 import { renderGear } from './render-gear.js'
-import { AppState, ConnectionType } from './types.js'
+import {
+  AppState,
+  ConnectionType,
+  PartialGear,
+} from './types.js'
+
+const partial: PartialGear = {
+  angle: 0,
+  position: {
+    x: 0,
+    y: 0,
+  },
+  radius: 0,
+}
 
 export function renderBuild(
   state: AppState,
@@ -12,49 +25,43 @@ export function renderBuild(
   if (!build?.position) {
     return
   }
-  renderGear({
-    gear: {
-      position: build.position,
-      radius: build.radius,
-      angle: 0,
-    },
-    tint: build.valid
-      ? Color.AddGearValid
-      : Color.AddGearInvalid,
+
+  partial.position.x = build.position.x
+  partial.position.y = build.position.y
+  partial.radius = build.radius
+
+  renderGear(
     context,
-  })
+    partial,
+    build.valid ? Color.AddGearValid : Color.AddGearInvalid,
+  )
 
   const { world } = state
   for (const connection of build.connections) {
     const gear2 = world.gears[connection.gearId]
     invariant(gear2)
 
-    renderConnection({
+    partial.angle = gear2.angle
+
+    renderConnection(
       context,
-      gear1: {
-        position: build.position,
-        radius: build.radius,
-        angle: gear2.angle,
-      },
+      connection.type,
+      partial,
       gear2,
-      type: connection.type,
-      valid: build.valid,
-      debug: world.debugConnections,
-    })
+      build.valid,
+      world.debugConnections,
+    )
   }
 
   if (build.chain && build.valid) {
-    renderConnection({
+    partial.angle = build.chain.angle
+    renderConnection(
       context,
-      gear1: {
-        position: build.position,
-        radius: build.radius,
-        angle: build.chain.angle,
-      },
-      gear2: build.chain,
-      type: ConnectionType.enum.Chain,
-      valid: true,
-      debug: world.debugConnections,
-    })
+      ConnectionType.enum.Chain,
+      partial,
+      build.chain,
+      true,
+      world.debugConnections,
+    )
   }
 }

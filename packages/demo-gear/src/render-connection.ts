@@ -3,21 +3,14 @@ import { TILE_SIZE } from './const.js'
 import { renderChain } from './render-chain.js'
 import { ConnectionType, PartialGear } from './types.js'
 
-export function renderConnection({
-  gear1,
-  gear2,
-  type,
-  context,
-  valid,
-  debug,
-}: {
-  gear1: PartialGear
-  gear2: PartialGear
-  type: ConnectionType
-  context: CanvasRenderingContext2D
-  valid: boolean
-  debug: boolean
-}): void {
+export function renderConnection(
+  context: CanvasRenderingContext2D,
+  type: ConnectionType,
+  gear1: PartialGear,
+  gear2: PartialGear,
+  valid: boolean,
+  debug: boolean,
+): void {
   if (debug) {
     switch (type) {
       case ConnectionType.enum.Chain:

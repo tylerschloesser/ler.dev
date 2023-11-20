@@ -30,20 +30,20 @@ export function render(
   renderGrid(context, state)
 
   for (const gear of Object.values(state.world.gears)) {
-    renderGear({ gear, context })
+    renderGear(context, gear)
   }
 
   for (const { gear1, gear2, type } of iterateConnections(
     state.world.gears,
   )) {
-    renderConnection({
+    renderConnection(
+      context,
+      type,
       gear1,
       gear2,
-      type,
-      context,
-      valid: true,
-      debug: state.world.debugConnections,
-    })
+      true,
+      state.world.debugConnections,
+    )
   }
 
   if (state.pointer.active) {

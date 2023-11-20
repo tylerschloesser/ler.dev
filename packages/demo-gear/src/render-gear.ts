@@ -7,15 +7,11 @@ import {
 } from './const.js'
 import { Gear } from './types.js'
 
-export function renderGear({
-  gear,
-  tint,
-  context,
-}: {
-  gear: Pick<Gear, 'radius' | 'position' | 'angle'>
-  tint?: string
-  context: CanvasRenderingContext2D
-}): void {
+export function renderGear(
+  context: CanvasRenderingContext2D,
+  gear: Pick<Gear, 'radius' | 'position' | 'angle'>,
+  tint?: string,
+): void {
   invariant(context)
 
   context.save()
