@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import styles from './app.module.scss'
+import { moveCamera } from './camera.js'
 import { initCanvas } from './init-canvas.js'
 import { initKeyboard } from './init-keyboard.js'
 import { initPointer } from './init-pointer.js'
@@ -50,6 +51,7 @@ function useAppState({
       },
       hand: null,
       tileSize: 0,
+      pointerListeners: new Set([moveCamera]),
     })
     return () => {
       controller.abort()

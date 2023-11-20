@@ -95,6 +95,12 @@ export interface Camera {
   zoom: number
 }
 
+export type PointerListenerFn = (
+  state: AppState,
+  e: PointerEvent,
+) => void
+export type CameraListenerFn = (state: AppState) => void
+
 export interface AppState {
   canvas: HTMLCanvasElement
   signal: AbortSignal
@@ -105,6 +111,8 @@ export interface AppState {
 
   camera: Camera
   tileSize: number
+
+  pointerListeners: Set<PointerListenerFn>
 }
 
 export type InitFn = (state: AppState) => void

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { GEAR_RADIUSES } from './const.js'
+import { updatePointerMode } from './pointer-mode.js'
 import styles from './toolbar.module.scss'
 import { AppState, HandType, PointerMode } from './types.js'
 import { useResetWorld, useSaveWorld } from './use-world.js'
@@ -35,7 +36,7 @@ export function Toolbar({ state }: ToolbarProps) {
                 radius,
                 valid: false,
               }
-              state.pointer.mode = PointerMode.Hand
+              updatePointerMode(state, PointerMode.Hand)
             }}
           >
             {radius}
@@ -55,7 +56,7 @@ export function Toolbar({ state }: ToolbarProps) {
                 gear: null,
                 position: null,
               }
-              state.pointer.mode = PointerMode.Hand
+              updatePointerMode(state, PointerMode.Hand)
             }}
           >
             {acceleration}

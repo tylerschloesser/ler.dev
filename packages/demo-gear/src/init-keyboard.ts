@@ -1,3 +1,4 @@
+import { updatePointerMode } from './pointer-mode.js'
 import { InitFn, PointerMode } from './types.js'
 
 export const initKeyboard: InitFn = (state) => {
@@ -5,8 +6,8 @@ export const initKeyboard: InitFn = (state) => {
     'keyup',
     (e) => {
       if (e.key === 'q') {
-        state.pointer.mode = PointerMode.Free
         state.hand = null
+        updatePointerMode(state, PointerMode.Free)
       }
     },
     { signal: state.signal },

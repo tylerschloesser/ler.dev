@@ -5,7 +5,7 @@ import {
   MIN_TILE_SIZE_FACTOR,
   MIN_ZOOM,
 } from './const.js'
-import { AppState } from './types.js'
+import { AppState, PointerListenerFn } from './types.js'
 import {
   clamp,
   clampTileSize,
@@ -16,10 +16,10 @@ import {
 type PointerId = number
 const pointerCache = new Map<PointerId, PointerEvent>()
 
-export function handlePointer(
+export const moveCamera: PointerListenerFn = (
   state: AppState,
   e: PointerEvent,
-): void {
+) => {
   switch (e.type) {
     case 'pointerup': {
       pointerCache.delete(e.pointerId)
