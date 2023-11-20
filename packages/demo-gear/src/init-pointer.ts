@@ -1,5 +1,4 @@
 import invariant from 'tiny-invariant'
-import { isLeftHandSideExpression } from 'typescript'
 import {
   updateAccelerate,
   updateAcceleratePosition,
