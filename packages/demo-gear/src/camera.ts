@@ -41,7 +41,9 @@ export function handlePointer(
 export function handleWheel(
   e: WheelEvent,
   state: AppState,
-): void {}
+): void {
+  console.log(e)
+}
 
 function handlePointerOne(
   prev: PointerEvent,
