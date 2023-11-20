@@ -43,9 +43,13 @@ function updatePosition(
   state: AppState,
   e: PointerEvent,
 ): void {
-  const { canvas, pointer, tileSize } = state
-  const x = (e.offsetX - canvas.width / 2) / tileSize
-  const y = (e.offsetY - canvas.height / 2) / tileSize
+  const { canvas, pointer, tileSize, camera } = state
+  const vx = canvas.width
+  const vy = canvas.height
+  const x =
+    (e.offsetX - vx / 2) / tileSize + camera.position.x
+  const y =
+    (e.offsetY - vy / 2) / tileSize + camera.position.y
   pointer.position.x = x
   pointer.position.y = y
 }

@@ -1,12 +1,11 @@
 import { Color } from './color.js'
-import { TILE_SIZE } from './const.js'
 import { AppState } from './types.js'
 
 export function renderAccelerate(
   state: AppState,
   context: CanvasRenderingContext2D,
 ): void {
-  const { accelerate } = state
+  const { accelerate, tileSize } = state
   if (!accelerate || !accelerate.gear) {
     return
   }
@@ -18,10 +17,10 @@ export function renderAccelerate(
     ? Color.ApplyForceActive
     : Color.ApplyForceInactive
   context.strokeRect(
-    (gear.position.x - gear.radius) * TILE_SIZE,
-    (gear.position.y - gear.radius) * TILE_SIZE,
-    TILE_SIZE * gear.radius * 2,
-    TILE_SIZE * gear.radius * 2,
+    (gear.position.x - gear.radius) * tileSize,
+    (gear.position.y - gear.radius) * tileSize,
+    tileSize * gear.radius * 2,
+    tileSize * gear.radius * 2,
   )
   context.closePath()
 }
