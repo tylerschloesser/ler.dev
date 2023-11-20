@@ -1,4 +1,3 @@
-import { TILE_SIZE } from './const.js'
 import { AppState } from './types.js'
 import { clampZoom } from './util.js'
 import { zoomToTileSize } from './zoom-to-tile-size.js'
@@ -31,7 +30,7 @@ export function handlePointer(
       }
       switch (pointerCache.size) {
         case 1: {
-          handlePointerOne(prev, e, state)
+          handlePointerOne(state, prev, e)
           break
         }
       }
@@ -60,27 +59,28 @@ export function handleWheel(
   }
 
   // screen x/y
-  const sx = e.clientX - vx / 2
-  const sy = e.clientY - vy / 2
+  const sx = e.offsetX - vx / 2
+  const sy = e.offsetY - vy / 2
 
   const prevTileSize = zoomToTileSize(prevZoom, vx, vy)
   const nextTileSize = zoomToTileSize(nextZoom, vx, vy)
 
-  camera.position.x = sx / prevTileSize - sx / nextTileSize
-  camera.position.y = sy / prevTileSize - sy / nextTileSize
+  camera.position.x += sx / prevTileSize - sx / nextTileSize
+  camera.position.y += sy / prevTileSize - sy / nextTileSize
   camera.zoom = nextZoom
 
   state.tileSize = nextTileSize
 }
 
 function handlePointerOne(
+  state: AppState,
   prev: PointerEvent,
   next: PointerEvent,
-  state: AppState,
 ): void {
+  const { camera, tileSize } = state
   const dx = next.offsetX - prev.offsetX
   const dy = next.offsetY - prev.offsetY
 
-  state.camera.position.x += -dx / TILE_SIZE
-  state.camera.position.y += -dy / TILE_SIZE
+  camera.position.x += -dx / tileSize
+  camera.position.y += -dy / tileSize
 }
