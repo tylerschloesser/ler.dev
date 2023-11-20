@@ -66,6 +66,25 @@ export interface Accelerate {
   gear: Gear | null
 }
 
+interface BaseHand {
+  position: SimpleVec2 | null
+}
+
+export interface BuildHand extends BaseHand {
+  radius: number
+  valid: boolean
+  chain: Gear | null
+  connections: Connection[]
+}
+
+export interface AccelerateHand extends BaseHand {
+  active: boolean
+  direction: number
+  gear: Gear | null
+}
+
+export type Hand = BuildHand | AccelerateHand
+
 export type SetWorldFn = (world: World) => void
 
 export enum PointerMode {
@@ -85,17 +104,13 @@ export interface Camera {
   zoom: number
 }
 
-export interface Hand {
-  position: Vec2 | null
-}
-
 export interface AppState {
   canvas: HTMLCanvasElement
   signal: AbortSignal
   world: World
   setWorld: SetWorldFn
   pointer: Pointer
-  hand: Hand
+  hand: Hand | null
 
   camera: Camera
   tileSize: number

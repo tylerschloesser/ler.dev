@@ -48,9 +48,7 @@ function useAppState({
         position: { x: 0, y: 0 },
         zoom: 0.5,
       },
-      hand: {
-        position: null,
-      },
+      hand: null,
       tileSize: 0,
       build: null,
       accelerate: null,
