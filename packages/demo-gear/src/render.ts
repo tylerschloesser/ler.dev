@@ -11,20 +11,20 @@ export function render(
   state: AppState,
   context: CanvasRenderingContext2D,
 ): void {
-  const { canvas, tileSize } = state
+  const { canvas, camera, tileSize } = state
 
   context.resetTransform()
 
-  context.clearRect(0, 0, canvas.width, canvas.height)
+  const vx = canvas.width
+  const vy = canvas.height
 
+  context.clearRect(0, 0, vx, vy)
   context.fillStyle = Color.Background
-  context.fillRect(0, 0, canvas.width, canvas.height)
+  context.fillRect(0, 0, vx, vy)
 
-  context.translate(canvas.width / 2, canvas.height / 2)
-  context.translate(
-    -state.camera.position.x * tileSize,
-    -state.camera.position.y * tileSize,
-  )
+  const tx = vx / 2 + -camera.position.x * tileSize
+  const ty = vy / 2 + -camera.position.y * tileSize
+  context.translate(tx, ty)
 
   renderGrid(context, state)
 
