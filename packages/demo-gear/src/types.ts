@@ -1,5 +1,4 @@
 import * as z from 'zod'
-import { Vec2 } from './vec2.js'
 
 export const SimpleVec2 = z.strictObject({
   x: z.number(),
