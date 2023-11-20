@@ -1,3 +1,4 @@
+import invariant from 'tiny-invariant'
 import { AppState } from './types.js'
 import { clampZoom } from './util.js'
 import { zoomToTileSize } from './zoom-to-tile-size.js'
@@ -31,6 +32,10 @@ export function handlePointer(
       switch (pointerCache.size) {
         case 1: {
           handlePointerOne(state, prev, e)
+          break
+        }
+        case 2: {
+          handlePointerTwo(state, prev, e)
           break
         }
       }
@@ -83,4 +88,22 @@ function handlePointerOne(
 
   camera.position.x += -dx / tileSize
   camera.position.y += -dy / tileSize
+}
+
+function handlePointerTwo(
+  state: AppState,
+  prev: PointerEvent,
+  next: PointerEvent,
+): void {
+  console.log('todo')
+}
+
+function getOtherPointer(e: PointerEvent) {
+  invariant(pointerCache.size === 2)
+  for (const other of pointerCache.values()) {
+    if (other.pointerId !== e.pointerId) {
+      return other
+    }
+  }
+  invariant(false)
 }
