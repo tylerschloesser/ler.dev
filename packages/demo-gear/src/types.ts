@@ -1,4 +1,5 @@
 import * as z from 'zod'
+import { Vec2 } from './vec2.js'
 
 export const SimpleVec2 = z.strictObject({
   x: z.number(),
@@ -84,12 +85,17 @@ export interface Camera {
   zoom: number
 }
 
+export interface Hand {
+  position: Vec2 | null
+}
+
 export interface AppState {
   canvas: HTMLCanvasElement
   signal: AbortSignal
   world: World
   setWorld: SetWorldFn
   pointer: Pointer
+  hand: Hand
 
   camera: Camera
   tileSize: number
