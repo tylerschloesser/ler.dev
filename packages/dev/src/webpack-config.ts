@@ -42,6 +42,10 @@ export function getWebpackConfig(): Configuration {
             'sass-loader',
           ],
         },
+        {
+          test: /\.glsl$/,
+          type: 'asset/source',
+        },
       ],
     },
     resolve: {
