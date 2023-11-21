@@ -21,14 +21,13 @@ export const initCanvas: InitFn = (state) => {
     ro.disconnect()
   })
 
-  const context = canvas.cpu.getContext('2d')
+  const context = getContext(canvas)
 
   function handleFrame() {
     if (signal.aborted) {
       return
     }
-    invariant(context)
-    renderCpu(state, context)
+    renderCpu(state, context.cpu)
     window.requestAnimationFrame(handleFrame)
   }
   window.requestAnimationFrame(handleFrame)
@@ -49,4 +48,16 @@ function updateViewport(
   state.canvas.gpu.height = vy
 
   state.tileSize = zoomToTileSize(state.camera.zoom, vx, vy)
+}
+
+function getContext(canvas: AppState['canvas']): {
+  cpu: CanvasRenderingContext2D
+  gpu: WebGL2RenderingContext
+} {
+  const cpu = canvas.cpu.getContext('2d')
+  invariant(cpu)
+  const gpu = canvas.gpu.getContext('webgl2')
+  invariant(gpu)
+
+  return { cpu, gpu }
 }
