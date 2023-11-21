@@ -102,6 +102,7 @@ function initMainProgram(
         'uColor',
         false,
       ),
+      sampler: getUniformLocation(gl, program, 'uSampler'),
     },
   }
 }
