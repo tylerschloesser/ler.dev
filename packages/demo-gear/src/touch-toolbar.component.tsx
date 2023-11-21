@@ -1,9 +1,14 @@
 import {
-  Dispatch,
-  SetStateAction,
+  createContext,
+  use,
   useEffect,
   useState,
 } from 'react'
+import {
+  RouterProvider,
+  createBrowserRouter,
+  useNavigate,
+} from 'react-router-dom'
 import invariant from 'tiny-invariant'
 import {
   executeBuild,
@@ -19,30 +24,36 @@ export interface TouchToolbarProps {
   state: AppState
 }
 
-type View = 'main' | 'add-gear'
-type SetViewFn = Dispatch<SetStateAction<View>>
+const AppContext = createContext<AppState>(null!)
+
+const router = createBrowserRouter([
+  {
+    path: '/',
+    Component: MainView,
+  },
+  {
+    path: '/add-gear',
+    Component: AddGearView,
+  },
+])
 
 export function TouchToolbar(props: TouchToolbarProps) {
-  const [view, setView] = useState<View>('main')
-  const Inner = view === 'main' ? MainView : AddGearView
   return (
-    <div className={styles.container}>
-      <Inner state={props.state} setView={setView} />
-    </div>
+    <AppContext.Provider value={props.state}>
+      <div className={styles.container}>
+        <RouterProvider router={router} />
+      </div>
+    </AppContext.Provider>
   )
 }
 
-function MainView({
-  setView,
-}: {
-  state: AppState
-  setView: SetViewFn
-}) {
+function MainView() {
+  const navigate = useNavigate()
   return (
     <button
       className={styles.button}
       onPointerUp={() => {
-        setView('add-gear')
+        navigate('add-gear')
       }}
     >
       Add Gear
@@ -50,13 +61,8 @@ function MainView({
   )
 }
 
-function AddGearView({
-  state,
-  setView,
-}: {
-  state: AppState
-  setView: SetViewFn
-}) {
+function AddGearView() {
+  const state = use(AppContext)
   const [radius, setRadius] = useState(1)
 
   useEffect(() => {
@@ -90,12 +96,14 @@ function AddGearView({
     }
   }, [radius])
 
+  const navigate = useNavigate()
+
   return (
     <>
       <button
         className={styles.button}
         onPointerUp={() => {
-          setView('main')
+          navigate('/')
         }}
       >
         Cancel
