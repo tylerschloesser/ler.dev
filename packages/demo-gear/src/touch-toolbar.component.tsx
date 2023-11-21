@@ -17,7 +17,11 @@ import {
 import { moveCamera } from './camera.js'
 import { MAX_RADIUS, MIN_RADIUS } from './const.js'
 import styles from './touch-toolbar.module.scss'
-import { AppState, HandType } from './types.js'
+import {
+  AppState,
+  CameraListenerFn,
+  HandType,
+} from './types.js'
 import { clamp } from './util.js'
 
 export interface TouchToolbarProps {
@@ -76,13 +80,15 @@ function AddGearView() {
     }
     state.pointerListeners.clear()
     state.pointerListeners.add(moveCamera)
-    state.cameraListeners.add(() => {
+    const cameraListener: CameraListenerFn = () => {
       const tileX = Math.round(state.camera.position.x)
       const tileY = Math.round(state.camera.position.y)
       const { hand } = state
       invariant(hand?.type === HandType.Build)
       updateBuildPosition(state, hand, tileX, tileY)
-    })
+    }
+    cameraListener(state)
+    state.cameraListeners.add(cameraListener)
 
     return () => {
       state.hand = null
