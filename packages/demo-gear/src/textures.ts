@@ -12,8 +12,6 @@ export function useTextures(): Textures | null {
     generateTextures().then(setTextures)
   }, [])
 
-  console.log(textures)
-
   return textures
 }
 
@@ -53,6 +51,7 @@ async function generateTextures(): Promise<Textures> {
 
   canvas.remove()
 
+  // TODO measure time
   console.log('done generating textures')
 
   return { gears }
