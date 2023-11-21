@@ -5,7 +5,7 @@ import { render as renderGpu } from './render-gpu/render.js'
 import { initGpuState } from './render-gpu/state.js'
 import { AppState, InitFn } from './types.js'
 
-export const initCanvas: InitFn = (state) => {
+export const initCanvas: InitFn = async (state) => {
   const { canvas, signal } = state
 
   updateViewport(

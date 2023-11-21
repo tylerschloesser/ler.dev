@@ -1,7 +1,7 @@
 import { moveCamera } from './camera.js'
 import { InitFn } from './types.js'
 
-export const initKeyboard: InitFn = (state) => {
+export const initKeyboard: InitFn = async (state) => {
   window.addEventListener(
     'keyup',
     (e) => {

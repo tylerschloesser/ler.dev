@@ -1,6 +1,6 @@
 import { AppState, InitFn, SimpleVec2 } from './types.js'
 
-export const initPointer: InitFn = (state) => {
+export const initPointer: InitFn = async (state) => {
   const { canvas, signal } = state
   canvas.container.addEventListener(
     'pointerenter',

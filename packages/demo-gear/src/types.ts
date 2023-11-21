@@ -123,7 +123,7 @@ export interface AppState {
   textures: Textures
 }
 
-export type InitFn = (state: AppState) => void
+export type InitFn = (state: AppState) => Promise<void>
 
 export type PartialGear = Pick<
   Gear,

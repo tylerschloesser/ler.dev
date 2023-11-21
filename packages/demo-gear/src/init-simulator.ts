@@ -13,7 +13,7 @@ import {
   World,
 } from './types.js'
 
-export const initSimulator: InitFn = (state) => {
+export const initSimulator: InitFn = async (state) => {
   let prev: number = performance.now()
   function tick() {
     const { world } = state

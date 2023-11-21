@@ -1,7 +1,7 @@
 import { handleWheel } from './camera.js'
 import { InitFn } from './types.js'
 
-export const initWheel: InitFn = (state) => {
+export const initWheel: InitFn = async (state) => {
   const { canvas, signal } = state
   canvas.cpu.addEventListener(
     'wheel',
