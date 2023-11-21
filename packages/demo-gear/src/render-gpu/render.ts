@@ -1,6 +1,6 @@
 import invariant from 'tiny-invariant'
 import { AppState, Gear } from '../types.js'
-import { updateMatrices } from './matrices.js'
+import { updateProjection, updateView } from './matrices.js'
 import { GpuState } from './types.js'
 
 export function render(
@@ -11,7 +11,8 @@ export function render(
   gl.clearColor(1, 0, 0, 1)
   gl.clear(gl.COLOR_BUFFER_BIT)
 
-  updateMatrices(gpu.matrices, state)
+  updateView(gpu.matrices, state)
+  updateProjection(gpu.matrices, state)
 
   renderGrid(state, gl, gpu)
 

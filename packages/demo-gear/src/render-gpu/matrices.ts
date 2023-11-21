@@ -12,11 +12,11 @@ export function initMatrices(): GpuState['matrices'] {
 
 const v3: vec3 = vec3.create()
 
-export function updateMatrices(
+export function updateView(
   matrices: GpuState['matrices'],
   state: AppState,
 ): void {
-  const { view, projection } = matrices
+  const { view } = matrices
 
   mat4.identity(view)
 
@@ -34,6 +34,13 @@ export function updateMatrices(
   v3[1] = -state.camera.position.y
   v3[2] = 0
   mat4.translate(view, view, v3)
+}
+
+export function updateProjection(
+  matrices: GpuState['matrices'],
+  state: AppState,
+): void {
+  const { projection } = matrices
 
   mat4.identity(projection)
 
