@@ -1,4 +1,13 @@
-export const GEAR_RADIUSES = [1, 2, 3, 4, 5]
+const MIN_RADIUS = 1
+const MAX_RADIUS = 5
+
+export const GEAR_RADIUSES = (() => {
+  const arr = new Array(MAX_RADIUS - MIN_RADIUS)
+  for (let i = MIN_RADIUS; i <= MAX_RADIUS; i++) {
+    arr.push(i)
+  }
+  return arr
+})()
 
 export const TICK_DURATION = 16
 export const DRAW_GEAR_BOX = false
