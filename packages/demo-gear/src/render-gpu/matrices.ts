@@ -19,13 +19,13 @@ export function updateModel(
   const { model } = matrices
   mat4.identity(model)
 
-  v3[0] = gear.position.x - gear.radius
-  v3[1] = gear.position.y - gear.radius
+  v3[0] = gear.position.x
+  v3[1] = gear.position.y
   v3[2] = 0
   mat4.translate(model, model, v3)
 
-  v3[0] = gear.radius * 2
-  v3[1] = gear.radius * 2
+  v3[0] = gear.radius
+  v3[1] = gear.radius
   v3[2] = 0
   mat4.scale(model, model, v3)
 }
