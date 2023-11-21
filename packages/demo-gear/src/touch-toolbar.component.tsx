@@ -184,6 +184,8 @@ function AccelerateView() {
       >
         Back
       </button>
+      <button className={styles.button}>-1</button>
+      <button className={styles.button}>+1</button>
     </>
   )
 }
