@@ -17,6 +17,9 @@ export interface GpuState {
         zoom: WebGLUniformLocation | null
       }
     }
+    main: {
+      program: WebGLProgram
+    }
   }
   buffers: {
     square: WebGLBuffer

@@ -2,6 +2,8 @@ import invariant from 'tiny-invariant'
 import { initGearBuffers } from '../render-cpu/init-gear-buffers.js'
 import gridFrag from './shaders/grid.frag.glsl'
 import gridVert from './shaders/grid.vert.glsl'
+import mainFrag from './shaders/main.frag.glsl'
+import mainVert from './shaders/main.vert.glsl'
 import { GpuState } from './types.js'
 import {
   getAttribLocation,
@@ -15,6 +17,7 @@ export function initGpuState(
   return {
     programs: {
       grid: initGridProgram(gl),
+      main: initMainProgram(gl),
     },
     buffers: {
       square: initSquareBuffer(gl),
@@ -62,6 +65,18 @@ function initGridProgram(
       ),
       zoom: getUniformLocation(gl, program, 'uZoom', false),
     },
+  }
+}
+
+function initMainProgram(
+  gl: WebGL2RenderingContext,
+): GpuState['programs']['main'] {
+  const program = initProgram(gl, {
+    vert: mainVert,
+    frag: mainFrag,
+  })
+  return {
+    program,
   }
 }
 
