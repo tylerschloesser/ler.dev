@@ -13,9 +13,14 @@ out vec4 color;
 void main() {
   float lineWidth = 2.0;
 
+  vec2 v =
+    vPosition -
+    uViewport / 2.0 +
+    uCamera * uTileSize +
+    lineWidth / 2.0;
   bool render =
-    mod(vPosition.x + uCamera.x * uTileSize, uTileSize) <
-    lineWidth;
+    mod(v.x, uTileSize) < lineWidth ||
+    mod(v.y, uTileSize) < lineWidth;
 
   if (render) {
     color = vec4(1, 1, 1, 1);

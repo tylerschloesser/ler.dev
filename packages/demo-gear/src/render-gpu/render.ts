@@ -33,8 +33,15 @@ export function render(
 
   gl.uniform1f(
     gpu.programs.main.uniforms.tileSize,
-    state.tileSize,
+    state.tileSize * pixelRatio,
   )
+
+  // console.log(state.tileSize * pixelRatio)
+  //
+  // console.log(
+  //   state.camera.position.x,
+  //   state.camera.position.y,
+  // )
 
   gl.uniform2f(
     gpu.programs.main.uniforms.camera,

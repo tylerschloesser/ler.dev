@@ -16,9 +16,9 @@ export interface GpuState {
         vertex: WebGLAttributeLocation
       }
       uniforms: {
-        viewport: WebGLUniformLocation
-        tileSize: WebGLUniformLocation
-        camera: WebGLUniformLocation
+        viewport: WebGLUniformLocation | null
+        tileSize: WebGLUniformLocation | null
+        camera: WebGLUniformLocation | null
       }
     }
   }
@@ -57,13 +57,20 @@ function initMainProgram(
         gl,
         program,
         'uViewport',
+        false,
       ),
       tileSize: getUniformLocation(
         gl,
         program,
         'uTileSize',
+        false,
       ),
-      camera: getUniformLocation(gl, program, 'uCamera'),
+      camera: getUniformLocation(
+        gl,
+        program,
+        'uCamera',
+        false,
+      ),
     },
   }
 }

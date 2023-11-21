@@ -17,6 +17,9 @@ uniform float uAlpha;
 out vec2 vPosition;
 
 void main() {
-  vPosition = (aVertex + vec2(1.0, 1.0)) / 2.0 * uViewport;
+  vPosition = (aVertex + 1.0) / 2.0;
+  // flip the y axis so it matches canvas/dom
+  vPosition = vec2(vPosition.x, 1.0 - vPosition.y);
+  vPosition *= uViewport;
   gl_Position = vec4(aVertex, 0, 1);
 }
