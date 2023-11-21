@@ -17,7 +17,8 @@ export interface GpuState {
       }
       uniforms: {
         viewport: WebGLUniformLocation
-        pixelRatio: WebGLUniformLocation
+        tileSize: WebGLUniformLocation
+        camera: WebGLUniformLocation
       }
     }
   }
@@ -57,11 +58,12 @@ function initMainProgram(
         program,
         'uViewport',
       ),
-      pixelRatio: getUniformLocation(
+      tileSize: getUniformLocation(
         gl,
         program,
-        'uPixelRatio',
+        'uTileSize',
       ),
+      camera: getUniformLocation(gl, program, 'uCamera'),
     },
   }
 }

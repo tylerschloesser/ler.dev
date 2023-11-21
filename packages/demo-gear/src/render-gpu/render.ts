@@ -24,15 +24,22 @@ export function render(
     gpu.programs.main.attributes.vertex,
   )
 
+  const { pixelRatio } = state.viewport
   gl.uniform2f(
     gpu.programs.main.uniforms.viewport,
-    state.viewport.size.x,
-    state.viewport.size.y,
+    state.viewport.size.x * pixelRatio,
+    state.viewport.size.y * pixelRatio,
   )
 
   gl.uniform1f(
-    gpu.programs.main.uniforms.pixelRatio,
-    state.viewport.pixelRatio,
+    gpu.programs.main.uniforms.tileSize,
+    state.tileSize,
+  )
+
+  gl.uniform2f(
+    gpu.programs.main.uniforms.camera,
+    state.camera.position.x,
+    state.camera.position.y,
   )
 
   gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4)

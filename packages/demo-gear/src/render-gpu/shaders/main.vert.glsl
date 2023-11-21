@@ -17,6 +17,6 @@ uniform float uAlpha;
 out vec2 vPosition;
 
 void main() {
-  vPosition = (aVertex + vec2(1.0, 1.0)) / 2.0 * uViewport * uPixelRatio;
+  vPosition = (aVertex + vec2(1.0, 1.0)) / 2.0 * uViewport;
   gl_Position = vec4(aVertex, 0, 1);
 }

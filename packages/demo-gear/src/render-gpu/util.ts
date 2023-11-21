@@ -74,7 +74,7 @@ export function getUniformLocation(
   gl: WebGL2RenderingContext,
   program: WebGLProgram,
   name: string,
-  required = false,
+  required = true,
 ) {
   const location = gl.getUniformLocation(program, name)
   if (required) {
