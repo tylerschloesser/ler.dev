@@ -174,6 +174,12 @@ function AddGearView() {
 
 function AccelerateView() {
   const navigate = useNavigate()
+
+  const [direction, setDirection] = useState<number | null>(
+    null,
+  )
+  const [disabled, setDisabled] = useState<boolean>(true)
+
   return (
     <>
       <button
@@ -184,8 +190,12 @@ function AccelerateView() {
       >
         Back
       </button>
-      <button className={styles.button}>-1</button>
-      <button className={styles.button}>+1</button>
+      <button disabled={disabled} className={styles.button}>
+        -1
+      </button>
+      <button disabled={disabled} className={styles.button}>
+        +1
+      </button>
     </>
   )
 }
