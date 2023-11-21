@@ -1,4 +1,4 @@
-import { mat4 } from 'gl-matrix'
+import { mat4, vec3 } from 'gl-matrix'
 import { AppState } from '../types.js'
 import { GpuState } from './types.js'
 
@@ -10,7 +10,50 @@ export function initMatrices(): GpuState['matrices'] {
   return { model, view, projection }
 }
 
+const v3: vec3 = vec3.create()
+
 export function updateMatrices(
   matrices: GpuState['matrices'],
   state: AppState,
-): void {}
+): void {
+  const { view, projection } = matrices
+
+  mat4.identity(view)
+
+  v3[0] = state.viewport.size.x / 2
+  v3[1] = state.viewport.size.y / 2
+  v3[2] = 0
+  mat4.translate(view, view, v3)
+
+  v3[0] = state.tileSize
+  v3[1] = state.tileSize
+  v3[2] = 0
+  mat4.scale(view, view, v3)
+
+  v3[0] = -state.camera.position.x
+  v3[1] = -state.camera.position.y
+  v3[2] = 0
+  mat4.translate(view, view, v3)
+
+  mat4.identity(projection)
+
+  v3[0] = 1
+  v3[1] = -1 // flip the y axis so it matches canvas/dom
+  v3[2] = 0
+  mat4.scale(projection, projection, v3)
+
+  v3[0] = -1
+  v3[1] = -1
+  v3[2] = 0
+  mat4.translate(projection, projection, v3)
+
+  v3[0] = 2
+  v3[1] = 2
+  v3[2] = 0
+  mat4.scale(projection, projection, v3)
+
+  v3[0] = 1 / state.viewport.size.x
+  v3[1] = 1 / state.viewport.size.y
+  v3[2] = 0
+  mat4.scale(projection, projection, v3)
+}
