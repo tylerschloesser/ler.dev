@@ -39,6 +39,10 @@ const router = createBrowserRouter([
     path: '/add-gear',
     Component: AddGearView,
   },
+  {
+    path: '/accelerate',
+    Component: AccelerateView,
+  },
 ])
 
 export function TouchToolbar(props: TouchToolbarProps) {
@@ -54,14 +58,24 @@ export function TouchToolbar(props: TouchToolbarProps) {
 function MainView() {
   const navigate = useNavigate()
   return (
-    <button
-      className={styles.button}
-      onPointerUp={() => {
-        navigate('add-gear')
-      }}
-    >
-      Add Gear
-    </button>
+    <>
+      <button
+        className={styles.button}
+        onPointerUp={() => {
+          navigate('accelerate')
+        }}
+      >
+        Accelerate
+      </button>
+      <button
+        className={styles.button}
+        onPointerUp={() => {
+          navigate('add-gear')
+        }}
+      >
+        Add Gear
+      </button>
+    </>
   )
 }
 
@@ -153,6 +167,22 @@ function AddGearView() {
         }}
       >
         Build
+      </button>
+    </>
+  )
+}
+
+function AccelerateView() {
+  const navigate = useNavigate()
+  return (
+    <>
+      <button
+        className={styles.button}
+        onPointerUp={() => {
+          navigate('/')
+        }}
+      >
+        Back
       </button>
     </>
   )
