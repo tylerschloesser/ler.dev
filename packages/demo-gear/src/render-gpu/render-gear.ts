@@ -9,6 +9,7 @@ export function renderGear(
   gpu: GpuState,
 ): void {
   renderGearCircle(gear, gl, gpu)
+  renderGearTeeth(gear, gl, gpu)
 }
 
 function renderGearCircle(
@@ -41,3 +42,9 @@ function renderGearCircle(
 
   gl.drawArrays(gl.TRIANGLE_FAN, 0, buffer.circle.count)
 }
+
+function renderGearTeeth(
+  gear: Gear,
+  gl: WebGL2RenderingContext,
+  gpu: GpuState,
+) {}
