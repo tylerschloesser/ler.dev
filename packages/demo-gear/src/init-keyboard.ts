@@ -1,4 +1,4 @@
-import { updatePointerMode } from './pointer-mode.js'
+import { moveCamera } from './camera.js'
 import { InitFn, PointerMode } from './types.js'
 
 export const initKeyboard: InitFn = (state) => {
@@ -7,7 +7,9 @@ export const initKeyboard: InitFn = (state) => {
     (e) => {
       if (e.key === 'q') {
         state.hand = null
-        updatePointerMode(state, PointerMode.Free)
+        state.pointerMode = PointerMode.Free
+        state.pointerListeners.clear()
+        state.pointerListeners.add(moveCamera)
       }
     },
     { signal: state.signal },

@@ -1,5 +1,62 @@
 import invariant from 'tiny-invariant'
-import { AccelerateHand, AppState } from './types.js'
+import {
+  AccelerateHand,
+  AppState,
+  HandType,
+  PointerListenerFn,
+  PointerMode,
+} from './types.js'
+
+const handlePointer: PointerListenerFn = (
+  state,
+  e,
+  position,
+) => {
+  const { hand } = state
+  invariant(hand?.type === HandType.Accelerate)
+  switch (e.type) {
+    case 'pointerup': {
+      updateAccelerate(state, hand, false)
+      break
+    }
+    case 'pointerdown': {
+      updateAccelerate(state, hand, true)
+      break
+    }
+    case 'pointermove': {
+      const tileX = Math.floor(position.x + 0.5)
+      const tileY = Math.floor(position.y + 0.5)
+      if (
+        hand.position?.x === tileX &&
+        hand.position?.y === tileY
+      ) {
+        break
+      }
+      updateAcceleratePosition(state, hand, tileX, tileY)
+      break
+    }
+    case 'pointerleave': {
+      hand.position = null
+      break
+    }
+  }
+}
+
+export function initAccelerate(
+  state: AppState,
+  direction: number,
+): void {
+  state.hand = {
+    type: HandType.Accelerate,
+    active: false,
+    direction,
+    gear: null,
+    position: null,
+  }
+  state.pointerListeners.clear()
+  state.pointerListeners.add(handlePointer)
+  state.pointerMode = PointerMode.Hand
+}
 
 export function updateAcceleratePosition(
   state: AppState,

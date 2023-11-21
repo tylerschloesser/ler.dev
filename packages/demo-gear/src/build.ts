@@ -1,13 +1,68 @@
 import invariant from 'tiny-invariant'
 import { addChainConnection, addGear } from './add-gear.js'
-import { AppState, BuildHand, Gear } from './types.js'
+import {
+  AppState,
+  BuildHand,
+  Gear,
+  HandType,
+  PointerListenerFn,
+  PointerMode,
+} from './types.js'
 import {
   getAdjacentConnections,
   iterateOverlappingGears,
 } from './util.js'
 import { Vec2 } from './vec2.js'
 
-export function updateBuildPosition(
+const handlePointer: PointerListenerFn = (
+  state,
+  e,
+  position,
+) => {
+  const { hand } = state
+  invariant(hand?.type === HandType.Build)
+  switch (e.type) {
+    case 'pointermove': {
+      const tileX = Math.floor(position.x + 0.5)
+      const tileY = Math.floor(position.y + 0.5)
+      if (
+        hand.position?.x === tileX &&
+        hand.position?.y === tileY
+      ) {
+        break
+      }
+      updateBuildPosition(state, hand, tileX, tileY)
+      break
+    }
+    case 'pointerup': {
+      executeBuild(state, hand)
+      break
+    }
+    case 'pointerleave': {
+      hand.position = null
+      break
+    }
+  }
+}
+
+export function initBuild(
+  state: AppState,
+  radius: number,
+): void {
+  state.hand = {
+    type: HandType.Build,
+    chain: null,
+    connections: [],
+    position: null,
+    radius,
+    valid: false,
+  }
+  state.pointerListeners.clear()
+  state.pointerListeners.add(handlePointer)
+  state.pointerMode = PointerMode.Hand
+}
+
+function updateBuildPosition(
   state: AppState,
   hand: BuildHand,
   x: number,
@@ -25,7 +80,7 @@ export function updateBuildPosition(
   updateBuild(state, hand)
 }
 
-export function executeBuild(
+function executeBuild(
   state: AppState,
   hand: BuildHand,
 ): void {

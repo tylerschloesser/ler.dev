@@ -97,6 +97,7 @@ export interface Camera {
 export type PointerListenerFn = (
   state: AppState,
   e: PointerEvent,
+  position: Readonly<SimpleVec2>,
 ) => void
 export type CameraListenerFn = (state: AppState) => void
 

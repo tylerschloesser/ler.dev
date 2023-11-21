@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
+import { initAccelerate } from './accelerate.js'
+import { initBuild } from './build.js'
 import { GEAR_RADIUSES } from './const.js'
-import { updatePointerMode } from './pointer-mode.js'
 import styles from './toolbar.module.scss'
-import { AppState, HandType, PointerMode } from './types.js'
+import { AppState } from './types.js'
 import { useResetWorld, useSaveWorld } from './use-world.js'
 
 export interface ToolbarProps {
@@ -28,15 +29,7 @@ export function Toolbar({ state }: ToolbarProps) {
           <button
             key={radius}
             onPointerUp={() => {
-              state.hand = {
-                type: HandType.Build,
-                chain: null,
-                connections: [],
-                position: null,
-                radius,
-                valid: false,
-              }
-              updatePointerMode(state, PointerMode.Hand)
+              initBuild(state, radius)
             }}
           >
             {radius}
@@ -45,21 +38,14 @@ export function Toolbar({ state }: ToolbarProps) {
       </div>
       <div>
         <div>Accelerate:</div>
-        {[1, -1].map((acceleration) => (
+        {[1, -1].map((direction) => (
           <button
-            key={acceleration}
+            key={direction}
             onPointerUp={() => {
-              state.hand = {
-                type: HandType.Accelerate,
-                active: false,
-                direction: acceleration,
-                gear: null,
-                position: null,
-              }
-              updatePointerMode(state, PointerMode.Hand)
+              initAccelerate(state, direction)
             }}
           >
-            {acceleration}
+            {direction}
           </button>
         ))}
       </div>
