@@ -27,6 +27,17 @@ function renderGears(
   gl: WebGL2RenderingContext,
   gpu: GpuState,
 ) {
+  const { main } = gpu.programs
+  gl.useProgram(main.program)
+
+  const { view, projection } = gpu.matrices
+  gl.uniformMatrix4fv(main.uniforms.view, false, view)
+  gl.uniformMatrix4fv(
+    main.uniforms.projection,
+    false,
+    projection,
+  )
+
   for (const gear of Object.values(state.world.gears)) {
     renderGear(gear, gl, gpu)
   }
@@ -38,7 +49,6 @@ function renderGear(
   gpu: GpuState,
 ): void {
   const { main } = gpu.programs
-  gl.useProgram(main.program)
 
   const buffer = gpu.buffers.gears[gear.radius]
   invariant(buffer)
@@ -56,14 +66,8 @@ function renderGear(
 
   updateModel(gpu.matrices, gear)
 
-  const { model, view, projection } = gpu.matrices
+  const { model } = gpu.matrices
   gl.uniformMatrix4fv(main.uniforms.model, false, model)
-  gl.uniformMatrix4fv(main.uniforms.view, false, view)
-  gl.uniformMatrix4fv(
-    main.uniforms.projection,
-    false,
-    projection,
-  )
 
   gl.drawArrays(gl.TRIANGLE_FAN, 0, buffer.circle.count)
 }
