@@ -101,6 +101,7 @@ export interface AppState {
   }
   viewport: {
     size: SimpleVec2
+    pixelRatio: number
   }
   signal: AbortSignal
   world: World

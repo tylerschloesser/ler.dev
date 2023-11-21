@@ -46,10 +46,13 @@ function updateViewport(
   state.viewport.size.x = vx
   state.viewport.size.y = vy
 
+  const { pixelRatio } = state.viewport
+
   state.canvas.cpu.width = vx
   state.canvas.cpu.height = vy
-  state.canvas.gpu.width = vx
-  state.canvas.gpu.height = vy
+
+  state.canvas.gpu.width = vx * pixelRatio
+  state.canvas.gpu.height = vy * pixelRatio
 
   state.tileSize = zoomToTileSize(state.camera.zoom, vx, vy)
 }

@@ -39,6 +39,7 @@ function useAppState(
       canvas,
       viewport: {
         size: { x: 0, y: 0 },
+        pixelRatio: window.devicePixelRatio,
       },
       world,
       setWorld,

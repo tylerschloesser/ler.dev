@@ -7,6 +7,7 @@ in vec4 aColor;
 
 uniform vec2 uPosition;
 uniform vec2 uViewport;
+uniform float uPixelRatio;
 
 uniform mat4 uView;
 uniform mat4 uProjection;
@@ -16,6 +17,6 @@ uniform float uAlpha;
 out vec2 vPosition;
 
 void main() {
-  vPosition = (aVertex + vec2(1.0, 1.0)) / 2.0 * uViewport;
+  vPosition = (aVertex + vec2(1.0, 1.0)) / 2.0 * uViewport * uPixelRatio;
   gl_Position = vec4(aVertex, 0, 1);
 }

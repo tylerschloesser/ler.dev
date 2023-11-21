@@ -30,5 +30,10 @@ export function render(
     state.viewport.size.y,
   )
 
+  gl.uniform1f(
+    gpu.programs.main.uniforms.pixelRatio,
+    state.viewport.pixelRatio,
+  )
+
   gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4)
 }
