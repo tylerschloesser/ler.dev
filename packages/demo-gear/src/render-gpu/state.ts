@@ -1,6 +1,6 @@
 import invariant from 'tiny-invariant'
-import mainFrag from './shaders/main.frag.glsl'
-import mainVert from './shaders/main.vert.glsl'
+import gridFrag from './shaders/grid.frag.glsl'
+import gridVert from './shaders/grid.vert.glsl'
 import {
   WebGLAttributeLocation,
   getAttribLocation,
@@ -10,7 +10,7 @@ import {
 
 export interface GpuState {
   programs: {
-    main: {
+    grid: {
       program: WebGLProgram
       attributes: {
         vertex: WebGLAttributeLocation
@@ -32,7 +32,7 @@ export function initGpuState(
 ): GpuState {
   return {
     programs: {
-      main: initMainProgram(gl),
+      grid: initGridProgram(gl),
     },
     buffers: {
       square: initSquareBuffer(gl),
@@ -40,12 +40,12 @@ export function initGpuState(
   }
 }
 
-function initMainProgram(
+function initGridProgram(
   gl: WebGL2RenderingContext,
-): GpuState['programs']['main'] {
+): GpuState['programs']['grid'] {
   const program = initProgram(gl, {
-    vert: mainVert,
-    frag: mainFrag,
+    vert: gridVert,
+    frag: gridFrag,
   })
   return {
     program,
