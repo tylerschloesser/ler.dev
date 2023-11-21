@@ -1,4 +1,3 @@
-import { Color } from '../color.js'
 import { AppState, HandType } from '../types.js'
 import { iterateConnections } from '../util.js'
 import { renderAccelerate } from './render-accelerate.js'
@@ -19,8 +18,6 @@ export function render(
   const vy = state.viewport.size.y
 
   context.clearRect(0, 0, vx, vy)
-  context.fillStyle = Color.Background
-  context.fillRect(0, 0, vx, vy)
 
   const tx = vx / 2 + -camera.position.x * tileSize
   const ty = vy / 2 + -camera.position.y * tileSize
