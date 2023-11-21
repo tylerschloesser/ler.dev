@@ -10,6 +10,7 @@ import {
   useNavigate,
 } from 'react-router-dom'
 import invariant from 'tiny-invariant'
+import { updateAcceleratePosition } from './accelerate.js'
 import {
   executeBuild,
   updateBuildPosition,
@@ -19,6 +20,7 @@ import { MAX_RADIUS, MIN_RADIUS } from './const.js'
 import styles from './touch-toolbar.module.scss'
 import {
   AppState,
+  Camera,
   CameraListenerFn,
   HandType,
 } from './types.js'
@@ -174,11 +176,37 @@ function AddGearView() {
 
 function AccelerateView() {
   const navigate = useNavigate()
+  const state = use(AppContext)
 
-  const [direction, setDirection] = useState<number | null>(
-    null,
-  )
   const [disabled, setDisabled] = useState<boolean>(true)
+
+  useEffect(() => {
+    state.hand = {
+      type: HandType.Accelerate,
+      position: null,
+      active: false,
+      direction: 1,
+      gear: null,
+      onChangeGear(gear) {
+        setDisabled(gear === null)
+      },
+    }
+    state.pointerListeners.clear()
+    state.pointerListeners.add(moveCamera)
+    const cameraListener: CameraListenerFn = () => {
+      const tileX = Math.round(state.camera.position.x)
+      const tileY = Math.round(state.camera.position.y)
+      const { hand } = state
+      invariant(hand?.type === HandType.Accelerate)
+      updateAcceleratePosition(state, hand, tileX, tileY)
+    }
+    cameraListener(state)
+    state.cameraListeners.add(cameraListener)
+    return () => {
+      state.hand = null
+      state.cameraListeners.clear()
+    }
+  }, [])
 
   return (
     <>
@@ -190,10 +218,38 @@ function AccelerateView() {
       >
         Back
       </button>
-      <button disabled={disabled} className={styles.button}>
+      <button
+        disabled={disabled}
+        className={styles.button}
+        onPointerDown={() => {
+          const { hand } = state
+          invariant(hand?.type === HandType.Accelerate)
+          hand.active = true
+          hand.direction = -1
+        }}
+        onPointerUp={() => {
+          const { hand } = state
+          invariant(hand?.type === HandType.Accelerate)
+          hand.active = false
+        }}
+      >
         -1
       </button>
-      <button disabled={disabled} className={styles.button}>
+      <button
+        disabled={disabled}
+        className={styles.button}
+        onPointerDown={() => {
+          const { hand } = state
+          invariant(hand?.type === HandType.Accelerate)
+          hand.active = true
+          hand.direction = 1
+        }}
+        onPointerUp={() => {
+          const { hand } = state
+          invariant(hand?.type === HandType.Accelerate)
+          hand.active = false
+        }}
+      >
         +1
       </button>
     </>

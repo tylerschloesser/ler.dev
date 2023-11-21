@@ -2,6 +2,7 @@ import invariant from 'tiny-invariant'
 import {
   AccelerateHand,
   AppState,
+  Gear,
   HandType,
   PointerListenerFn,
 } from './types.js'
@@ -71,16 +72,19 @@ export function updateAcceleratePosition(
     hand.position = { x, y }
   }
 
-  hand.gear = null
-
   const tileId = `${hand.position.x}.${hand.position.y}`
   const tile = state.world.tiles[tileId]
-  if (!tile) {
-    return
+
+  let gear: Gear | null = null
+  if (tile) {
+    gear = state.world.gears[tile.gearId] ?? null
+    invariant(gear)
   }
-  const gear = state.world.gears[tile.gearId]
-  invariant(gear)
-  hand.gear = gear
+
+  if (hand.gear !== gear) {
+    hand.onChangeGear?.(gear)
+    hand.gear = gear
+  }
 }
 
 export function updateAccelerate(
