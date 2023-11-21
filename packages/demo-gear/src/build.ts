@@ -60,7 +60,7 @@ export function initBuild(
   state.pointerListeners.add(handlePointer)
 }
 
-function updateBuildPosition(
+export function updateBuildPosition(
   state: AppState,
   hand: BuildHand,
   x: number,
@@ -78,7 +78,7 @@ function updateBuildPosition(
   updateBuild(state, hand)
 }
 
-function executeBuild(
+export function executeBuild(
   state: AppState,
   hand: BuildHand,
 ): void {

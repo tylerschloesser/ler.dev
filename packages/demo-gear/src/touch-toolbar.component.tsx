@@ -4,6 +4,12 @@ import {
   useEffect,
   useState,
 } from 'react'
+import invariant from 'tiny-invariant'
+import {
+  executeBuild,
+  updateBuildPosition,
+} from './build.js'
+import { moveCamera } from './camera.js'
 import styles from './touch-toolbar.module.scss'
 import { AppState, HandType } from './types.js'
 
@@ -57,8 +63,19 @@ function AddGearView({
       radius: 1,
       valid: false,
     }
+    state.pointerListeners.clear()
+    state.pointerListeners.add(moveCamera)
+    state.cameraListeners.add(() => {
+      const tileX = Math.round(state.camera.position.x)
+      const tileY = Math.round(state.camera.position.y)
+      const { hand } = state
+      invariant(hand?.type === HandType.Build)
+      updateBuildPosition(state, hand, tileX, tileY)
+    })
+
     return () => {
       state.hand = null
+      state.cameraListeners.clear()
     }
   }, [state])
 
@@ -66,10 +83,12 @@ function AddGearView({
     <button
       className={styles.button}
       onPointerUp={() => {
-        console.log('todo')
+        const { hand } = state
+        invariant(hand?.type === HandType.Build)
+        executeBuild(state, hand)
       }}
     >
-      TODO
+      Build
     </button>
   )
 }
