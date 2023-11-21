@@ -15,8 +15,8 @@ export function render(
 
   context.resetTransform()
 
-  const vx = canvas.width
-  const vy = canvas.height
+  const vx = state.viewport.size.x
+  const vy = state.viewport.size.y
 
   context.clearRect(0, 0, vx, vy)
   context.fillStyle = Color.Background

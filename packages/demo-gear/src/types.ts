@@ -94,7 +94,14 @@ export type PointerListenerFn = (
 export type CameraListenerFn = (state: AppState) => void
 
 export interface AppState {
-  canvas: HTMLCanvasElement
+  canvas: {
+    container: HTMLDivElement
+    cpu: HTMLCanvasElement
+    gpu: HTMLCanvasElement
+  }
+  viewport: {
+    size: SimpleVec2
+  }
   signal: AbortSignal
   world: World
   setWorld: SetWorldFn

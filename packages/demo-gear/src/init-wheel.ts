@@ -3,7 +3,7 @@ import { InitFn } from './types.js'
 
 export const initWheel: InitFn = (state) => {
   const { canvas, signal } = state
-  canvas.addEventListener(
+  canvas.cpu.addEventListener(
     'wheel',
     (e) => {
       e.preventDefault()

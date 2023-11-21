@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import styles from './app.module.scss'
 import { moveCamera } from './camera.js'
+import { Canvas } from './canvas.component.js'
 import { initCanvas } from './init-canvas.js'
 import { initKeyboard } from './init-keyboard.js'
 import { initPointer } from './init-pointer.js'
@@ -20,13 +21,13 @@ const INIT_FNS: InitFn[] = [
   initSimulator,
 ]
 
-interface UseAppStateArgs {
-  canvas: HTMLCanvasElement | null
-}
-
-function useAppState({
-  canvas,
-}: UseAppStateArgs): AppState | null {
+function useAppState(
+  canvas: {
+    container: HTMLDivElement
+    cpu: HTMLCanvasElement
+    gpu: HTMLCanvasElement
+  } | null,
+): AppState | null {
   const [state, setState] = useState<AppState | null>(null)
   const [world, setWorld] = useWorld()
   useEffect(() => {
@@ -36,6 +37,9 @@ function useAppState({
     const controller = new AbortController()
     setState({
       canvas,
+      viewport: {
+        size: { x: 0, y: 0 },
+      },
       world,
       setWorld,
       signal: controller.signal,
@@ -57,9 +61,12 @@ function useAppState({
 }
 
 export function App() {
-  const [canvas, setCanvas] =
-    useState<HTMLCanvasElement | null>(null)
-  const state = useAppState({ canvas })
+  const [canvas, setCanvas] = useState<{
+    container: HTMLDivElement
+    cpu: HTMLCanvasElement
+    gpu: HTMLCanvasElement
+  } | null>(null)
+  const state = useAppState(canvas)
 
   useEffect(() => {
     if (!state) {
@@ -77,7 +84,9 @@ export function App() {
   return (
     <div className={styles.container}>
       {state && <Toolbar state={state} />}
-      <canvas className={styles.canvas} ref={setCanvas} />
+      <div className={styles.canvas}>
+        <Canvas setCanvas={setCanvas} />
+      </div>
     </div>
   )
 }

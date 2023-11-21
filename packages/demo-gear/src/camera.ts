@@ -60,8 +60,8 @@ export function handleWheel(
 ): void {
   const { camera } = state
   const pz = camera.zoom
-  const vx = state.canvas.width
-  const vy = state.canvas.height
+  const vx = state.viewport.size.x
+  const vy = state.viewport.size.y
   const scale = vy * (1 + (1 - state.camera.zoom))
   const nz = clampZoom(camera.zoom + -e.deltaY / scale)
 
@@ -133,8 +133,8 @@ function handlePointerTwo(
   const pd = dist(px, py, ox, oy)
   const nd = dist(nx, ny, ox, oy)
 
-  const vx = state.canvas.width
-  const vy = state.canvas.height
+  const vx = state.viewport.size.x
+  const vy = state.viewport.size.y
 
   const pts = state.tileSize
   const nts = clampTileSize(pts * (nd / pd), vx, vy)

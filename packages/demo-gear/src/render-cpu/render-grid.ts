@@ -5,10 +5,10 @@ export function renderGrid(
   context: CanvasRenderingContext2D,
   state: AppState,
 ): void {
-  const { canvas, camera, tileSize } = state
+  const { camera, tileSize } = state
 
-  const vx = canvas.width / tileSize
-  const vy = canvas.height / tileSize
+  const vx = state.viewport.size.x / tileSize
+  const vy = state.viewport.size.y / tileSize
 
   const tlx = Math.floor(
     Math.floor((camera.position.x - vx / 2) / 2) * 2,

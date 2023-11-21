@@ -2,27 +2,27 @@ import { AppState, InitFn, SimpleVec2 } from './types.js'
 
 export const initPointer: InitFn = (state) => {
   const { canvas, signal } = state
-  canvas.addEventListener(
+  canvas.container.addEventListener(
     'pointerenter',
     (e) => handlePointer(state, e),
     { signal },
   )
-  canvas.addEventListener(
+  canvas.container.addEventListener(
     'pointermove',
     (e) => handlePointer(state, e),
     { signal },
   )
-  canvas.addEventListener(
+  canvas.container.addEventListener(
     'pointerup',
     (e) => handlePointer(state, e),
     { signal },
   )
-  canvas.addEventListener(
+  canvas.container.addEventListener(
     'pointerdown',
     (e) => handlePointer(state, e),
     { signal },
   )
-  canvas.addEventListener(
+  canvas.container.addEventListener(
     'pointerleave',
     (e) => handlePointer(state, e),
     { signal },
@@ -38,9 +38,9 @@ function handlePointer(
   state: AppState,
   e: PointerEvent,
 ): void {
-  const { canvas, tileSize, camera } = state
-  const vx = canvas.width
-  const vy = canvas.height
+  const { tileSize, camera } = state
+  const vx = state.viewport.size.x
+  const vy = state.viewport.size.y
   const x =
     (e.offsetX - vx / 2) / tileSize + camera.position.x
   const y =
