@@ -68,6 +68,7 @@ function MainView() {
 function AddGearView() {
   const state = use(AppContext)
   const [radius, setRadius] = useState(1)
+  const [valid, setValid] = useState(false)
 
   useEffect(() => {
     state.hand = {
@@ -77,6 +78,7 @@ function AddGearView() {
       connections: [],
       radius,
       valid: false,
+      onChangeValid: setValid,
     }
     state.pointerListeners.clear()
     state.pointerListeners.add(moveCamera)
@@ -143,6 +145,7 @@ function AddGearView() {
       </button>
       <button
         className={styles.button}
+        disabled={!valid}
         onPointerUp={() => {
           const { hand } = state
           invariant(hand?.type === HandType.Build)

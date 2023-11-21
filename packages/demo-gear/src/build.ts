@@ -123,7 +123,7 @@ function updateBuild(
   hand: BuildHand,
 ): void {
   invariant(hand?.position)
-  hand.valid = true
+  let valid = true
   for (const gear of iterateOverlappingGears(
     hand.position,
     hand.radius,
@@ -135,22 +135,22 @@ function updateBuild(
         Vec2.equal(gear.position, hand.position)
       )
     ) {
-      hand.valid = false
+      valid = false
       break
     }
   }
 
-  if (hand.valid && hand.chain) {
+  if (valid && hand.chain) {
     const { chain } = hand
     const dx = hand.position.x - chain.position.x
     const dy = hand.position.y - chain.position.y
-    hand.valid =
+    valid =
       (dx === 0 || dy === 0) &&
       dx !== dy &&
       Math.abs(dx + dy) > hand.radius + chain.radius
   }
 
-  if (hand.valid) {
+  if (valid) {
     hand.connections = getAdjacentConnections(
       hand.position,
       hand.radius,
@@ -158,5 +158,10 @@ function updateBuild(
     )
   } else {
     hand.connections = []
+  }
+
+  if (hand.valid !== valid) {
+    hand.valid = valid
+    hand.onChangeValid?.(valid)
   }
 }

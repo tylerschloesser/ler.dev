@@ -60,12 +60,15 @@ interface BaseHand<T extends HandType> {
   position: SimpleVec2 | null
 }
 
+export type BuildValidCallback = (valid: boolean) => void
+
 export interface BuildHand
   extends BaseHand<HandType.Build> {
   radius: number
   valid: boolean
   chain: Gear | null
   connections: Connection[]
+  onChangeValid?: BuildValidCallback
 }
 
 export interface AccelerateHand
