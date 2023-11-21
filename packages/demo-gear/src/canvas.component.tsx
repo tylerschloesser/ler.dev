@@ -30,10 +30,12 @@ export function Canvas({ setCanvas }: CanvasProps) {
   return (
     <div className={styles.container} ref={setContainer}>
       <canvas
+        data-type="gpu"
         className={styles.canvas}
         ref={setGpuCanvas}
       />
       <canvas
+        data-type="cpu"
         className={styles.canvas}
         ref={setCpuCanvas}
       />
