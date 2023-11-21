@@ -1,4 +1,5 @@
 import invariant from 'tiny-invariant'
+import { GEAR_RADIUSES } from '../const.js'
 import { initGearBuffers } from '../render-cpu/init-gear-buffers.js'
 import { initMatrices } from './matrices.js'
 import gridFrag from './shaders/grid.frag.glsl'
@@ -24,6 +25,7 @@ export function initGpuState(
       square: initSquareBuffer(gl),
       gears: initGearBuffers(gl),
     },
+    textures: initTextures(gl),
     matrices: initMatrices(),
   }
 }
@@ -124,4 +126,20 @@ function initSquareBuffer(
     gl.STATIC_DRAW,
   )
   return buffer
+}
+
+function initTextures(
+  gl: WebGL2RenderingContext,
+): GpuState['textures'] {
+  const gears: GpuState['textures']['gears'] = {}
+
+  for (const radius of GEAR_RADIUSES) {
+    const texture = gl.createTexture()
+    invariant(texture)
+    gl.bindTexture(gl.TEXTURE_2D, texture)
+  }
+
+  return {
+    gears: {},
+  }
 }

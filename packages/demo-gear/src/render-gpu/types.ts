@@ -49,6 +49,9 @@ export interface GpuState {
       }
     >
   }
+  textures: {
+    gears: Record<number, null>
+  }
   matrices: {
     model: mat4
     view: mat4
