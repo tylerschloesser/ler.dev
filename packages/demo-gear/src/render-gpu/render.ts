@@ -1,4 +1,4 @@
-import { AppState } from '../types.js'
+import { AppState, Gear } from '../types.js'
 import { GpuState } from './types.js'
 
 export function render(
@@ -10,7 +10,18 @@ export function render(
   gl.clear(gl.COLOR_BUFFER_BIT)
 
   renderGrid(state, gl, gpu)
+
+  for (const gear of Object.values(state.world.gears)) {
+    renderGear(state, gl, gpu, gear)
+  }
 }
+
+function renderGear(
+  state: AppState,
+  gl: WebGL2RenderingContext,
+  gpu: GpuState,
+  gear: Gear,
+): void {}
 
 function renderGrid(
   state: AppState,
