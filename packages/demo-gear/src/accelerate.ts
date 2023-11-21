@@ -4,7 +4,6 @@ import {
   AppState,
   HandType,
   PointerListenerFn,
-  PointerMode,
 } from './types.js'
 
 const handlePointer: PointerListenerFn = (
@@ -55,7 +54,6 @@ export function initAccelerate(
   }
   state.pointerListeners.clear()
   state.pointerListeners.add(handlePointer)
-  state.pointerMode = PointerMode.Hand
 }
 
 export function updateAcceleratePosition(

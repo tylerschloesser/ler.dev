@@ -6,7 +6,6 @@ import {
   Gear,
   HandType,
   PointerListenerFn,
-  PointerMode,
 } from './types.js'
 import {
   getAdjacentConnections,
@@ -59,7 +58,6 @@ export function initBuild(
   }
   state.pointerListeners.clear()
   state.pointerListeners.add(handlePointer)
-  state.pointerMode = PointerMode.Hand
 }
 
 function updateBuildPosition(

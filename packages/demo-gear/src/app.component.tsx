@@ -8,7 +8,7 @@ import { initSimulator } from './init-simulator.js'
 import { initWheel } from './init-wheel.js'
 import { Toolbar as HoverToolbar } from './toolbar.js'
 import { TouchToolbar } from './touch-toolbar.component.js'
-import { AppState, InitFn, PointerMode } from './types.js'
+import { AppState, InitFn } from './types.js'
 import { useMediaQuery } from './use-media-query.js'
 import { useWorld } from './use-world.js'
 
@@ -40,7 +40,6 @@ function useAppState({
       world,
       setWorld,
       signal: controller.signal,
-      pointerMode: PointerMode.Free,
       camera: {
         position: { x: 0, y: 0 },
         zoom: 0.5,

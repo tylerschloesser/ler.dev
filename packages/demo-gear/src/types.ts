@@ -79,16 +79,6 @@ export type Hand = BuildHand | AccelerateHand
 
 export type SetWorldFn = (world: World) => void
 
-export enum PointerMode {
-  Free = 'free',
-  Hand = 'hand',
-}
-
-export interface Pointer {
-  position: SimpleVec2
-  mode: PointerMode
-}
-
 export interface Camera {
   position: SimpleVec2
   zoom: number
@@ -106,7 +96,6 @@ export interface AppState {
   signal: AbortSignal
   world: World
   setWorld: SetWorldFn
-  pointerMode: PointerMode
   hand: Hand | null
 
   camera: Camera
