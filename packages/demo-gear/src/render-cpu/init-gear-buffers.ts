@@ -52,15 +52,17 @@ function initTeeth(
   gl.bindBuffer(gl.ARRAY_BUFFER, vertex)
 
   const teeth = radius * TEETH
+  const size = 1 - 0.1 / radius
 
   const data = new Float32Array((teeth + 1) * 4)
 
   for (let i = 0; i <= teeth; i++) {
     const angle = TWO_PI * (i / teeth)
+
     data[i * 4 + 0] = Math.cos(angle)
     data[i * 4 + 1] = Math.sin(angle)
-    data[i * 4 + 2] = Math.cos(angle) * 0.5
-    data[i * 4 + 3] = Math.sin(angle) * 0.5
+    data[i * 4 + 2] = Math.cos(angle) * size
+    data[i * 4 + 3] = Math.sin(angle) * size
   }
 
   gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW)
