@@ -24,6 +24,11 @@ export interface GpuState {
       attributes: {
         vertex: WebGLAttributeLocation
       }
+      uniforms: {
+        model: WebGLUniformLocation
+        view: WebGLUniformLocation
+        projection: WebGLUniformLocation
+      }
     }
   }
   buffers: {

@@ -82,6 +82,21 @@ function initMainProgram(
     attributes: {
       vertex: getAttribLocation(gl, program, 'aVertex'),
     },
+    uniforms: {
+      model: getUniformLocation(
+        gl,
+        program,
+        'uModel',
+        false,
+      ),
+      view: getUniformLocation(gl, program, 'uView', false),
+      projection: getUniformLocation(
+        gl,
+        program,
+        'uProjection',
+        false,
+      ),
+    },
   }
 }
 
