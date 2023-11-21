@@ -33,7 +33,12 @@ export interface GpuState {
   }
   buffers: {
     square: WebGLBuffer
-    gears: Record<number, { vertex: WebGLBuffer }>
+    gears: Record<
+      number,
+      {
+        circle: { vertex: WebGLBuffer; count: number }
+      }
+    >
   }
   matrices: {
     model: mat4

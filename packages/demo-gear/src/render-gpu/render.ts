@@ -36,7 +36,7 @@ function renderGear(
   const buffer = gpu.buffers.gears[gear.radius]
   invariant(buffer)
 
-  gl.bindBuffer(gl.ARRAY_BUFFER, buffer.vertex)
+  gl.bindBuffer(gl.ARRAY_BUFFER, buffer.circle.vertex)
   gl.vertexAttribPointer(
     main.attributes.vertex,
     2,
@@ -58,7 +58,7 @@ function renderGear(
     projection,
   )
 
-  gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4)
+  gl.drawArrays(gl.TRIANGLE_FAN, 0, buffer.circle.count)
 }
 
 function renderGrid(

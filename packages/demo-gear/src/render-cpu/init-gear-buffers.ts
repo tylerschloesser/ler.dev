@@ -1,5 +1,5 @@
 import invariant from 'tiny-invariant'
-import { GEAR_RADIUSES } from '../const.js'
+import { GEAR_RADIUSES, TEETH, TWO_PI } from '../const.js'
 import { GpuState } from '../render-gpu/types.js'
 
 export function initGearBuffers(
@@ -12,20 +12,25 @@ export function initGearBuffers(
     invariant(vertex)
     gl.bindBuffer(gl.ARRAY_BUFFER, vertex)
 
-    // TODO
-    gl.bufferData(
-      gl.ARRAY_BUFFER,
-      // prettier-ignore
-      new Float32Array([
-        -1.0, -1.0,
-        -1.0, 1.0,
-        1.0, -1.0,
-        1.0, 1.0,
-      ]),
-      gl.STATIC_DRAW,
-    )
+    const teeth = radius * TEETH
 
-    gears[radius] = { vertex }
+    const data = new Float32Array((teeth + 1) * 2 + 2)
+
+    data[0] = 0.0
+    data[1] = 0.0
+
+    for (let i = 0; i <= teeth; i++) {
+      const angle = TWO_PI * (i / teeth)
+      data[2 + i * 2 + 0] = Math.cos(angle)
+      data[2 + i * 2 + 1] = Math.sin(angle)
+    }
+
+    // TODO
+    gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW)
+
+    gears[radius] = {
+      circle: { vertex, count: data.length / 2 },
+    }
   }
 
   return gears
