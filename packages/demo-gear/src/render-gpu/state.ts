@@ -1,5 +1,5 @@
 import invariant from 'tiny-invariant'
-import { GEAR_RADIUSES, TWO_PI } from '../const.js'
+import { GEAR_RADIUSES, TEETH, TWO_PI } from '../const.js'
 import { initMatrices } from './matrices.js'
 import gridFrag from './shaders/grid.frag.glsl'
 import gridVert from './shaders/grid.vert.glsl'
@@ -147,10 +147,28 @@ async function initTextures(
     canvas.height = vy
     context.clearRect(0, 0, vx, vy)
 
-    context.fillStyle = 'orange'
+    context.translate(vx / 2, vy / 2)
+
+    context.fillStyle = 'blue'
     context.beginPath()
-    context.arc(vx / 2, vy / 2, radius * scale, 0, TWO_PI)
+    context.arc(0, 0, radius * scale, 0, TWO_PI)
     context.fill()
+    context.closePath()
+
+    context.beginPath()
+    context.lineWidth = 4
+    context.strokeStyle = 'white'
+
+    const teeth = radius * TEETH
+    for (let i = 0; i < teeth; i++) {
+      context.save()
+      context.rotate((i / teeth) * TWO_PI)
+      context.moveTo((radius - 0.25) * scale, 0)
+      context.lineTo(radius * scale, 0)
+      context.stroke()
+      context.restore()
+    }
+
     context.closePath()
 
     const image = await createImageBitmap(canvas)
