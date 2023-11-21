@@ -19,7 +19,14 @@ export function render(
   updateProjection(gpu.matrices, state)
 
   renderGrid(state, gl, gpu)
+  renderGears(state, gl, gpu)
+}
 
+function renderGears(
+  state: AppState,
+  gl: WebGL2RenderingContext,
+  gpu: GpuState,
+) {
   for (const gear of Object.values(state.world.gears)) {
     renderGear(gear, gl, gpu)
   }

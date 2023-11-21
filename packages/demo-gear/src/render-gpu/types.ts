@@ -36,7 +36,14 @@ export interface GpuState {
     gears: Record<
       number,
       {
-        circle: { vertex: WebGLBuffer; count: number }
+        circle: {
+          vertex: WebGLBuffer
+          count: number
+        }
+        // teeth: {
+        //   vertex: WebGLBuffer
+        //   count: number
+        // }
       }
     >
   }
