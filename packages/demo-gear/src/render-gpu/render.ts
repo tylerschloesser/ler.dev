@@ -30,6 +30,17 @@ function renderGear(
   invariant(buffer)
 
   gl.bindBuffer(gl.ARRAY_BUFFER, buffer.vertex)
+  gl.vertexAttribPointer(
+    main.attributes.vertex,
+    2,
+    gl.FLOAT,
+    false,
+    0,
+    0,
+  )
+  gl.enableVertexAttribArray(main.attributes.vertex)
+
+  gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4)
 }
 
 function renderGrid(
