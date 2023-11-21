@@ -24,5 +24,11 @@ export function render(
     gpu.programs.main.attributes.vertex,
   )
 
+  gl.uniform2f(
+    gpu.programs.main.uniforms.viewport,
+    state.viewport.size.x,
+    state.viewport.size.y,
+  )
+
   gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4)
 }

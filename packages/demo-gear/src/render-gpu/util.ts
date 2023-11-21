@@ -62,13 +62,13 @@ export function getUniformLocation(
   gl: WebGL2RenderingContext,
   program: WebGLProgram,
   name: string,
-  required?: false,
-): WebGLUniformLocation | null
+  required?: true,
+): WebGLUniformLocation
 export function getUniformLocation(
   gl: WebGL2RenderingContext,
   program: WebGLProgram,
   name: string,
-  required: true,
+  required: false,
 ): WebGLUniformLocation
 export function getUniformLocation(
   gl: WebGL2RenderingContext,

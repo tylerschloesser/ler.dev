@@ -16,7 +16,7 @@ export interface GpuState {
         vertex: WebGLAttributeLocation
       }
       uniforms: {
-        viewport: WebGLUniformLocation | null
+        viewport: WebGLUniformLocation
       }
     }
   }
@@ -70,9 +70,9 @@ function initSquareBuffer(
     gl.ARRAY_BUFFER,
     // prettier-ignore
     new Float32Array([
-      -1.0, -1.0, 
-      -1.0, 1.0, 
-      1.0, -1.0, 
+      -1.0, -1.0,
+      -1.0, 1.0,
+      1.0, -1.0,
       1.0, 1.0,
     ]),
     gl.STATIC_DRAW,
