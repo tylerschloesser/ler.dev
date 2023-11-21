@@ -1,3 +1,5 @@
+import { mat4 } from 'gl-matrix'
+
 export type ShaderType = number
 export type ShaderSource = string
 export type WebGLAttributeLocation = number
@@ -27,5 +29,10 @@ export interface GpuState {
   buffers: {
     square: WebGLBuffer
     gears: Record<number, { vertex: WebGLBuffer }>
+  }
+  matrices: {
+    model: mat4
+    view: mat4
+    projection: mat4
   }
 }
