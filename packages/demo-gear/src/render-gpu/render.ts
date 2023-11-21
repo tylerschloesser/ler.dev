@@ -1,6 +1,10 @@
 import invariant from 'tiny-invariant'
 import { AppState, Gear } from '../types.js'
-import { updateProjection, updateView } from './matrices.js'
+import {
+  updateModel,
+  updateProjection,
+  updateView,
+} from './matrices.js'
 import { GpuState } from './types.js'
 
 export function render(
@@ -17,15 +21,14 @@ export function render(
   renderGrid(state, gl, gpu)
 
   for (const gear of Object.values(state.world.gears)) {
-    renderGear(state, gl, gpu, gear)
+    renderGear(gear, gl, gpu)
   }
 }
 
 function renderGear(
-  state: AppState,
+  gear: Gear,
   gl: WebGL2RenderingContext,
   gpu: GpuState,
-  gear: Gear,
 ): void {
   const { main } = gpu.programs
   gl.useProgram(main.program)
@@ -43,6 +46,12 @@ function renderGear(
     0,
   )
   gl.enableVertexAttribArray(main.attributes.vertex)
+
+  updateModel(
+    gpu.matrices,
+    gear.position.x,
+    gear.position.y,
+  )
 
   const { model, view, projection } = gpu.matrices
   gl.uniformMatrix4fv(main.uniforms.model, false, model)
