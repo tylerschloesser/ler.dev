@@ -1,3 +1,4 @@
+import invariant from 'tiny-invariant'
 import { Gear } from '../types.js'
 import { updateModel } from './matrices.js'
 import { GpuState } from './types.js'
@@ -16,6 +17,12 @@ export function renderGear(
   )
 
   gl.uniform4f(main.uniforms.color, 0.0, 1.0, 0.0, 1.0)
+
+  const texture = gpu.textures.gears[gear.radius]
+  invariant(texture)
+  gl.activeTexture(gl.TEXTURE0)
+  gl.bindTexture(gl.TEXTURE_2D, texture)
+  gl.uniform1i(main.uniforms.sampler, 0)
 
   gl.bindBuffer(gl.ARRAY_BUFFER, gpu.buffers.square)
   gl.vertexAttribPointer(

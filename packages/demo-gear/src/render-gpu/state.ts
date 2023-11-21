@@ -184,7 +184,5 @@ async function initTextures(
     gears[radius] = texture
   }
 
-  return {
-    gears: {},
-  }
+  return { gears }
 }
