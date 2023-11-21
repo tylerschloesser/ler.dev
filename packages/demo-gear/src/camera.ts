@@ -78,11 +78,13 @@ export function handleWheel(
   const pts = state.tileSize
   const nts = zoomToTileSize(nz, vx, vy)
 
-  camera.position.x += rx / pts - rx / nts
-  camera.position.y += ry / pts - ry / nts
-  camera.zoom = nz
-
-  state.tileSize = nts
+  updateCamera(
+    state,
+    camera.position.x + rx / pts - rx / nts,
+    camera.position.y + ry / pts - ry / nts,
+    nz,
+    nts,
+  )
 }
 
 function handlePointerOne(
@@ -94,8 +96,13 @@ function handlePointerOne(
   const dx = next.offsetX - prev.offsetX
   const dy = next.offsetY - prev.offsetY
 
-  camera.position.x += -dx / tileSize
-  camera.position.y += -dy / tileSize
+  updateCamera(
+    state,
+    camera.position.x + -dx / tileSize,
+    camera.position.y + -dy / tileSize,
+    camera.zoom,
+    state.tileSize,
+  )
 }
 
 function handlePointerTwo(
@@ -147,10 +154,30 @@ function handlePointerTwo(
   const dx = rx / pts - (rx + dcx) / nts
   const dy = ry / pts - (ry + dcy) / nts
 
-  camera.position.x += dx
-  camera.position.y += dy
-  camera.zoom = tileSizeToZoom(nts, vx, vy)
-  state.tileSize = nts
+  updateCamera(
+    state,
+    camera.position.x + dx,
+    camera.position.y + dy,
+    tileSizeToZoom(nts, vx, vy),
+    nts,
+  )
+}
+
+function updateCamera(
+  state: AppState,
+  x: number,
+  y: number,
+  zoom: number,
+  tileSize: number,
+): void {
+  state.camera.position.x = x
+  state.camera.position.y = y
+  state.camera.zoom = zoom
+  state.tileSize = tileSize
+
+  state.cameraListeners.forEach((listener) => {
+    listener(state)
+  })
 }
 
 function getOtherPointer(e: PointerEvent) {
