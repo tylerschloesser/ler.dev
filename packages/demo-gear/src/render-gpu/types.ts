@@ -40,10 +40,10 @@ export interface GpuState {
           vertex: WebGLBuffer
           count: number
         }
-        // teeth: {
-        //   vertex: WebGLBuffer
-        //   count: number
-        // }
+        teeth: {
+          vertex: WebGLBuffer
+          count: number
+        }
       }
     >
   }
