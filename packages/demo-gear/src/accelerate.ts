@@ -24,8 +24,8 @@ const handlePointer: PointerListenerFn = (
       break
     }
     case 'pointermove': {
-      const tileX = Math.floor(position.x + 0.5)
-      const tileY = Math.floor(position.y + 0.5)
+      const tileX = Math.floor(position.x)
+      const tileY = Math.floor(position.y)
       if (
         hand.position?.x === tileX &&
         hand.position?.y === tileY
