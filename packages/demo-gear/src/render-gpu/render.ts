@@ -6,12 +6,20 @@ export function render(
   gl: WebGL2RenderingContext,
   gpu: GpuState,
 ) {
+  gl.clearColor(1, 0, 0, 1)
+  gl.clear(gl.COLOR_BUFFER_BIT)
+
+  renderGrid(state, gl, gpu)
+}
+
+function renderGrid(
+  state: AppState,
+  gl: WebGL2RenderingContext,
+  gpu: GpuState,
+): void {
   const { grid } = gpu.programs
 
   gl.useProgram(grid.program)
-
-  gl.clearColor(1, 0, 0, 1)
-  gl.clear(gl.COLOR_BUFFER_BIT)
 
   gl.bindBuffer(gl.ARRAY_BUFFER, gpu.buffers.square)
   gl.vertexAttribPointer(
