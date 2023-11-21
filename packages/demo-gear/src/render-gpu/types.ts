@@ -19,6 +19,9 @@ export interface GpuState {
     }
     main: {
       program: WebGLProgram
+      attributes: {
+        vertex: WebGLAttributeLocation
+      }
     }
   }
   buffers: {

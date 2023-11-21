@@ -77,6 +77,9 @@ function initMainProgram(
   })
   return {
     program,
+    attributes: {
+      vertex: getAttribLocation(gl, program, 'aVertex'),
+    },
   }
 }
 

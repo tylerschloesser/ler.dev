@@ -1,3 +1,4 @@
+import invariant from 'tiny-invariant'
 import { AppState, Gear } from '../types.js'
 import { GpuState } from './types.js'
 
@@ -21,7 +22,15 @@ function renderGear(
   gl: WebGL2RenderingContext,
   gpu: GpuState,
   gear: Gear,
-): void {}
+): void {
+  const { main } = gpu.programs
+  gl.useProgram(main.program)
+
+  const buffer = gpu.buffers.gears[gear.radius]
+  invariant(buffer)
+
+  gl.bindBuffer(gl.ARRAY_BUFFER, buffer.vertex)
+}
 
 function renderGrid(
   state: AppState,
