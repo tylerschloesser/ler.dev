@@ -7,10 +7,14 @@ export function useTextures(): Textures | null {
   )
 
   useEffect(() => {
-    setTextures({
-      gear: {},
-    })
+    generateTextures().then(setTextures)
   }, [])
 
   return textures
+}
+
+async function generateTextures(): Promise<Textures> {
+  return {
+    gear: {},
+  }
 }
