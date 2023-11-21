@@ -34,23 +34,9 @@ export interface GpuState {
   }
   buffers: {
     square: WebGLBuffer
-    gears: Record<
-      number,
-      {
-        circle: {
-          vertex: WebGLBuffer
-          count: number
-        }
-        teeth: {
-          vertex: WebGLBuffer
-          mask: WebGLBuffer
-          count: number
-        }
-      }
-    >
   }
   textures: {
-    gears: Record<number, null>
+    gears: Record<number, WebGLTexture>
   }
   matrices: {
     model: mat4

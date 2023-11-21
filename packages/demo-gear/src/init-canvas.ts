@@ -24,7 +24,7 @@ export const initCanvas: InitFn = async (state) => {
   })
 
   const context = getContext(canvas)
-  const gpuState = initGpuState(context.gpu)
+  const gpuState = await initGpuState(context.gpu)
 
   function handleFrame() {
     if (signal.aborted) {

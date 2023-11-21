@@ -1,6 +1,5 @@
 import invariant from 'tiny-invariant'
-import { GEAR_RADIUSES } from '../const.js'
-import { initGearBuffers } from '../render-cpu/init-gear-buffers.js'
+import { GEAR_RADIUSES, TWO_PI } from '../const.js'
 import { initMatrices } from './matrices.js'
 import gridFrag from './shaders/grid.frag.glsl'
 import gridVert from './shaders/grid.vert.glsl'
@@ -13,9 +12,9 @@ import {
   initProgram,
 } from './util.js'
 
-export function initGpuState(
+export async function initGpuState(
   gl: WebGL2RenderingContext,
-): GpuState {
+): Promise<GpuState> {
   return {
     programs: {
       grid: initGridProgram(gl),
@@ -23,9 +22,8 @@ export function initGpuState(
     },
     buffers: {
       square: initSquareBuffer(gl),
-      gears: initGearBuffers(gl),
     },
-    textures: initTextures(gl),
+    textures: await initTextures(gl),
     matrices: initMatrices(),
   }
 }
@@ -128,15 +126,61 @@ function initSquareBuffer(
   return buffer
 }
 
-function initTextures(
+async function initTextures(
   gl: WebGL2RenderingContext,
-): GpuState['textures'] {
+): Promise<GpuState['textures']> {
   const gears: GpuState['textures']['gears'] = {}
 
+  const canvas = document.createElement('canvas')
+
+  const context = canvas.getContext('2d')
+  invariant(context)
+
+  // TODO
+  const scale = 100
+
   for (const radius of GEAR_RADIUSES) {
+    const vx = radius * 2 * scale
+    const vy = radius * 2 * scale
+    canvas.width = vx
+    canvas.height = vy
+    context.clearRect(0, 0, vx, vy)
+
+    context.fillStyle = 'orange'
+    context.beginPath()
+    context.arc(vx / 2, vy / 2, radius * scale, 0, TWO_PI)
+    context.fill()
+    context.closePath()
+
+    const image = await createImageBitmap(canvas)
+
     const texture = gl.createTexture()
     invariant(texture)
     gl.bindTexture(gl.TEXTURE_2D, texture)
+
+    gl.texImage2D(
+      gl.TEXTURE_2D,
+      0,
+      gl.RGBA,
+      vx,
+      vy,
+      0,
+      gl.RGBA,
+      gl.UNSIGNED_BYTE,
+      image,
+    )
+    gl.texParameteri(
+      gl.TEXTURE_2D,
+      gl.TEXTURE_MIN_FILTER,
+      gl.LINEAR,
+    )
+    gl.texParameteri(
+      gl.TEXTURE_2D,
+      gl.TEXTURE_MAG_FILTER,
+      gl.LINEAR,
+    )
+
+    gears[radius] = texture
   }
 
   return {
