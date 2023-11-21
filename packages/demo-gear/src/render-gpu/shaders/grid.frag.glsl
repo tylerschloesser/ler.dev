@@ -6,6 +6,7 @@ uniform vec2 uViewport;
 uniform vec2 uCamera;
 uniform float uTileSize;
 uniform float uPixelRatio;
+uniform float uZoom;
 
 in vec2 vPosition;
 
@@ -19,12 +20,13 @@ void main() {
     uViewport / 2.0 +
     uCamera * uTileSize +
     lineWidth / 2.0;
+
   bool render =
     mod(v.x, uTileSize) < lineWidth ||
     mod(v.y, uTileSize) < lineWidth;
 
   if (render) {
-    color = vec4(0.25, 0.25, 0.25, 1);
+    color = vec4(0.25, 0.25, 0.25, 1) * uZoom;
   } else {
     color = vec4(0, 0, 0, 0);
   }

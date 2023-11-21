@@ -20,6 +20,7 @@ export interface GpuState {
         tileSize: WebGLUniformLocation | null
         camera: WebGLUniformLocation | null
         pixelRatio: WebGLUniformLocation | null
+        zoom: WebGLUniformLocation | null
       }
     }
   }
@@ -78,6 +79,7 @@ function initGridProgram(
         'uPixelRatio',
         false,
       ),
+      zoom: getUniformLocation(gl, program, 'uZoom', false),
     },
   }
 }

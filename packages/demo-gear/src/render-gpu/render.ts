@@ -43,6 +43,7 @@ export function render(
   )
 
   gl.uniform1f(grid.uniforms.pixelRatio, pixelRatio)
+  gl.uniform1f(grid.uniforms.zoom, state.camera.zoom)
 
   gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4)
 }
