@@ -1,6 +1,6 @@
 import invariant from 'tiny-invariant'
 import { zoomToTileSize } from './camera.js'
-import { render } from './render-cpu/render.js'
+import { render as renderCpu } from './render-cpu/render.js'
 import { AppState, InitFn } from './types.js'
 
 export const initCanvas: InitFn = (state) => {
@@ -25,7 +25,7 @@ export const initCanvas: InitFn = (state) => {
       return
     }
     invariant(context)
-    render(state, context)
+    renderCpu(state, context)
     window.requestAnimationFrame(handleFrame)
   }
   window.requestAnimationFrame(handleFrame)
