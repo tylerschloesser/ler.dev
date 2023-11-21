@@ -43,6 +43,7 @@ export interface GpuState {
         }
         teeth: {
           vertex: WebGLBuffer
+          mask: WebGLBuffer
           count: number
         }
       }

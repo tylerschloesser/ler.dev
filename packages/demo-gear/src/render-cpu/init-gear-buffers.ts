@@ -27,45 +27,55 @@ function initCircle(
 
   const teeth = radius * TEETH
 
-  const data = new Float32Array((teeth + 1) * 2 + 2)
+  const vertices = new Float32Array((teeth + 1) * 2 + 2)
 
-  data[0] = 0.0
-  data[1] = 0.0
+  vertices[0] = 0.0
+  vertices[1] = 0.0
 
   for (let i = 0; i <= teeth; i++) {
     const angle = TWO_PI * (i / teeth)
-    data[2 + i * 2 + 0] = Math.cos(angle)
-    data[2 + i * 2 + 1] = Math.sin(angle)
+    vertices[2 + i * 2 + 0] = Math.cos(angle)
+    vertices[2 + i * 2 + 1] = Math.sin(angle)
   }
 
-  gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW)
+  gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW)
 
-  return { vertex, count: data.length / 2 }
+  return { vertex, count: vertices.length / 2 }
 }
 
 function initTeeth(
   gl: WebGL2RenderingContext,
   radius: number,
 ): GpuState['buffers']['gears'][0]['teeth'] {
-  const vertex = gl.createBuffer()
-  invariant(vertex)
-  gl.bindBuffer(gl.ARRAY_BUFFER, vertex)
-
   const teeth = radius * TEETH
   const size = 1 - 0.1 / radius
 
-  const data = new Float32Array((teeth + 1) * 4)
+  const vertices = new Float32Array((teeth + 1) * 4)
+  const masks = new Uint8Array((teeth + 1) * 4)
 
   for (let i = 0; i <= teeth; i++) {
     const angle = TWO_PI * (i / teeth)
 
-    data[i * 4 + 0] = Math.cos(angle)
-    data[i * 4 + 1] = Math.sin(angle)
-    data[i * 4 + 2] = Math.cos(angle) * size
-    data[i * 4 + 3] = Math.sin(angle) * size
+    vertices[i * 4 + 0] = Math.cos(angle)
+    vertices[i * 4 + 1] = Math.sin(angle)
+    vertices[i * 4 + 2] = Math.cos(angle) * size
+    vertices[i * 4 + 3] = Math.sin(angle) * size
+
+    masks[i * 4 + 0] = i % 4 < 2 ? 1 : 0
+    masks[i * 4 + 1] = i % 4 < 2 ? 1 : 0
+    masks[i * 4 + 2] = i % 4 < 2 ? 1 : 0
+    masks[i * 4 + 3] = i % 4 < 2 ? 1 : 0
   }
 
-  gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW)
+  const vertex = gl.createBuffer()
+  invariant(vertex)
+  gl.bindBuffer(gl.ARRAY_BUFFER, vertex)
+  gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW)
 
-  return { vertex, count: data.length / 2 }
+  const mask = gl.createBuffer()
+  invariant(mask)
+  gl.bindBuffer(gl.ARRAY_BUFFER, mask)
+  gl.bufferData(gl.ARRAY_BUFFER, masks, gl.STATIC_DRAW)
+
+  return { vertex, count: vertices.length / 2, mask }
 }
