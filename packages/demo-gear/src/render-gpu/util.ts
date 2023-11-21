@@ -62,9 +62,24 @@ export function getUniformLocation(
   gl: WebGL2RenderingContext,
   program: WebGLProgram,
   name: string,
-): WebGLUniformLocation {
+  required?: false,
+): WebGLUniformLocation | null
+export function getUniformLocation(
+  gl: WebGL2RenderingContext,
+  program: WebGLProgram,
+  name: string,
+  required: true,
+): WebGLUniformLocation
+export function getUniformLocation(
+  gl: WebGL2RenderingContext,
+  program: WebGLProgram,
+  name: string,
+  required = false,
+) {
   const location = gl.getUniformLocation(program, name)
-  invariant(location)
+  if (required) {
+    invariant(location)
+  }
   return location
 }
 

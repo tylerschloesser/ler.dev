@@ -4,6 +4,7 @@ import mainVert from './shaders/main.vert.glsl'
 import {
   WebGLAttributeLocation,
   getAttribLocation,
+  getUniformLocation,
   initProgram,
 } from './util.js'
 
@@ -13,6 +14,9 @@ export interface GpuState {
       program: WebGLProgram
       attributes: {
         vertex: WebGLAttributeLocation
+      }
+      uniforms: {
+        viewport: WebGLUniformLocation | null
       }
     }
   }
@@ -45,6 +49,13 @@ function initMainProgram(
     program,
     attributes: {
       vertex: getAttribLocation(gl, program, 'aVertex'),
+    },
+    uniforms: {
+      viewport: getUniformLocation(
+        gl,
+        program,
+        'uViewport',
+      ),
     },
   }
 }
