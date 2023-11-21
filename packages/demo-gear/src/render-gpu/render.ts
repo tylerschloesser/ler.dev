@@ -43,6 +43,15 @@ function renderGear(
   )
   gl.enableVertexAttribArray(main.attributes.vertex)
 
+  const { model, view, projection } = gpu.matrices
+  gl.uniformMatrix4fv(main.uniforms.model, false, model)
+  gl.uniformMatrix4fv(main.uniforms.view, false, view)
+  gl.uniformMatrix4fv(
+    main.uniforms.projection,
+    false,
+    projection,
+  )
+
   gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4)
 }
 
