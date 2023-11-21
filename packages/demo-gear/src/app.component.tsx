@@ -7,12 +7,12 @@ import { initKeyboard } from './init-keyboard.js'
 import { initPointer } from './init-pointer.js'
 import { initSimulator } from './init-simulator.js'
 import { initWheel } from './init-wheel.js'
+import { useTextures } from './textures.js'
 import { Toolbar as HoverToolbar } from './toolbar.js'
 import { TouchToolbar } from './touch-toolbar.component.js'
 import { AppState, InitFn } from './types.js'
 import { useMediaQuery } from './use-media-query.js'
 import { useWorld } from './use-world.js'
-import {useTextures} from './textures.js'
 
 const INIT_FNS: InitFn[] = [
   initCanvas,
@@ -59,7 +59,7 @@ function useAppState(
     return () => {
       controller.abort()
     }
-  }, [canvas, world])
+  }, [canvas, world, textures])
 
   return state
 }

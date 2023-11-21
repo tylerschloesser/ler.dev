@@ -93,10 +93,10 @@ export type PointerListenerFn = (
 ) => void
 export type CameraListenerFn = (state: AppState) => void
 
-type Texture = null
+type Texture = Blob
 
 export interface Textures {
-  gear: Record<number, Texture>
+  gears: Record<number, Texture>
 }
 
 export interface AppState {

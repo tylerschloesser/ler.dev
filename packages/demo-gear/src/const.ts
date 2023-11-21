@@ -6,9 +6,10 @@ export const MAX_RADIUS: number = 5
 invariant(MAX_RADIUS > MIN_RADIUS)
 
 export const GEAR_RADIUSES = (() => {
-  const arr = new Array(MAX_RADIUS - MIN_RADIUS)
-  for (let i = MIN_RADIUS; i <= MAX_RADIUS; i++) {
-    arr.push(i)
+  const count = MAX_RADIUS - MIN_RADIUS + 1
+  const arr = new Array<number>(count)
+  for (let i = 0; i < count; i++) {
+    arr[i] = MIN_RADIUS + i
   }
   return arr
 })()
