@@ -57,3 +57,23 @@ function initShader(
   }
   return shader
 }
+
+export function getUniformLocation(
+  gl: WebGL2RenderingContext,
+  program: WebGLProgram,
+  name: string,
+): WebGLUniformLocation {
+  const location = gl.getUniformLocation(program, name)
+  invariant(location)
+  return location
+}
+
+export function getAttribLocation(
+  gl: WebGL2RenderingContext,
+  program: WebGLProgram,
+  name: string,
+): WebGLAttributeLocation {
+  const location = gl.getAttribLocation(program, name)
+  invariant(location !== -1)
+  return location
+}

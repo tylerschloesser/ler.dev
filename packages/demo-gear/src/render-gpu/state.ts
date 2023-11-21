@@ -1,3 +1,4 @@
+import invariant from 'tiny-invariant'
 import mainFrag from './shaders/main.frag.glsl'
 import mainVert from './shaders/main.vert.glsl'
 import { initProgram } from './util.js'
@@ -7,6 +8,9 @@ export interface GpuState {
     main: {
       program: WebGLProgram
     }
+  }
+  buffers: {
+    square: WebGLBuffer
   }
 }
 
@@ -18,6 +22,9 @@ export function initGpuState(
       main: {
         program: initMainProgram(gl),
       },
+    },
+    buffers: {
+      square: initSquareBuffer(gl),
     },
   }
 }
@@ -31,4 +38,24 @@ function initMainProgram(
       frag: mainFrag,
     }),
   }
+}
+
+function initSquareBuffer(
+  gl: WebGL2RenderingContext,
+): WebGLBuffer {
+  const buffer = gl.createBuffer()
+  invariant(buffer)
+  gl.bindBuffer(gl.ARRAY_BUFFER, buffer)
+  gl.bufferData(
+    gl.ARRAY_BUFFER,
+    // prettier-ignore
+    new Float32Array([
+      -1.0, -1.0, 
+      -1.0, 1.0, 
+      1.0, -1.0, 
+      1.0, 1.0,
+    ]),
+    gl.STATIC_DRAW,
+  )
+  return buffer
 }
