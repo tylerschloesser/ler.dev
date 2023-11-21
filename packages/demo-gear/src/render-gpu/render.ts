@@ -26,8 +26,6 @@ function renderGears(
   const { main } = gpu.programs
   gl.useProgram(main.program)
 
-  gl.uniform4f(main.uniforms.color, 0.0, 1.0, 0.0, 1.0)
-
   const { view, projection } = gpu.matrices
   gl.uniformMatrix4fv(main.uniforms.view, false, view)
   gl.uniformMatrix4fv(

@@ -8,6 +8,14 @@ export function renderGear(
   gl: WebGL2RenderingContext,
   gpu: GpuState,
 ): void {
+  renderGearCircle(gear, gl, gpu)
+}
+
+function renderGearCircle(
+  gear: Gear,
+  gl: WebGL2RenderingContext,
+  gpu: GpuState,
+) {
   const { main } = gpu.programs
 
   gl.uniform4f(main.uniforms.color, 0.0, 1.0, 0.0, 1.0)
