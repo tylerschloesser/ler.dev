@@ -10,8 +10,10 @@ import {
   updateBuildPosition,
 } from './build.js'
 import { moveCamera } from './camera.js'
+import { MAX_RADIUS, MIN_RADIUS } from './const.js'
 import styles from './touch-toolbar.module.scss'
 import { AppState, HandType } from './types.js'
+import { clamp } from './util.js'
 
 export interface TouchToolbarProps {
   state: AppState
@@ -82,6 +84,12 @@ function AddGearView({
     }
   }, [state])
 
+  useEffect(() => {
+    if (state.hand?.type === HandType.Build) {
+      state.hand.radius = radius
+    }
+  }, [radius])
+
   return (
     <>
       <button
@@ -92,9 +100,29 @@ function AddGearView({
       >
         Cancel
       </button>
-      <button className={styles.button}>&darr;</button>
+      <button
+        className={styles.button}
+        disabled={radius === MIN_RADIUS}
+        onPointerUp={() => {
+          setRadius((prev) =>
+            clamp(prev - 1, MIN_RADIUS, MAX_RADIUS),
+          )
+        }}
+      >
+        &darr;
+      </button>
       <input readOnly value={radius} />
-      <button className={styles.button}>&uarr;</button>
+      <button
+        className={styles.button}
+        disabled={radius === MAX_RADIUS}
+        onPointerUp={() => {
+          setRadius((prev) =>
+            clamp(prev + 1, MIN_RADIUS, MAX_RADIUS),
+          )
+        }}
+      >
+        &uarr;
+      </button>
       <button
         className={styles.button}
         onPointerUp={() => {

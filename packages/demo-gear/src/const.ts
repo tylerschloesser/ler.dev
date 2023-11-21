@@ -1,5 +1,9 @@
-const MIN_RADIUS = 1
-const MAX_RADIUS = 5
+import invariant from 'tiny-invariant'
+
+export const MIN_RADIUS: number = 1
+export const MAX_RADIUS: number = 5
+
+invariant(MAX_RADIUS > MIN_RADIUS)
 
 export const GEAR_RADIUSES = (() => {
   const arr = new Array(MAX_RADIUS - MIN_RADIUS)
