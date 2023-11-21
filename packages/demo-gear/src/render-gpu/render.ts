@@ -47,11 +47,7 @@ function renderGear(
   )
   gl.enableVertexAttribArray(main.attributes.vertex)
 
-  updateModel(
-    gpu.matrices,
-    gear.position.x,
-    gear.position.y,
-  )
+  updateModel(gpu.matrices, gear)
 
   const { model, view, projection } = gpu.matrices
   gl.uniformMatrix4fv(main.uniforms.model, false, model)

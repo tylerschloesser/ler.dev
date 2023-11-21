@@ -1,5 +1,5 @@
 import { mat4, vec3 } from 'gl-matrix'
-import { AppState } from '../types.js'
+import { AppState, Gear } from '../types.js'
 import { GpuState } from './types.js'
 
 export function initMatrices(): GpuState['matrices'] {
@@ -14,17 +14,20 @@ const v3: vec3 = vec3.create()
 
 export function updateModel(
   matrices: GpuState['matrices'],
-  x: number,
-  y: number,
+  gear: Gear,
 ): void {
   const { model } = matrices
   mat4.identity(model)
 
-  v3[0] = x
-  v3[1] = y
+  v3[0] = gear.position.x - gear.radius
+  v3[1] = gear.position.y - gear.radius
   v3[2] = 0
-
   mat4.translate(model, model, v3)
+
+  v3[0] = gear.radius * 2
+  v3[1] = gear.radius * 2
+  v3[2] = 0
+  mat4.scale(model, model, v3)
 }
 
 export function updateView(
