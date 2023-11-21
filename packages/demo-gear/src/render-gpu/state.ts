@@ -1,6 +1,6 @@
 import invariant from 'tiny-invariant'
 import { initGearBuffers } from '../render-cpu/init-gear-buffers.js'
-import { initMatrices } from './init-matrices.js'
+import { initMatrices } from './matrices.js'
 import gridFrag from './shaders/grid.frag.glsl'
 import gridVert from './shaders/grid.vert.glsl'
 import mainFrag from './shaders/main.frag.glsl'

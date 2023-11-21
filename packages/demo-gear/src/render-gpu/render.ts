@@ -1,6 +1,6 @@
 import invariant from 'tiny-invariant'
 import { AppState, Gear } from '../types.js'
-import { updateMatrices } from './init-matrices.js'
+import { updateMatrices } from './matrices.js'
 import { GpuState } from './types.js'
 
 export function render(
