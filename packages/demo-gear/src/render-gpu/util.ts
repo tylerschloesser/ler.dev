@@ -1,8 +1,8 @@
 import invariant from 'tiny-invariant'
 
-type ShaderType = number
-type ShaderSource = string
-type WebGLAttributeLocation = number
+export type ShaderType = number
+export type ShaderSource = string
+export type WebGLAttributeLocation = number
 
 export function initProgram(
   gl: WebGL2RenderingContext,
