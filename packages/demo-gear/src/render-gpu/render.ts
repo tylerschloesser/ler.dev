@@ -1,5 +1,5 @@
 import { AppState } from '../types.js'
-import { GpuState } from './state.js'
+import { GpuState } from './types.js'
 
 export function render(
   state: AppState,

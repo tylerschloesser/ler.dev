@@ -1,33 +1,13 @@
 import invariant from 'tiny-invariant'
+import { initGearBuffers } from '../render-cpu/init-gear-buffers.js'
 import gridFrag from './shaders/grid.frag.glsl'
 import gridVert from './shaders/grid.vert.glsl'
+import { GpuState } from './types.js'
 import {
-  WebGLAttributeLocation,
   getAttribLocation,
   getUniformLocation,
   initProgram,
 } from './util.js'
-
-export interface GpuState {
-  programs: {
-    grid: {
-      program: WebGLProgram
-      attributes: {
-        vertex: WebGLAttributeLocation
-      }
-      uniforms: {
-        viewport: WebGLUniformLocation | null
-        tileSize: WebGLUniformLocation | null
-        camera: WebGLUniformLocation | null
-        pixelRatio: WebGLUniformLocation | null
-        zoom: WebGLUniformLocation | null
-      }
-    }
-  }
-  buffers: {
-    square: WebGLBuffer
-  }
-}
 
 export function initGpuState(
   gl: WebGL2RenderingContext,
@@ -38,6 +18,7 @@ export function initGpuState(
     },
     buffers: {
       square: initSquareBuffer(gl),
+      gears: initGearBuffers(gl),
     },
   }
 }
