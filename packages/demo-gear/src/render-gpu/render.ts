@@ -36,13 +36,6 @@ export function render(
     state.tileSize * pixelRatio,
   )
 
-  // console.log(state.tileSize * pixelRatio)
-  //
-  // console.log(
-  //   state.camera.position.x,
-  //   state.camera.position.y,
-  // )
-
   gl.uniform2f(
     gpu.programs.main.uniforms.camera,
     state.camera.position.x,
