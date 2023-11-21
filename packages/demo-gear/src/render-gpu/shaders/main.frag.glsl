@@ -23,7 +23,7 @@ void main() {
     mod(v.y, uTileSize) < lineWidth;
 
   if (render) {
-    color = vec4(.25, .25, .25, 1);
+    color = vec4(0.25, 0.25, 0.25, 1);
   } else {
     color = vec4(0, 0, 0, 0);
   }
