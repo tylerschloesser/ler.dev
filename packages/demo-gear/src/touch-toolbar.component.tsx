@@ -50,17 +50,20 @@ function MainView({
 
 function AddGearView({
   state,
+  setView,
 }: {
   state: AppState
   setView: SetViewFn
 }) {
+  const [radius, setRadius] = useState(1)
+
   useEffect(() => {
     state.hand = {
       type: HandType.Build,
       position: null,
       chain: null,
       connections: [],
-      radius: 1,
+      radius,
       valid: false,
     }
     state.pointerListeners.clear()
@@ -80,15 +83,28 @@ function AddGearView({
   }, [state])
 
   return (
-    <button
-      className={styles.button}
-      onPointerUp={() => {
-        const { hand } = state
-        invariant(hand?.type === HandType.Build)
-        executeBuild(state, hand)
-      }}
-    >
-      Build
-    </button>
+    <>
+      <button
+        className={styles.button}
+        onPointerUp={() => {
+          setView('main')
+        }}
+      >
+        Cancel
+      </button>
+      <button className={styles.button}>&darr;</button>
+      <input readOnly value={radius} />
+      <button className={styles.button}>&uarr;</button>
+      <button
+        className={styles.button}
+        onPointerUp={() => {
+          const { hand } = state
+          invariant(hand?.type === HandType.Build)
+          executeBuild(state, hand)
+        }}
+      >
+        Build
+      </button>
+    </>
   )
 }
