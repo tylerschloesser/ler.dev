@@ -1,4 +1,5 @@
 import { mat4 } from 'gl-matrix'
+import { AppState } from '../types.js'
 import { GpuState } from './types.js'
 
 export function initMatrices(): GpuState['matrices'] {
@@ -8,3 +9,8 @@ export function initMatrices(): GpuState['matrices'] {
 
   return { model, view, projection }
 }
+
+export function updateMatrices(
+  matrices: GpuState['matrices'],
+  state: AppState,
+): void {}
