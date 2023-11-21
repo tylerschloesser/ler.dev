@@ -1,6 +1,6 @@
 import invariant from 'tiny-invariant'
-import { DRAW_GEAR_BOX, TWO_PI, TEETH } from './const.js'
-import { AppState, Gear } from './types.js'
+import { DRAW_GEAR_BOX, TWO_PI, TEETH } from '../const.js'
+import { AppState, Gear } from '../types.js'
 
 export function renderGear(
   context: CanvasRenderingContext2D,

@@ -1,13 +1,13 @@
 import invariant from 'tiny-invariant'
-import { Color } from './color.js'
-import { renderConnection } from './render-connection.js'
-import { renderGear } from './render-gear.js'
+import { Color } from '../color.js'
 import {
   AppState,
   BuildHand,
   ConnectionType,
   PartialGear,
-} from './types.js'
+} from '../types.js'
+import { renderConnection } from './render-connection.js'
+import { renderGear } from './render-gear.js'
 
 const partial: PartialGear = {
   angle: 0,

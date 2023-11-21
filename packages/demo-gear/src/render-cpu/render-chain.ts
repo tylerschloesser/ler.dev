@@ -1,7 +1,7 @@
 import invariant from 'tiny-invariant'
-import { HALF_PI, PI, TEETH, TWO_PI } from './const.js'
-import { AppState, PartialGear } from './types.js'
-import { Vec2 } from './vec2.js'
+import { HALF_PI, PI, TEETH, TWO_PI } from '../const.js'
+import { AppState, PartialGear } from '../types.js'
+import { Vec2 } from '../vec2.js'
 
 type ChainId = string
 

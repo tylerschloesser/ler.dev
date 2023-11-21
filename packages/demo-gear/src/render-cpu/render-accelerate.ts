@@ -1,5 +1,5 @@
-import { Color } from './color.js'
-import { AccelerateHand, AppState } from './types.js'
+import { Color } from '../color.js'
+import { AccelerateHand, AppState } from '../types.js'
 
 export function renderAccelerate(
   context: CanvasRenderingContext2D,

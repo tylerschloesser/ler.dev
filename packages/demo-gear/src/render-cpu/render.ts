@@ -1,11 +1,11 @@
-import { Color } from './color.js'
+import { Color } from '../color.js'
+import { AppState, HandType } from '../types.js'
+import { iterateConnections } from '../util.js'
 import { renderAccelerate } from './render-accelerate.js'
 import { renderBuild } from './render-build.js'
 import { renderConnection } from './render-connection.js'
 import { renderGear } from './render-gear.js'
 import { renderGrid } from './render-grid.js'
-import { AppState, HandType } from './types.js'
-import { iterateConnections } from './util.js'
 
 export function render(
   state: AppState,

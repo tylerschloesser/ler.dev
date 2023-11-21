@@ -1,5 +1,5 @@
-import { Color } from './color.js'
-import { AppState } from './types.js'
+import { Color } from '../color.js'
+import { AppState } from '../types.js'
 
 export function renderGrid(
   context: CanvasRenderingContext2D,

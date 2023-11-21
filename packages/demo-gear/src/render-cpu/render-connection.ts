@@ -1,10 +1,10 @@
-import { Color } from './color.js'
-import { renderChain } from './render-chain.js'
+import { Color } from '../color.js'
 import {
   AppState,
   ConnectionType,
   PartialGear,
-} from './types.js'
+} from '../types.js'
+import { renderChain } from './render-chain.js'
 
 export function renderConnection(
   context: CanvasRenderingContext2D,
