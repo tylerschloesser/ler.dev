@@ -119,7 +119,11 @@ function AddGearView() {
       >
         &darr;
       </button>
-      <input readOnly value={radius} />
+      <input
+        className={styles.input}
+        readOnly
+        value={radius}
+      />
       <button
         className={styles.button}
         disabled={radius === MAX_RADIUS}

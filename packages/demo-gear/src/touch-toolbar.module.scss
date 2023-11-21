@@ -4,9 +4,19 @@
   right: 0;
   margin: 1em;
   padding: 1em;
+  display: flex;
 }
 
 .button {
   font-size: 16px;
   padding: 1em;
+  line-height: 1em;
+}
+
+.input {
+  font-size: 16px;
+  padding: 1em;
+  line-height: 1em;
+  width: 1em;
+  text-align: center;
 }
