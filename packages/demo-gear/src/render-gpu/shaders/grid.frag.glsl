@@ -5,13 +5,14 @@ precision mediump float;
 uniform vec2 uViewport;
 uniform vec2 uCamera;
 uniform float uTileSize;
+uniform float uPixelRatio;
 
 in vec2 vPosition;
 
 out vec4 color;
 
 void main() {
-  float lineWidth = 2.0;
+  float lineWidth = 2.0 * uPixelRatio;
 
   vec2 v =
     vPosition -
