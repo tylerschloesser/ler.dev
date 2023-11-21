@@ -96,6 +96,12 @@ function initMainProgram(
         'uProjection',
         false,
       ),
+      color: getUniformLocation(
+        gl,
+        program,
+        'uColor',
+        false,
+      ),
     },
   }
 }

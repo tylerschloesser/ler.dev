@@ -28,6 +28,7 @@ export interface GpuState {
         model: WebGLUniformLocation
         view: WebGLUniformLocation
         projection: WebGLUniformLocation
+        color: WebGLUniformLocation
       }
     }
   }
