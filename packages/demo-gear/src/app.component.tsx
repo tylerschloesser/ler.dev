@@ -22,12 +22,10 @@ const INIT_FNS: InitFn[] = [
 
 interface UseAppStateArgs {
   canvas: HTMLCanvasElement | null
-  controller: AbortController
 }
 
 function useAppState({
   canvas,
-  controller,
 }: UseAppStateArgs): AppState | null {
   const [state, setState] = useState<AppState | null>(null)
   const [world, setWorld] = useWorld()
@@ -35,6 +33,7 @@ function useAppState({
     if (!canvas || !world) {
       return
     }
+    const controller = new AbortController()
     setState({
       canvas,
       world,
@@ -52,7 +51,7 @@ function useAppState({
     return () => {
       controller.abort()
     }
-  }, [canvas, world, controller])
+  }, [canvas, world])
 
   return state
 }
@@ -60,10 +59,7 @@ function useAppState({
 export function App() {
   const [canvas, setCanvas] =
     useState<HTMLCanvasElement | null>(null)
-  const [controller] = useState(new AbortController())
-  const { signal } = controller
-
-  const state = useAppState({ canvas, controller })
+  const state = useAppState({ canvas })
 
   useEffect(() => {
     if (!state) {
@@ -72,12 +68,9 @@ export function App() {
     for (const init of INIT_FNS) {
       init(state)
     }
-    return () => {
-      controller.abort()
-    }
-  }, [state, controller])
+  }, [state])
 
-  const hover = useMediaQuery('(hover: hover)', signal)
+  const hover = useMediaQuery('(hover: hover)')
 
   const Toolbar = hover ? HoverToolbar : TouchToolbar
 

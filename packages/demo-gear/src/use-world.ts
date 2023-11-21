@@ -42,5 +42,5 @@ export function useResetWorld(
   return useCallback(async () => {
     await clearWorld()
     setWorld(await getDefaultWorld())
-  }, [])
+  }, [setWorld])
 }

@@ -2,6 +2,7 @@ import {
   createContext,
   use,
   useEffect,
+  useRef,
   useState,
 } from 'react'
 import {
@@ -24,6 +25,7 @@ import {
   CameraListenerFn,
   HandType,
 } from './types.js'
+import { useResetWorld, useSaveWorld } from './use-world.js'
 import { clamp } from './util.js'
 
 export interface TouchToolbarProps {
@@ -59,8 +61,24 @@ export function TouchToolbar(props: TouchToolbarProps) {
 
 function MainView() {
   const navigate = useNavigate()
+  const state = use(AppContext)
+  const save = useSaveWorld(state.world)
+  const reset = useResetWorld(state.setWorld)
   return (
     <>
+      <button className={styles.button} onPointerUp={save}>
+        Save
+      </button>
+      <button
+        className={styles.button}
+        onPointerUp={() => {
+          if (self.confirm('Are you sure?')) {
+            reset()
+          }
+        }}
+      >
+        Reset
+      </button>
       <button
         className={styles.button}
         onPointerUp={() => {
