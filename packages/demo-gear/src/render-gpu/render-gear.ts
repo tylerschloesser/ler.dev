@@ -10,6 +10,8 @@ export function renderGear(
 ): void {
   const { main } = gpu.programs
 
+  gl.uniform4f(main.uniforms.color, 0.0, 1.0, 0.0, 1.0)
+
   const buffer = gpu.buffers.gears[gear.radius]
   invariant(buffer)
 
