@@ -12,6 +12,7 @@ import { TouchToolbar } from './touch-toolbar.component.js'
 import { AppState, InitFn } from './types.js'
 import { useMediaQuery } from './use-media-query.js'
 import { useWorld } from './use-world.js'
+import {useTextures} from './textures.js'
 
 const INIT_FNS: InitFn[] = [
   initCanvas,
@@ -30,8 +31,9 @@ function useAppState(
 ): AppState | null {
   const [state, setState] = useState<AppState | null>(null)
   const [world, setWorld] = useWorld()
+  const textures = useTextures()
   useEffect(() => {
-    if (!canvas || !world) {
+    if (!canvas || !world || !textures) {
       return
     }
     const controller = new AbortController()
@@ -52,6 +54,7 @@ function useAppState(
       tileSize: 0,
       pointerListeners: new Set([moveCamera]),
       cameraListeners: new Set(),
+      textures,
     })
     return () => {
       controller.abort()

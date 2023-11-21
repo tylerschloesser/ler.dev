@@ -93,6 +93,12 @@ export type PointerListenerFn = (
 ) => void
 export type CameraListenerFn = (state: AppState) => void
 
+type Texture = null
+
+export interface Textures {
+  gear: Record<number, Texture>
+}
+
 export interface AppState {
   canvas: {
     container: HTMLDivElement
@@ -113,6 +119,8 @@ export interface AppState {
 
   pointerListeners: Set<PointerListenerFn>
   cameraListeners: Set<CameraListenerFn>
+
+  textures: Textures
 }
 
 export type InitFn = (state: AppState) => void
