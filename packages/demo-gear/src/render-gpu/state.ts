@@ -3,6 +3,8 @@ import { GEAR_RADIUSES, TEETH, TWO_PI } from '../const.js'
 import { initMatrices } from './matrices.js'
 import gearBodyFrag from './shaders/gear-body.frag.glsl'
 import gearBodyVert from './shaders/gear-body.vert.glsl'
+import gearTeethFrag from './shaders/gear-teeth.frag.glsl'
+import gearTeethVert from './shaders/gear-teeth.vert.glsl'
 import gridFrag from './shaders/grid.frag.glsl'
 import gridVert from './shaders/grid.vert.glsl'
 import mainFrag from './shaders/main.frag.glsl'
@@ -22,6 +24,7 @@ export async function initGpuState(
       grid: initGridProgram(gl),
       main: initMainProgram(gl),
       gearBody: initGearBodyProgram(gl),
+      gearTeeth: initGearTeethProgram(gl),
     },
     buffers: {
       square: initSquareBuffer(gl),
@@ -38,6 +41,42 @@ function initGearBodyProgram(
   const program = initProgram(gl, {
     vert: gearBodyVert,
     frag: gearBodyFrag,
+  })
+  return {
+    program,
+    attributes: {
+      vertex: getAttribLocation(gl, program, 'aVertex'),
+    },
+    uniforms: {
+      model: getUniformLocation(
+        gl,
+        program,
+        'uModel',
+        false,
+      ),
+      view: getUniformLocation(gl, program, 'uView', false),
+      projection: getUniformLocation(
+        gl,
+        program,
+        'uProjection',
+        false,
+      ),
+      color: getUniformLocation(
+        gl,
+        program,
+        'uColor',
+        false,
+      ),
+    },
+  }
+}
+
+function initGearTeethProgram(
+  gl: WebGL2RenderingContext,
+): GpuState['programs']['gearTeeth'] {
+  const program = initProgram(gl, {
+    vert: gearTeethVert,
+    frag: gearTeethFrag,
   })
   return {
     program,

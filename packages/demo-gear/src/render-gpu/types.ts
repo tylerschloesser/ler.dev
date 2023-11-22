@@ -44,10 +44,16 @@ export interface GpuState {
         color: WebGLUniformLocation
       }
     }
-    gearTeeth?: {
+    gearTeeth: {
       program: WebGLProgram
       attributes: {
         vertex: WebGLAttributeLocation
+      }
+      uniforms: {
+        model: WebGLUniformLocation
+        view: WebGLUniformLocation
+        projection: WebGLUniformLocation
+        color: WebGLUniformLocation
       }
     }
   }
