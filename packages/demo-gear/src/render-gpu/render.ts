@@ -23,13 +23,21 @@ function renderGears(
   gl: WebGL2RenderingContext,
   gpu: GpuState,
 ) {
-  const { gearBody } = gpu.programs
-  gl.useProgram(gearBody.program)
-
   const { view, projection } = gpu.matrices
+  const { gearBody, gearTeeth } = gpu.programs
+
+  gl.useProgram(gearBody.program)
   gl.uniformMatrix4fv(gearBody.uniforms.view, false, view)
   gl.uniformMatrix4fv(
     gearBody.uniforms.projection,
+    false,
+    projection,
+  )
+
+  gl.useProgram(gearTeeth.program)
+  gl.uniformMatrix4fv(gearTeeth.uniforms.view, false, view)
+  gl.uniformMatrix4fv(
+    gearTeeth.uniforms.projection,
     false,
     projection,
   )
