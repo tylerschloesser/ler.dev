@@ -32,10 +32,16 @@ export interface GpuState {
         sampler: WebGLUniformLocation
       }
     }
-    gearBody?: {
+    gearBody: {
       program: WebGLProgram
       attributes: {
         vertex: WebGLAttributeLocation
+      }
+      uniforms: {
+        model: WebGLUniformLocation
+        view: WebGLUniformLocation
+        projection: WebGLUniformLocation
+        color: WebGLUniformLocation
       }
     }
     gearTeeth?: {
@@ -47,7 +53,13 @@ export interface GpuState {
   }
   buffers: {
     square: WebGLBuffer
-    gearBody: Record<number, WebGLBuffer>
+    gearBody: Record<
+      number,
+      {
+        vertex: WebGLBuffer
+        count: number
+      }
+    >
   }
   textures: {
     gears: Record<number, WebGLTexture>

@@ -30,7 +30,7 @@ export const initCanvas: InitFn = async (state) => {
     if (signal.aborted) {
       return
     }
-    // renderGpu(state, context.gpu, gpuState)
+    renderGpu(state, context.gpu, gpuState)
     renderCpu(state, context.cpu)
     window.requestAnimationFrame(handleFrame)
   }

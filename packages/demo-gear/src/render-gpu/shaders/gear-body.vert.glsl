@@ -3,17 +3,12 @@
 precision mediump float;
 
 in vec2 aVertex;
-in vec4 aColor;
 
 uniform mat4 uModel;
 uniform mat4 uView;
 uniform mat4 uProjection;
 
-out vec2 vTexturePosition;
-
 void main() {
   mat4 mvp = uProjection * uView * uModel;
   gl_Position = mvp * vec4(aVertex, 0, 1);
-
-  vTexturePosition = (aVertex + vec2(1.0)) / 2.0;
 }

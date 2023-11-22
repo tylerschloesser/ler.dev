@@ -8,32 +8,29 @@ export function renderGear(
   gl: WebGL2RenderingContext,
   gpu: GpuState,
 ): void {
-  const { main } = gpu.programs
+  const { gearBody } = gpu.programs
   updateModel(gpu.matrices, gear)
   gl.uniformMatrix4fv(
-    main.uniforms.model,
+    gearBody.uniforms.model,
     false,
     gpu.matrices.model,
   )
 
-  gl.uniform4f(main.uniforms.color, 0.0, 1.0, 0.0, 1.0)
+  gl.uniform4f(gearBody.uniforms.color, 0.0, 1.0, 0.0, 1.0)
 
-  const texture = gpu.textures.gears[gear.radius]
-  invariant(texture)
-  gl.activeTexture(gl.TEXTURE0)
-  gl.bindTexture(gl.TEXTURE_2D, texture)
-  gl.uniform1i(main.uniforms.sampler, 0)
+  const buffer = gpu.buffers.gearBody[gear.radius]
+  invariant(buffer)
 
-  gl.bindBuffer(gl.ARRAY_BUFFER, gpu.buffers.square)
+  gl.bindBuffer(gl.ARRAY_BUFFER, buffer.vertex)
   gl.vertexAttribPointer(
-    main.attributes.vertex,
+    gearBody.attributes.vertex,
     2,
     gl.FLOAT,
     false,
     0,
     0,
   )
-  gl.enableVertexAttribArray(main.attributes.vertex)
+  gl.enableVertexAttribArray(gearBody.attributes.vertex)
 
-  gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4)
+  gl.drawArrays(gl.TRIANGLE_FAN, 0, buffer.count)
 }

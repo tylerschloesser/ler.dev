@@ -44,6 +44,27 @@ function initGearBodyProgram(
     attributes: {
       vertex: getAttribLocation(gl, program, 'aVertex'),
     },
+    uniforms: {
+      model: getUniformLocation(
+        gl,
+        program,
+        'uModel',
+        false,
+      ),
+      view: getUniformLocation(gl, program, 'uView', false),
+      projection: getUniformLocation(
+        gl,
+        program,
+        'uProjection',
+        false,
+      ),
+      color: getUniformLocation(
+        gl,
+        program,
+        'uColor',
+        false,
+      ),
+    },
   }
 }
 
@@ -150,7 +171,10 @@ function initGearBodyBuffers(
 
     gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW)
 
-    buffers[radius] = buffer
+    buffers[radius] = {
+      vertex: buffer,
+      count: 1 + teeth + 1,
+    }
   }
 
   return buffers
