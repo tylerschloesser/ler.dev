@@ -15,21 +15,7 @@ export interface GpuState {
         viewport: WebGLUniformLocation | null
         tileSize: WebGLUniformLocation | null
         camera: WebGLUniformLocation | null
-        pixelRatio: WebGLUniformLocation | null
         zoom: WebGLUniformLocation | null
-      }
-    }
-    main: {
-      program: WebGLProgram
-      attributes: {
-        vertex: WebGLAttributeLocation
-      }
-      uniforms: {
-        model: WebGLUniformLocation
-        view: WebGLUniformLocation
-        projection: WebGLUniformLocation
-        color: WebGLUniformLocation
-        sampler: WebGLUniformLocation
       }
     }
     gearBody: {
@@ -54,6 +40,7 @@ export interface GpuState {
         view: WebGLUniformLocation
         projection: WebGLUniformLocation
         color: WebGLUniformLocation
+        tileSize: WebGLUniformLocation
       }
     }
   }

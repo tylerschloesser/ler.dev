@@ -7,8 +7,6 @@ import gearTeethFrag from './shaders/gear-teeth.frag.glsl'
 import gearTeethVert from './shaders/gear-teeth.vert.glsl'
 import gridFrag from './shaders/grid.frag.glsl'
 import gridVert from './shaders/grid.vert.glsl'
-import mainFrag from './shaders/main.frag.glsl'
-import mainVert from './shaders/main.vert.glsl'
 import { GpuState } from './types.js'
 import {
   getAttribLocation,
@@ -22,7 +20,6 @@ export async function initGpuState(
   return {
     programs: {
       grid: initGridProgram(gl),
-      main: initMainProgram(gl),
       gearBody: initGearBodyProgram(gl),
       gearTeeth: initGearTeethProgram(gl),
     },
@@ -49,25 +46,14 @@ function initGearBodyProgram(
       vertex: getAttribLocation(gl, program, 'aVertex'),
     },
     uniforms: {
-      model: getUniformLocation(
-        gl,
-        program,
-        'uModel',
-        false,
-      ),
-      view: getUniformLocation(gl, program, 'uView', false),
+      model: getUniformLocation(gl, program, 'uModel'),
+      view: getUniformLocation(gl, program, 'uView'),
       projection: getUniformLocation(
         gl,
         program,
         'uProjection',
-        false,
       ),
-      color: getUniformLocation(
-        gl,
-        program,
-        'uColor',
-        false,
-      ),
+      color: getUniformLocation(gl, program, 'uColor'),
     },
   }
 }
@@ -85,23 +71,18 @@ function initGearTeethProgram(
       vertex: getAttribLocation(gl, program, 'aVertex'),
     },
     uniforms: {
-      model: getUniformLocation(
-        gl,
-        program,
-        'uModel',
-        false,
-      ),
-      view: getUniformLocation(gl, program, 'uView', false),
+      model: getUniformLocation(gl, program, 'uModel'),
+      view: getUniformLocation(gl, program, 'uView'),
       projection: getUniformLocation(
         gl,
         program,
         'uProjection',
-        false,
       ),
-      color: getUniformLocation(
+      color: getUniformLocation(gl, program, 'uColor'),
+      tileSize: getUniformLocation(
         gl,
         program,
-        'uColor',
+        'uTileSize',
         false,
       ),
     },
@@ -125,64 +106,14 @@ function initGridProgram(
         gl,
         program,
         'uViewport',
-        false,
       ),
       tileSize: getUniformLocation(
         gl,
         program,
         'uTileSize',
-        false,
       ),
-      camera: getUniformLocation(
-        gl,
-        program,
-        'uCamera',
-        false,
-      ),
-      pixelRatio: getUniformLocation(
-        gl,
-        program,
-        'uPixelRatio',
-        false,
-      ),
-      zoom: getUniformLocation(gl, program, 'uZoom', false),
-    },
-  }
-}
-
-function initMainProgram(
-  gl: WebGL2RenderingContext,
-): GpuState['programs']['main'] {
-  const program = initProgram(gl, {
-    vert: mainVert,
-    frag: mainFrag,
-  })
-  return {
-    program,
-    attributes: {
-      vertex: getAttribLocation(gl, program, 'aVertex'),
-    },
-    uniforms: {
-      model: getUniformLocation(
-        gl,
-        program,
-        'uModel',
-        false,
-      ),
-      view: getUniformLocation(gl, program, 'uView', false),
-      projection: getUniformLocation(
-        gl,
-        program,
-        'uProjection',
-        false,
-      ),
-      color: getUniformLocation(
-        gl,
-        program,
-        'uColor',
-        false,
-      ),
-      sampler: getUniformLocation(gl, program, 'uSampler'),
+      camera: getUniformLocation(gl, program, 'uCamera'),
+      zoom: getUniformLocation(gl, program, 'uZoom'),
     },
   }
 }
