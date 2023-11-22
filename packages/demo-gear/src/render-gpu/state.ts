@@ -25,6 +25,7 @@ export async function initGpuState(
     },
     buffers: {
       square: initSquareBuffer(gl),
+      gearBody: initGearBodyBuffers(gl),
     },
     textures: await initTextures(gl),
     matrices: initMatrices(),
@@ -123,6 +124,36 @@ function initMainProgram(
       sampler: getUniformLocation(gl, program, 'uSampler'),
     },
   }
+}
+
+function initGearBodyBuffers(
+  gl: WebGL2RenderingContext,
+): GpuState['buffers']['gearBody'] {
+  const buffers: GpuState['buffers']['gearBody'] = {}
+
+  for (const radius of GEAR_RADIUSES) {
+    const buffer = gl.createBuffer()
+    invariant(buffer)
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffer)
+
+    const teeth = radius * TEETH
+    const data = new Float32Array((teeth + 1) * 2 + 2)
+
+    data[0] = 0.0
+    data[1] = 0.0
+
+    for (let i = 0; i <= teeth; i++) {
+      const angle = TWO_PI * (i / teeth)
+      data[i * 2 + 0] = Math.cos(angle)
+      data[i * 2 + 1] = Math.sin(angle)
+    }
+
+    gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW)
+
+    buffers[radius] = buffer
+  }
+
+  return buffers
 }
 
 function initSquareBuffer(

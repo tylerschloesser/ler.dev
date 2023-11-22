@@ -47,6 +47,7 @@ export interface GpuState {
   }
   buffers: {
     square: WebGLBuffer
+    gearBody: Record<number, WebGLBuffer>
   }
   textures: {
     gears: Record<number, WebGLTexture>
