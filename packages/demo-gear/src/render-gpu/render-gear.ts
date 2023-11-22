@@ -1,4 +1,5 @@
 import invariant from 'tiny-invariant'
+import { TEETH } from '../const.js'
 import { Gear } from '../types.js'
 import {
   updateModel,
@@ -27,13 +28,6 @@ export function renderGearTeeth(
 
   gl.uniform4f(gearTeeth.uniforms.color, 1.0, 0.0, 0.0, 1.0)
 
-  updateToothModel(gpu.matrices, gear, zoom)
-  gl.uniformMatrix4fv(
-    gearTeeth.uniforms.model,
-    false,
-    gpu.matrices.model,
-  )
-
   const buffer = gpu.buffers.gearTooth
   gl.bindBuffer(gl.ARRAY_BUFFER, buffer)
   gl.vertexAttribPointer(
@@ -46,7 +40,16 @@ export function renderGearTeeth(
   )
   gl.enableVertexAttribArray(gearTeeth.attributes.vertex)
 
-  gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4)
+  const teeth = gear.radius * TEETH
+  for (let i = 0; i < teeth; i++) {
+    updateToothModel(gpu.matrices, gear, zoom)
+    gl.uniformMatrix4fv(
+      gearTeeth.uniforms.model,
+      false,
+      gpu.matrices.model,
+    )
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4)
+  }
 }
 
 export function renderGearBody(
