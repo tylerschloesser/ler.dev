@@ -32,6 +32,18 @@ export interface GpuState {
         sampler: WebGLUniformLocation
       }
     }
+    gearBody?: {
+      program: WebGLProgram
+      attributes: {
+        vertex: WebGLAttributeLocation
+      }
+    }
+    gearTeeth?: {
+      program: WebGLProgram
+      attributes: {
+        vertex: WebGLAttributeLocation
+      }
+    }
   }
   buffers: {
     square: WebGLBuffer
