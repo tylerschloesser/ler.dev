@@ -33,17 +33,18 @@ export function updateModel(
 export function updateToothModel(
   matrices: GpuState['matrices'],
   gear: Gear,
+  angle: number,
   zoom: number,
 ): void {
   const { model } = matrices
   mat4.identity(model)
 
-  // mat4.rotateZ(model, model, rad)
-
   v3[0] = gear.position.x
   v3[1] = gear.position.y
   v3[2] = 0
   mat4.translate(model, model, v3)
+
+  mat4.rotateZ(model, model, angle)
 
   const size = 2 - zoom
 

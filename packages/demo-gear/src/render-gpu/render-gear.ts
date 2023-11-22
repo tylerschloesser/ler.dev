@@ -1,5 +1,5 @@
 import invariant from 'tiny-invariant'
-import { TEETH } from '../const.js'
+import { TEETH, TWO_PI } from '../const.js'
 import { Gear } from '../types.js'
 import {
   updateModel,
@@ -42,7 +42,8 @@ export function renderGearTeeth(
 
   const teeth = gear.radius * TEETH
   for (let i = 0; i < teeth; i++) {
-    updateToothModel(gpu.matrices, gear, zoom)
+    const angle = TWO_PI * (i / teeth)
+    updateToothModel(gpu.matrices, gear, angle, zoom)
     gl.uniformMatrix4fv(
       gearTeeth.uniforms.model,
       false,
