@@ -48,8 +48,8 @@ export function updateToothModel(
 
   const size = 2 - zoom
 
-  const sx = (1 / 16) * size
-  const sy = (3 / 16) * size
+  const sx = (3 / 64) * size
+  const sy = (11 / 64) * size
 
   v3[0] = 0
   v3[1] = (gear.radius - sy) * -1
