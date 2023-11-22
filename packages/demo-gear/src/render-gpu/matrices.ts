@@ -1,5 +1,5 @@
 import { mat4, vec3 } from 'gl-matrix'
-import { AppState, Gear, Viewport } from '../types.js'
+import { AppState, Gear } from '../types.js'
 import { GpuState } from './types.js'
 
 export function initMatrices(): GpuState['matrices'] {
@@ -33,25 +33,30 @@ export function updateModel(
 export function updateToothModel(
   matrices: GpuState['matrices'],
   gear: Gear,
-  viewport: Viewport,
+  zoom: number,
 ): void {
   const { model } = matrices
   mat4.identity(model)
 
   // mat4.rotateZ(model, model, rad)
 
-  const size = (v3[0] = gear.position.x)
+  v3[0] = gear.position.x
   v3[1] = gear.position.y
   v3[2] = 0
   mat4.translate(model, model, v3)
 
+  const size = 2 - zoom
+
+  const sx = (1 / 16) * size
+  const sy = (1 / 4) * size
+
   v3[0] = 0
-  v3[1] = (gear.radius - 0.25) * -1
+  v3[1] = (gear.radius - sy) * -1
   v3[2] = 0
   mat4.translate(model, model, v3)
 
-  v3[0] = 0.0625
-  v3[1] = 0.25
+  v3[0] = sx
+  v3[1] = sy
   v3[2] = 1
   mat4.scale(model, model, v3)
 

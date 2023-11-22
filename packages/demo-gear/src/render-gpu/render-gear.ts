@@ -1,5 +1,5 @@
 import invariant from 'tiny-invariant'
-import { Gear, Viewport } from '../types.js'
+import { Gear } from '../types.js'
 import {
   updateModel,
   updateToothModel,
@@ -10,24 +10,24 @@ export function renderGear(
   gear: Gear,
   gl: WebGL2RenderingContext,
   gpu: GpuState,
-  viewport: Viewport,
+  zoom: number,
 ): void {
   renderGearBody(gear, gl, gpu)
-  renderGearTeeth(gear, gl, gpu, viewport)
+  renderGearTeeth(gear, gl, gpu, zoom)
 }
 
 export function renderGearTeeth(
   gear: Gear,
   gl: WebGL2RenderingContext,
   gpu: GpuState,
-  viewport: Viewport,
+  zoom: number,
 ): void {
   const { gearTeeth } = gpu.programs
   gl.useProgram(gearTeeth.program)
 
   gl.uniform4f(gearTeeth.uniforms.color, 1.0, 0.0, 0.0, 1.0)
 
-  updateToothModel(gpu.matrices, gear, viewport)
+  updateToothModel(gpu.matrices, gear, zoom)
   gl.uniformMatrix4fv(
     gearTeeth.uniforms.model,
     false,

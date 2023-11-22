@@ -44,7 +44,7 @@ function renderGears(
   gl.uniform1f(gearTeeth.uniforms.tileSize, state.tileSize)
 
   for (const gear of Object.values(state.world.gears)) {
-    renderGear(gear, gl, gpu, state.viewport)
+    renderGear(gear, gl, gpu, state.camera.zoom)
   }
 }
 
