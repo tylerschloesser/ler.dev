@@ -3,16 +3,9 @@
 precision mediump float;
 
 in vec2 aVertex;
-in vec4 aColor;
 
 uniform vec2 uPosition;
 uniform vec2 uViewport;
-uniform float uPixelRatio;
-
-uniform mat4 uView;
-uniform mat4 uProjection;
-
-uniform float uAlpha;
 
 out vec2 vPosition;
 

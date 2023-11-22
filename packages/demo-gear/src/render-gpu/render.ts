@@ -67,17 +67,13 @@ function renderGrid(
   )
   gl.enableVertexAttribArray(grid.attributes.vertex)
 
-  const { pixelRatio } = state.viewport
   gl.uniform2f(
     grid.uniforms.viewport,
-    state.viewport.size.x * pixelRatio,
-    state.viewport.size.y * pixelRatio,
+    state.viewport.size.x,
+    state.viewport.size.y,
   )
 
-  gl.uniform1f(
-    grid.uniforms.tileSize,
-    state.tileSize * pixelRatio,
-  )
+  gl.uniform1f(grid.uniforms.tileSize, state.tileSize)
 
   gl.uniform2f(
     grid.uniforms.camera,
@@ -85,7 +81,6 @@ function renderGrid(
     state.camera.position.y,
   )
 
-  gl.uniform1f(grid.uniforms.pixelRatio, pixelRatio)
   gl.uniform1f(grid.uniforms.zoom, state.camera.zoom)
 
   gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4)
