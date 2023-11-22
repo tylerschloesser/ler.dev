@@ -66,6 +66,7 @@ export interface GpuState {
         count: number
       }
     >
+    gearTooth: WebGLBuffer
   }
   textures: {
     gears: Record<number, WebGLTexture>
