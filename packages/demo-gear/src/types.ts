@@ -99,16 +99,18 @@ export interface Textures {
   gears: Record<number, Texture>
 }
 
+export interface Viewport {
+  size: SimpleVec2
+  pixelRatio: number
+}
+
 export interface AppState {
   canvas: {
     container: HTMLDivElement
     cpu: HTMLCanvasElement
     gpu: HTMLCanvasElement
   }
-  viewport: {
-    size: SimpleVec2
-    pixelRatio: number
-  }
+  viewport: Viewport
   signal: AbortSignal
   world: World
   setWorld: SetWorldFn
