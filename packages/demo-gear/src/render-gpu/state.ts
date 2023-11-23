@@ -1,6 +1,8 @@
 import invariant from 'tiny-invariant'
 import { GEAR_RADIUSES, TEETH, TWO_PI } from '../const.js'
 import { initMatrices } from './matrices.js'
+import chainFrag from './shaders/chain.frag.glsl'
+import chainVert from './shaders/chain.vert.glsl'
 import gearBodyFrag from './shaders/gear-body.frag.glsl'
 import gearBodyVert from './shaders/gear-body.vert.glsl'
 import gearTeethFrag from './shaders/gear-teeth.frag.glsl'
@@ -22,6 +24,7 @@ export async function initGpuState(
       grid: initGridProgram(gl),
       gearBody: initGearBodyProgram(gl),
       gearTeeth: initGearTeethProgram(gl),
+      chain: initChainProgram(gl),
     },
     buffers: {
       square: initSquareBuffer(gl),
@@ -30,6 +33,31 @@ export async function initGpuState(
     },
     textures: await initTextures(gl),
     matrices: initMatrices(),
+  }
+}
+
+function initChainProgram(
+  gl: WebGL2RenderingContext,
+): GpuState['programs']['chain'] {
+  const program = initProgram(gl, {
+    vert: chainVert,
+    frag: chainFrag,
+  })
+  return {
+    program,
+    attributes: {
+      vertex: getAttribLocation(gl, program, 'aVertex'),
+    },
+    uniforms: {
+      model: getUniformLocation(gl, program, 'uModel'),
+      view: getUniformLocation(gl, program, 'uView'),
+      projection: getUniformLocation(
+        gl,
+        program,
+        'uProjection',
+      ),
+      color: getUniformLocation(gl, program, 'uColor'),
+    },
   }
 }
 
