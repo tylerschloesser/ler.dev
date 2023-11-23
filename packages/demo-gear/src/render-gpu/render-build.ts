@@ -3,6 +3,7 @@ import {
   BuildHand,
   PartialGear,
 } from '../types.js'
+import { renderChain } from './render-chain.js'
 import { renderGear } from './render-gears.js'
 import { GpuState } from './types.js'
 
@@ -36,4 +37,15 @@ export function renderBuld(
     state.camera.zoom,
     build.valid ? 'green' : 'red',
   )
+
+  if (build.chain && build.valid) {
+    partial.angle = build.chain.angle
+    renderChain(
+      partial,
+      build.chain,
+      gl,
+      gpu,
+      state.camera.zoom,
+    )
+  }
 }

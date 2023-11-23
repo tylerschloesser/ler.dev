@@ -33,7 +33,7 @@ export function updateModel(
 
 export function updateChainArcModel(
   matrices: GpuState['matrices'],
-  gear: Gear,
+  gear: PartialGear,
   zoom: number,
   angle: number,
   s1: number,
@@ -80,7 +80,7 @@ export function updateChainArcModel(
 
 export function updateChainStraightModel(
   matrices: GpuState['matrices'],
-  gear: Gear,
+  gear: PartialGear,
   zoom: number,
   angle: number,
   s1: number,

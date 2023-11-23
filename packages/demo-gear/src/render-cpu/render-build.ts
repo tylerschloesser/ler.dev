@@ -54,16 +54,16 @@ export function renderBuild(
     )
   }
 
-  if (build.chain && build.valid) {
-    partial.angle = build.chain.angle
-    renderConnection(
-      context,
-      state,
-      ConnectionType.enum.Chain,
-      partial,
-      build.chain,
-      true,
-      world.debugConnections,
-    )
-  }
+  // if (build.chain && build.valid) {
+  //   partial.angle = build.chain.angle
+  //   renderConnection(
+  //     context,
+  //     state,
+  //     ConnectionType.enum.Chain,
+  //     partial,
+  //     build.chain,
+  //     true,
+  //     world.debugConnections,
+  //   )
+  // }
 }
