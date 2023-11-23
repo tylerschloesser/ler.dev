@@ -1,14 +1,43 @@
 import invariant from 'tiny-invariant'
 import { TEETH, TWO_PI } from '../const.js'
-import { Gear } from '../types.js'
+import { AppState, Gear } from '../types.js'
 import {
   updateGearBodyModel,
-  updateModel,
   updateGearToothModel,
 } from './matrices.js'
 import { GpuState } from './types.js'
 
-export function renderGear(
+export function renderGears(
+  state: AppState,
+  gl: WebGL2RenderingContext,
+  gpu: GpuState,
+) {
+  const { view, projection } = gpu.matrices
+  const { gearBody, gearTeeth } = gpu.programs
+
+  gl.useProgram(gearBody.program)
+  gl.uniformMatrix4fv(gearBody.uniforms.view, false, view)
+  gl.uniformMatrix4fv(
+    gearBody.uniforms.projection,
+    false,
+    projection,
+  )
+
+  gl.useProgram(gearTeeth.program)
+  gl.uniformMatrix4fv(gearTeeth.uniforms.view, false, view)
+  gl.uniformMatrix4fv(
+    gearTeeth.uniforms.projection,
+    false,
+    projection,
+  )
+  gl.uniform1f(gearTeeth.uniforms.tileSize, state.tileSize)
+
+  for (const gear of Object.values(state.world.gears)) {
+    renderGear(gear, gl, gpu, state.camera.zoom)
+  }
+}
+
+function renderGear(
   gear: Gear,
   gl: WebGL2RenderingContext,
   gpu: GpuState,

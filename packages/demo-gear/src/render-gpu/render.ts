@@ -6,7 +6,7 @@ import {
 import { iterateConnections } from '../util.js'
 import { updateProjection, updateView } from './matrices.js'
 import { renderChain } from './render-chain.js'
-import { renderGear } from './render-gear.js'
+import { renderGears } from './render-gear.js'
 import { renderGrid } from './render-grid.js'
 import { GpuState } from './types.js'
 
@@ -35,35 +35,5 @@ export function render(
   switch (state.hand?.type) {
     case HandType.Build: {
     }
-  }
-}
-
-function renderGears(
-  state: AppState,
-  gl: WebGL2RenderingContext,
-  gpu: GpuState,
-) {
-  const { view, projection } = gpu.matrices
-  const { gearBody, gearTeeth } = gpu.programs
-
-  gl.useProgram(gearBody.program)
-  gl.uniformMatrix4fv(gearBody.uniforms.view, false, view)
-  gl.uniformMatrix4fv(
-    gearBody.uniforms.projection,
-    false,
-    projection,
-  )
-
-  gl.useProgram(gearTeeth.program)
-  gl.uniformMatrix4fv(gearTeeth.uniforms.view, false, view)
-  gl.uniformMatrix4fv(
-    gearTeeth.uniforms.projection,
-    false,
-    projection,
-  )
-  gl.uniform1f(gearTeeth.uniforms.tileSize, state.tileSize)
-
-  for (const gear of Object.values(state.world.gears)) {
-    renderGear(gear, gl, gpu, state.camera.zoom)
   }
 }
