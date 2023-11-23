@@ -6,7 +6,7 @@ import {
 import { iterateConnections } from '../util.js'
 import { updateProjection, updateView } from './matrices.js'
 import { renderChain } from './render-chain.js'
-import { renderGears } from './render-gear.js'
+import { renderGears } from './render-gears.js'
 import { renderGrid } from './render-grid.js'
 import { GpuState } from './types.js'
 
