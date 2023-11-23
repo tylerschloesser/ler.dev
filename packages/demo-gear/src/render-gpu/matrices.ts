@@ -1,6 +1,6 @@
 import { mat4, vec3 } from 'gl-matrix'
 import { TEETH, TWO_PI } from '../const.js'
-import { AppState, Gear } from '../types.js'
+import { AppState, Gear, PartialGear } from '../types.js'
 import { GpuState } from './types.js'
 
 export function initMatrices(): GpuState['matrices'] {
@@ -117,7 +117,7 @@ export function updateChainStraightModel(
 
 export function updateGearBodyModel(
   matrices: GpuState['matrices'],
-  gear: Gear,
+  gear: PartialGear,
 ): void {
   const { model } = matrices
   mat4.identity(model)
@@ -137,7 +137,7 @@ export function updateGearBodyModel(
 
 export function updateGearToothModel(
   matrices: GpuState['matrices'],
-  gear: Gear,
+  gear: PartialGear,
   angle: number,
   zoom: number,
 ): void {
