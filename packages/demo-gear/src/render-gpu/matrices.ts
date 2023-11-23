@@ -46,6 +46,8 @@ export function updateGearBodyModel(
   v3[1] = gear.radius
   v3[2] = 0
   mat4.scale(model, model, v3)
+
+  mat4.rotateZ(model, model, gear.angle)
 }
 
 export function updateGearToothModel(
