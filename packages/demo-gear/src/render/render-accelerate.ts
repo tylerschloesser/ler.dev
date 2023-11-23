@@ -27,8 +27,10 @@ export function renderAccelerate(
     projection,
   )
 
+  const size = 0.1 + (1 - state.camera.zoom) * 0.2
+
   gl.uniform4f(outlineRect.uniforms.color, 1, 1, 1, 1)
-  gl.uniform1f(outlineRect.uniforms.size, 0.1)
+  gl.uniform1f(outlineRect.uniforms.size, size)
 
   updateModel(gpu.matrices, accelerate.gear)
   gl.uniformMatrix4fv(
