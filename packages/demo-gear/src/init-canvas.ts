@@ -1,8 +1,8 @@
 import invariant from 'tiny-invariant'
-import {zoomToTileSize} from './camera.js'
-import {render} from './render-gpu/render.js'
-import {initGpuState} from './render-gpu/state.js'
-import {AppState, InitFn} from './types.js'
+import { zoomToTileSize } from './camera.js'
+import { render } from './render/render.js'
+import { initGpuState } from './render/state.js'
+import { AppState, InitFn } from './types.js'
 
 export const initCanvas: InitFn = async (state) => {
   const { canvas, signal } = state
