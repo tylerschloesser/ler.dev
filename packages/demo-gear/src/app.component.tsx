@@ -87,10 +87,10 @@ export function App() {
 
   return (
     <div className={styles.container}>
-      {state && <Toolbar state={state} />}
       <div className={styles.canvas}>
         <Canvas setCanvas={setCanvas} />
       </div>
+      {state && <Toolbar state={state} />}
     </div>
   )
 }
