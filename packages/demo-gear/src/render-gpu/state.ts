@@ -19,6 +19,9 @@ import {
 export async function initGpuState(
   gl: WebGL2RenderingContext,
 ): Promise<GpuState> {
+  gl.enable(gl.BLEND)
+  gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
+
   return {
     programs: {
       grid: initGridProgram(gl),

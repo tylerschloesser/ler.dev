@@ -25,8 +25,8 @@ void main() {
     mod(v.y, uTileSize) < lineWidth;
 
   if (render) {
-    color = vec4(0.25, 0.25, 0.25, 1) * uZoom;
+    color = vec4(vec3(0.25) * uZoom, 1.0);
   } else {
-    color = vec4(0, 0, 0, 0);
+    color = vec4(0, 0, 0, 1);
   }
 }

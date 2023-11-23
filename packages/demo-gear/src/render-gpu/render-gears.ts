@@ -42,8 +42,9 @@ export function renderGear(
   gl: WebGL2RenderingContext,
   gpu: GpuState,
   zoom: number,
+  color: 'blue' | 'red' | 'green' = 'blue',
 ): void {
-  renderGearBody(gear, gl, gpu)
+  renderGearBody(gear, gl, gpu, color)
   renderGearTeeth(gear, gl, gpu, zoom)
 }
 
@@ -87,6 +88,7 @@ function renderGearBody(
   gear: PartialGear,
   gl: WebGL2RenderingContext,
   gpu: GpuState,
+  color: 'blue' | 'red' | 'green',
 ): void {
   const { gearBody } = gpu.programs
   gl.useProgram(gearBody.program)
@@ -98,7 +100,26 @@ function renderGearBody(
     gpu.matrices.model,
   )
 
-  gl.uniform4f(gearBody.uniforms.color, 0.0, 0.0, 1.0, 1.0)
+  switch (color) {
+    case 'blue': {
+      // prettier-ignore
+      gl.uniform4f(gearBody.uniforms.color, 0.0, 0.0, 1.0, 1.0)
+      break
+    }
+    case 'red': {
+      // prettier-ignore
+      gl.uniform4f(gearBody.uniforms.color, 1.0, 0.0, 0.0, 0.5)
+      break
+    }
+    case 'green': {
+      // prettier-ignore
+      gl.uniform4f(gearBody.uniforms.color, 0.0, 1.0, 0.0, 0.5)
+      break
+    }
+    default: {
+      invariant(false)
+    }
+  }
 
   const buffer = gpu.buffers.gearBody[gear.radius]
   invariant(buffer)

@@ -1,5 +1,4 @@
 import invariant from 'tiny-invariant'
-import { Color } from '../color.js'
 import {
   AppState,
   BuildHand,
@@ -7,7 +6,6 @@ import {
   PartialGear,
 } from '../types.js'
 import { renderConnection } from './render-connection.js'
-import { renderGear } from './render-gear.js'
 
 const partial: PartialGear = {
   angle: 0,
@@ -31,12 +29,12 @@ export function renderBuild(
   partial.position.y = build.position.y
   partial.radius = build.radius
 
-  renderGear(
-    context,
-    state,
-    partial,
-    build.valid ? Color.AddGearValid : Color.AddGearInvalid,
-  )
+  // renderGear(
+  //   context,
+  //   state,
+  //   partial,
+  //   build.valid ? Color.AddGearValid : Color.AddGearInvalid,
+  // )
 
   const { world } = state
   for (const connection of build.connections) {
