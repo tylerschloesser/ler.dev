@@ -5,6 +5,7 @@ import {
 } from '../types.js'
 import { iterateConnections } from '../util.js'
 import { updateProjection, updateView } from './matrices.js'
+import { renderAccelerate } from './render-accelerate.js'
 import { renderBuld } from './render-build.js'
 import { renderChain } from './render-chain.js'
 import { renderGears } from './render-gears.js'
@@ -37,6 +38,11 @@ export function render(
   switch (hand?.type) {
     case HandType.Build: {
       renderBuld(state, gl, gpu, hand)
+      break
+    }
+    case HandType.Accelerate: {
+      renderAccelerate(state, gl, gpu, hand)
+      break
     }
   }
 }
