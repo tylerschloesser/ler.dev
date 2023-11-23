@@ -7,7 +7,7 @@ import {
 import { Accelerate } from './accelerate.component.js'
 import { AddGear } from './add-gear.component.js'
 import { App } from './app.component.js'
-import { TouchToolbar } from './touch-toolbar.component.js'
+import { Toolbar } from './toolbar.component.js'
 
 // TODO cleanup errors
 // https://github.com/facebook/react/issues/15069
@@ -24,7 +24,7 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        Component: TouchToolbar,
+        Component: Toolbar,
       },
       {
         path: 'add-gear',

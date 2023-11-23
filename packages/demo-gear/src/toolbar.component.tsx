@@ -1,10 +1,10 @@
 import { use } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AppContext } from './context.js'
-import styles from './touch-toolbar.module.scss'
+import styles from './toolbar.module.scss'
 import { useResetWorld, useSaveWorld } from './use-world.js'
 
-export function TouchToolbar() {
+export function Toolbar() {
   const navigate = useNavigate()
   const state = use(AppContext)
   const save = useSaveWorld(state?.world)

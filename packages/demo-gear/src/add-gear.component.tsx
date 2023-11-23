@@ -4,6 +4,7 @@ import invariant from 'tiny-invariant'
 import styles from './add-gear.module.scss'
 import {
   executeBuild,
+  updateBuild,
   updateBuildPosition,
 } from './build.js'
 import { moveCamera } from './camera.js'
@@ -53,9 +54,9 @@ export function AddGear() {
     if (!state) {
       return
     }
-
     if (state.hand?.type === HandType.Build) {
       state.hand.radius = radius
+      updateBuild(state, state.hand)
     }
   }, [state, radius])
 

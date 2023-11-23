@@ -118,7 +118,7 @@ export function executeBuild(
   updateBuild(state, hand)
 }
 
-function updateBuild(
+export function updateBuild(
   state: AppState,
   hand: BuildHand,
 ): void {
