@@ -2,7 +2,10 @@ import invariant from 'tiny-invariant'
 import { TEETH, TWO_PI } from '../const.js'
 import { Gear } from '../types.js'
 import { dist } from '../util.js'
-import { updateChainArcModel } from './matrices.js'
+import {
+  updateChainArcModel,
+  updateChainStraightModel,
+} from './matrices.js'
 import { GpuState } from './types.js'
 
 export function renderChain(
@@ -58,49 +61,52 @@ export function renderChain(
   const n = Math.floor(d / (2 * s1)) * 2
   const s2 = (2 * d) / n - s1
 
-  //
-  // gear1
-  //
-  {
-    for (let i = 0; i < teeth / 2; i++) {
-      const angle = i * 2 * TWO_PI * (1 / teeth)
+  for (let i = 0; i < teeth / 2; i++) {
+    const angle = i * 2 * TWO_PI * (1 / teeth)
 
-      updateChainArcModel(
-        gpu.matrices,
-        gear1,
-        zoom,
-        angle + gear1.angle,
-        s1,
-      )
-      gl.uniformMatrix4fv(
-        chain.uniforms.model,
-        false,
-        gpu.matrices.model,
-      )
-      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4)
-    }
+    //
+    // gear1
+    //
+    updateChainArcModel(
+      gpu.matrices,
+      gear1,
+      zoom,
+      angle + gear1.angle,
+      s1,
+    )
+    gl.uniformMatrix4fv(
+      chain.uniforms.model,
+      false,
+      gpu.matrices.model,
+    )
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4)
+
+    updateChainArcModel(
+      gpu.matrices,
+      gear2,
+      zoom,
+      angle + gear2.angle,
+      s1,
+    )
+    gl.uniformMatrix4fv(
+      chain.uniforms.model,
+      false,
+      gpu.matrices.model,
+    )
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4)
   }
 
   //
-  // gear2
+  // gear1 -> gear2 (top)
   //
-  {
-    for (let i = 0; i < teeth / 2; i++) {
-      const angle = i * 2 * TWO_PI * (1 / teeth)
 
-      updateChainArcModel(
-        gpu.matrices,
-        gear2,
-        zoom,
-        angle + gear2.angle,
-        s1,
-      )
-      gl.uniformMatrix4fv(
-        chain.uniforms.model,
-        false,
-        gpu.matrices.model,
-      )
-      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4)
-    }
-  }
+  // {
+  //   updateChainStraightModel(gpu.matrices, gear2, zoom, s1)
+  //   gl.uniformMatrix4fv(
+  //     chain.uniforms.model,
+  //     false,
+  //     gpu.matrices.model,
+  //   )
+  //   gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4)
+  // }
 }
