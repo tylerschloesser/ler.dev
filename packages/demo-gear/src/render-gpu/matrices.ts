@@ -30,7 +30,25 @@ export function updateModel(
   mat4.scale(model, model, v3)
 }
 
-export function updateToothModel(
+export function updateGearBodyModel(
+  matrices: GpuState['matrices'],
+  gear: Gear,
+): void {
+  const { model } = matrices
+  mat4.identity(model)
+
+  v3[0] = gear.position.x
+  v3[1] = gear.position.y
+  v3[2] = 0
+  mat4.translate(model, model, v3)
+
+  v3[0] = gear.radius
+  v3[1] = gear.radius
+  v3[2] = 0
+  mat4.scale(model, model, v3)
+}
+
+export function updateGearToothModel(
   matrices: GpuState['matrices'],
   gear: Gear,
   angle: number,

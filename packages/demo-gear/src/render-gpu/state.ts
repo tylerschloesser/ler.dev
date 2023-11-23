@@ -156,7 +156,7 @@ function initGearBodyBuffers(
     invariant(buffer)
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer)
 
-    const teeth = radius * TEETH * 8
+    const teeth = radius * TEETH
     const data = new Float32Array((teeth + 1) * 2 + 2)
 
     data[0] = 0.0
