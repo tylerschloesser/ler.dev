@@ -1,17 +1,16 @@
 import { useEffect, useState } from 'react'
+import { Outlet } from 'react-router-dom'
 import styles from './app.module.scss'
 import { moveCamera } from './camera.js'
 import { Canvas } from './canvas.component.js'
+import { AppContext } from './context.js'
 import { initCanvas } from './init-canvas.js'
 import { initKeyboard } from './init-keyboard.js'
 import { initPointer } from './init-pointer.js'
 import { initSimulator } from './init-simulator.js'
 import { initWheel } from './init-wheel.js'
 import { useTextures } from './textures.js'
-import { Toolbar as HoverToolbar } from './toolbar.js'
-import { TouchToolbar } from './touch-toolbar.component.js'
 import { AppState, InitFn } from './types.js'
-import { useMediaQuery } from './use-media-query.js'
 import { useWorld } from './use-world.js'
 
 const INIT_FNS: InitFn[] = [
@@ -81,16 +80,16 @@ export function App() {
     }
   }, [state])
 
-  const hover = useMediaQuery('(hover: hover)')
-
-  const Toolbar = hover ? HoverToolbar : TouchToolbar
+  // const hover = useMediaQuery('(hover: hover)')
 
   return (
-    <div className={styles.container}>
-      <div className={styles.canvas}>
-        <Canvas setCanvas={setCanvas} />
+    <AppContext.Provider value={state}>
+      <div className={styles.container}>
+        <div className={styles.canvas}>
+          <Canvas setCanvas={setCanvas} />
+        </div>
+        <Outlet />
       </div>
-      {state && <Toolbar state={state} />}
-    </div>
+    </AppContext.Provider>
   )
 }

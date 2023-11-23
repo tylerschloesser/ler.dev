@@ -10,6 +10,9 @@ export function getWebpackConfig(): Configuration {
     mode: 'development',
     entry: './src/index-dev.tsx',
     devtool: 'eval-cheap-module-source-map',
+    output: {
+      publicPath: '/',
+    },
     module: {
       rules: [
         {

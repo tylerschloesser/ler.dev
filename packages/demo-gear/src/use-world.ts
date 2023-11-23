@@ -25,9 +25,7 @@ export function useWorld(): [World | null, SetWorldFn] {
 }
 
 export type SaveWorldFn = () => Promise<void>
-export function useSaveWorld(
-  world: World | null,
-): SaveWorldFn {
+export function useSaveWorld(world?: World): SaveWorldFn {
   return useCallback(async () => {
     if (world) {
       await saveWorld(world)
@@ -37,10 +35,12 @@ export function useSaveWorld(
 
 export type ResetWorldFn = () => Promise<void>
 export function useResetWorld(
-  setWorld: SetWorldFn,
+  setWorld?: SetWorldFn,
 ): ResetWorldFn {
   return useCallback(async () => {
-    await clearWorld()
-    setWorld(await getDefaultWorld())
+    if (setWorld) {
+      await clearWorld()
+      setWorld(await getDefaultWorld())
+    }
   }, [setWorld])
 }
