@@ -36,7 +36,7 @@ export function renderAccelerate(
     gpu.matrices.model,
   )
 
-  const buffer = gpu.buffers.square
+  const buffer = gpu.buffers.outlineRect
   gl.bindBuffer(gl.ARRAY_BUFFER, buffer)
   gl.vertexAttribPointer(
     outlineRect.attributes.vertex,
@@ -48,5 +48,5 @@ export function renderAccelerate(
   )
   gl.enableVertexAttribArray(outlineRect.attributes.vertex)
 
-  gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4)
+  gl.drawArrays(gl.TRIANGLE_STRIP, 0, 10)
 }
