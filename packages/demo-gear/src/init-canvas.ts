@@ -1,9 +1,8 @@
 import invariant from 'tiny-invariant'
-import { zoomToTileSize } from './camera.js'
-import { render as renderCpu } from './render-cpu/render.js'
-import { render as renderGpu } from './render-gpu/render.js'
-import { initGpuState } from './render-gpu/state.js'
-import { AppState, InitFn } from './types.js'
+import {zoomToTileSize} from './camera.js'
+import {render} from './render-gpu/render.js'
+import {initGpuState} from './render-gpu/state.js'
+import {AppState, InitFn} from './types.js'
 
 export const initCanvas: InitFn = async (state) => {
   const { canvas, signal } = state
@@ -30,8 +29,7 @@ export const initCanvas: InitFn = async (state) => {
     if (signal.aborted) {
       return
     }
-    renderGpu(state, context.gpu, gpuState)
-    renderCpu(state, context.cpu)
+    render(state, context.gpu, gpuState)
     window.requestAnimationFrame(handleFrame)
   }
   window.requestAnimationFrame(handleFrame)
