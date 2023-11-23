@@ -1,5 +1,7 @@
-import { AppState } from '../types.js'
+import { AppState, ConnectionType } from '../types.js'
+import { iterateConnections } from '../util.js'
 import { updateProjection, updateView } from './matrices.js'
+import { renderChain } from './render-chain.js'
 import { renderGear } from './render-gear.js'
 import { GpuState } from './types.js'
 
@@ -16,6 +18,14 @@ export function render(
 
   renderGrid(state, gl, gpu)
   renderGears(state, gl, gpu)
+
+  for (const { gear1, gear2, type } of iterateConnections(
+    state.world.gears,
+  )) {
+    if (type === ConnectionType.enum.Chain) {
+      renderChain(gear1, gear2, gl, gpu)
+    }
+  }
 }
 
 function renderGears(

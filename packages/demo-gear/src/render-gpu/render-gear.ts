@@ -17,7 +17,7 @@ export function renderGear(
   renderGearTeeth(gear, gl, gpu, zoom)
 }
 
-export function renderGearTeeth(
+function renderGearTeeth(
   gear: Gear,
   gl: WebGL2RenderingContext,
   gpu: GpuState,
@@ -53,7 +53,7 @@ export function renderGearTeeth(
   }
 }
 
-export function renderGearBody(
+function renderGearBody(
   gear: Gear,
   gl: WebGL2RenderingContext,
   gpu: GpuState,
