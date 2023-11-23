@@ -5,6 +5,7 @@
     "start": "NODE_NO_WARNINGS=1 NODE_OPTIONS=\"--loader ts-node/esm\" webpack serve"
   },
   "exports": "./src/index.tsx",
+  "files": ["./src/render-gpu/shaders/glsl.d.ts"],
   "dependencies": {
     "@ler.dev/dev": "*",
     "@ler.dev/tsconfig": "*",
