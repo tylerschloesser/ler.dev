@@ -1,7 +1,8 @@
 import invariant from 'tiny-invariant'
 import { TEETH, TWO_PI } from '../const.js'
 import { Gear } from '../types.js'
-import { updateChainModel } from './matrices.js'
+import { dist } from '../util.js'
+import { updateChainArcModel } from './matrices.js'
 import { GpuState } from './types.js'
 
 export function renderChain(
@@ -47,6 +48,16 @@ export function renderChain(
     2 *
     (gear1.radius * Math.sin((TWO_PI * (1 / teeth)) / 2))
 
+  const d = dist(
+    gear1.position.x,
+    gear1.position.y,
+    gear2.position.x,
+    gear2.position.y,
+  )
+
+  const n = Math.floor(d / (2 * s1)) * 2
+  const s2 = (2 * d) / n - s1
+
   //
   // gear1
   //
@@ -54,7 +65,7 @@ export function renderChain(
     for (let i = 0; i < teeth / 2; i++) {
       const angle = i * 2 * TWO_PI * (1 / teeth)
 
-      updateChainModel(
+      updateChainArcModel(
         gpu.matrices,
         gear1,
         zoom,
@@ -77,7 +88,7 @@ export function renderChain(
     for (let i = 0; i < teeth / 2; i++) {
       const angle = i * 2 * TWO_PI * (1 / teeth)
 
-      updateChainModel(
+      updateChainArcModel(
         gpu.matrices,
         gear2,
         zoom,

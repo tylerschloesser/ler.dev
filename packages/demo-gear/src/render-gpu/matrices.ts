@@ -31,12 +31,12 @@ export function updateModel(
   mat4.scale(model, model, v3)
 }
 
-export function updateChainModel(
+export function updateChainArcModel(
   matrices: GpuState['matrices'],
   gear: Gear,
   zoom: number,
   angle: number,
-  s1: number
+  s1: number,
 ): void {
   const { model } = matrices
   mat4.identity(model)
