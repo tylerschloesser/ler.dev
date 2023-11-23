@@ -8,6 +8,8 @@
   flex-direction: column-reverse;
 
   position: relative;
+
+  touch-action: pan-x pan-y;
 }
 
 .canvas {
