@@ -50,7 +50,10 @@ export const initSimulator: InitFn = async (state) => {
 
     for (const gear of Object.values(world.gears)) {
       gear.angle =
-        (gear.angle + gear.velocity * elapsed) % TWO_PI
+        (gear.angle + gear.velocity * elapsed + TWO_PI) %
+        TWO_PI
+      invariant(gear.angle >= 0)
+      invariant(gear.angle < TWO_PI)
     }
   }
 

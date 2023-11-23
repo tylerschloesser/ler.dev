@@ -29,19 +29,19 @@ export function render(
   //   renderGear(context, state, gear)
   // }
 
-  for (const { gear1, gear2, type } of iterateConnections(
-    state.world.gears,
-  )) {
-    renderConnection(
-      context,
-      state,
-      type,
-      gear1,
-      gear2,
-      true,
-      state.world.debugConnections,
-    )
-  }
+  // for (const { gear1, gear2, type } of iterateConnections(
+  //   state.world.gears,
+  // )) {
+  //   renderConnection(
+  //     context,
+  //     state,
+  //     type,
+  //     gear1,
+  //     gear2,
+  //     true,
+  //     state.world.debugConnections,
+  //   )
+  // }
 
   switch (hand?.type) {
     case HandType.Build: {

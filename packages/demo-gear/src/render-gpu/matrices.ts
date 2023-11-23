@@ -69,11 +69,11 @@ export function updateChainArcModel(
   mat4.translate(model, model, v3)
 
   const size = 2 - zoom
-  const sx = s1 / 2
-  const sy = 0.02 * size
+  const sx = s1
+  const sy = 0.04 * size
 
-  v3[0] = sx
-  v3[1] = sy
+  v3[0] = sx / 2
+  v3[1] = sy / 2
   v3[2] = 1
   mat4.scale(model, model, v3)
 }
@@ -82,7 +82,9 @@ export function updateChainStraightModel(
   matrices: GpuState['matrices'],
   gear: Gear,
   zoom: number,
+  angle: number,
   s1: number,
+  dx: number,
 ): void {
   const { model } = matrices
   mat4.identity(model)
@@ -91,6 +93,26 @@ export function updateChainStraightModel(
   v3[1] = gear.position.y
   v3[2] = 0
   mat4.translate(model, model, v3)
+
+  mat4.rotateZ(model, model, angle)
+
+  const teeth = gear.radius * TEETH
+  const dy =
+    gear.radius * Math.cos((TWO_PI * (1 / teeth)) / 2)
+
+  const size = 2 - zoom
+  const sx = s1
+  const sy = 0.04 * size
+
+  v3[0] = dx
+  v3[1] = -dy
+  v3[2] = 0
+  mat4.translate(model, model, v3)
+
+  v3[0] = sx / 2
+  v3[1] = sy / 2
+  v3[2] = 1
+  mat4.scale(model, model, v3)
 }
 
 export function updateGearBodyModel(
