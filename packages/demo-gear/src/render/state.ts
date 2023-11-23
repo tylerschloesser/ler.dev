@@ -9,6 +9,8 @@ import gearTeethFrag from './shaders/gear-teeth.frag.glsl'
 import gearTeethVert from './shaders/gear-teeth.vert.glsl'
 import gridFrag from './shaders/grid.frag.glsl'
 import gridVert from './shaders/grid.vert.glsl'
+import outlineRectFrag from './shaders/outline-rect.frag.glsl'
+import outlineRectVert from './shaders/outline-rect.vert.glsl'
 import { GpuState } from './types.js'
 import {
   getAttribLocation,
@@ -28,11 +30,13 @@ export async function initGpuState(
       gearBody: initGearBodyProgram(gl),
       gearTeeth: initGearTeethProgram(gl),
       chain: initChainProgram(gl),
+      outlineRect: initOutlineRectProgram(gl),
     },
     buffers: {
       square: initSquareBuffer(gl),
       gearBody: initGearBodyBuffers(gl),
       gearTooth: initGearToothBuffer(gl),
+      outlineRect: initOutlineRectBuffer(gl),
     },
     textures: await initTextures(gl),
     matrices: initMatrices(),
@@ -149,6 +153,31 @@ function initGridProgram(
   }
 }
 
+function initOutlineRectProgram(
+  gl: WebGL2RenderingContext,
+): GpuState['programs']['outlineRect'] {
+  const program = initProgram(gl, {
+    vert: outlineRectVert,
+    frag: outlineRectFrag,
+  })
+  return {
+    program,
+    attributes: {
+      vertex: getAttribLocation(gl, program, 'aVertex'),
+    },
+    uniforms: {
+      model: getUniformLocation(gl, program, 'uModel'),
+      view: getUniformLocation(gl, program, 'uView'),
+      projection: getUniformLocation(
+        gl,
+        program,
+        'uProjection',
+      ),
+      color: getUniformLocation(gl, program, 'uColor'),
+    },
+  }
+}
+
 function initGearBodyBuffers(
   gl: WebGL2RenderingContext,
 ): GpuState['buffers']['gearBody'] {
@@ -183,6 +212,26 @@ function initGearBodyBuffers(
 }
 
 function initSquareBuffer(
+  gl: WebGL2RenderingContext,
+): WebGLBuffer {
+  const buffer = gl.createBuffer()
+  invariant(buffer)
+  gl.bindBuffer(gl.ARRAY_BUFFER, buffer)
+  gl.bufferData(
+    gl.ARRAY_BUFFER,
+    // prettier-ignore
+    new Float32Array([
+      -1.0, -1.0,
+      -1.0, 1.0,
+      1.0, -1.0,
+      1.0, 1.0,
+    ]),
+    gl.STATIC_DRAW,
+  )
+  return buffer
+}
+
+function initOutlineRectBuffer(
   gl: WebGL2RenderingContext,
 ): WebGLBuffer {
   const buffer = gl.createBuffer()

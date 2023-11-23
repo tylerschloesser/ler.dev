@@ -55,9 +55,22 @@ export interface GpuState {
         color: WebGLUniformLocation
       }
     }
+    outlineRect: {
+      program: WebGLProgram
+      attributes: {
+        vertex: WebGLAttributeLocation
+      }
+      uniforms: {
+        model: WebGLUniformLocation
+        view: WebGLUniformLocation
+        projection: WebGLUniformLocation
+        color: WebGLUniformLocation
+      }
+    }
   }
   buffers: {
     square: WebGLBuffer
+    outlineRect: WebGLBuffer
     gearBody: Record<
       number,
       {
