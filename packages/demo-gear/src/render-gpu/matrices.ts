@@ -68,9 +68,9 @@ export function updateChainArcModel(
   v3[2] = 0
   mat4.translate(model, model, v3)
 
-  const size = 2 - zoom
+  const size = getSize(zoom)
   const sx = s1
-  const sy = 0.04 * size
+  const sy = 0.05 * size
 
   v3[0] = sx / 2
   v3[1] = sy / 2
@@ -100,9 +100,9 @@ export function updateChainStraightModel(
   const dy =
     gear.radius * Math.cos((TWO_PI * (1 / teeth)) / 2)
 
-  const size = 2 - zoom
+  const size = getSize(zoom)
   const sx = s1
-  const sy = 0.04 * size
+  const sy = 0.05 * size
 
   v3[0] = dx
   v3[1] = -dy
@@ -151,10 +151,9 @@ export function updateGearToothModel(
 
   mat4.rotateZ(model, model, angle)
 
-  const size = 2 - zoom
-
-  const sx = 0.04 * size
-  const sy = 0.15 * size
+  const size = getSize(zoom)
+  const sx = 0.05 * size
+  const sy = 0.12 * size
 
   v3[0] = 0
   v3[1] = (gear.radius - sy) * -1
@@ -223,4 +222,8 @@ export function updateProjection(
   v3[1] = 1 / state.viewport.size.y
   v3[2] = 0
   mat4.scale(projection, projection, v3)
+}
+
+function getSize(zoom: number): number {
+  return 4 - zoom * 3
 }
