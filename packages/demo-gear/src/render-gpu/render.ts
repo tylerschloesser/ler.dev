@@ -23,7 +23,7 @@ export function render(
     state.world.gears,
   )) {
     if (type === ConnectionType.enum.Chain) {
-      renderChain(gear1, gear2, gl, gpu)
+      renderChain(gear1, gear2, gl, gpu, state.camera.zoom)
     }
   }
 }
