@@ -6,4 +6,16 @@ export function renderChain(
   gear2: Gear,
   gl: WebGL2RenderingContext,
   gpu: GpuState,
-): void {}
+): void {
+  const { chain } = gpu.programs
+  gl.useProgram(chain.program)
+
+  const { view, projection } = gpu.matrices
+
+  gl.uniformMatrix4fv(chain.uniforms.view, false, view)
+  gl.uniformMatrix4fv(
+    chain.uniforms.projection,
+    false,
+    projection,
+  )
+}
