@@ -28,6 +28,7 @@ export function renderAccelerate(
   )
 
   gl.uniform4f(outlineRect.uniforms.color, 1, 1, 1, 1)
+  gl.uniform1f(outlineRect.uniforms.size, 0.1)
 
   updateModel(gpu.matrices, accelerate.gear)
   gl.uniformMatrix4fv(

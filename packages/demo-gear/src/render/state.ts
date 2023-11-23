@@ -174,6 +174,7 @@ function initOutlineRectProgram(
         'uProjection',
       ),
       color: getUniformLocation(gl, program, 'uColor'),
+      size: getUniformLocation(gl, program, 'uSize'),
     },
   }
 }

@@ -7,6 +7,7 @@ in vec2 aVertex;
 uniform mat4 uModel;
 uniform mat4 uView;
 uniform mat4 uProjection;
+uniform float uSize;
 
 void main() {
   mat4 test = mat4(1.0);
@@ -27,7 +28,7 @@ void main() {
     }
 
     // TODO scale with zoom
-    test[3] = vec4(d * 0.1, 0.0, 1.0);
+    test[3] = vec4(d * uSize, 0.0, 1.0);
   }
 
   mat4 mvp = uProjection * uView * test * uModel;
