@@ -70,7 +70,7 @@ export function AddGear() {
       <button
         className={styles.button}
         onPointerUp={() => {
-          navigate('/')
+          navigate('..')
         }}
       >
         Cancel

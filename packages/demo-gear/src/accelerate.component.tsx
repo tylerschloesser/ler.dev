@@ -54,7 +54,7 @@ export function Accelerate() {
       <button
         className={styles.button}
         onPointerUp={() => {
-          navigate('/')
+          navigate('..')
         }}
       >
         Back
