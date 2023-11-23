@@ -125,10 +125,6 @@ export function renderChain(
     }
   }
 
-  //
-  // gear1 -> gear2 (top)
-  //
-
   gl.uniform4f(chain.uniforms.color, 1.0, 1.0, 1.0, 1.0)
   {
     for (let i = 0; i < n / 2; i++) {
