@@ -9,7 +9,7 @@ const DEFAULT_CAMERA: Camera = {
 function loadCamera(): Camera {
   const json = localStorage.getItem('camera')
   if (json) {
-    return JSON.parse(json)
+    return Camera.parse(JSON.parse(json))
   }
   return DEFAULT_CAMERA
 }
