@@ -1,8 +1,12 @@
 import { Camera } from './types.js'
 
-export function useCamera(): Camera {
+export function useCamera(): {
+  camera: Camera
+} {
   return {
-    position: { x: 0, y: 0 },
-    zoom: 0.5,
+    camera: {
+      position: { x: 0, y: 0 },
+      zoom: 0.5,
+    },
   }
 }
