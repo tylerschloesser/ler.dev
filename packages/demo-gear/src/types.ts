@@ -93,12 +93,6 @@ export type PointerListenerFn = (
 ) => void
 export type CameraListenerFn = (state: AppState) => void
 
-type Texture = Blob
-
-export interface Textures {
-  gears: Record<number, Texture>
-}
-
 export interface Viewport {
   size: SimpleVec2
   pixelRatio: number
@@ -121,8 +115,6 @@ export interface AppState {
 
   pointerListeners: Set<PointerListenerFn>
   cameraListeners: Set<CameraListenerFn>
-
-  textures: Textures
 }
 
 export type InitFn = (state: AppState) => Promise<void>

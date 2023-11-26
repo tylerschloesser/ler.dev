@@ -9,7 +9,6 @@ import { initKeyboard } from './init-keyboard.js'
 import { initPointer } from './init-pointer.js'
 import { initSimulator } from './init-simulator.js'
 import { initWheel } from './init-wheel.js'
-import { useTextures } from './textures.js'
 import { AppState, InitFn } from './types.js'
 import { useWorld } from './use-world.js'
 
@@ -30,9 +29,8 @@ function useAppState(
 ): AppState | null {
   const [state, setState] = useState<AppState | null>(null)
   const [world, setWorld] = useWorld()
-  const textures = useTextures()
   useEffect(() => {
-    if (!canvas || !world || !textures) {
+    if (!canvas || !world) {
       return
     }
     const controller = new AbortController()
@@ -53,12 +51,11 @@ function useAppState(
       tileSize: 0,
       pointerListeners: new Set([moveCamera]),
       cameraListeners: new Set(),
-      textures,
     })
     return () => {
       controller.abort()
     }
-  }, [canvas, world, textures])
+  }, [canvas, world ])
 
   return state
 }
