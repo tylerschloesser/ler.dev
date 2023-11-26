@@ -81,9 +81,6 @@ export interface GpuState {
     >
     gearTooth: WebGLBuffer
   }
-  textures: {
-    gears: Record<number, WebGLTexture>
-  }
   matrices: {
     model: mat4
     view: mat4

@@ -38,7 +38,6 @@ export async function initGpuState(
       gearTooth: initGearToothBuffer(gl),
       outlineRect: initOutlineRectBuffer(gl),
     },
-    textures: await initTextures(gl),
     matrices: initMatrices(),
   }
 }
@@ -280,82 +279,4 @@ function initGearToothBuffer(
     gl.STATIC_DRAW,
   )
   return buffer
-}
-
-async function initTextures(
-  gl: WebGL2RenderingContext,
-): Promise<GpuState['textures']> {
-  const gears: GpuState['textures']['gears'] = {}
-
-  const canvas = document.createElement('canvas')
-
-  const context = canvas.getContext('2d')
-  invariant(context)
-
-  // TODO
-  const scale = 100
-
-  for (const radius of GEAR_RADIUSES) {
-    const vx = radius * 2 * scale
-    const vy = radius * 2 * scale
-    canvas.width = vx
-    canvas.height = vy
-    context.clearRect(0, 0, vx, vy)
-
-    context.translate(vx / 2, vy / 2)
-
-    context.fillStyle = 'blue'
-    context.beginPath()
-    context.arc(0, 0, radius * scale, 0, TWO_PI)
-    context.fill()
-    context.closePath()
-
-    context.beginPath()
-    context.lineWidth = 4
-    context.strokeStyle = 'white'
-
-    const teeth = radius * TEETH
-    for (let i = 0; i < teeth; i++) {
-      context.save()
-      context.rotate((i / teeth) * TWO_PI)
-      context.moveTo((radius - 0.25) * scale, 0)
-      context.lineTo(radius * scale, 0)
-      context.stroke()
-      context.restore()
-    }
-
-    context.closePath()
-
-    const image = await createImageBitmap(canvas)
-
-    const texture = gl.createTexture()
-    invariant(texture)
-    gl.bindTexture(gl.TEXTURE_2D, texture)
-
-    gl.texImage2D(
-      gl.TEXTURE_2D,
-      0,
-      gl.RGBA,
-      vx,
-      vy,
-      0,
-      gl.RGBA,
-      gl.UNSIGNED_BYTE,
-      image,
-    )
-    gl.texParameteri(
-      gl.TEXTURE_2D,
-      gl.TEXTURE_MIN_FILTER,
-      gl.LINEAR,
-    )
-    gl.texParameteri(
-      gl.TEXTURE_2D,
-      gl.TEXTURE_MAG_FILTER,
-      gl.LINEAR,
-    )
-
-    gears[radius] = texture
-  }
-
-  return { gears }
 }
