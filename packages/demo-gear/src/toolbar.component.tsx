@@ -2,13 +2,15 @@ import { use } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AppContext } from './context.js'
 import styles from './toolbar.module.scss'
+import { resetCamera } from './use-camera.js'
 import { useResetWorld, useSaveWorld } from './use-world.js'
 
 export function Toolbar() {
   const navigate = useNavigate()
   const state = use(AppContext)
   const save = useSaveWorld(state?.world)
-  const reset = useResetWorld(state?.setWorld)
+
+  const resetWorld = useResetWorld(state?.setWorld)
 
   return (
     <div className={styles.container}>
@@ -19,7 +21,11 @@ export function Toolbar() {
         className={styles.button}
         onPointerUp={() => {
           if (self.confirm('Are you sure?')) {
-            reset()
+            resetWorld()
+            // TODO race condition here if
+            // camera is moved & saved before
+            // world is reset
+            resetCamera()
           }
         }}
       >
