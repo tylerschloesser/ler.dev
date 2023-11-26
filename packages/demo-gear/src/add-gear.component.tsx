@@ -46,7 +46,7 @@ export function AddGear() {
 
     return () => {
       state.hand = null
-      state.cameraListeners.clear()
+      state.cameraListeners.delete(cameraListener)
     }
   }, [state])
 

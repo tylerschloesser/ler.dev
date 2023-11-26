@@ -30,7 +30,7 @@ function useAppState(
 ): AppState | null {
   const [state, setState] = useState<AppState | null>(null)
   const [world, setWorld] = useWorld()
-  const { camera } = useCamera()
+  const { camera, saveCamera } = useCamera()
   useEffect(() => {
     if (!canvas || !world) {
       return
@@ -49,7 +49,9 @@ function useAppState(
       hand: null,
       tileSize: 0,
       pointerListeners: new Set([moveCamera]),
-      cameraListeners: new Set(),
+      cameraListeners: new Set([
+        (state) => saveCamera(state.camera),
+      ]),
     })
     return () => {
       controller.abort()

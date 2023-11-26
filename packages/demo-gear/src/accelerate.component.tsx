@@ -41,7 +41,7 @@ export function Accelerate() {
     state.cameraListeners.add(cameraListener)
     return () => {
       state.hand = null
-      state.cameraListeners.clear()
+      state.cameraListeners.delete(cameraListener)
     }
   }, [state])
 

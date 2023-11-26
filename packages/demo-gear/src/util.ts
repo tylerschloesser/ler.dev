@@ -217,3 +217,30 @@ export function dist(
 ): number {
   return Math.sqrt((ax - bx) ** 2 + (ay - by) ** 2)
 }
+
+const cache = new Map()
+export function throttle<A extends Array<unknown>>(
+  fn: (...args: A) => void,
+  ms: number,
+): (...args: A) => void {
+  let timeout: number | undefined
+  let use: A
+
+  const cached = cache.get(fn)
+  if (cached) {
+    return cached
+  }
+
+  const throttled = (...args: A) => {
+    use = args
+    if (!timeout) {
+      timeout = self.setTimeout(() => {
+        fn(...use)
+        timeout = undefined
+      }, ms)
+    }
+  }
+
+  cache.set(fn, throttled)
+  return throttled
+}
