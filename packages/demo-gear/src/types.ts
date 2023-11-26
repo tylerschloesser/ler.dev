@@ -81,10 +81,11 @@ export type Hand = BuildHand | AccelerateHand
 
 export type SetWorldFn = (world: World) => void
 
-export interface Camera {
-  position: SimpleVec2
-  zoom: number
-}
+export const Camera = z.strictObject({
+  position: SimpleVec2,
+  zoom: z.number(),
+})
+export type Camera = z.infer<typeof Camera>
 
 export type PointerListenerFn = (
   state: AppState,
