@@ -10,6 +10,7 @@ import { initPointer } from './init-pointer.js'
 import { initSimulator } from './init-simulator.js'
 import { initWheel } from './init-wheel.js'
 import { AppState, InitFn } from './types.js'
+import { useCamera } from './use-camera.js'
 import { useWorld } from './use-world.js'
 
 const INIT_FNS: InitFn[] = [
@@ -29,6 +30,7 @@ function useAppState(
 ): AppState | null {
   const [state, setState] = useState<AppState | null>(null)
   const [world, setWorld] = useWorld()
+  const camera = useCamera()
   useEffect(() => {
     if (!canvas || !world) {
       return
@@ -43,10 +45,7 @@ function useAppState(
       world,
       setWorld,
       signal: controller.signal,
-      camera: {
-        position: { x: 0, y: 0 },
-        zoom: 0.5,
-      },
+      camera,
       hand: null,
       tileSize: 0,
       pointerListeners: new Set([moveCamera]),
@@ -55,7 +54,7 @@ function useAppState(
     return () => {
       controller.abort()
     }
-  }, [canvas, world ])
+  }, [canvas, world])
 
   return state
 }
