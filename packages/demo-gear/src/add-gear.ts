@@ -14,7 +14,7 @@ import {
 export function addChainConnection(
   gear1: Gear,
   gear2: Gear,
-  state: AppState,
+  _state: AppState,
 ): void {
   // TODO validate
   gear1.connections.push({
