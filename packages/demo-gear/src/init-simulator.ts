@@ -52,8 +52,6 @@ export const initSimulator: InitFn = async (state) => {
       gear.angle =
         (gear.angle + gear.velocity * elapsed + TWO_PI) %
         TWO_PI
-      invariant(gear.angle >= 0)
-      invariant(gear.angle < TWO_PI)
     }
 
     if (state.hand?.type === HandType.Build) {
@@ -61,8 +59,6 @@ export const initSimulator: InitFn = async (state) => {
       hand.angle =
         (hand.angle + hand.velocity * elapsed + TWO_PI) %
         TWO_PI
-      invariant(hand.angle >= 0)
-      invariant(hand.angle < TWO_PI)
     }
   }
 
@@ -70,6 +66,7 @@ export const initSimulator: InitFn = async (state) => {
     try {
       tick()
     } catch (e) {
+      console.error(e)
       self.clearInterval(interval)
       self.alert('Gears broke ☹️. Refresh to try again...')
     }
