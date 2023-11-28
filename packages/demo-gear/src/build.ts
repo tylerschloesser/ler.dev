@@ -160,30 +160,41 @@ export function updateBuild(
       hand.radius,
       state.world,
     )
-
-    if (hand.connections.length === 1) {
-      const connection = hand.connections.at(0)
-      invariant(
-        connection?.type === ConnectionType.enum.Adjacent,
-      )
-      const peer = state.world.gears[connection.gearId]
-      invariant(peer)
-
-      hand.angle = TWO_PI - peer.angle
-      hand.velocity = peer.velocity * -1
-    } else {
-      if (hand.connections.length > 1) {
-        invariant(
-          false,
-          'Handle more than two connections here',
-        )
-      }
-
-      hand.velocity = 0
-    }
   } else {
     hand.velocity = 0
     hand.connections = []
+  }
+
+  if (hand.connections.length === 1) {
+    const connection = hand.connections.at(0)
+    invariant(connection)
+    const peer = state.world.gears[connection.gearId]
+    invariant(peer)
+
+    // TODO this is duplicated in init-simulator
+    let n
+    switch (connection.type) {
+      case ConnectionType.enum.Adjacent:
+        n = (peer.radius / hand.radius) * -1
+        break
+      case ConnectionType.enum.Chain:
+        n = peer.radius / hand.radius
+        break
+      case ConnectionType.enum.Attach:
+        n = 1
+    }
+
+    hand.angle = peer.angle * n
+    hand.velocity = peer.velocity * n
+  } else {
+    if (hand.connections.length > 1) {
+      invariant(
+        false,
+        'Handle more than two connections here',
+      )
+    }
+
+    hand.velocity = 0
   }
 
   if (hand.valid !== valid) {

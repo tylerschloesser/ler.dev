@@ -103,6 +103,7 @@ function accelerateGear({
     to: Gear
     type: ConnectionType
   }): void {
+    // TODO this is duplicated in build
     let n
     switch (type) {
       case ConnectionType.enum.Adjacent:
