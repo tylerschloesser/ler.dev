@@ -16,7 +16,7 @@ const partial: PartialGear = {
   radius: 0,
 }
 
-export function renderBuld(
+export function renderBuild(
   state: AppState,
   gl: WebGL2RenderingContext,
   gpu: GpuState,

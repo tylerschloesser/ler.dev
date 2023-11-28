@@ -168,17 +168,19 @@ export function updateBuild(
   hand.connections = []
 
   if (valid) {
-    hand.connections.push(
-      ...getAdjacentConnections(
-        hand.position,
-        hand.radius,
-        state.world,
-      ),
-    )
-    if (attach) {
+    // TODO not super graceful, but the order of connections
+    // matters here...
+    //
+    // Chain connections must be first, so that they're rendered
+    // with the correct angles...
+    //
+    // Additionally, the "source" chain takes precendence over
+    // that "target" chain, when applicable, for the same reason.
+    //
+    if (hand.chain) {
       hand.connections.push({
-        type: ConnectionType.enum.Attach,
-        gearId: attach.id,
+        type: ConnectionType.enum.Chain,
+        gearId: hand.chain.id,
       })
     }
     if (chain) {
@@ -187,11 +189,24 @@ export function updateBuild(
         gearId: chain.id,
       })
     }
-  } else {
-    hand.velocity = 0
+    if (attach) {
+      hand.connections.push({
+        type: ConnectionType.enum.Attach,
+        gearId: attach.id,
+      })
+    }
+    hand.connections.push(
+      ...getAdjacentConnections(
+        hand.position,
+        hand.radius,
+        state.world,
+      ),
+    )
   }
 
-  if (hand.connections.length === 1) {
+  if (hand.connections.length > 0) {
+    // TODO handle more than one connection
+
     const connection = hand.connections.at(0)
     invariant(connection)
     const peer = state.world.gears[connection.gearId]
@@ -213,13 +228,7 @@ export function updateBuild(
     hand.angle = peer.angle * n
     hand.velocity = peer.velocity * n
   } else {
-    if (hand.connections.length > 1) {
-      invariant(
-        false,
-        'Handle more than two connections here',
-      )
-    }
-
+    hand.angle = 0
     hand.velocity = 0
   }
 
