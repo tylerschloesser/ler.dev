@@ -1,22 +1,7 @@
-import {
-  AppState,
-  BuildHand,
-  PartialGear,
-} from '../types.js'
+import { AppState, BuildHand } from '../types.js'
 import { renderChain } from './render-chain.js'
 import { renderGear } from './render-gears.js'
 import { GpuState } from './types.js'
-
-const partial: PartialGear = {
-  angle: 0,
-  position: {
-    x: 0,
-    y: 0,
-  },
-  radius: 0,
-  connections: [],
-  velocity: 0,
-}
 
 export function renderBuild(
   state: AppState,
@@ -24,17 +9,11 @@ export function renderBuild(
   gpu: GpuState,
   build: BuildHand,
 ) {
-  if (!build.position) {
+  if (!build.gear) {
     return
   }
-
-  partial.position.x = build.position.x
-  partial.position.y = build.position.y
-  partial.radius = build.radius
-  partial.angle = build.angle
-
   renderGear(
-    partial,
+    build.gear,
     gl,
     gpu,
     state.camera.zoom,
@@ -43,7 +22,7 @@ export function renderBuild(
 
   if (build.chain && build.valid) {
     renderChain(
-      partial,
+      build.gear,
       build.chain,
       gl,
       gpu,

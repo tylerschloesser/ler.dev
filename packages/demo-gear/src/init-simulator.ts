@@ -55,10 +55,13 @@ export const initSimulator: InitFn = async (state) => {
         TWO_PI
     }
 
-    if (state.hand?.type === HandType.Build) {
-      const { hand } = state
-      hand.angle =
-        (hand.angle + hand.velocity * elapsed + TWO_PI) %
+    if (
+      state.hand?.type === HandType.Build &&
+      state.hand.gear
+    ) {
+      const { gear } = state.hand
+      gear.angle =
+        (gear.angle + gear.velocity * elapsed + TWO_PI) %
         TWO_PI
     }
   }
@@ -85,11 +88,19 @@ export function isNetworkValid(
   world: World,
 ): boolean {
   const seen = new Set<PartialGear>()
-  function recurse(
-    from: PartialGear | null,
-    to: PartialGear,
-    type: ConnectionType | null,
-  ): boolean {
+
+  const stack = new Array<{
+    from: PartialGear | null
+    to: PartialGear
+    type: ConnectionType | null
+  }>()
+  stack.push({ from: null, to: root, type: null })
+
+  while (stack.length) {
+    const next = stack.pop()
+    invariant(next)
+    const { from, to, type } = next
+
     if (from) {
       invariant(type)
       let n
@@ -106,7 +117,10 @@ export function isNetworkValid(
 
       if (seen.has(to)) {
         const diff = to.velocity - from.velocity * n
-        return Math.abs(diff) < Number.EPSILON * 1e2
+        if (Math.abs(diff) > Number.EPSILON * 1e2) {
+          return false
+        }
+        continue
       }
     }
     seen.add(to)
@@ -114,15 +128,14 @@ export function isNetworkValid(
     for (const connection of to.connections) {
       const toto = world.gears[connection.gearId]
       invariant(toto)
-      if (!recurse(to, toto, connection.type)) {
-        return false
-      }
+      stack.push({
+        from: to,
+        to: toto,
+        type: connection.type,
+      })
     }
-
-    return true
   }
-
-  return recurse(null, root, null)
+  return true
 }
 
 function accelerateGear({

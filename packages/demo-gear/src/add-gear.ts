@@ -1,15 +1,11 @@
 import invariant from 'tiny-invariant'
 import {
   AppState,
-  Connection,
   ConnectionType,
   Gear,
-  SimpleVec2,
+  PartialGear,
 } from './types.js'
-import {
-  iterateGearTileIds,
-  iterateNetwork,
-} from './util.js'
+import { iterateGearTileIds } from './util.js'
 
 export function addChainConnection(
   gear1: Gear,
@@ -28,16 +24,15 @@ export function addChainConnection(
 }
 
 export function addGear(
-  position: SimpleVec2,
-  radius: number,
-  angle: number,
-  velocity: number,
+  partial: PartialGear,
   chain: Gear | null,
   attach: Gear | null,
-  connections: Connection[],
   state: AppState,
 ): void {
   const { world } = state
+
+  const { position, radius, connections, angle, velocity } =
+    partial
 
   const gearId = `${position.x}.${position.y}.${radius}`
   invariant(world.gears[gearId] === undefined)

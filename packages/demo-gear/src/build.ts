@@ -7,7 +7,6 @@ import {
   ConnectionType,
   Gear,
   HandType,
-  PartialGear,
   PointerListenerFn,
 } from './types.js'
 import {
@@ -21,27 +20,27 @@ const handlePointer: PointerListenerFn = (
   e,
   position,
 ) => {
-  const { hand } = state
-  invariant(hand?.type === HandType.Build)
+  invariant(state.hand?.type === HandType.Build)
+  const { gear } = state.hand
   switch (e.type) {
     case 'pointermove': {
       const tileX = Math.floor(position.x + 0.5)
       const tileY = Math.floor(position.y + 0.5)
       if (
-        hand.position?.x === tileX &&
-        hand.position?.y === tileY
+        gear?.position.x === tileX &&
+        gear?.position.y === tileY
       ) {
         break
       }
-      updateBuildPosition(state, hand, tileX, tileY)
+      updateBuildPosition(state, state.hand, tileX, tileY)
       break
     }
     case 'pointerup': {
-      executeBuild(state, hand)
+      executeBuild(state, state.hand)
       break
     }
     case 'pointerleave': {
-      hand.position = null
+      state.hand.gear = null
       break
     }
   }
@@ -54,11 +53,8 @@ export function initBuild(
   state.hand = {
     type: HandType.Build,
     chain: null,
-    connections: [],
-    position: null,
+    gear: null,
     radius,
-    angle: 0, // TODO
-    velocity: 0, // TODO
     valid: false,
   }
   state.pointerListeners.clear()
@@ -71,14 +67,22 @@ export function updateBuildPosition(
   x: number,
   y: number,
 ): void {
-  if (hand.position?.x === x && hand.position.y === y) {
+  if (!hand.gear) {
+    hand.gear = {
+      angle: 0,
+      connections: [],
+      position: { x, y },
+      radius: hand.radius,
+      velocity: 0,
+    }
+  } else if (
+    hand.gear.position.x === x &&
+    hand.gear.position.y === y
+  ) {
     return
-  }
-  if (!hand.position) {
-    hand.position = { x, y }
   } else {
-    hand.position.x = x
-    hand.position.y = y
+    hand.gear.position.x = x
+    hand.gear.position.y = y
   }
   updateBuild(state, hand)
 }
@@ -87,12 +91,13 @@ export function executeBuild(
   state: AppState,
   hand: BuildHand,
 ): void {
-  invariant(hand.position)
+  invariant(hand.gear)
   if (!hand.valid) {
     return
   }
 
-  const tileId = `${hand.position.x}.${hand.position.y}`
+  const { position } = hand.gear
+  const tileId = `${position.x}.${position.y}`
   const tile = state.world.tiles[tileId]
 
   let gear: Gear | undefined
@@ -110,16 +115,7 @@ export function executeBuild(
       hand.chain = gear
     }
   } else {
-    addGear(
-      hand.position,
-      hand.radius,
-      hand.angle,
-      hand.velocity,
-      hand.chain,
-      gear ?? null,
-      hand.connections,
-      state,
-    )
+    addGear(hand.gear, hand.chain, gear ?? null, state)
     hand.chain = null
   }
   updateBuild(state, hand)
@@ -129,18 +125,19 @@ export function updateBuild(
   state: AppState,
   hand: BuildHand,
 ): void {
-  invariant(hand?.position)
+  invariant(hand.gear)
+
   let valid = true
   let attach: Gear | undefined
   let chain: Gear | undefined
   for (const gear of iterateOverlappingGears(
-    hand.position,
-    hand.radius,
+    hand.gear.position,
+    hand.gear.radius,
     state.world,
   )) {
     if (
       hand.radius === 1 &&
-      Vec2.equal(gear.position, hand.position)
+      Vec2.equal(gear.position, hand.gear.position)
     ) {
       if (gear.radius === 1) {
         chain = gear
@@ -161,15 +158,17 @@ export function updateBuild(
   }
 
   if (valid && hand.chain) {
-    const dx = hand.position.x - hand.chain.position.x
-    const dy = hand.position.y - hand.chain.position.y
+    const dx = hand.gear.position.x - hand.chain.position.x
+    const dy = hand.gear.position.y - hand.chain.position.y
     valid =
       (dx === 0 || dy === 0) &&
       dx !== dy &&
       Math.abs(dx + dy) > hand.radius + hand.chain.radius
   }
 
-  hand.connections = []
+  hand.gear.connections = []
+
+  invariant(!(attach && chain))
 
   if (valid) {
     // TODO not super graceful, but the order of connections
@@ -181,43 +180,38 @@ export function updateBuild(
     // Additionally, the "source" chain takes precendence over
     // that "target" chain, when applicable, for the same reason.
     //
+
     if (hand.chain) {
-      hand.connections.push({
+      hand.gear.connections.push({
         type: ConnectionType.enum.Chain,
         gearId: hand.chain.id,
       })
     }
     if (chain) {
-      hand.connections.push({
+      hand.gear.connections.push({
         type: ConnectionType.enum.Chain,
         gearId: chain.id,
       })
     }
     if (attach) {
-      hand.connections.push({
+      hand.gear.connections.push({
         type: ConnectionType.enum.Attach,
         gearId: attach.id,
       })
     }
-    hand.connections.push(
+    hand.gear.connections.push(
       ...getAdjacentConnections(
-        hand.position,
-        hand.radius,
+        hand.gear.position,
+        hand.gear.radius,
         state.world,
       ),
     )
-
-    invariant(hand.position !== null)
-    // TODO
-    const root: PartialGear = hand as PartialGear
-
-    valid = isNetworkValid(root, state.world)
   }
 
-  if (hand.connections.length > 0) {
+  if (hand.gear.connections.length > 0) {
     // TODO handle more than one connection
 
-    const connection = hand.connections.at(0)
+    const connection = hand.gear.connections.at(0)
     invariant(connection)
     const peer = state.world.gears[connection.gearId]
     invariant(peer)
@@ -235,11 +229,17 @@ export function updateBuild(
         n = 1
     }
 
-    hand.angle = peer.angle * n
-    hand.velocity = peer.velocity * n
-  } else {
-    hand.angle = 0
-    hand.velocity = 0
+    hand.gear.angle = peer.angle * n
+    hand.gear.velocity = peer.velocity * n
+  }
+
+  if (valid) {
+    valid = isNetworkValid(hand.gear, state.world)
+  }
+
+  if (!valid) {
+    hand.gear.angle = 0
+    hand.gear.velocity = 0
   }
 
   if (hand.valid !== valid) {

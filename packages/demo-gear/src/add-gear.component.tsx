@@ -25,12 +25,9 @@ export function AddGear() {
 
     state.hand = {
       type: HandType.Build,
-      position: null,
       chain: null,
-      connections: [],
+      gear: null,
       radius,
-      angle: 0, // TODO
-      velocity: 0, // TODO
       valid: false,
       onChangeValid: setValid,
     }

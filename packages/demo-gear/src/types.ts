@@ -56,24 +56,18 @@ export enum HandType {
   Accelerate = 'accelerate',
 }
 
-interface BaseHand<T extends HandType> {
-  type: T
-  position: SimpleVec2 | null
-}
-
-export interface BuildHand
-  extends BaseHand<HandType.Build> {
+export interface BuildHand {
+  type: HandType.Build
+  gear: PartialGear | null
   radius: number
-  angle: number
-  velocity: number
   valid: boolean
   chain: Gear | null
-  connections: Connection[]
   onChangeValid?(valid: boolean): void
 }
 
-export interface AccelerateHand
-  extends BaseHand<HandType.Accelerate> {
+export interface AccelerateHand {
+  type: HandType.Accelerate
+  position: SimpleVec2 | null
   active: boolean
   direction: number
   gear: Gear | null
