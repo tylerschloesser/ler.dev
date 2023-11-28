@@ -40,8 +40,6 @@ export function renderBuld(
   )
 
   if (build.chain && build.valid) {
-    // TODO set angle and velocity upstream
-    partial.angle = build.chain.angle
     renderChain(
       partial,
       build.chain,
