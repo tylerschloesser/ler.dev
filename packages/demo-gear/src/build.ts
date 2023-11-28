@@ -1,6 +1,5 @@
 import invariant from 'tiny-invariant'
 import { addChainConnection, addGear } from './add-gear.js'
-import { TWO_PI } from './const.js'
 import {
   AppState,
   BuildHand,
@@ -128,6 +127,7 @@ export function updateBuild(
 ): void {
   invariant(hand?.position)
   let valid = true
+  let attach: Gear | undefined
   for (const gear of iterateOverlappingGears(
     hand.position,
     hand.radius,

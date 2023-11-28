@@ -1,3 +1,4 @@
+import { NavigateFunction } from 'react-router-dom'
 import * as z from 'zod'
 
 export const SimpleVec2 = z.strictObject({
@@ -118,6 +119,8 @@ export interface AppState {
 
   pointerListeners: Set<PointerListenerFn>
   cameraListeners: Set<CameraListenerFn>
+
+  navigate: NavigateFunction
 }
 
 export type InitFn = (state: AppState) => Promise<void>

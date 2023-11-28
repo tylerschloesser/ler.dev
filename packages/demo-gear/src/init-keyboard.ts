@@ -1,4 +1,3 @@
-import { moveCamera } from './camera.js'
 import { InitFn } from './types.js'
 
 export const initKeyboard: InitFn = async (state) => {
@@ -6,9 +5,7 @@ export const initKeyboard: InitFn = async (state) => {
     'keyup',
     (e) => {
       if (e.key === 'q') {
-        state.hand = null
-        state.pointerListeners.clear()
-        state.pointerListeners.add(moveCamera)
+        state.navigate('/gears')
       }
     },
     { signal: state.signal },

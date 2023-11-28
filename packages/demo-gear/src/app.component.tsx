@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Outlet } from 'react-router-dom'
+import { Outlet, useNavigate } from 'react-router-dom'
 import styles from './app.module.scss'
 import { moveCamera } from './camera.js'
 import { Canvas } from './canvas.component.js'
@@ -31,6 +31,7 @@ function useAppState(
   const [state, setState] = useState<AppState | null>(null)
   const [world, setWorld] = useWorld()
   const { camera, saveCamera } = useCamera()
+  const navigate = useNavigate()
   useEffect(() => {
     if (!canvas || !world) {
       return
@@ -52,11 +53,12 @@ function useAppState(
       cameraListeners: new Set([
         (state) => saveCamera(state.camera),
       ]),
+      navigate,
     })
     return () => {
       controller.abort()
     }
-  }, [canvas, world])
+  }, [canvas, world, navigate])
 
   return state
 }
