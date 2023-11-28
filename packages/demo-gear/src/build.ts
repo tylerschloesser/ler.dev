@@ -1,11 +1,13 @@
 import invariant from 'tiny-invariant'
 import { addChainConnection, addGear } from './add-gear.js'
+import { isNetworkValid } from './init-simulator.js'
 import {
   AppState,
   BuildHand,
   ConnectionType,
   Gear,
   HandType,
+  PartialGear,
   PointerListenerFn,
 } from './types.js'
 import {
@@ -111,6 +113,8 @@ export function executeBuild(
     addGear(
       hand.position,
       hand.radius,
+      hand.angle,
+      hand.velocity,
       hand.chain,
       gear ?? null,
       hand.connections,
@@ -202,6 +206,12 @@ export function updateBuild(
         state.world,
       ),
     )
+
+    invariant(hand.position !== null)
+    // TODO
+    const root: PartialGear = hand as PartialGear
+
+    valid = isNetworkValid(root, state.world)
   }
 
   if (hand.connections.length > 0) {

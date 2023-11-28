@@ -30,6 +30,8 @@ export function addChainConnection(
 export function addGear(
   position: SimpleVec2,
   radius: number,
+  angle: number,
+  velocity: number,
   chain: Gear | null,
   attach: Gear | null,
   connections: Connection[],
@@ -72,8 +74,8 @@ export function addGear(
     },
     radius,
     mass,
-    angle: 0,
-    velocity: 0,
+    angle,
+    velocity,
     connections,
   }
 
@@ -93,14 +95,5 @@ export function addGear(
       invariant(tile === undefined)
       tile = world.tiles[tileId] = { gearId }
     }
-  }
-
-  resetNetwork(gear, state)
-}
-
-function resetNetwork(root: Gear, state: AppState): void {
-  for (const node of iterateNetwork(root, state.world)) {
-    node.velocity = 0
-    node.angle = 0
   }
 }

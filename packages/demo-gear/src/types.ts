@@ -127,5 +127,9 @@ export type InitFn = (state: AppState) => Promise<void>
 
 export type PartialGear = Pick<
   Gear,
-  'position' | 'radius' | 'angle'
+  | 'position'
+  | 'radius'
+  | 'angle'
+  | 'velocity'
+  | 'connections'
 >

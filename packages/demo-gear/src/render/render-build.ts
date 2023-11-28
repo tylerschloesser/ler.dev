@@ -14,6 +14,8 @@ const partial: PartialGear = {
     y: 0,
   },
   radius: 0,
+  connections: [],
+  velocity: 0,
 }
 
 export function renderBuild(

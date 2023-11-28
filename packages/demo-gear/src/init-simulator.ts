@@ -10,6 +10,7 @@ import {
   Gear,
   HandType,
   InitFn,
+  PartialGear,
   World,
 } from './types.js'
 
@@ -75,6 +76,51 @@ export const initSimulator: InitFn = async (state) => {
   state.signal.addEventListener('abort', () => {
     self.clearInterval(interval)
   })
+}
+
+export function isNetworkValid(
+  root: PartialGear,
+  world: World,
+): boolean {
+  const seen = new Set<PartialGear>()
+  function recurse(
+    from: PartialGear | null,
+    to: PartialGear,
+    type: ConnectionType | null,
+  ): boolean {
+    if (from) {
+      invariant(type)
+      let n
+      switch (type) {
+        case ConnectionType.enum.Adjacent:
+          n = (from.radius / to.radius) * -1
+          break
+        case ConnectionType.enum.Chain:
+          n = from.radius / to.radius
+          break
+        case ConnectionType.enum.Attach:
+          n = 1
+      }
+
+      if (seen.has(to)) {
+        const diff = to.velocity - from.velocity * n
+        return Math.abs(diff) < Number.EPSILON * 1e2
+      }
+    }
+    seen.add(to)
+
+    for (const connection of to.connections) {
+      const toto = world.gears[connection.gearId]
+      invariant(toto)
+      if (!recurse(to, toto, connection.type)) {
+        return false
+      }
+    }
+
+    return true
+  }
+
+  return recurse(null, root, null)
 }
 
 function accelerateGear({
