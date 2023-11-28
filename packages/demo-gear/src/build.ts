@@ -128,41 +128,67 @@ export function updateBuild(
   invariant(hand?.position)
   let valid = true
   let attach: Gear | undefined
+  let chain: Gear | undefined
   for (const gear of iterateOverlappingGears(
     hand.position,
     hand.radius,
     state.world,
   )) {
     if (
-      !(
-        hand.radius === 1 &&
-        Vec2.equal(gear.position, hand.position)
-      )
+      hand.radius === 1 &&
+      Vec2.equal(gear.position, hand.position)
     ) {
+      if (gear.radius === 1) {
+        chain = gear
+      } else {
+        //
+        // assume we're attaching, because we would've
+        // already seen the attached gear in a previous
+        // iteration
+        //
+        attach = gear
+      }
+    } else {
       valid = false
-      break
     }
+
+    // only need to look at one gear
+    break
   }
 
   if (valid && hand.chain) {
-    const { chain } = hand
-    const dx = hand.position.x - chain.position.x
-    const dy = hand.position.y - chain.position.y
+    const dx = hand.position.x - hand.chain.position.x
+    const dy = hand.position.y - hand.chain.position.y
     valid =
       (dx === 0 || dy === 0) &&
       dx !== dy &&
-      Math.abs(dx + dy) > hand.radius + chain.radius
+      Math.abs(dx + dy) > hand.radius + hand.chain.radius
   }
 
+  hand.connections = []
+
   if (valid) {
-    hand.connections = getAdjacentConnections(
-      hand.position,
-      hand.radius,
-      state.world,
+    hand.connections.push(
+      ...getAdjacentConnections(
+        hand.position,
+        hand.radius,
+        state.world,
+      ),
     )
+    if (attach) {
+      hand.connections.push({
+        type: ConnectionType.enum.Attach,
+        gearId: attach.id,
+      })
+    }
+    if (chain) {
+      hand.connections.push({
+        type: ConnectionType.enum.Chain,
+        gearId: chain.id,
+      })
+    }
   } else {
     hand.velocity = 0
-    hand.connections = []
   }
 
   if (hand.connections.length === 1) {
