@@ -55,6 +55,15 @@ export const initSimulator: InitFn = async (state) => {
       invariant(gear.angle >= 0)
       invariant(gear.angle < TWO_PI)
     }
+
+    if (state.hand?.type === HandType.Build) {
+      const { hand } = state
+      hand.angle =
+        (hand.angle + hand.velocity * elapsed + TWO_PI) %
+        TWO_PI
+      invariant(hand.angle >= 0)
+      invariant(hand.angle < TWO_PI)
+    }
   }
 
   const interval = self.setInterval(() => {

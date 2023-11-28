@@ -1,8 +1,10 @@
 import invariant from 'tiny-invariant'
 import { addChainConnection, addGear } from './add-gear.js'
+import { TWO_PI } from './const.js'
 import {
   AppState,
   BuildHand,
+  ConnectionType,
   Gear,
   HandType,
   PointerListenerFn,
@@ -158,7 +160,29 @@ export function updateBuild(
       hand.radius,
       state.world,
     )
+
+    if (hand.connections.length === 1) {
+      const connection = hand.connections.at(0)
+      invariant(
+        connection?.type === ConnectionType.enum.Adjacent,
+      )
+      const peer = state.world.gears[connection.gearId]
+      invariant(peer)
+
+      hand.angle = TWO_PI - peer.angle
+      hand.velocity = peer.velocity * -1
+    } else {
+      if (hand.connections.length > 1) {
+        invariant(
+          false,
+          'Handle more than two connections here',
+        )
+      }
+
+      hand.velocity = 0
+    }
   } else {
+    hand.velocity = 0
     hand.connections = []
   }
 

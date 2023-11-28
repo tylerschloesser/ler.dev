@@ -29,6 +29,7 @@ export function renderBuld(
   partial.position.x = build.position.x
   partial.position.y = build.position.y
   partial.radius = build.radius
+  partial.angle = build.angle
 
   renderGear(
     partial,
@@ -39,6 +40,7 @@ export function renderBuld(
   )
 
   if (build.chain && build.valid) {
+    // TODO set angle and velocity upstream
     partial.angle = build.chain.angle
     renderChain(
       partial,
