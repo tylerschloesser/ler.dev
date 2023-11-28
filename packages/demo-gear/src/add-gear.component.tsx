@@ -29,6 +29,8 @@ export function AddGear() {
       chain: null,
       connections: [],
       radius,
+      angle: 0, // TODO
+      velocity: 0, // TODO
       valid: false,
       onChangeValid: setValid,
     }

@@ -63,6 +63,8 @@ interface BaseHand<T extends HandType> {
 export interface BuildHand
   extends BaseHand<HandType.Build> {
   radius: number
+  angle: number
+  velocity: number
   valid: boolean
   chain: Gear | null
   connections: Connection[]

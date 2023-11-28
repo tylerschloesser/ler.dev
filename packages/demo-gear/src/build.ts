@@ -54,6 +54,8 @@ export function initBuild(
     connections: [],
     position: null,
     radius,
+    angle: 0, // TODO
+    velocity: 0, // TODO
     valid: false,
   }
   state.pointerListeners.clear()
