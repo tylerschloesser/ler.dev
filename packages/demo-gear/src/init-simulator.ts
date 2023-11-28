@@ -78,6 +78,8 @@ export const initSimulator: InitFn = async (state) => {
   })
 }
 
+// TODO mostly the same logic as accelerate
+//
 export function isNetworkValid(
   root: PartialGear,
   world: World,
