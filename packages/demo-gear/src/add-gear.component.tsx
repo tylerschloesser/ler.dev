@@ -55,7 +55,10 @@ export function AddGear() {
     }
     if (state.hand?.type === HandType.Build) {
       state.hand.radius = radius
-      updateBuild(state, state.hand)
+      if (state.hand.gear) {
+        state.hand.gear.radius = radius
+        updateBuild(state, state.hand)
+      }
     }
   }, [state, radius])
 
