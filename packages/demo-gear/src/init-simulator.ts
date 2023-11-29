@@ -87,53 +87,48 @@ export function isNetworkValid(
   root: PartialGear,
   world: World,
 ): boolean {
-  const seen = new Set<PartialGear>()
-
-  const stack = new Array<{
-    from: PartialGear | null
-    to: PartialGear
-    type: ConnectionType | null
-  }>()
-  stack.push({ from: null, to: root, type: null })
+  const nmap = new Map<PartialGear, number>()
+  const stack = new Array<PartialGear>(root)
+  nmap.set(root, 1)
 
   while (stack.length) {
-    const next = stack.pop()
-    invariant(next)
-    const { from, to, type } = next
+    const gear = stack.pop()
+    invariant(gear)
 
-    if (from) {
-      seen.add(from)
-      invariant(type)
-      let n
-      switch (type) {
+    const np = nmap.get(gear)
+    invariant(np)
+
+    for (const connection of gear.connections) {
+      const peer = world.gears[connection.gearId]
+      invariant(peer)
+
+      let n: number
+      switch (connection.type) {
         case ConnectionType.enum.Adjacent:
-          n = (from.radius / to.radius) * -1
+          n = (gear.radius / peer.radius) * -1
           break
         case ConnectionType.enum.Chain:
-          n = from.radius / to.radius
+          n = gear.radius / peer.radius
           break
         case ConnectionType.enum.Attach:
           n = 1
+          break
       }
 
-      const diff = to.velocity - from.velocity * n
-      if (Math.abs(diff) > Number.EPSILON * 1e2) {
-        return false
-      }
-    }
+      n = n * np
 
-    for (const connection of to.connections) {
-      const toto = world.gears[connection.gearId]
-      invariant(toto)
-      if (!seen.has(toto)) {
-        stack.push({
-          from: to,
-          to: toto,
-          type: connection.type,
-        })
+      let prev = nmap.get(peer)
+      if (prev !== undefined) {
+        if (n !== prev) {
+          return false
+        }
+      } else {
+        nmap.set(peer, n)
+        stack.push(peer)
       }
     }
   }
+
   return true
 }
 
