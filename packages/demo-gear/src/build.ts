@@ -207,6 +207,7 @@ export function updateBuild(
       ),
     )
   }
+  console.log(hand.gear.connections)
 
   if (hand.gear.connections.length > 0) {
     // TODO handle more than one connection

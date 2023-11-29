@@ -102,6 +102,7 @@ export function isNetworkValid(
     const { from, to, type } = next
 
     if (from) {
+      seen.add(from)
       invariant(type)
       let n
       switch (type) {
@@ -115,24 +116,22 @@ export function isNetworkValid(
           n = 1
       }
 
-      if (seen.has(to)) {
-        const diff = to.velocity - from.velocity * n
-        if (Math.abs(diff) > Number.EPSILON * 1e2) {
-          return false
-        }
-        continue
+      const diff = to.velocity - from.velocity * n
+      if (Math.abs(diff) > Number.EPSILON * 1e2) {
+        return false
       }
     }
-    seen.add(to)
 
     for (const connection of to.connections) {
       const toto = world.gears[connection.gearId]
       invariant(toto)
-      stack.push({
-        from: to,
-        to: toto,
-        type: connection.type,
-      })
+      if (!seen.has(toto)) {
+        stack.push({
+          from: to,
+          to: toto,
+          type: connection.type,
+        })
+      }
     }
   }
   return true
