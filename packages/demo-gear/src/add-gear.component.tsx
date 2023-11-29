@@ -4,8 +4,9 @@ import invariant from 'tiny-invariant'
 import styles from './add-gear.module.scss'
 import {
   executeBuild,
-  updateBuild,
+  initBuild,
   updateBuildPosition,
+  updateRadius,
 } from './build.js'
 import { moveCamera } from './camera.js'
 import { MAX_RADIUS, MIN_RADIUS } from './const.js'
@@ -23,24 +24,14 @@ export function AddGear() {
       return
     }
 
-    state.hand = {
-      type: HandType.Build,
-      chain: null,
-      gear: null,
-      radius,
-      valid: false,
-      onChangeValid: setValid,
-    }
+    initBuild(state, radius, setValid)
+
     state.pointerListeners.clear()
     state.pointerListeners.add(moveCamera)
     const cameraListener: CameraListenerFn = () => {
-      const tileX = Math.round(state.camera.position.x)
-      const tileY = Math.round(state.camera.position.y)
-      const { hand } = state
-      invariant(hand?.type === HandType.Build)
-      updateBuildPosition(state, hand, tileX, tileY)
+      invariant(state.hand?.type === HandType.Build)
+      updateBuildPosition(state, state.hand)
     }
-    cameraListener(state)
     state.cameraListeners.add(cameraListener)
 
     return () => {
@@ -53,13 +44,7 @@ export function AddGear() {
     if (!state) {
       return
     }
-    if (state.hand?.type === HandType.Build) {
-      state.hand.radius = radius
-      if (state.hand.gear) {
-        state.hand.gear.radius = radius
-        updateBuild(state, state.hand)
-      }
-    }
+    updateRadius(state, radius)
   }, [state, radius])
 
   const navigate = useNavigate()

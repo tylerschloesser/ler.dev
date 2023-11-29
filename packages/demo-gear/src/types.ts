@@ -58,8 +58,7 @@ export enum HandType {
 
 export interface BuildHand {
   type: HandType.Build
-  gear: PartialGear | null
-  radius: number
+  gear: PartialGear
   valid: boolean
   chain: Gear | null
   onChangeValid?(valid: boolean): void

@@ -7,7 +7,6 @@ import {
   ConnectionType,
   Gear,
   HandType,
-  PointerListenerFn,
 } from './types.js'
 import {
   getAdjacentConnections,
@@ -15,67 +14,47 @@ import {
 } from './util.js'
 import { Vec2 } from './vec2.js'
 
-const handlePointer: PointerListenerFn = (
-  state,
-  e,
-  position,
-) => {
-  invariant(state.hand?.type === HandType.Build)
-  const { gear } = state.hand
-  switch (e.type) {
-    case 'pointermove': {
-      const tileX = Math.floor(position.x + 0.5)
-      const tileY = Math.floor(position.y + 0.5)
-      if (
-        gear?.position.x === tileX &&
-        gear?.position.y === tileY
-      ) {
-        break
-      }
-      updateBuildPosition(state, state.hand, tileX, tileY)
-      break
-    }
-    case 'pointerup': {
-      executeBuild(state, state.hand)
-      break
-    }
-    case 'pointerleave': {
-      state.hand.gear = null
-      break
-    }
-  }
-}
-
 export function initBuild(
   state: AppState,
   radius: number,
+  onChangeValid: BuildHand['onChangeValid'],
 ): void {
+  invariant(state.hand === null)
   state.hand = {
     type: HandType.Build,
     chain: null,
-    gear: null,
-    radius,
+    gear: {
+      radius,
+      angle: 0,
+      connections: [],
+      position: {
+        x: Number.NaN,
+        y: Number.NaN,
+      },
+      velocity: 0,
+    },
     valid: false,
+    onChangeValid,
   }
-  state.pointerListeners.clear()
-  state.pointerListeners.add(handlePointer)
+  updateBuildPosition(state, state.hand)
+}
+
+export function updateRadius(
+  state: AppState,
+  radius: number,
+): void {
+  invariant(state.hand?.type === HandType.Build)
+  state.hand.gear.radius = radius
+  updateBuild(state, state.hand)
 }
 
 export function updateBuildPosition(
   state: AppState,
   hand: BuildHand,
-  x: number,
-  y: number,
 ): void {
-  if (!hand.gear) {
-    hand.gear = {
-      angle: 0,
-      connections: [],
-      position: { x, y },
-      radius: hand.radius,
-      velocity: 0,
-    }
-  } else if (
+  const x = Math.round(state.camera.position.x)
+  const y = Math.round(state.camera.position.y)
+  if (
     hand.gear.position.x === x &&
     hand.gear.position.y === y
   ) {
@@ -83,8 +62,8 @@ export function updateBuildPosition(
   } else {
     hand.gear.position.x = x
     hand.gear.position.y = y
+    updateBuild(state, hand)
   }
-  updateBuild(state, hand)
 }
 
 export function executeBuild(
@@ -136,7 +115,7 @@ export function updateBuild(
     state.world,
   )) {
     if (
-      hand.radius === 1 &&
+      hand.gear.radius === 1 &&
       Vec2.equal(gear.position, hand.gear.position)
     ) {
       if (gear.radius === 1) {
@@ -163,7 +142,8 @@ export function updateBuild(
     valid =
       (dx === 0 || dy === 0) &&
       dx !== dy &&
-      Math.abs(dx + dy) > hand.radius + hand.chain.radius
+      Math.abs(dx + dy) >
+        hand.gear.radius + hand.chain.radius
   }
 
   hand.gear.connections = []
@@ -220,10 +200,10 @@ export function updateBuild(
     let n
     switch (connection.type) {
       case ConnectionType.enum.Adjacent:
-        n = (peer.radius / hand.radius) * -1
+        n = (peer.radius / hand.gear.radius) * -1
         break
       case ConnectionType.enum.Chain:
-        n = peer.radius / hand.radius
+        n = peer.radius / hand.gear.radius
         break
       case ConnectionType.enum.Attach:
         n = 1
