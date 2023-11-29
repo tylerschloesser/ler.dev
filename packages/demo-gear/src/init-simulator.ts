@@ -272,14 +272,16 @@ function applyFriction({
   }
 }
 
-function propogateRootVelocity({
+export function propogateRootVelocity({
   root,
   nmap,
   world,
+  resetAngle = false,
 }: {
   root: Gear
   nmap: Map<Gear, number>
   world: World
+  resetAngle?: boolean
 }): void {
   const seen = new Set<Gear>()
   const stack = new Array<Gear>(root)
@@ -290,11 +292,16 @@ function propogateRootVelocity({
     if (seen.has(gear)) {
       continue
     }
+    if (resetAngle) {
+      gear.angle = 0
+    }
     seen.add(gear)
 
     const n = nmap.get(gear)
     invariant(n !== undefined)
     gear.velocity = root.velocity * n ** -1
+
+    invariant(!Number.isNaN(gear.velocity))
 
     for (const connection of gear.connections) {
       const peer = world.gears[connection.gearId]

@@ -90,6 +90,7 @@ export function executeBuild(
     if (hand.chain) {
       invariant(gear !== hand.chain)
       addChainConnection(gear, hand.chain, state)
+      hand.chain = null
     } else {
       hand.chain = gear
     }
