@@ -137,34 +137,46 @@ function distributeEnergy(
 
   let finalEnergy = 0
 
-  for (const connection of root.connections) {
-    const peer = state.world.gears[connection.gearId]
-    invariant(peer)
+  {
+    const seen = new Set<Network>()
+    for (const connection of root.connections) {
+      const peer = state.world.gears[connection.gearId]
+      invariant(peer)
 
-    const network = networks.get(peer)
-    invariant(network)
+      const network = networks.get(peer)
+      invariant(network)
 
-    let sign: number
-    switch (connection.type) {
-      case ConnectionType.enum.Adjacent:
-        sign = -1
-        break
-      case ConnectionType.enum.Attach:
-        sign = 1
-        break
-      case ConnectionType.enum.Chain:
-        sign = 1
-        break
+      if (seen.has(network)) {
+        // if the root is connected to the same network twice,
+        // it means there's a loop. Simply only look at the first
+        // one. The loop means that things should be spinning
+        // in the correct direction.
+        continue
+      }
+      seen.add(network)
+
+      let sign: number
+      switch (connection.type) {
+        case ConnectionType.enum.Adjacent:
+          sign = -1
+          break
+        case ConnectionType.enum.Attach:
+          sign = 1
+          break
+        case ConnectionType.enum.Chain:
+          sign = 1
+          break
+      }
+
+      finalEnergy +=
+        sign * Math.sign(peer.velocity) * network.energy
+
+      console.log({
+        velocity: peer.velocity,
+        energy: network.energy,
+        type: connection.type,
+      })
     }
-
-    finalEnergy +=
-      sign * Math.sign(peer.velocity) * network.energy
-
-    console.log({
-      velocity: peer.velocity,
-      energy: network.energy,
-      type: connection.type,
-    })
   }
 
   console.log('finalEnergy', finalEnergy)
