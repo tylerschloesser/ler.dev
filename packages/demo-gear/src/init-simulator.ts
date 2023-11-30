@@ -1,5 +1,5 @@
 import invariant from 'tiny-invariant'
-import { FRICTION, TICK_DURATION, TWO_PI } from './const.js'
+import { TICK_DURATION, TWO_PI } from './const.js'
 import {
   ConnectionType,
   Gear,
@@ -41,8 +41,27 @@ export const initSimulator: InitFn = async (state) => {
       )
     }
 
-    if (FRICTION !== 0) {
-      applyFriction({ elapsed, world })
+    switch (hand?.type) {
+      case HandType.ApplyForce: {
+        if (hand.active && hand.gear) {
+          const force =
+            (hand.direction === 'ccw' ? -1 : 1) *
+            hand.magnitude
+          applyForce(hand.gear, force, elapsed, world)
+        }
+        break
+      }
+      case HandType.ApplyFriction: {
+        if (hand.active && hand.gear) {
+          applyFriction(
+            hand.gear,
+            hand.coeffecient,
+            elapsed,
+            world,
+          )
+        }
+        break
+      }
     }
 
     for (const gear of Object.values(world.gears)) {
@@ -298,80 +317,12 @@ function accelerateGear({
   }
 }
 
-function applyFriction({
-  elapsed,
-  world,
-}: {
-  elapsed: number
-  world: World
-}): void {
-  const seen = new Set<Gear>()
-
-  for (const root of Object.values(world.gears)) {
-    if (seen.has(root)) {
-      // TODO validate?
-      continue
-    }
-
-    let energy = 0
-    let sum = 0
-    const nmap = new Map<Gear, number>()
-
-    {
-      const stack = new Array<{ gear: Gear; n: number }>({
-        gear: root,
-        n: 1,
-      })
-      while (stack.length) {
-        const { gear, n } = stack.pop()!
-
-        if (seen.has(gear)) {
-          // TODO validate?
-          continue
-        }
-        seen.add(gear)
-        nmap.set(gear, n)
-
-        sum += gear.radius ** 2 * gear.mass * n ** -2
-
-        energy +=
-          (1 / 4) *
-          gear.radius ** 2 *
-          gear.velocity ** 2 *
-          gear.mass
-
-        for (const connection of gear.connections) {
-          const peer = world.gears[connection.gearId]
-          invariant(peer)
-
-          stack.push({
-            gear: peer,
-            n:
-              n *
-              (() => {
-                switch (connection.type) {
-                  case ConnectionType.enum.Adjacent:
-                    return (peer.radius / gear.radius) * -1
-                  case ConnectionType.enum.Chain:
-                    return peer.radius / gear.radius
-                  case ConnectionType.enum.Attach:
-                    return 1
-                }
-              })(),
-          })
-        }
-      }
-    }
-
-    // TODO set to 0 at some point
-    energy -= energy * FRICTION * elapsed
-
-    root.velocity =
-      Math.sign(root.velocity) *
-      Math.sqrt((4 * energy) / sum)
-    propogateRootVelocity({ root, nmap, world })
-  }
-}
+function applyFriction(
+  root: Gear,
+  coeffecient: number,
+  elapsed: number,
+  world: World,
+): void {}
 
 export function propogateRootVelocity({
   root,

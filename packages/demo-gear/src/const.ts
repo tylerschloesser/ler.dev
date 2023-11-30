@@ -17,8 +17,6 @@ export const GEAR_RADIUSES = (() => {
 export const TICK_DURATION = 16
 export const DRAW_GEAR_BOX = false
 
-export const FRICTION: number = 0 // energy/sec
-
 export const TEETH = 12
 
 export const PI = Math.PI
