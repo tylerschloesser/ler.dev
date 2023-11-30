@@ -170,8 +170,8 @@ function getTorqueMultiplierMap(
     const tail = stack.pop()
     invariant(tail)
 
-    const multiplier = torqueMultiplierMap.get(tail)
-    invariant(multiplier !== undefined)
+    const tailMultiplier = torqueMultiplierMap.get(tail)
+    invariant(tailMultiplier !== undefined)
 
     for (const c of tail.connections) {
       const neighbor = world.gears[c.gearId]
@@ -185,13 +185,17 @@ function getTorqueMultiplierMap(
       switch (c.type) {
         case ConnectionType.enum.Adjacent:
           neighborMultiplier =
-            (tail.radius / neighbor.radius) * -1
+            tailMultiplier *
+            (neighbor.radius / tail.radius) *
+            -1
           break
         case ConnectionType.enum.Attach:
-          neighborMultiplier = 1
+          neighborMultiplier =
+            tailMultiplier *
+            (neighbor.radius / tail.radius) ** 2
           break
         case ConnectionType.enum.Chain:
-          neighborMultiplier = 1
+          neighborMultiplier = tailMultiplier
           break
       }
 
