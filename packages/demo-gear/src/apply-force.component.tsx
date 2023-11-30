@@ -80,7 +80,7 @@ export function ApplyForce() {
           hand.active = false
         }}
       >
-        -1
+        CCW
       </button>
       <button
         disabled={disabled}
@@ -97,7 +97,7 @@ export function ApplyForce() {
           hand.active = false
         }}
       >
-        +1
+        CW
       </button>
     </div>
   )
