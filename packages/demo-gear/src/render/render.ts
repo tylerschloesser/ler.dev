@@ -6,6 +6,7 @@ import {
 import { iterateConnections } from '../util.js'
 import { updateProjection, updateView } from './matrices.js'
 import { renderApplyForce } from './render-apply-force.js'
+import { renderApplyFriction } from './render-apply-friction.js'
 import { renderBuild } from './render-build.js'
 import { renderChain } from './render-chain.js'
 import { renderGears } from './render-gears.js'
@@ -42,6 +43,10 @@ export function render(
     }
     case HandType.ApplyForce: {
       renderApplyForce(state, gl, gpu, hand)
+      break
+    }
+    case HandType.ApplyFriction: {
+      renderApplyFriction(state, gl, gpu, hand)
       break
     }
   }

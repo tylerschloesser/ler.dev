@@ -1,21 +1,25 @@
 import { use, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import invariant from 'tiny-invariant'
-import { updateApplyForcePosition } from './apply-force.js'
+import { updateApplyFrictionPosition } from './apply-friction.js'
 import styles from './apply-friction.module.scss'
 import { moveCamera } from './camera.js'
 import { AppContext } from './context.js'
 import { CameraListenerFn, HandType } from './types.js'
 import { clamp } from './util.js'
 
-const MIN_MAGNITUDE = 1
-const MAX_MAGNITUDE = 1000
+const COEFFECIENT_SCALE = 0.1
+
+const MIN_COEFFECIENT = 0
+const MAX_COEFFECIENT = 10
+
+const COEFFECIENT_STEP = 1
 
 export function ApplyFriction() {
   const navigate = useNavigate()
   const state = use(AppContext)
 
-  const [magnitude, setMagnitude] = useState(1)
+  const [coeffecient, setCoeffecient] = useState(5)
   const [disabled, setDisabled] = useState<boolean>(true)
 
   useEffect(() => {
@@ -24,11 +28,10 @@ export function ApplyFriction() {
     }
 
     state.hand = {
-      type: HandType.ApplyForce,
+      type: HandType.ApplyFriction,
       position: null,
       active: false,
-      direction: 'cw',
-      magnitude,
+      coeffecient: coeffecient * COEFFECIENT_SCALE,
       gear: null,
       onChangeGear(gear) {
         setDisabled(gear === null)
@@ -40,8 +43,8 @@ export function ApplyFriction() {
       const tileX = Math.round(state.camera.position.x)
       const tileY = Math.round(state.camera.position.y)
       const { hand } = state
-      invariant(hand?.type === HandType.ApplyForce)
-      updateApplyForcePosition(state, hand, tileX, tileY)
+      invariant(hand?.type === HandType.ApplyFriction)
+      updateApplyFrictionPosition(state, hand, tileX, tileY)
     }
     cameraListener(state)
     state.cameraListeners.add(cameraListener)
@@ -55,9 +58,9 @@ export function ApplyFriction() {
     if (!state) {
       return
     }
-    invariant(state.hand?.type === HandType.ApplyForce)
-    state.hand.magnitude = magnitude
-  }, [state, magnitude])
+    invariant(state.hand?.type === HandType.ApplyFriction)
+    state.hand.coeffecient = coeffecient * COEFFECIENT_SCALE
+  }, [state, coeffecient])
 
   if (!state) {
     return
@@ -75,109 +78,55 @@ export function ApplyFriction() {
       </button>
       <button
         className={styles.button}
-        disabled={magnitude === MIN_MAGNITUDE}
+        disabled={coeffecient === MIN_COEFFECIENT}
         onPointerUp={() => {
-          setMagnitude((prev) =>
-            clamp(prev - 100, MIN_MAGNITUDE, MAX_MAGNITUDE),
+          setCoeffecient((prev) =>
+            clamp(
+              prev - 1,
+              MIN_COEFFECIENT,
+              MAX_COEFFECIENT,
+            ),
           )
         }}
       >
-        -100
-      </button>
-      <button
-        className={styles.button}
-        disabled={magnitude === MIN_MAGNITUDE}
-        onPointerUp={() => {
-          setMagnitude((prev) =>
-            clamp(prev - 10, MIN_MAGNITUDE, MAX_MAGNITUDE),
-          )
-        }}
-      >
-        -10
-      </button>
-      <button
-        className={styles.button}
-        disabled={magnitude === MIN_MAGNITUDE}
-        onPointerUp={() => {
-          setMagnitude((prev) =>
-            clamp(prev - 1, MIN_MAGNITUDE, MAX_MAGNITUDE),
-          )
-        }}
-      >
-        -1
+        -{(COEFFECIENT_STEP * COEFFECIENT_SCALE).toFixed(1)}
       </button>
       <input
-        size={4}
+        size={3}
         className={styles.input}
         readOnly
-        value={magnitude}
+        value={(coeffecient * COEFFECIENT_SCALE).toFixed(1)}
       />
       <button
         className={styles.button}
-        disabled={magnitude === MAX_MAGNITUDE}
+        disabled={coeffecient === MAX_COEFFECIENT}
         onPointerUp={() => {
-          setMagnitude((prev) =>
-            clamp(prev + 1, MIN_MAGNITUDE, MAX_MAGNITUDE),
+          setCoeffecient((prev) =>
+            clamp(
+              prev + 1,
+              MIN_COEFFECIENT,
+              MAX_COEFFECIENT,
+            ),
           )
         }}
       >
-        +1
-      </button>
-      <button
-        className={styles.button}
-        disabled={magnitude === MAX_MAGNITUDE}
-        onPointerUp={() => {
-          setMagnitude((prev) =>
-            clamp(prev + 10, MIN_MAGNITUDE, MAX_MAGNITUDE),
-          )
-        }}
-      >
-        +10
-      </button>
-      <button
-        className={styles.button}
-        disabled={magnitude === MAX_MAGNITUDE}
-        onPointerUp={() => {
-          setMagnitude((prev) =>
-            clamp(prev + 100, MIN_MAGNITUDE, MAX_MAGNITUDE),
-          )
-        }}
-      >
-        +100
+        +{(COEFFECIENT_STEP * COEFFECIENT_SCALE).toFixed(1)}
       </button>
       <button
         disabled={disabled}
         className={styles.button}
         onPointerDown={() => {
           const { hand } = state
-          invariant(hand?.type === HandType.ApplyForce)
+          invariant(hand?.type === HandType.ApplyFriction)
           hand.active = true
-          hand.direction = 'ccw'
         }}
         onPointerUp={() => {
           const { hand } = state
-          invariant(hand?.type === HandType.ApplyForce)
+          invariant(hand?.type === HandType.ApplyFriction)
           hand.active = false
         }}
       >
-        CCW
-      </button>
-      <button
-        disabled={disabled}
-        className={styles.button}
-        onPointerDown={() => {
-          const { hand } = state
-          invariant(hand?.type === HandType.ApplyForce)
-          hand.active = true
-          hand.direction = 'cw'
-        }}
-        onPointerUp={() => {
-          const { hand } = state
-          invariant(hand?.type === HandType.ApplyForce)
-          hand.active = false
-        }}
-      >
-        CW
+        Apply
       </button>
     </div>
   )

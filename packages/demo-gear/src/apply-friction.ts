@@ -1,9 +1,13 @@
 import invariant from 'tiny-invariant'
-import { ApplyForceHand, AppState, Gear } from './types.js'
+import {
+  ApplyFrictionHand,
+  AppState,
+  Gear,
+} from './types.js'
 
-export function updateApplyForcePosition(
+export function updateApplyFrictionPosition(
   state: AppState,
-  hand: ApplyForceHand,
+  hand: ApplyFrictionHand,
   x: number,
   y: number,
 ): void {
@@ -31,9 +35,9 @@ export function updateApplyForcePosition(
   }
 }
 
-export function updateApplyForce(
+export function updateApplyFriction(
   _state: AppState,
-  hand: ApplyForceHand,
+  hand: ApplyFrictionHand,
   active: boolean,
 ): void {
   hand.active = active
