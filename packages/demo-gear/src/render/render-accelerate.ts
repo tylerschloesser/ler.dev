@@ -1,4 +1,4 @@
-import { AccelerateHand, AppState } from '../types.js'
+import { ApplyForceHand, AppState } from '../types.js'
 import { updateModel } from './matrices.js'
 import { GpuState } from './types.js'
 
@@ -6,7 +6,7 @@ export function renderAccelerate(
   state: AppState,
   gl: WebGL2RenderingContext,
   gpu: GpuState,
-  accelerate: AccelerateHand,
+  accelerate: ApplyForceHand,
 ) {
   if (!accelerate.gear) {
     return

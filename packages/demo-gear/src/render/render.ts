@@ -40,7 +40,7 @@ export function render(
       renderBuild(state, gl, gpu, hand)
       break
     }
-    case HandType.Accelerate: {
+    case HandType.ApplyForce: {
       renderAccelerate(state, gl, gpu, hand)
       break
     }

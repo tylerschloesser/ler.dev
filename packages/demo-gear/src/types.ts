@@ -51,7 +51,7 @@ export type World = z.infer<typeof World>
 
 export enum HandType {
   Build = 'build',
-  Accelerate = 'accelerate',
+  ApplyForce = 'apply-force',
 }
 
 export interface BuildHand {
@@ -62,8 +62,8 @@ export interface BuildHand {
   onChangeValid?(valid: boolean): void
 }
 
-export interface AccelerateHand {
-  type: HandType.Accelerate
+export interface ApplyForceHand {
+  type: HandType.ApplyForce
   position: SimpleVec2 | null
   active: boolean
   direction: number
@@ -71,7 +71,7 @@ export interface AccelerateHand {
   onChangeGear?(gear: Gear | null): void
 }
 
-export type Hand = BuildHand | AccelerateHand
+export type Hand = BuildHand | ApplyForceHand
 
 export type SetWorldFn = (world: World) => void
 

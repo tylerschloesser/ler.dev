@@ -19,7 +19,7 @@ export function Accelerate() {
     }
 
     state.hand = {
-      type: HandType.Accelerate,
+      type: HandType.ApplyForce,
       position: null,
       active: false,
       direction: 1,
@@ -34,7 +34,7 @@ export function Accelerate() {
       const tileX = Math.round(state.camera.position.x)
       const tileY = Math.round(state.camera.position.y)
       const { hand } = state
-      invariant(hand?.type === HandType.Accelerate)
+      invariant(hand?.type === HandType.ApplyForce)
       updateAcceleratePosition(state, hand, tileX, tileY)
     }
     cameraListener(state)
@@ -64,13 +64,13 @@ export function Accelerate() {
         className={styles.button}
         onPointerDown={() => {
           const { hand } = state
-          invariant(hand?.type === HandType.Accelerate)
+          invariant(hand?.type === HandType.ApplyForce)
           hand.active = true
           hand.direction = -1
         }}
         onPointerUp={() => {
           const { hand } = state
-          invariant(hand?.type === HandType.Accelerate)
+          invariant(hand?.type === HandType.ApplyForce)
           hand.active = false
         }}
       >
@@ -81,13 +81,13 @@ export function Accelerate() {
         className={styles.button}
         onPointerDown={() => {
           const { hand } = state
-          invariant(hand?.type === HandType.Accelerate)
+          invariant(hand?.type === HandType.ApplyForce)
           hand.active = true
           hand.direction = 1
         }}
         onPointerUp={() => {
           const { hand } = state
-          invariant(hand?.type === HandType.Accelerate)
+          invariant(hand?.type === HandType.ApplyForce)
           hand.active = false
         }}
       >

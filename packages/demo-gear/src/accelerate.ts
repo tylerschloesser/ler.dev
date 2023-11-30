@@ -1,6 +1,6 @@
 import invariant from 'tiny-invariant'
 import {
-  AccelerateHand,
+  ApplyForceHand,
   AppState,
   Gear,
   HandType,
@@ -13,7 +13,7 @@ const handlePointer: PointerListenerFn = (
   position,
 ) => {
   const { hand } = state
-  invariant(hand?.type === HandType.Accelerate)
+  invariant(hand?.type === HandType.ApplyForce)
   switch (e.type) {
     case 'pointerup': {
       updateAccelerate(state, hand, false)
@@ -47,7 +47,7 @@ export function initAccelerate(
   direction: number,
 ): void {
   state.hand = {
-    type: HandType.Accelerate,
+    type: HandType.ApplyForce,
     active: false,
     direction,
     gear: null,
@@ -59,7 +59,7 @@ export function initAccelerate(
 
 export function updateAcceleratePosition(
   state: AppState,
-  hand: AccelerateHand,
+  hand: ApplyForceHand,
   x: number,
   y: number,
 ): void {
@@ -89,7 +89,7 @@ export function updateAcceleratePosition(
 
 export function updateAccelerate(
   _state: AppState,
-  hand: AccelerateHand,
+  hand: ApplyForceHand,
   active: boolean,
 ): void {
   hand.active = active

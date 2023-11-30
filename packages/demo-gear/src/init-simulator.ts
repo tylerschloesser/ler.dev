@@ -34,7 +34,7 @@ export const initSimulator: InitFn = async (state) => {
 
     const { hand } = state
     if (
-      hand?.type === HandType.Accelerate &&
+      hand?.type === HandType.ApplyForce &&
       hand.active &&
       hand.gear
     ) {
