@@ -1,11 +1,5 @@
 import invariant from 'tiny-invariant'
-import {
-  ACCELERATION,
-  FORCE,
-  FRICTION,
-  TICK_DURATION,
-  TWO_PI,
-} from './const.js'
+import { FRICTION, TICK_DURATION, TWO_PI } from './const.js'
 import {
   ConnectionType,
   Gear,
@@ -40,7 +34,8 @@ export const initSimulator: InitFn = async (state) => {
     ) {
       applyForce(
         hand.gear,
-        (hand.direction === 'ccw' ? -1 : 1) * FORCE,
+        (hand.direction === 'ccw' ? -1 : 1) *
+          hand.magnitude,
         elapsed,
         world,
       )

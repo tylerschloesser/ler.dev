@@ -18,8 +18,6 @@ export const TICK_DURATION = 16
 export const DRAW_GEAR_BOX = false
 
 export const FRICTION: number = 0 // energy/sec
-export const ACCELERATION: number = 2
-export const FORCE: number = 2
 
 export const TEETH = 12
 
