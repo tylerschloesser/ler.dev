@@ -77,6 +77,7 @@ export function AddGear() {
       <input
         className={styles.input}
         readOnly
+        size={1}
         value={radius}
       />
       <button
