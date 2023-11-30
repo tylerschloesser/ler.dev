@@ -46,8 +46,6 @@ export type Gear = z.infer<typeof Gear>
 export const World = z.strictObject({
   gears: z.record(GearId, Gear),
   tiles: z.record(TileId, Tile),
-
-  debugConnections: z.boolean(),
 })
 export type World = z.infer<typeof World>
 
