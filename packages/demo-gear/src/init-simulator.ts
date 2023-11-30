@@ -158,6 +158,51 @@ function getTotalMass(root: Gear, world: World): number {
   return mass
 }
 
+function getTorqueMultiplierMap(
+  root: Gear,
+  world: World,
+): Map<Gear, number> {
+  const torqueMultiplierMap = new Map<Gear, number>()
+  torqueMultiplierMap.set(root, 1)
+
+  const stack = new Array<Gear>(root)
+  while (stack.length) {
+    const tail = stack.pop()
+    invariant(tail)
+
+    const multiplier = torqueMultiplierMap.get(tail)
+    invariant(multiplier !== undefined)
+
+    for (const c of tail.connections) {
+      const neighbor = world.gears[c.gearId]
+      invariant(neighbor)
+
+      if (torqueMultiplierMap.has(neighbor)) {
+        continue
+      }
+
+      let neighborMultiplier: number
+      switch (c.type) {
+        case ConnectionType.enum.Adjacent:
+          neighborMultiplier =
+            (tail.radius / neighbor.radius) * -1
+          break
+        case ConnectionType.enum.Attach:
+          neighborMultiplier = 1
+          break
+        case ConnectionType.enum.Chain:
+          neighborMultiplier = 1
+          break
+      }
+
+      torqueMultiplierMap.set(neighbor, neighborMultiplier)
+      stack.push(neighbor)
+    }
+  }
+
+  return torqueMultiplierMap
+}
+
 function applyForce(
   root: Gear,
   force: number,
@@ -165,15 +210,25 @@ function applyForce(
   world: World,
 ): void {
   const m = getTotalMass(root, world)
-  const F = force
-  const r = root.radius
-  const torque = F * r
-  const I = (1 / 2) * m * r ** 2
+  const rootTorque = force * root.radius
 
-  const acceleration = torque / I
+  const torqueMultiplierMap = getTorqueMultiplierMap(
+    root,
+    world,
+  )
 
-  const dv = acceleration * elapsed
-  root.velocity += dv
+  for (const [
+    gear,
+    torqueMultiplier,
+  ] of torqueMultiplierMap.entries()) {
+    console.log(gear, torqueMultiplier)
+    const r = gear.radius
+    const I = (1 / 2) * m * r ** 2
+    const torque = rootTorque * torqueMultiplier
+    const acceleration = torque / I
+    const dv = acceleration * elapsed
+    gear.velocity += dv
+  }
 }
 
 // TODO remove
