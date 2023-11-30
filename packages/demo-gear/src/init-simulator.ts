@@ -1,6 +1,7 @@
 import invariant from 'tiny-invariant'
 import {
   ACCELERATION,
+  FORCE,
   FRICTION,
   TICK_DURATION,
   TWO_PI,
@@ -37,12 +38,18 @@ export const initSimulator: InitFn = async (state) => {
       hand.active &&
       hand.gear
     ) {
-      accelerateGear({
-        root: hand.gear,
-        acceleration: hand.direction * ACCELERATION,
+      applyForce(
+        hand.gear,
+        hand.direction * FORCE,
         elapsed,
         world,
-      })
+      )
+      // accelerateGear({
+      //   root: hand.gear,
+      //   acceleration: hand.direction * ACCELERATION,
+      //   elapsed,
+      //   world,
+      // })
     }
 
     if (FRICTION !== 0) {
@@ -128,6 +135,51 @@ export function isNetworkValid(
   }
 
   return true
+}
+
+function getTotalMass(root: Gear, world: World): number {
+  const stack = new Array<Gear>(root)
+  const seen = new Set<Gear>()
+
+  let mass = 0
+
+  while (stack.length) {
+    const tail = stack.pop()
+    invariant(tail)
+
+    if (seen.has(tail)) {
+      continue
+    }
+    seen.add(tail)
+
+    mass += tail.mass
+
+    for (const c of tail.connections) {
+      const neighbor = world.gears[c.gearId]
+      invariant(neighbor)
+      stack.push(neighbor)
+    }
+  }
+
+  return mass
+}
+
+function applyForce(
+  root: Gear,
+  force: number,
+  elapsed: number,
+  world: World,
+): void {
+  const m = getTotalMass(root, world)
+  const F = force
+  const r = root.radius
+  const torque = F * r
+  const I = (1 / 2) * m * r ** 2
+
+  const acceleration = torque / I
+
+  const dv = acceleration * elapsed
+  root.velocity += dv
 }
 
 function accelerateGear({
