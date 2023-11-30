@@ -24,6 +24,7 @@ export function ApplyForce() {
       position: null,
       active: false,
       direction: 'cw',
+      magnitude,
       gear: null,
       onChangeGear(gear) {
         setDisabled(gear === null)

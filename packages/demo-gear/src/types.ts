@@ -67,6 +67,7 @@ export interface ApplyForceHand {
   position: SimpleVec2 | null
   active: boolean
   direction: 'cw' | 'ccw'
+  magnitude: number
   gear: Gear | null
   onChangeGear?(gear: Gear | null): void
 }
