@@ -44,7 +44,7 @@ const handlePointer: PointerListenerFn = (
 
 export function initApplyForce(
   state: AppState,
-  direction: number,
+  direction: 'cw' | 'ccw',
 ): void {
   state.hand = {
     type: HandType.ApplyForce,

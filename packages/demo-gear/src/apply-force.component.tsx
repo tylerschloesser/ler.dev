@@ -11,6 +11,7 @@ export function ApplyForce() {
   const navigate = useNavigate()
   const state = use(AppContext)
 
+  const [magnitude, setMagnitude] = useState(1)
   const [disabled, setDisabled] = useState<boolean>(true)
 
   useEffect(() => {
@@ -22,7 +23,7 @@ export function ApplyForce() {
       type: HandType.ApplyForce,
       position: null,
       active: false,
-      direction: 1,
+      direction: 'cw',
       gear: null,
       onChangeGear(gear) {
         setDisabled(gear === null)
@@ -59,6 +60,11 @@ export function ApplyForce() {
       >
         Back
       </button>
+      <input
+        className={styles.input}
+        readOnly
+        value={magnitude}
+      />
       <button
         disabled={disabled}
         className={styles.button}
@@ -66,7 +72,7 @@ export function ApplyForce() {
           const { hand } = state
           invariant(hand?.type === HandType.ApplyForce)
           hand.active = true
-          hand.direction = -1
+          hand.direction = 'ccw'
         }}
         onPointerUp={() => {
           const { hand } = state
@@ -83,7 +89,7 @@ export function ApplyForce() {
           const { hand } = state
           invariant(hand?.type === HandType.ApplyForce)
           hand.active = true
-          hand.direction = 1
+          hand.direction = 'cw'
         }}
         onPointerUp={() => {
           const { hand } = state

@@ -40,7 +40,7 @@ export const initSimulator: InitFn = async (state) => {
     ) {
       applyForce(
         hand.gear,
-        hand.direction * FORCE,
+        (hand.direction === 'ccw' ? -1 : 1) * FORCE,
         elapsed,
         world,
       )
