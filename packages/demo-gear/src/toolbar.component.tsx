@@ -34,10 +34,10 @@ export function Toolbar() {
       <button
         className={styles.button}
         onPointerUp={() => {
-          navigate('accelerate')
+          navigate('apply-force')
         }}
       >
-        Accelerate
+        Apply Force
       </button>
       <button
         className={styles.button}
