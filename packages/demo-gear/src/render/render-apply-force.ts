@@ -2,13 +2,13 @@ import { ApplyForceHand, AppState } from '../types.js'
 import { updateModel } from './matrices.js'
 import { GpuState } from './types.js'
 
-export function renderAccelerate(
+export function renderApplyForce(
   state: AppState,
   gl: WebGL2RenderingContext,
   gpu: GpuState,
-  accelerate: ApplyForceHand,
+  hand: ApplyForceHand,
 ) {
-  if (!accelerate.gear) {
+  if (!hand.gear) {
     return
   }
 
@@ -32,7 +32,7 @@ export function renderAccelerate(
   gl.uniform4f(outlineRect.uniforms.color, 1, 1, 1, 1)
   gl.uniform1f(outlineRect.uniforms.size, size)
 
-  updateModel(gpu.matrices, accelerate.gear)
+  updateModel(gpu.matrices, hand.gear)
   gl.uniformMatrix4fv(
     outlineRect.uniforms.model,
     false,

@@ -5,7 +5,7 @@ import {
 } from '../types.js'
 import { iterateConnections } from '../util.js'
 import { updateProjection, updateView } from './matrices.js'
-import { renderAccelerate } from './render-accelerate.js'
+import { renderApplyForce } from './render-apply-force.js'
 import { renderBuild } from './render-build.js'
 import { renderChain } from './render-chain.js'
 import { renderGears } from './render-gears.js'
@@ -41,7 +41,7 @@ export function render(
       break
     }
     case HandType.ApplyForce: {
-      renderAccelerate(state, gl, gpu, hand)
+      renderApplyForce(state, gl, gpu, hand)
       break
     }
   }
