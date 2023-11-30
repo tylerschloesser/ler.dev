@@ -16,11 +16,11 @@ const handlePointer: PointerListenerFn = (
   invariant(hand?.type === HandType.ApplyForce)
   switch (e.type) {
     case 'pointerup': {
-      updateAccelerate(state, hand, false)
+      updateApplyForce(state, hand, false)
       break
     }
     case 'pointerdown': {
-      updateAccelerate(state, hand, true)
+      updateApplyForce(state, hand, true)
       break
     }
     case 'pointermove': {
@@ -32,7 +32,7 @@ const handlePointer: PointerListenerFn = (
       ) {
         break
       }
-      updateAcceleratePosition(state, hand, tileX, tileY)
+      updateApplyForcePosition(state, hand, tileX, tileY)
       break
     }
     case 'pointerleave': {
@@ -42,7 +42,7 @@ const handlePointer: PointerListenerFn = (
   }
 }
 
-export function initAccelerate(
+export function initApplyForce(
   state: AppState,
   direction: number,
 ): void {
@@ -57,7 +57,7 @@ export function initAccelerate(
   state.pointerListeners.add(handlePointer)
 }
 
-export function updateAcceleratePosition(
+export function updateApplyForcePosition(
   state: AppState,
   hand: ApplyForceHand,
   x: number,
@@ -87,7 +87,7 @@ export function updateAcceleratePosition(
   }
 }
 
-export function updateAccelerate(
+export function updateApplyForce(
   _state: AppState,
   hand: ApplyForceHand,
   active: boolean,

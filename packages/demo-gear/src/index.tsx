@@ -4,9 +4,9 @@ import {
   RouterProvider,
   createBrowserRouter,
 } from 'react-router-dom'
-import { Accelerate } from './accelerate.component.js'
 import { AddGear } from './add-gear.component.js'
 import { App } from './app.component.js'
+import { ApplyForce } from './apply-force.component.js'
 import { Toolbar } from './toolbar.component.js'
 
 // TODO cleanup errors
@@ -31,8 +31,8 @@ const router = createBrowserRouter([
         Component: AddGear,
       },
       {
-        path: 'accelerate',
-        Component: Accelerate,
+        path: 'apply-force',
+        Component: ApplyForce,
       },
     ],
   },

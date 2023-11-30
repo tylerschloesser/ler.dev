@@ -1,13 +1,13 @@
 import { use, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import invariant from 'tiny-invariant'
-import { updateAcceleratePosition } from './accelerate.js'
-import styles from './accelerate.module.scss'
+import { updateApplyForcePosition } from './apply-force.js'
+import styles from './apply-force.module.scss'
 import { moveCamera } from './camera.js'
 import { AppContext } from './context.js'
 import { CameraListenerFn, HandType } from './types.js'
 
-export function Accelerate() {
+export function ApplyForce() {
   const navigate = useNavigate()
   const state = use(AppContext)
 
@@ -35,7 +35,7 @@ export function Accelerate() {
       const tileY = Math.round(state.camera.position.y)
       const { hand } = state
       invariant(hand?.type === HandType.ApplyForce)
-      updateAcceleratePosition(state, hand, tileX, tileY)
+      updateApplyForcePosition(state, hand, tileX, tileY)
     }
     cameraListener(state)
     state.cameraListeners.add(cameraListener)
