@@ -6,6 +6,10 @@ import styles from './apply-force.module.scss'
 import { moveCamera } from './camera.js'
 import { AppContext } from './context.js'
 import { CameraListenerFn, HandType } from './types.js'
+import { clamp } from './util.js'
+
+const MIN_MAGNITUDE = 1
+const MAX_MAGNITUDE = 1000
 
 export function ApplyForce() {
   const navigate = useNavigate()
@@ -47,6 +51,14 @@ export function ApplyForce() {
     }
   }, [state])
 
+  useEffect(() => {
+    if (!state) {
+      return
+    }
+    invariant(state.hand?.type === HandType.ApplyForce)
+    state.hand.magnitude = magnitude
+  }, [state, magnitude])
+
   if (!state) {
     return
   }
@@ -61,11 +73,78 @@ export function ApplyForce() {
       >
         Back
       </button>
+      <button
+        className={styles.button}
+        disabled={magnitude === MIN_MAGNITUDE}
+        onPointerUp={() => {
+          setMagnitude((prev) =>
+            clamp(prev - 100, MIN_MAGNITUDE, MAX_MAGNITUDE),
+          )
+        }}
+      >
+        -100
+      </button>
+      <button
+        className={styles.button}
+        disabled={magnitude === MIN_MAGNITUDE}
+        onPointerUp={() => {
+          setMagnitude((prev) =>
+            clamp(prev - 10, MIN_MAGNITUDE, MAX_MAGNITUDE),
+          )
+        }}
+      >
+        -10
+      </button>
+      <button
+        className={styles.button}
+        disabled={magnitude === MIN_MAGNITUDE}
+        onPointerUp={() => {
+          setMagnitude((prev) =>
+            clamp(prev - 1, MIN_MAGNITUDE, MAX_MAGNITUDE),
+          )
+        }}
+      >
+        -1
+      </button>
       <input
+        size={4}
         className={styles.input}
         readOnly
         value={magnitude}
       />
+      <button
+        className={styles.button}
+        disabled={magnitude === MAX_MAGNITUDE}
+        onPointerUp={() => {
+          setMagnitude((prev) =>
+            clamp(prev + 1, MIN_MAGNITUDE, MAX_MAGNITUDE),
+          )
+        }}
+      >
+        +1
+      </button>
+      <button
+        className={styles.button}
+        disabled={magnitude === MAX_MAGNITUDE}
+        onPointerUp={() => {
+          setMagnitude((prev) =>
+            clamp(prev + 10, MIN_MAGNITUDE, MAX_MAGNITUDE),
+          )
+        }}
+      >
+        +10
+      </button>
+      <button
+        className={styles.button}
+        disabled={magnitude === MAX_MAGNITUDE}
+        onPointerUp={() => {
+          setMagnitude((prev) =>
+            clamp(prev + 100, MIN_MAGNITUDE, MAX_MAGNITUDE),
+          )
+        }}
+      >
+        +100
+      </button>
       <button
         disabled={disabled}
         className={styles.button}
