@@ -44,12 +44,6 @@ export const initSimulator: InitFn = async (state) => {
         elapsed,
         world,
       )
-      // accelerateGear({
-      //   root: hand.gear,
-      //   acceleration: hand.direction * ACCELERATION,
-      //   elapsed,
-      //   world,
-      // })
     }
 
     if (FRICTION !== 0) {
@@ -182,6 +176,7 @@ function applyForce(
   root.velocity += dv
 }
 
+// TODO remove
 function accelerateGear({
   root,
   acceleration,
