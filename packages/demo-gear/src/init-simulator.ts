@@ -221,15 +221,13 @@ function getTorqueMultiplierMap(
   return torqueMultiplierMap
 }
 
-function applyForce(
+function applyTorque(
   root: Gear,
-  force: number,
+  rootTorque: number,
   elapsed: number,
   world: World,
 ): void {
   const m = getTotalMass(root, world)
-  const rootTorque = force * root.radius
-
   const torqueMultiplierMap = getTorqueMultiplierMap(
     root,
     world,
@@ -239,7 +237,6 @@ function applyForce(
     gear,
     torqueMultiplier,
   ] of torqueMultiplierMap.entries()) {
-    console.log(gear, torqueMultiplier)
     const r = gear.radius
     const I = (1 / 2) * m * r ** 2
     const torque = rootTorque * torqueMultiplier
@@ -247,6 +244,16 @@ function applyForce(
     const dv = acceleration * elapsed
     gear.velocity += dv
   }
+}
+
+function applyForce(
+  root: Gear,
+  force: number,
+  elapsed: number,
+  world: World,
+): void {
+  const rootTorque = force * root.radius
+  applyTorque(root, rootTorque, elapsed, world)
 }
 
 // TODO remove
@@ -322,7 +329,12 @@ function applyFriction(
   coeffecient: number,
   elapsed: number,
   world: World,
-): void {}
+): void {
+  const opposingForce = 100
+  const rootTorque =
+    coeffecient * root.velocity * -1 * opposingForce
+  applyTorque(root, rootTorque, elapsed, world)
+}
 
 export function propogateRootVelocity({
   root,
