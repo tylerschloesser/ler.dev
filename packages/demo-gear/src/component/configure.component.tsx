@@ -29,8 +29,9 @@ export function Configure() {
 
     const centerTileIdListener: CenterTileIdListener =
       () => {
+        const tile = state.world.tiles[state.centerTileId]
         const gear =
-          state.world.gears[state.centerTileId] ?? null
+          (tile && state.world.gears[tile.gearId]) ?? null
         invariant(state.hand?.type === HandType.Configure)
         if (state.hand.gear !== gear) {
           state.hand.gear = gear
@@ -41,6 +42,7 @@ export function Configure() {
     centerTileIdListener(state)
 
     return () => {
+      state.hand = null
       state.centerTileIdListeners.delete(
         centerTileIdListener,
       )
