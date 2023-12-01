@@ -154,11 +154,16 @@ export function ApplyForce() {
           invariant(hand?.type === HandType.ApplyForce)
           hand.active = true
           hand.direction = 'ccw'
+          hand.runningEnergyDiff = 0
         }}
         onPointerUp={() => {
           const { hand } = state
           invariant(hand?.type === HandType.ApplyForce)
           hand.active = false
+          console.log(
+            'energy diff:',
+            hand.runningEnergyDiff,
+          )
         }}
       >
         CCW
@@ -171,11 +176,16 @@ export function ApplyForce() {
           invariant(hand?.type === HandType.ApplyForce)
           hand.active = true
           hand.direction = 'cw'
+          hand.runningEnergyDiff = 0
         }}
         onPointerUp={() => {
           const { hand } = state
           invariant(hand?.type === HandType.ApplyForce)
           hand.active = false
+          console.log(
+            'energy diff:',
+            hand.runningEnergyDiff,
+          )
         }}
       >
         CW

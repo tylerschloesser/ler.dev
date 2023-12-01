@@ -119,12 +119,17 @@ export function ApplyFriction() {
         onPointerDown={() => {
           const { hand } = state
           invariant(hand?.type === HandType.ApplyFriction)
+          hand.runningEnergyDiff = 0
           hand.active = true
         }}
         onPointerUp={() => {
           const { hand } = state
           invariant(hand?.type === HandType.ApplyFriction)
           hand.active = false
+          console.log(
+            'energy diff:',
+            hand.runningEnergyDiff,
+          )
         }}
       >
         Apply
