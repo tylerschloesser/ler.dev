@@ -1,13 +1,12 @@
 import invariant from 'tiny-invariant'
-import { getEnergy } from './energy.js'
-import { propogateRootVelocity } from './init-simulator.js'
 import {
   AppState,
   ConnectionType,
   Gear,
   PartialGear,
+  World,
 } from './types.js'
-import { iterateGearTileIds } from './util.js'
+import { getTotalMass, iterateGearTileIds } from './util.js'
 
 export function addChainConnection(
   gear1: Gear,
@@ -81,162 +80,71 @@ export function addGear(
     }
   }
 
-  distributeEnergy(state, gear)
+  const totalMass = getTotalMass(gear, world)
+  for (const c of gear.connections) {
+    const neighbor = world.gears[c.gearId]
+    invariant(neighbor)
+    conserveAngularMomentum(
+      neighbor,
+      world,
+      totalMass - mass,
+      totalMass,
+    )
+    break
+  }
 }
 
-function distributeEnergy(
-  state: AppState,
+function conserveAngularMomentum(
   root: Gear,
+  world: World,
+  totalMassBefore: number,
+  totalMassAfter: number,
 ): void {
-  type Network = { energy: number; members: Set<Gear> }
+  invariant(totalMassAfter > totalMassBefore)
 
-  const networks = new Map<Gear, Network>()
+  root.velocity =
+    root.velocity * (totalMassBefore / totalMassAfter)
 
-  {
-    const stack = new Array<Gear>(root)
-    while (stack.length) {
-      const cur = stack.pop()
-      invariant(cur)
+  const seen = new Set<Gear>()
+  const stack = new Array<{
+    gear: Gear
+    multiplier: number
+  }>({
+    gear: root,
+    multiplier: 1,
+  })
 
-      let prev: Network | undefined
-      if (cur !== root) {
-        prev = networks.get(cur)
-        invariant(prev)
-      }
+  while (stack.length) {
+    const tail = stack.pop()
+    invariant(tail)
 
-      for (const connection of cur.connections) {
-        const peer = state.world.gears[connection.gearId]
-        invariant(peer)
-
-        if (peer === root) {
-          continue
-        }
-
-        let next = networks.get(peer)
-        if (!next) {
-          next = {
-            energy: getEnergy(peer),
-            members: new Set([peer]),
-          }
-          networks.set(peer, next)
-          stack.push(peer)
-        }
-
-        if (prev && prev !== next) {
-          prev.energy += next.energy
-          for (const member of next.members) {
-            prev.members.add(member)
-            invariant(networks.get(member) === next)
-            networks.set(member, prev)
-          }
-        }
-      }
+    if (seen.has(tail.gear)) {
+      continue
     }
-  }
+    seen.add(tail.gear)
 
-  let finalEnergy = 0
+    for (const c of tail.gear.connections) {
+      const neighbor = world.gears[c.gearId]
+      invariant(neighbor)
 
-  {
-    const seen = new Set<Network>()
-    for (const connection of root.connections) {
-      const peer = state.world.gears[connection.gearId]
-      invariant(peer)
-
-      const network = networks.get(peer)
-      invariant(network)
-
-      if (seen.has(network)) {
-        // if the root is connected to the same network twice,
-        // it means there's a loop. Simply only look at the first
-        // one. The loop means that things should be spinning
-        // in the correct direction.
-        continue
-      }
-      seen.add(network)
-
-      let sign: number
-      switch (connection.type) {
+      let neighborMultiplier: number
+      switch (c.type) {
         case ConnectionType.enum.Adjacent:
-          sign = -1
-          break
-        case ConnectionType.enum.Attach:
-          sign = 1
+          neighborMultiplier =
+            (tail.gear.radius / neighbor.radius) * -1
           break
         case ConnectionType.enum.Chain:
-          sign = 1
+          neighborMultiplier = 1
+          break
+        case ConnectionType.enum.Attach:
+          neighborMultiplier = 1
           break
       }
 
-      finalEnergy +=
-        sign * Math.sign(peer.velocity) * network.energy
-
-      console.log({
-        velocity: peer.velocity,
-        energy: network.energy,
-        type: connection.type,
-      })
+      const multiplier =
+        tail.multiplier * neighborMultiplier
+      neighbor.velocity = root.velocity * multiplier
+      stack.push({ gear: neighbor, multiplier })
     }
-  }
-
-  console.log('finalEnergy', finalEnergy)
-
-  {
-    const nmap = new Map<Gear, number>()
-    const stack = new Array<Gear>(root)
-    nmap.set(root, 1)
-    let sum = 0
-
-    while (stack.length) {
-      const gear = stack.pop()
-      invariant(gear)
-
-      const np = nmap.get(gear)
-      invariant(np)
-
-      sum += gear.radius ** 2 * gear.mass * np ** -2
-
-      for (const connection of gear.connections) {
-        const peer = state.world.gears[connection.gearId]
-        invariant(peer)
-
-        let n: number
-        switch (connection.type) {
-          case ConnectionType.enum.Adjacent:
-            n = (peer.radius / gear.radius) * -1
-            break
-          case ConnectionType.enum.Chain:
-            n = peer.radius / gear.radius
-            break
-          case ConnectionType.enum.Attach:
-            n = 1
-            break
-        }
-
-        n = n * np
-
-        let prev = nmap.get(peer)
-        if (prev !== undefined) {
-          invariant(n === prev)
-        } else {
-          nmap.set(peer, n)
-          stack.push(peer)
-        }
-      }
-    }
-
-    invariant(sum !== 0)
-    root.velocity =
-      Math.sign(finalEnergy) *
-      Math.sqrt((4 * Math.abs(finalEnergy)) / sum)
-    root.angle = 0
-
-    invariant(!Number.isNaN(root.velocity))
-
-    propogateRootVelocity({
-      root,
-      nmap,
-      world: state.world,
-      resetAngle: true,
-    })
   }
 }
