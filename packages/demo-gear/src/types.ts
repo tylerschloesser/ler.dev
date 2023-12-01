@@ -40,6 +40,30 @@ export type GearBehaviorType = z.infer<
   typeof GearBehaviorType
 >
 
+export const ForceGearBehavior = z.strictObject({
+  type: z.literal(GearBehaviorType.enum.Force),
+  direction: z.union([z.literal('cw'), z.literal('ccw')]),
+  magnitude: z.number(),
+})
+export type ForceGearBehavior = z.infer<
+  typeof ForceGearBehavior
+>
+
+export const FrictionGearBehavior = z.strictObject({
+  type: z.literal(GearBehaviorType.enum.Friction),
+  coeffecient: z.number(),
+  magnitude: z.number(),
+})
+export type FrictionGearBehavior = z.infer<
+  typeof FrictionGearBehavior
+>
+
+export const GearBehavior = z.discriminatedUnion('type', [
+  ForceGearBehavior,
+  FrictionGearBehavior,
+])
+export type GearBehavior = z.infer<typeof GearBehavior>
+
 export const Gear = z.strictObject({
   id: GearId,
   position: SimpleVec2,
@@ -48,6 +72,7 @@ export const Gear = z.strictObject({
   velocity: z.number(),
   mass: z.number(),
   connections: z.array(Connection),
+  behavior: GearBehavior.optional(),
 })
 export type Gear = z.infer<typeof Gear>
 
