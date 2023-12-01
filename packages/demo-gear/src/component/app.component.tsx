@@ -6,7 +6,13 @@ import { initKeyboard } from '../init-keyboard.js'
 import { initPointer } from '../init-pointer.js'
 import { initSimulator } from '../init-simulator.js'
 import { initWheel } from '../init-wheel.js'
-import { AppState, InitFn } from '../types.js'
+import {
+  AppState,
+  Camera,
+  CameraListenerFn,
+  InitFn,
+  TileId,
+} from '../types.js'
 import styles from './app.module.scss'
 import { Canvas } from './canvas.component.js'
 import { AppContext } from './context.js'
@@ -20,6 +26,22 @@ const INIT_FNS: InitFn[] = [
   initKeyboard,
   initSimulator,
 ]
+
+function getCenterTileId(camera: Camera): TileId {
+  const tileX = Math.round(camera.position.x)
+  const tileY = Math.round(camera.position.y)
+  return `${tileX}.${tileY}`
+}
+
+const updateCenterTileId: CameraListenerFn = (state) => {
+  const centerTileId = getCenterTileId(state.camera)
+  if (state.centerTileId !== centerTileId) {
+    state.centerTileId = centerTileId
+    for (const listener of state.centerTileIdListeners) {
+      listener(state)
+    }
+  }
+}
 
 function useAppState(
   canvas: {
@@ -52,8 +74,11 @@ function useAppState(
       pointerListeners: new Set([moveCamera]),
       cameraListeners: new Set([
         (state) => saveCamera(state.camera),
+        updateCenterTileId,
       ]),
       navigate,
+      centerTileId: getCenterTileId(camera),
+      centerTileIdListeners: new Set(),
     })
     return () => {
       controller.abort()

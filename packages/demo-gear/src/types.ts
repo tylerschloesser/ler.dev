@@ -97,6 +97,8 @@ export interface BuildHand {
   onChangeValid?(valid: boolean): void
 }
 
+export type OnChangeGearFn = (gear: Gear | null) => void
+
 export interface ApplyForceHand {
   type: HandType.ApplyForce
   position: SimpleVec2 | null
@@ -104,7 +106,7 @@ export interface ApplyForceHand {
   direction: 'cw' | 'ccw'
   magnitude: number
   gear: Gear | null
-  onChangeGear?(gear: Gear | null): void
+  onChangeGear?: OnChangeGearFn
   runningEnergyDiff: number
 }
 
@@ -114,15 +116,14 @@ export interface ApplyFrictionHand {
   active: boolean
   coeffecient: number
   gear: Gear | null
-  onChangeGear?(gear: Gear | null): void
+  onChangeGear?: OnChangeGearFn
   runningEnergyDiff: number
 }
 
 export interface ConfigureHand {
   type: HandType.Configure
-  position: SimpleVec2 | null
   gear: Gear | null
-  onChangeGear?(gear: Gear | null): void
+  onChangeGear?: OnChangeGearFn
 }
 
 export type Hand =
@@ -145,6 +146,7 @@ export type PointerListenerFn = (
   position: Readonly<SimpleVec2>,
 ) => void
 export type CameraListenerFn = (state: AppState) => void
+export type CenterTileIdListener = (state: AppState) => void
 
 export interface Viewport {
   size: SimpleVec2
@@ -165,6 +167,9 @@ export interface AppState {
 
   camera: Camera
   tileSize: number
+
+  centerTileId: TileId
+  centerTileIdListeners: Set<CenterTileIdListener>
 
   pointerListeners: Set<PointerListenerFn>
   cameraListeners: Set<CameraListenerFn>
