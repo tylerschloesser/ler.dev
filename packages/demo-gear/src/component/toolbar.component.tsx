@@ -34,6 +34,14 @@ export function Toolbar() {
       <button
         className={styles.button}
         onPointerUp={() => {
+          navigate('configure')
+        }}
+      >
+        Configure
+      </button>
+      <button
+        className={styles.button}
+        onPointerUp={() => {
           navigate('apply-force')
         }}
       >

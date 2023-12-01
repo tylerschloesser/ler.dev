@@ -86,6 +86,7 @@ export enum HandType {
   Build = 'build',
   ApplyForce = 'apply-force',
   ApplyFriction = 'apply-friction',
+  Configure = 'configure',
 }
 
 export interface BuildHand {
@@ -117,10 +118,18 @@ export interface ApplyFrictionHand {
   runningEnergyDiff: number
 }
 
+export interface ConfigureHand {
+  type: HandType.Configure
+  position: SimpleVec2 | null
+  gear: Gear | null
+  onChangeGear?(gear: Gear | null): void
+}
+
 export type Hand =
   | BuildHand
   | ApplyForceHand
   | ApplyFrictionHand
+  | ConfigureHand
 
 export type SetWorldFn = (world: World) => void
 

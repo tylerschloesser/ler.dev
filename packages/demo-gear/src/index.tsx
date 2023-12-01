@@ -8,6 +8,7 @@ import { AddGear } from './component/add-gear.component.js'
 import { App } from './component/app.component.js'
 import { ApplyForce } from './component/apply-force.component.js'
 import { ApplyFriction } from './component/apply-friction.component.js'
+import { Configure } from './component/configure.component.js'
 import { Toolbar } from './component/toolbar.component.js'
 
 // TODO cleanup errors
@@ -38,6 +39,10 @@ const router = createBrowserRouter([
       {
         path: 'apply-friction',
         Component: ApplyFriction,
+      },
+      {
+        path: 'configure',
+        Component: Configure,
       },
     ],
   },
