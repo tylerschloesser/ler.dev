@@ -33,8 +33,7 @@ export function addGear(
 ): void {
   const { world } = state
 
-  const { position, radius, connections, angle, velocity } =
-    partial
+  const { position, radius, connections, angle } = partial
 
   const gearId = `${position.x}.${position.y}.${radius}`
   invariant(world.gears[gearId] === undefined)
@@ -60,7 +59,7 @@ export function addGear(
     radius,
     mass,
     angle,
-    velocity,
+    velocity: 0,
     connections,
   }
 

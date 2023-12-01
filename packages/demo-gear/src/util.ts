@@ -244,3 +244,33 @@ export function throttle<A extends Array<unknown>>(
   cache.set(fn, throttled)
   return throttled
 }
+
+export function getTotalMass(
+  root: Gear,
+  world: World,
+): number {
+  const stack = new Array<Gear>(root)
+  const seen = new Set<Gear>()
+
+  let mass = 0
+
+  while (stack.length) {
+    const tail = stack.pop()
+    invariant(tail)
+
+    if (seen.has(tail)) {
+      continue
+    }
+    seen.add(tail)
+
+    mass += tail.mass
+
+    for (const c of tail.connections) {
+      const neighbor = world.gears[c.gearId]
+      invariant(neighbor)
+      stack.push(neighbor)
+    }
+  }
+
+  return mass
+}

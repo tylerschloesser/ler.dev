@@ -8,6 +8,7 @@ import {
   PartialGear,
   World,
 } from './types.js'
+import { getTotalMass } from './util.js'
 
 export const initSimulator: InitFn = async (state) => {
   let prev: number = performance.now()
@@ -145,33 +146,6 @@ export function isNetworkValid(
   return true
 }
 
-function getTotalMass(root: Gear, world: World): number {
-  const stack = new Array<Gear>(root)
-  const seen = new Set<Gear>()
-
-  let mass = 0
-
-  while (stack.length) {
-    const tail = stack.pop()
-    invariant(tail)
-
-    if (seen.has(tail)) {
-      continue
-    }
-    seen.add(tail)
-
-    mass += tail.mass
-
-    for (const c of tail.connections) {
-      const neighbor = world.gears[c.gearId]
-      invariant(neighbor)
-      stack.push(neighbor)
-    }
-  }
-
-  return mass
-}
-
 function getTorqueMultiplierMap(
   root: Gear,
   world: World,
@@ -254,74 +228,6 @@ function applyForce(
 ): void {
   const rootTorque = force * root.radius
   applyTorque(root, rootTorque, elapsed, world)
-}
-
-// TODO remove
-function accelerateGear({
-  root,
-  acceleration,
-  elapsed,
-  world,
-}: {
-  root: Gear
-  acceleration: number
-  elapsed: number
-  world: World
-}): void {
-  root.velocity += acceleration * elapsed
-
-  const seen = new Set<Gear>()
-  function recurse({
-    from,
-    to,
-    type,
-  }: {
-    from: Gear
-    to: Gear
-    type: ConnectionType
-  }): void {
-    // TODO this is duplicated in build
-    let n
-    switch (type) {
-      case ConnectionType.enum.Adjacent:
-        n = (from.radius / to.radius) * -1
-        break
-      case ConnectionType.enum.Chain:
-        n = from.radius / to.radius
-        break
-      case ConnectionType.enum.Attach:
-        n = 1
-    }
-
-    if (seen.has(to)) {
-      const diff = to.velocity - from.velocity * n
-      invariant(Math.abs(diff) < Number.EPSILON * 1e2)
-      return
-    }
-    seen.add(to)
-
-    to.velocity = from.velocity * n
-
-    for (const connection of to.connections) {
-      const toto = world.gears[connection.gearId]
-      invariant(toto)
-      recurse({
-        from: to,
-        to: toto,
-        type: connection.type,
-      })
-    }
-  }
-
-  for (const connection of root.connections) {
-    const to = world.gears[connection.gearId]
-    invariant(to)
-    recurse({
-      from: root,
-      to,
-      type: connection.type,
-    })
-  }
 }
 
 function applyFriction(
