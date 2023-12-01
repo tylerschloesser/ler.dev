@@ -1,0 +1,8 @@
+@mixin container {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  margin: 1em;
+  display: flex;
+  border: 2px solid white;
+}
