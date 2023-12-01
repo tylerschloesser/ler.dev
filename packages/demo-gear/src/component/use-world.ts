@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useState } from 'react'
-import { SetWorldFn, World } from './types.js'
+import { SetWorldFn, World } from '../types.js'
 import {
   clearWorld,
   getDefaultWorld,
   initWorld,
   saveWorld,
-} from './world.js'
+} from '../world.js'
 
 export function useWorld(): [World | null, SetWorldFn] {
   const [world, setWorld] = useState<World | null>(null)

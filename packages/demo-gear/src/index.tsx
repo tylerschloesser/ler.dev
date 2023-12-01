@@ -4,11 +4,11 @@ import {
   RouterProvider,
   createBrowserRouter,
 } from 'react-router-dom'
-import { AddGear } from './add-gear.component.js'
-import { App } from './app.component.js'
-import { ApplyForce } from './apply-force.component.js'
-import { ApplyFriction } from './apply-friction.component.js'
-import { Toolbar } from './toolbar.component.js'
+import { AddGear } from './component/add-gear.component.js'
+import { App } from './component/app.component.js'
+import { ApplyForce } from './component/apply-force.component.js'
+import { ApplyFriction } from './component/apply-friction.component.js'
+import { Toolbar } from './component/toolbar.component.js'
 
 // TODO cleanup errors
 // https://github.com/facebook/react/issues/15069

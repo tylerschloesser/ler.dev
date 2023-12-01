@@ -1,12 +1,12 @@
 import { use, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import invariant from 'tiny-invariant'
-import { updateApplyFrictionPosition } from './apply-friction.js'
+import { updateApplyFrictionPosition } from '../apply-friction.js'
+import { moveCamera } from '../camera.js'
+import { CameraListenerFn, HandType } from '../types.js'
+import { clamp } from '../util.js'
 import styles from './apply-friction.module.scss'
-import { moveCamera } from './camera.js'
 import { AppContext } from './context.js'
-import { CameraListenerFn, HandType } from './types.js'
-import { clamp } from './util.js'
 
 const COEFFECIENT_SCALE = 0.1
 

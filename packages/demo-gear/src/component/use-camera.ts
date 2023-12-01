@@ -1,5 +1,5 @@
-import { Camera } from './types.js'
-import { throttle } from './util.js'
+import { Camera } from '../types.js'
+import { throttle } from '../util.js'
 
 const KEY = 'camera'
 

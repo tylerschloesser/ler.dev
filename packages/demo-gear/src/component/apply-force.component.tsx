@@ -1,12 +1,12 @@
 import { use, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import invariant from 'tiny-invariant'
-import { updateApplyForcePosition } from './apply-force.js'
+import { updateApplyForcePosition } from '../apply-force.js'
+import { moveCamera } from '../camera.js'
+import { CameraListenerFn, HandType } from '../types.js'
+import { clamp } from '../util.js'
 import styles from './apply-force.module.scss'
-import { moveCamera } from './camera.js'
 import { AppContext } from './context.js'
-import { CameraListenerFn, HandType } from './types.js'
-import { clamp } from './util.js'
 
 const MIN_MAGNITUDE = 1
 const MAX_MAGNITUDE = 1000

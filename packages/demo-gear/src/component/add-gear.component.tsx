@@ -1,18 +1,18 @@
 import { use, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import invariant from 'tiny-invariant'
-import styles from './add-gear.module.scss'
 import {
   executeBuild,
   initBuild,
   updateBuildPosition,
   updateRadius,
-} from './build.js'
-import { moveCamera } from './camera.js'
-import { MAX_RADIUS, MIN_RADIUS } from './const.js'
+} from '../build.js'
+import { moveCamera } from '../camera.js'
+import { MAX_RADIUS, MIN_RADIUS } from '../const.js'
 import { AppContext } from './context.js'
-import { CameraListenerFn, HandType } from './types.js'
-import { clamp } from './util.js'
+import { CameraListenerFn, HandType } from '../types.js'
+import { clamp } from '../util.js'
+import styles from './add-gear.module.scss'
 
 export function AddGear() {
   const state = use(AppContext)
