@@ -6,3 +6,30 @@
   display: flex;
   border: 2px solid white;
 }
+
+@mixin item {
+  font-size: 16px;
+  font-weight: bold;
+
+  padding: 0.5em;
+  line-height: 1em;
+  user-select: none;
+  color: white;
+  background: black;
+  border: none;
+  border-radius: 0;
+  outline: none;
+  &:disabled {
+    opacity: 0.5;
+  }
+}
+
+@mixin button {
+  @include item;
+}
+
+@mixin input {
+  @include item;
+  width: 1em;
+  text-align: center;
+}
