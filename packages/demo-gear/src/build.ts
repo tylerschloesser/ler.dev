@@ -1,6 +1,5 @@
 import invariant from 'tiny-invariant'
 import { addChainConnection, addGear } from './add-gear.js'
-import { isNetworkValid } from './init-simulator.js'
 import {
   AppState,
   BuildHand,
@@ -10,6 +9,7 @@ import {
 } from './types.js'
 import {
   getAdjacentConnections,
+  isNetworkValid,
   iterateOverlappingGears,
 } from './util.js'
 import { Vec2 } from './vec2.js'
