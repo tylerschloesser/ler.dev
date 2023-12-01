@@ -32,6 +32,14 @@ export const Connection = z.strictObject({
 })
 export type Connection = z.infer<typeof Connection>
 
+export const GearBehaviorType = z.enum([
+  'Force',
+  'Friction',
+])
+export type GearBehaviorType = z.infer<
+  typeof GearBehaviorType
+>
+
 export const Gear = z.strictObject({
   id: GearId,
   position: SimpleVec2,
