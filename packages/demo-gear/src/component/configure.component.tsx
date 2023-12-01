@@ -1,7 +1,14 @@
-import { use, useCallback, useEffect } from 'react'
+import {
+  use,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react'
 import invariant from 'tiny-invariant'
 import {
   CenterTileIdListener,
+  GearBehavior,
+  GearId,
   HandType,
   OnChangeGearFn,
 } from '../types.js'
@@ -10,9 +17,15 @@ import { AppContext } from './context.js'
 
 export function Configure() {
   const state = use(AppContext)
+
+  const [gearId, setGearId] = useState<GearId | null>(null)
+  const [behavior, setBehavior] =
+    useState<GearBehavior | null>(null)
+
   const onChangeGear = useCallback<OnChangeGearFn>(
     (gear) => {
-      console.log(gear)
+      setGearId(gear?.id ?? null)
+      setBehavior(gear?.behavior ?? null)
     },
     [state],
   )
@@ -49,5 +62,9 @@ export function Configure() {
     }
   }, [state])
 
-  return <div className={styles.container}>TODO</div>
+  return (
+    <div className={styles.container}>
+      {gearId} behavior: {JSON.stringify(behavior)}
+    </div>
+  )
 }
