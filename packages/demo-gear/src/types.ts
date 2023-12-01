@@ -71,6 +71,7 @@ export interface ApplyForceHand {
   magnitude: number
   gear: Gear | null
   onChangeGear?(gear: Gear | null): void
+  runningEnergyDiff: number
 }
 
 export interface ApplyFrictionHand {
@@ -80,6 +81,7 @@ export interface ApplyFrictionHand {
   coeffecient: number
   gear: Gear | null
   onChangeGear?(gear: Gear | null): void
+  runningEnergyDiff: number
 }
 
 export type Hand =

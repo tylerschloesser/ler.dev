@@ -36,6 +36,7 @@ export function ApplyFriction() {
       onChangeGear(gear) {
         setDisabled(gear === null)
       },
+      runningEnergyDiff: 0,
     }
     state.pointerListeners.clear()
     state.pointerListeners.add(moveCamera)
