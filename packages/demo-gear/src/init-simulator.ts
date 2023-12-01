@@ -27,33 +27,24 @@ export const initSimulator: InitFn = async (state) => {
     prev = now
 
     const { hand } = state
-    if (
-      hand?.type === HandType.ApplyForce &&
-      hand.active &&
-      hand.gear
-    ) {
-      applyForce(
-        hand.gear,
-        (hand.direction === 'ccw' ? -1 : 1) *
-          hand.magnitude,
-        elapsed,
-        world,
-      )
-    }
-
     switch (hand?.type) {
       case HandType.ApplyForce: {
         if (hand.active && hand.gear) {
           const force =
             (hand.direction === 'ccw' ? -1 : 1) *
             hand.magnitude
-          applyForce(hand.gear, force, elapsed, world)
+          hand.runningEnergyDiff += applyForce(
+            hand.gear,
+            force,
+            elapsed,
+            world,
+          )
         }
         break
       }
       case HandType.ApplyFriction: {
         if (hand.active && hand.gear) {
-          applyFriction(
+          hand.runningEnergyDiff += applyFriction(
             hand.gear,
             hand.coeffecient,
             elapsed,
@@ -150,12 +141,14 @@ function applyTorque(
   rootTorque: number,
   elapsed: number,
   world: World,
-): void {
+): number {
   const m = getTotalMass(root, world)
   const torqueMultiplierMap = getTorqueMultiplierMap(
     root,
     world,
   )
+
+  let energyDiff = 0
 
   for (const [
     gear,
@@ -166,8 +159,17 @@ function applyTorque(
     const torque = rootTorque * torqueMultiplier
     const acceleration = torque / I
     const dv = acceleration * elapsed
+
+    const energyBefore = (1 / 2) * I * gear.velocity ** 2
+
     gear.velocity += dv
+
+    const energyAfter = (1 / 2) * I * gear.velocity ** 2
+
+    energyDiff += energyAfter - energyBefore
   }
+
+  return energyDiff
 }
 
 function applyForce(
@@ -175,9 +177,9 @@ function applyForce(
   force: number,
   elapsed: number,
   world: World,
-): void {
+): number {
   const rootTorque = force * root.radius
-  applyTorque(root, rootTorque, elapsed, world)
+  return applyTorque(root, rootTorque, elapsed, world)
 }
 
 function applyFriction(
@@ -185,9 +187,9 @@ function applyFriction(
   coeffecient: number,
   elapsed: number,
   world: World,
-): void {
+): number {
   const opposingForce = 100
   const rootTorque =
     coeffecient * root.velocity * -1 * opposingForce
-  applyTorque(root, rootTorque, elapsed, world)
+  return applyTorque(root, rootTorque, elapsed, world)
 }
