@@ -3,7 +3,6 @@ import { TICK_DURATION, TWO_PI } from './const.js'
 import {
   ConnectionType,
   Gear,
-  GearBehavior,
   GearBehaviorType,
   HandType,
   InitFn,
