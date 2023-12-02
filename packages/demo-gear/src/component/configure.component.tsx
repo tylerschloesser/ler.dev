@@ -9,7 +9,6 @@ import {
 import { useNavigate } from 'react-router-dom'
 import invariant from 'tiny-invariant'
 import {
-  AppState,
   CenterTileIdListener,
   ForceGearBehavior,
   FrictionGearBehavior,
@@ -18,10 +17,10 @@ import {
   GearId,
   HandType,
   OnChangeGearFn,
-  TickListenerFn,
 } from '../types.js'
 import styles from './configure.module.scss'
 import { AppContext } from './context.js'
+import { GearStats } from './gear-stats.component.js'
 import { Overlay } from './overlay.component.js'
 
 function SelectGearBehaviorType({
@@ -83,34 +82,6 @@ function SelectGearBehaviorType({
           Friction
         </label>
       </div>
-    </div>
-  )
-}
-
-function GearStats({
-  state,
-  gearId,
-}: {
-  state: AppState
-  gearId: GearId
-}) {
-  const [velocity, setVelocity] = useState<number>(0)
-
-  useEffect(() => {
-    const listener: TickListenerFn = () => {
-      const gear = state.world.gears[gearId]
-      invariant(gear)
-      setVelocity(gear.velocity)
-    }
-    state.tickListeners.add(listener)
-    return () => {
-      state.tickListeners.delete(listener)
-    }
-  }, [])
-
-  return (
-    <div className={styles.stats}>
-      Velocity: <pre>{velocity.toFixed(2)}</pre>
     </div>
   )
 }
