@@ -6,6 +6,7 @@ import {
   useEffect,
   useState,
 } from 'react'
+import { useNavigate } from 'react-router-dom'
 import invariant from 'tiny-invariant'
 import {
   CenterTileIdListener,
@@ -134,7 +135,7 @@ function EditFrictionGearBehavior({
 
 export function Configure() {
   const state = use(AppContext)
-
+  const navigate = useNavigate()
   const [gearId, setGearId] = useState<GearId | null>(null)
   const [behavior, setBehavior] =
     useState<GearBehavior | null>(null)
@@ -212,6 +213,14 @@ export function Configure() {
 
   return (
     <div className={styles.container}>
+      <button
+        className={styles.button}
+        onPointerUp={() => {
+          navigate('..')
+        }}
+      >
+        Back
+      </button>
       {gearId && (
         <>
           <SelectGearBehaviorType
@@ -221,7 +230,7 @@ export function Configure() {
           {edit}
         </>
       )}
-      {gearId} behavior: {JSON.stringify(behavior)}
+      behavior: {JSON.stringify(behavior)}
     </div>
   )
 }

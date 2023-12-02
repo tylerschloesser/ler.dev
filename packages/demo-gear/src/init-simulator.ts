@@ -49,6 +49,7 @@ export const initSimulator: InitFn = async (state) => {
           hand.runningEnergyDiff += applyFriction(
             hand.gear,
             hand.coeffecient,
+            100, // TODO
             elapsed,
             world,
           )
@@ -59,7 +60,7 @@ export const initSimulator: InitFn = async (state) => {
 
     for (const gear of Object.values(world.gears)) {
       switch (gear.behavior?.type) {
-        case GearBehaviorType.enum.Force:{
+        case GearBehaviorType.enum.Force: {
           const { behavior } = gear
           applyForce(
             gear,
@@ -72,11 +73,15 @@ export const initSimulator: InitFn = async (state) => {
         }
         case GearBehaviorType.enum.Friction: {
           const { behavior } = gear
-          invariant(false, 'TODO')
-          // applyFriction(gear, coeffecient, elapsed, world)
+          applyFriction(
+            gear,
+            behavior.coeffecient,
+            behavior.magnitude,
+            elapsed,
+            world,
+          )
           break
         }
-
       }
     }
 
@@ -210,11 +215,11 @@ function applyForce(
 function applyFriction(
   root: Gear,
   coeffecient: number,
+  magnitude: number,
   elapsed: number,
   world: World,
 ): number {
-  const opposingForce = 100
   const rootTorque =
-    coeffecient * root.velocity * -1 * opposingForce
+    coeffecient * root.velocity * -1 * magnitude
   return applyTorque(root, rootTorque, elapsed, world)
 }
