@@ -13,11 +13,12 @@ import {
   InitFn,
   TileId,
 } from '../types.js'
+import { throttle } from '../util.js'
 import styles from './app.module.scss'
 import { Canvas } from './canvas.component.js'
 import { AppContext } from './context.js'
 import { useCamera } from './use-camera.js'
-import { useWorld } from './use-world.js'
+import { useSaveWorld, useWorld } from './use-world.js'
 
 const INIT_FNS: InitFn[] = [
   initCanvas,
@@ -52,6 +53,7 @@ function useAppState(
 ): AppState | null {
   const [state, setState] = useState<AppState | null>(null)
   const [world, setWorld] = useWorld()
+  const saveWorld = useSaveWorld(world ?? undefined)
   const { camera, saveCamera } = useCamera()
   const navigate = useNavigate()
   useEffect(() => {
@@ -79,7 +81,7 @@ function useAppState(
       navigate,
       centerTileId: getCenterTileId(camera),
       centerTileIdListeners: new Set(),
-      tickListeners: new Set(),
+      tickListeners: new Set([throttle(saveWorld, 500)]),
     })
     return () => {
       controller.abort()
