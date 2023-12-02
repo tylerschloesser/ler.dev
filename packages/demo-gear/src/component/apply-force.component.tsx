@@ -1,9 +1,16 @@
-import { use, useEffect, useState } from 'react'
+import {
+  use,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react'
 import { useNavigate } from 'react-router-dom'
 import invariant from 'tiny-invariant'
-import { updateApplyForcePosition } from '../apply-force.js'
-import { moveCamera } from '../camera.js'
-import { CameraListenerFn, HandType } from '../types.js'
+import {
+  CenterTileIdListener,
+  HandType,
+  OnChangeGearFn,
+} from '../types.js'
 import styles from './apply-force.module.scss'
 import { AppContext } from './context.js'
 import { GearStats } from './gear-stats.component.js'
@@ -22,6 +29,13 @@ export function ApplyForce() {
   )
   const [disabled, setDisabled] = useState<boolean>(true)
 
+  const onChangeGear = useCallback<OnChangeGearFn>(
+    (gear) => {
+      setDisabled(gear === null)
+    },
+    [state],
+  )
+
   useEffect(() => {
     if (!state) {
       return
@@ -34,25 +48,29 @@ export function ApplyForce() {
       direction: 'cw',
       magnitude,
       gear: null,
-      onChangeGear(gear) {
-        setDisabled(gear === null)
-      },
+      onChangeGear,
       runningEnergyDiff: 0,
     }
-    state.pointerListeners.clear()
-    state.pointerListeners.add(moveCamera)
-    const cameraListener: CameraListenerFn = () => {
-      const tileX = Math.round(state.camera.position.x)
-      const tileY = Math.round(state.camera.position.y)
-      const { hand } = state
-      invariant(hand?.type === HandType.ApplyForce)
-      updateApplyForcePosition(state, hand, tileX, tileY)
-    }
-    cameraListener(state)
-    state.cameraListeners.add(cameraListener)
+
+    const centerTileIdListener: CenterTileIdListener =
+      () => {
+        const tile = state.world.tiles[state.centerTileId]
+        const gear =
+          (tile && state.world.gears[tile.gearId]) ?? null
+        invariant(state.hand?.type === HandType.ApplyForce)
+        if (state.hand.gear !== gear) {
+          state.hand.gear = gear
+          onChangeGear(gear)
+        }
+      }
+    state.centerTileIdListeners.add(centerTileIdListener)
+    centerTileIdListener(state)
+
     return () => {
       state.hand = null
-      state.cameraListeners.delete(cameraListener)
+      state.centerTileIdListeners.delete(
+        centerTileIdListener,
+      )
     }
   }, [state])
 
