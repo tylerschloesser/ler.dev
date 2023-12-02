@@ -32,7 +32,7 @@ function SelectGearBehaviorType({
   setBehavior: Dispatch<SetStateAction<GearBehavior | null>>
 }) {
   return (
-    <div className={styles['radio-group']}>
+    <div>
       <div className={styles['radio-group-label']}>
         Behavior
       </div>
@@ -121,7 +121,7 @@ function EditForceGearBehavior({
   setBehavior: Dispatch<SetStateAction<GearBehavior | null>>
 }) {
   return (
-    <div className={styles['radio-group']}>
+    <div>
       <div className={styles['radio-group-label']}>
         Direction
       </div>
@@ -155,6 +155,23 @@ function EditForceGearBehavior({
           CCW
         </label>
       </div>
+      <label>
+        Magnitude
+        <input
+          type="range"
+          min={0}
+          max={10}
+          step={1}
+          size={2}
+          value={behavior.magnitude}
+          onChange={(e) => {
+            setBehavior({
+              ...behavior,
+              magnitude: parseInt(e.target.value),
+            })
+          }}
+        />
+      </label>
     </div>
   )
 }
