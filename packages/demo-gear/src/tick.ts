@@ -1,4 +1,3 @@
-import invariant from 'tiny-invariant'
 import {
   applyForce,
   applyFriction,
@@ -56,8 +55,19 @@ export function tick(state: AppState, elapsed: number) {
           stop = gear.velocity < governer
         }
 
-        if (!stop) {
-          // TODO this is a naive governer mechanism
+        const diff = Math.abs(
+          Math.abs(gear.velocity) - Math.abs(governer),
+        )
+
+        // TODO better define this magic number
+        if (diff < 0.01) {
+          break
+        }
+
+        if (stop) {
+          // TODO chosen arbitrarily
+          applyFriction(gear, 0.1, 1, elapsed, world)
+        } else {
           applyForce(
             gear,
             sign * behavior.magnitude,

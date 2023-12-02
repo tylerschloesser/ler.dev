@@ -193,19 +193,33 @@ function EditForceGearBehavior({
 
 function EditFrictionGearBehavior({
   behavior,
+  setBehavior,
 }: {
   behavior: FrictionGearBehavior
+  setBehavior: Dispatch<SetStateAction<GearBehavior | null>>
 }) {
   return (
     <>
-      <input
-        className={styles.input}
-        type="number"
-        min={0}
-        max={1}
-        step={0.1}
-        size={4}
-      />
+      <div className={styles['field-label']}>
+        Coeffecient
+      </div>
+      <div>
+        <input
+          type="range"
+          min={0}
+          max={10}
+          step={1}
+          size={4}
+          value={behavior.coeffecient * 10}
+          onChange={(e) => {
+            setBehavior({
+              ...behavior,
+              coeffecient: parseInt(e.target.value) / 10,
+            })
+          }}
+        />
+        {behavior.coeffecient}
+      </div>
     </>
   )
 }
@@ -283,7 +297,10 @@ export function Configure() {
       break
     case GearBehaviorType.enum.Friction:
       edit = (
-        <EditFrictionGearBehavior behavior={behavior} />
+        <EditFrictionGearBehavior
+          behavior={behavior}
+          setBehavior={setBehavior}
+        />
       )
       break
   }
