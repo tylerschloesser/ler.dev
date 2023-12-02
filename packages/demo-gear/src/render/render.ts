@@ -5,12 +5,11 @@ import {
 } from '../types.js'
 import { iterateConnections } from '../util.js'
 import { updateProjection, updateView } from './matrices.js'
-import { renderApplyForce } from './render-apply-force.js'
-import { renderApplyFriction } from './render-apply-friction.js'
 import { renderBuild } from './render-build.js'
 import { renderChain } from './render-chain.js'
 import { renderGears } from './render-gears.js'
 import { renderGrid } from './render-grid.js'
+import { renderOutline } from './render-outline.js'
 import { GpuState } from './types.js'
 
 export function render(
@@ -41,12 +40,12 @@ export function render(
       renderBuild(state, gl, gpu, hand)
       break
     }
-    case HandType.ApplyForce: {
-      renderApplyForce(state, gl, gpu, hand)
-      break
-    }
-    case HandType.ApplyFriction: {
-      renderApplyFriction(state, gl, gpu, hand)
+    case HandType.ApplyForce:
+    case HandType.ApplyFriction:
+    case HandType.Configure: {
+      if (hand.gear) {
+        renderOutline(state, gl, gpu, hand.gear)
+      }
       break
     }
   }

@@ -1,17 +1,13 @@
-import { ApplyFrictionHand, AppState } from '../types.js'
+import { AppState, Gear } from '../types.js'
 import { updateModel } from './matrices.js'
 import { GpuState } from './types.js'
 
-export function renderApplyFriction(
+export function renderOutline(
   state: AppState,
   gl: WebGL2RenderingContext,
   gpu: GpuState,
-  hand: ApplyFrictionHand,
+  gear: Gear,
 ) {
-  if (!hand.gear) {
-    return
-  }
-
   const { outlineRect } = gpu.programs
   gl.useProgram(outlineRect.program)
 
@@ -32,7 +28,7 @@ export function renderApplyFriction(
   gl.uniform4f(outlineRect.uniforms.color, 1, 1, 1, 1)
   gl.uniform1f(outlineRect.uniforms.size, size)
 
-  updateModel(gpu.matrices, hand.gear)
+  updateModel(gpu.matrices, gear)
   gl.uniformMatrix4fv(
     outlineRect.uniforms.model,
     false,
