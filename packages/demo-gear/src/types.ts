@@ -44,6 +44,7 @@ export const ForceGearBehavior = z.strictObject({
   type: z.literal(GearBehaviorType.enum.Force),
   direction: z.union([z.literal('cw'), z.literal('ccw')]),
   magnitude: z.number(),
+  governer: z.number(),
 })
 export type ForceGearBehavior = z.infer<
   typeof ForceGearBehavior

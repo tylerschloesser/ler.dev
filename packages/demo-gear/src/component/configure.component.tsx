@@ -58,6 +58,7 @@ function SelectGearBehaviorType({
                 type: GearBehaviorType.enum.Force,
                 direction: 'cw',
                 magnitude: 1,
+                governer: 10,
               })
             }}
           />
