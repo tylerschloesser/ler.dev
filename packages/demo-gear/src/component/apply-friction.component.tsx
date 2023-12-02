@@ -7,6 +7,7 @@ import { CameraListenerFn, HandType } from '../types.js'
 import { clamp } from '../util.js'
 import styles from './apply-friction.module.scss'
 import { AppContext } from './context.js'
+import { Overlay } from './overlay.component.js'
 
 const COEFFECIENT_SCALE = 0.1
 
@@ -68,7 +69,7 @@ export function ApplyFriction() {
   }
 
   return (
-    <div className={styles.container}>
+    <Overlay>
       <button
         className={styles.button}
         onPointerUp={() => {
@@ -134,6 +135,6 @@ export function ApplyFriction() {
       >
         Apply
       </button>
-    </div>
+    </Overlay>
   )
 }

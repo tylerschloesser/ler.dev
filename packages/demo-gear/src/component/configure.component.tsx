@@ -22,6 +22,7 @@ import {
 } from '../types.js'
 import styles from './configure.module.scss'
 import { AppContext } from './context.js'
+import { Overlay } from './overlay.component.js'
 
 function SelectGearBehaviorType({
   behavior,
@@ -250,13 +251,13 @@ export function Configure() {
 
   return (
     <>
-      <div className={styles['container-top']}>
+      <Overlay position="top">
         <pre>{JSON.stringify(behavior)}</pre>
         {gearId && state && (
           <GearStats state={state} gearId={gearId} />
         )}
-      </div>
-      <div className={styles['container-bottom']}>
+      </Overlay>
+      <Overlay>
         <button
           className={styles.button}
           onPointerUp={() => {
@@ -274,7 +275,7 @@ export function Configure() {
             {edit}
           </>
         )}
-      </div>
+      </Overlay>
     </>
   )
 }

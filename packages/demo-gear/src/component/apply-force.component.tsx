@@ -7,6 +7,7 @@ import { CameraListenerFn, HandType } from '../types.js'
 import { clamp } from '../util.js'
 import styles from './apply-force.module.scss'
 import { AppContext } from './context.js'
+import { Overlay } from './overlay.component.js'
 
 const MIN_MAGNITUDE = 1
 const MAX_MAGNITUDE = 1000
@@ -65,7 +66,7 @@ export function ApplyForce() {
   }
 
   return (
-    <div className={styles.container}>
+    <Overlay>
       <button
         className={styles.button}
         onPointerUp={() => {
@@ -190,6 +191,6 @@ export function ApplyForce() {
       >
         CW
       </button>
-    </div>
+    </Overlay>
   )
 }

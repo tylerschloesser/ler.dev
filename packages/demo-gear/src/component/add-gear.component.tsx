@@ -13,6 +13,7 @@ import { CameraListenerFn, HandType } from '../types.js'
 import { clamp } from '../util.js'
 import styles from './add-gear.module.scss'
 import { AppContext } from './context.js'
+import { Overlay } from './overlay.component.js'
 
 export function AddGear() {
   const state = use(AppContext)
@@ -54,7 +55,7 @@ export function AddGear() {
   }
 
   return (
-    <div className={styles.container}>
+    <Overlay>
       <button
         className={styles.button}
         onPointerUp={() => {
@@ -102,6 +103,6 @@ export function AddGear() {
       >
         Build
       </button>
-    </div>
+    </Overlay>
   )
 }

@@ -1,15 +1,5 @@
 @import 'core';
 
-.container-bottom {
-  @include container(bottom);
-}
-
-.container-top {
-  @include container(top);
-
-  flex-direction: column;
-}
-
 .button {
   @include button;
 }
