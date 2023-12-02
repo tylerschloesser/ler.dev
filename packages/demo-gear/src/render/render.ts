@@ -9,7 +9,7 @@ import { renderBuild } from './render-build.js'
 import { renderChain } from './render-chain.js'
 import { renderGears } from './render-gears.js'
 import { renderGrid } from './render-grid.js'
-import { renderOutline } from './render-outline.js'
+import { renderGearOutline } from './render-outline.js'
 import { GpuState } from './types.js'
 
 export function render(
@@ -44,7 +44,7 @@ export function render(
     case HandType.ApplyFriction:
     case HandType.Configure: {
       if (hand.gear) {
-        renderOutline(state, gl, gpu, hand.gear)
+        renderGearOutline(state, gl, gpu, hand.gear)
       }
       break
     }

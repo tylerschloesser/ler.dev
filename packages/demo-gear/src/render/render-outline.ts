@@ -2,7 +2,7 @@ import { AppState, Gear } from '../types.js'
 import { updateModel } from './matrices.js'
 import { GpuState } from './types.js'
 
-export function renderOutline(
+export function renderGearOutline(
   state: AppState,
   gl: WebGL2RenderingContext,
   gpu: GpuState,
