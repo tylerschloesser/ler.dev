@@ -21,6 +21,10 @@ export const initSimulator: InitFn = async (state) => {
 
     try {
       tick(state, elapsed)
+
+      for (const listener of state.tickListeners) {
+        listener(state)
+      }
     } catch (e) {
       console.error(e)
       self.clearInterval(interval)
