@@ -29,8 +29,8 @@ const INIT_FNS: InitFn[] = [
 ]
 
 function getCenterTileId(camera: Camera): TileId {
-  const tileX = Math.round(camera.position.x)
-  const tileY = Math.round(camera.position.y)
+  const tileX = Math.floor(camera.position.x)
+  const tileY = Math.floor(camera.position.y)
   return `${tileX}.${tileY}`
 }
 
