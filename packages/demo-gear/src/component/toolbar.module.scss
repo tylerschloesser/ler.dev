@@ -2,6 +2,12 @@
 
 .container {
   @include container;
+  overflow: scroll;
+}
+
+.toolbar {
+  display: flex;
+  touch-action: pan-x;
 }
 
 .button {

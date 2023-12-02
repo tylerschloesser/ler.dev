@@ -1,5 +1,6 @@
 @mixin container($position: bottom) {
   position: fixed;
+  left: 0;
   right: 0;
   margin: 1em;
   display: flex;

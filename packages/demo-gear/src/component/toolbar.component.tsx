@@ -14,55 +14,60 @@ export function Toolbar() {
 
   return (
     <div className={styles.container}>
-      <button className={styles.button} onPointerUp={save}>
-        Save
-      </button>
-      <button
-        className={styles.button}
-        onPointerUp={() => {
-          if (self.confirm('Are you sure?')) {
-            resetWorld()
-            // TODO race condition here if
-            // camera is moved & saved before
-            // world is reset
-            resetCamera()
-          }
-        }}
-      >
-        Reset
-      </button>
-      <button
-        className={styles.button}
-        onPointerUp={() => {
-          navigate('configure')
-        }}
-      >
-        Configure
-      </button>
-      <button
-        className={styles.button}
-        onPointerUp={() => {
-          navigate('apply-force')
-        }}
-      >
-        Apply Force
-      </button>
-      <button
-        className={styles.button}
-        onPointerUp={() => {
-          navigate('apply-friction')
-        }}
-      >
-        Apply Friction
-      </button>
-      <button
-        className={styles.button}
-        onPointerUp={() => {
-          navigate('add-gear')
-        }}
-      >
-        Add Gear
-      </button>
+      <div className={styles.toolbar}>
+        <button
+          className={styles.button}
+          onPointerUp={save}
+        >
+          Save
+        </button>
+        <button
+          className={styles.button}
+          onPointerUp={() => {
+            if (self.confirm('Are you sure?')) {
+              resetWorld()
+              // TODO race condition here if
+              // camera is moved & saved before
+              // world is reset
+              resetCamera()
+            }
+          }}
+        >
+          Reset
+        </button>
+        <button
+          className={styles.button}
+          onPointerUp={() => {
+            navigate('configure')
+          }}
+        >
+          Configure
+        </button>
+        <button
+          className={styles.button}
+          onPointerUp={() => {
+            navigate('apply-force')
+          }}
+        >
+          Apply Force
+        </button>
+        <button
+          className={styles.button}
+          onPointerUp={() => {
+            navigate('apply-friction')
+          }}
+        >
+          Apply Friction
+        </button>
+        <button
+          className={styles.button}
+          onPointerUp={() => {
+            navigate('add-gear')
+          }}
+        >
+          Add Gear
+        </button>
+      </div>
     </div>
   )
 }
