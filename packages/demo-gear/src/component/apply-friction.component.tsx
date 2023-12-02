@@ -7,6 +7,7 @@ import { CameraListenerFn, HandType } from '../types.js'
 import { clamp } from '../util.js'
 import styles from './apply-friction.module.scss'
 import { AppContext } from './context.js'
+import { GearStats } from './gear-stats.component.js'
 import { Overlay } from './overlay.component.js'
 
 const COEFFECIENT_SCALE = 0.1
@@ -68,73 +69,94 @@ export function ApplyFriction() {
     return
   }
 
+  let gearId
+  if (state.hand) {
+    invariant(state.hand.type === HandType.ApplyFriction)
+    gearId = state.hand.gear?.id ?? null
+  }
+
   return (
-    <Overlay>
-      <button
-        className={styles.button}
-        onPointerUp={() => {
-          navigate('..')
-        }}
-      >
-        Back
-      </button>
-      <button
-        className={styles.button}
-        disabled={coeffecient === MIN_COEFFECIENT}
-        onPointerUp={() => {
-          setCoeffecient((prev) =>
-            clamp(
-              prev - 1,
-              MIN_COEFFECIENT,
-              MAX_COEFFECIENT,
-            ),
-          )
-        }}
-      >
-        -{(COEFFECIENT_STEP * COEFFECIENT_SCALE).toFixed(1)}
-      </button>
-      <input
-        size={3}
-        className={styles.input}
-        readOnly
-        value={(coeffecient * COEFFECIENT_SCALE).toFixed(1)}
-      />
-      <button
-        className={styles.button}
-        disabled={coeffecient === MAX_COEFFECIENT}
-        onPointerUp={() => {
-          setCoeffecient((prev) =>
-            clamp(
-              prev + 1,
-              MIN_COEFFECIENT,
-              MAX_COEFFECIENT,
-            ),
-          )
-        }}
-      >
-        +{(COEFFECIENT_STEP * COEFFECIENT_SCALE).toFixed(1)}
-      </button>
-      <button
-        disabled={disabled}
-        className={styles.button}
-        onPointerDown={() => {
-          const { hand } = state
-          invariant(hand?.type === HandType.ApplyFriction)
-          hand.runningEnergyDiff = 0
-          hand.active = true
-        }}
-        onPointerUp={() => {
-          const { hand } = state
-          invariant(hand?.type === HandType.ApplyFriction)
-          hand.active = false
-          console.log(
-            'energy diff:',
-            hand.runningEnergyDiff,
-          )
-        }}
-      >
-        Apply
-      </button>
-    </Overlay>
+    <>
+      {gearId && (
+        <Overlay position="top">
+          <GearStats state={state} gearId={gearId} />
+        </Overlay>
+      )}
+      <Overlay>
+        <button
+          className={styles.button}
+          onPointerUp={() => {
+            navigate('..')
+          }}
+        >
+          Back
+        </button>
+        <button
+          className={styles.button}
+          disabled={coeffecient === MIN_COEFFECIENT}
+          onPointerUp={() => {
+            setCoeffecient((prev) =>
+              clamp(
+                prev - 1,
+                MIN_COEFFECIENT,
+                MAX_COEFFECIENT,
+              ),
+            )
+          }}
+        >
+          -
+          {(COEFFECIENT_STEP * COEFFECIENT_SCALE).toFixed(
+            1,
+          )}
+        </button>
+        <input
+          size={3}
+          className={styles.input}
+          readOnly
+          value={(coeffecient * COEFFECIENT_SCALE).toFixed(
+            1,
+          )}
+        />
+        <button
+          className={styles.button}
+          disabled={coeffecient === MAX_COEFFECIENT}
+          onPointerUp={() => {
+            setCoeffecient((prev) =>
+              clamp(
+                prev + 1,
+                MIN_COEFFECIENT,
+                MAX_COEFFECIENT,
+              ),
+            )
+          }}
+        >
+          +
+          {(COEFFECIENT_STEP * COEFFECIENT_SCALE).toFixed(
+            1,
+          )}
+        </button>
+        <button
+          disabled={disabled}
+          className={styles.button}
+          onPointerDown={() => {
+            const { hand } = state
+            invariant(hand?.type === HandType.ApplyFriction)
+            hand.runningEnergyDiff = 0
+            hand.active = true
+          }}
+          onPointerUp={() => {
+            const { hand } = state
+            invariant(hand?.type === HandType.ApplyFriction)
+            hand.active = false
+            console.log(
+              'energy diff:',
+              hand.runningEnergyDiff,
+            )
+          }}
+        >
+          Apply
+        </button>
+      </Overlay>
+    </>
   )
 }
