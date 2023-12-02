@@ -9,15 +9,21 @@ export function Overlay({
   position = 'bottom',
   children,
 }: OverlayProps) {
+  const [overflow, setOverflow] = useState(false)
   const [outer, setOuter] = useState<HTMLDivElement | null>(
     null,
   )
   useEffect(() => {
     if (!outer) return
-    // start out scrolled all the way to the right
-    outer.scrollTo({
-      left: outer.scrollWidth - outer.clientWidth,
-    })
+
+    if (outer.scrollWidth > outer.clientWidth) {
+      // start out scrolled all the way to the right
+      outer.scrollTo({
+        left: outer.scrollWidth - outer.clientWidth,
+      })
+
+      setOverflow(true)
+    }
   }, [outer])
 
   return (
@@ -28,6 +34,7 @@ export function Overlay({
           : styles['outer-bottom']
       }
       ref={setOuter}
+      data-overflow={overflow}
     >
       <div className={styles.inner}>{children}</div>
     </div>

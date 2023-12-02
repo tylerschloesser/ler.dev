@@ -252,10 +252,10 @@ export function Configure() {
   return (
     <>
       <Overlay position="top">
-        <pre>{JSON.stringify(behavior)}</pre>
         {gearId && state && (
           <GearStats state={state} gearId={gearId} />
         )}
+        <pre>{JSON.stringify(behavior)}</pre>
       </Overlay>
       <Overlay>
         <button
