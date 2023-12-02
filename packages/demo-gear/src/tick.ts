@@ -1,3 +1,4 @@
+import invariant from 'tiny-invariant'
 import {
   applyForce,
   applyFriction,
@@ -46,12 +47,20 @@ export function tick(state: AppState, elapsed: number) {
       case GearBehaviorType.enum.Force: {
         const { behavior } = gear
 
-        if (gear.velocity < behavior.governer) {
+        const sign = behavior.direction === 'ccw' ? -1 : 1
+        const governer = behavior.governer * sign
+        let stop: boolean
+        if (sign === 1) {
+          stop = gear.velocity > governer
+        } else {
+          stop = gear.velocity < governer
+        }
+
+        if (!stop) {
           // TODO this is a naive governer mechanism
           applyForce(
             gear,
-            (behavior.direction === 'ccw' ? -1 : 1) *
-              behavior.magnitude,
+            sign * behavior.magnitude,
             elapsed,
             world,
           )
