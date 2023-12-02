@@ -108,7 +108,11 @@ function GearStats({
     }
   }, [])
 
-  return <>Velocity: {velocity.toFixed(2)}</>
+  return (
+    <div className={styles.stats}>
+      Velocity: <pre>{velocity.toFixed(2)}</pre>
+    </div>
+  )
 }
 
 function EditForceGearBehavior({
@@ -220,6 +224,24 @@ function EditFrictionGearBehavior({
         />
         {behavior.coeffecient}
       </div>
+      <div className={styles['field-label']}>Magnitude</div>
+      <div>
+        <input
+          type="range"
+          min={0}
+          max={10}
+          step={1}
+          size={2}
+          value={behavior.magnitude}
+          onChange={(e) => {
+            setBehavior({
+              ...behavior,
+              magnitude: parseInt(e.target.value),
+            })
+          }}
+        />
+        {behavior.magnitude}
+      </div>
     </>
   )
 }
@@ -305,14 +327,17 @@ export function Configure() {
       break
   }
 
+  if (!state) {
+    return
+  }
+
   return (
     <>
-      <Overlay position="top">
-        {gearId && state && (
+      {gearId && (
+        <Overlay position="top">
           <GearStats state={state} gearId={gearId} />
-        )}
-        <pre>{JSON.stringify(behavior)}</pre>
-      </Overlay>
+        </Overlay>
+      )}
       <Overlay position="bottom">
         <div className={styles['bottom-container']}>
           <button
@@ -323,17 +348,15 @@ export function Configure() {
           >
             Back
           </button>
-          <div className={styles['bottom-main']}>
-            {gearId && (
-              <>
-                <SelectGearBehaviorType
-                  behavior={behavior}
-                  setBehavior={setBehavior}
-                />
-              </>
-            )}
-            {edit}
-          </div>
+          {gearId && (
+            <div className={styles['bottom-main']}>
+              <SelectGearBehaviorType
+                behavior={behavior}
+                setBehavior={setBehavior}
+              />
+              {edit}
+            </div>
+          )}
         </div>
       </Overlay>
     </>
