@@ -9,6 +9,7 @@ import {
 import { useNavigate } from 'react-router-dom'
 import invariant from 'tiny-invariant'
 import {
+  AppState,
   CenterTileIdListener,
   ForceGearBehavior,
   FrictionGearBehavior,
@@ -17,6 +18,7 @@ import {
   GearId,
   HandType,
   OnChangeGearFn,
+  TickListenerFn,
 } from '../types.js'
 import styles from './configure.module.scss'
 import { AppContext } from './context.js'
@@ -79,6 +81,30 @@ function SelectGearBehaviorType({
       </label>
     </fieldset>
   )
+}
+
+function GearStats({
+  state,
+  gearId,
+}: {
+  state: AppState
+  gearId: GearId
+}) {
+  const [velocity, setVelocity] = useState<number>(0)
+
+  useEffect(() => {
+    const listener: TickListenerFn = () => {
+      const gear = state.world.gears[gearId]
+      invariant(gear)
+      setVelocity(gear.velocity)
+    }
+    state.tickListeners.add(listener)
+    return () => {
+      state.tickListeners.delete(listener)
+    }
+  }, [])
+
+  return <>Velocity: {velocity.toFixed(2)}</>
 }
 
 function EditForceGearBehavior({
@@ -228,6 +254,9 @@ export function Configure() {
             setBehavior={setBehavior}
           />
           {edit}
+          {state && (
+            <GearStats state={state} gearId={gearId} />
+          )}
         </>
       )}
       behavior: {JSON.stringify(behavior)}
