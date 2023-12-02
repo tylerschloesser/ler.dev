@@ -156,7 +156,17 @@ function EditFrictionGearBehavior({
 }: {
   behavior: FrictionGearBehavior
 }) {
-  return <>TODO friction</>
+  return (
+    <>
+      <input
+        className={styles.input}
+        type="number"
+        min={0}
+        max={1}
+        step={0.1}
+      />
+    </>
+  )
 }
 
 export function Configure() {
@@ -238,7 +248,7 @@ export function Configure() {
   }
 
   return (
-    <div className={styles.container}>
+    <div className={styles['container-bottom']}>
       <button
         className={styles.button}
         onPointerUp={() => {

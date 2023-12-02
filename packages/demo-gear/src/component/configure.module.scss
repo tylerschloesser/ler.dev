@@ -1,9 +1,17 @@
 @import 'core';
 
-.container {
-  @include container;
+.container-bottom {
+  @include container(bottom);
+}
+
+.container-top {
+  @include container(top);
 }
 
 .button {
   @include button;
+}
+
+.input {
+  @include input;
 }
