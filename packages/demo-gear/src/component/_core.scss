@@ -1,4 +1,4 @@
-@mixin container($position: top) {
+@mixin container($position: bottom) {
   position: fixed;
   right: 0;
   margin: 1em;
@@ -37,6 +37,5 @@
 
 @mixin input {
   @include item;
-  width: 1em;
   text-align: center;
 }

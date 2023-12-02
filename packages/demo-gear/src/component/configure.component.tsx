@@ -164,6 +164,7 @@ function EditFrictionGearBehavior({
         min={0}
         max={1}
         step={0.1}
+        size={4}
       />
     </>
   )
@@ -248,28 +249,32 @@ export function Configure() {
   }
 
   return (
-    <div className={styles['container-bottom']}>
-      <button
-        className={styles.button}
-        onPointerUp={() => {
-          navigate('..')
-        }}
-      >
-        Back
-      </button>
-      {gearId && (
-        <>
-          <SelectGearBehaviorType
-            behavior={behavior}
-            setBehavior={setBehavior}
-          />
-          {edit}
-          {state && (
-            <GearStats state={state} gearId={gearId} />
-          )}
-        </>
-      )}
-      behavior: {JSON.stringify(behavior)}
-    </div>
+    <>
+      <div className={styles['container-top']}>
+        <pre>{JSON.stringify(behavior)}</pre>
+        {gearId && state && (
+          <GearStats state={state} gearId={gearId} />
+        )}
+      </div>
+      <div className={styles['container-bottom']}>
+        <button
+          className={styles.button}
+          onPointerUp={() => {
+            navigate('..')
+          }}
+        >
+          Back
+        </button>
+        {gearId && (
+          <>
+            <SelectGearBehaviorType
+              behavior={behavior}
+              setBehavior={setBehavior}
+            />
+            {edit}
+          </>
+        )}
+      </div>
+    </>
   )
 }

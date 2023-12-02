@@ -6,6 +6,8 @@
 
 .container-top {
   @include container(top);
+
+  flex-direction: column;
 }
 
 .button {
