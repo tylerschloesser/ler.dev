@@ -7,6 +7,7 @@ import { CameraListenerFn, HandType } from '../types.js'
 import { clamp } from '../util.js'
 import styles from './apply-force.module.scss'
 import { AppContext } from './context.js'
+import { GearStats } from './gear-stats.component.js'
 import { Overlay } from './overlay.component.js'
 
 const MIN_MAGNITUDE = 1
@@ -65,132 +66,161 @@ export function ApplyForce() {
     return
   }
 
+  let gearId
+  if (state.hand) {
+    invariant(state.hand.type === HandType.ApplyForce)
+    gearId = state.hand.gear?.id ?? null
+  }
+
   return (
-    <Overlay>
-      <button
-        className={styles.button}
-        onPointerUp={() => {
-          navigate('..')
-        }}
-      >
-        Back
-      </button>
-      <button
-        className={styles.button}
-        disabled={magnitude === MIN_MAGNITUDE}
-        onPointerUp={() => {
-          setMagnitude((prev) =>
-            clamp(prev - 100, MIN_MAGNITUDE, MAX_MAGNITUDE),
-          )
-        }}
-      >
-        -100
-      </button>
-      <button
-        className={styles.button}
-        disabled={magnitude === MIN_MAGNITUDE}
-        onPointerUp={() => {
-          setMagnitude((prev) =>
-            clamp(prev - 10, MIN_MAGNITUDE, MAX_MAGNITUDE),
-          )
-        }}
-      >
-        -10
-      </button>
-      <button
-        className={styles.button}
-        disabled={magnitude === MIN_MAGNITUDE}
-        onPointerUp={() => {
-          setMagnitude((prev) =>
-            clamp(prev - 1, MIN_MAGNITUDE, MAX_MAGNITUDE),
-          )
-        }}
-      >
-        -1
-      </button>
-      <input
-        size={4}
-        className={styles.input}
-        readOnly
-        value={magnitude}
-      />
-      <button
-        className={styles.button}
-        disabled={magnitude === MAX_MAGNITUDE}
-        onPointerUp={() => {
-          setMagnitude((prev) =>
-            clamp(prev + 1, MIN_MAGNITUDE, MAX_MAGNITUDE),
-          )
-        }}
-      >
-        +1
-      </button>
-      <button
-        className={styles.button}
-        disabled={magnitude === MAX_MAGNITUDE}
-        onPointerUp={() => {
-          setMagnitude((prev) =>
-            clamp(prev + 10, MIN_MAGNITUDE, MAX_MAGNITUDE),
-          )
-        }}
-      >
-        +10
-      </button>
-      <button
-        className={styles.button}
-        disabled={magnitude === MAX_MAGNITUDE}
-        onPointerUp={() => {
-          setMagnitude((prev) =>
-            clamp(prev + 100, MIN_MAGNITUDE, MAX_MAGNITUDE),
-          )
-        }}
-      >
-        +100
-      </button>
-      <button
-        disabled={disabled}
-        className={styles.button}
-        onPointerDown={() => {
-          const { hand } = state
-          invariant(hand?.type === HandType.ApplyForce)
-          hand.active = true
-          hand.direction = 'ccw'
-          hand.runningEnergyDiff = 0
-        }}
-        onPointerUp={() => {
-          const { hand } = state
-          invariant(hand?.type === HandType.ApplyForce)
-          hand.active = false
-          console.log(
-            'energy diff:',
-            hand.runningEnergyDiff,
-          )
-        }}
-      >
-        CCW
-      </button>
-      <button
-        disabled={disabled}
-        className={styles.button}
-        onPointerDown={() => {
-          const { hand } = state
-          invariant(hand?.type === HandType.ApplyForce)
-          hand.active = true
-          hand.direction = 'cw'
-          hand.runningEnergyDiff = 0
-        }}
-        onPointerUp={() => {
-          const { hand } = state
-          invariant(hand?.type === HandType.ApplyForce)
-          hand.active = false
-          console.log(
-            'energy diff:',
-            hand.runningEnergyDiff,
-          )
-        }}
-      >
-        CW
-      </button>
-    </Overlay>
+    <>
+      {gearId && (
+        <Overlay position="top">
+          <GearStats state={state} gearId={gearId} />
+        </Overlay>
+      )}
+      <Overlay>
+        <button
+          className={styles.button}
+          onPointerUp={() => {
+            navigate('..')
+          }}
+        >
+          Back
+        </button>
+        <button
+          className={styles.button}
+          disabled={magnitude === MIN_MAGNITUDE}
+          onPointerUp={() => {
+            setMagnitude((prev) =>
+              clamp(
+                prev - 100,
+                MIN_MAGNITUDE,
+                MAX_MAGNITUDE,
+              ),
+            )
+          }}
+        >
+          -100
+        </button>
+        <button
+          className={styles.button}
+          disabled={magnitude === MIN_MAGNITUDE}
+          onPointerUp={() => {
+            setMagnitude((prev) =>
+              clamp(
+                prev - 10,
+                MIN_MAGNITUDE,
+                MAX_MAGNITUDE,
+              ),
+            )
+          }}
+        >
+          -10
+        </button>
+        <button
+          className={styles.button}
+          disabled={magnitude === MIN_MAGNITUDE}
+          onPointerUp={() => {
+            setMagnitude((prev) =>
+              clamp(prev - 1, MIN_MAGNITUDE, MAX_MAGNITUDE),
+            )
+          }}
+        >
+          -1
+        </button>
+        <input
+          size={4}
+          className={styles.input}
+          readOnly
+          value={magnitude}
+        />
+        <button
+          className={styles.button}
+          disabled={magnitude === MAX_MAGNITUDE}
+          onPointerUp={() => {
+            setMagnitude((prev) =>
+              clamp(prev + 1, MIN_MAGNITUDE, MAX_MAGNITUDE),
+            )
+          }}
+        >
+          +1
+        </button>
+        <button
+          className={styles.button}
+          disabled={magnitude === MAX_MAGNITUDE}
+          onPointerUp={() => {
+            setMagnitude((prev) =>
+              clamp(
+                prev + 10,
+                MIN_MAGNITUDE,
+                MAX_MAGNITUDE,
+              ),
+            )
+          }}
+        >
+          +10
+        </button>
+        <button
+          className={styles.button}
+          disabled={magnitude === MAX_MAGNITUDE}
+          onPointerUp={() => {
+            setMagnitude((prev) =>
+              clamp(
+                prev + 100,
+                MIN_MAGNITUDE,
+                MAX_MAGNITUDE,
+              ),
+            )
+          }}
+        >
+          +100
+        </button>
+        <button
+          disabled={disabled}
+          className={styles.button}
+          onPointerDown={() => {
+            const { hand } = state
+            invariant(hand?.type === HandType.ApplyForce)
+            hand.active = true
+            hand.direction = 'ccw'
+            hand.runningEnergyDiff = 0
+          }}
+          onPointerUp={() => {
+            const { hand } = state
+            invariant(hand?.type === HandType.ApplyForce)
+            hand.active = false
+            console.log(
+              'energy diff:',
+              hand.runningEnergyDiff,
+            )
+          }}
+        >
+          CCW
+        </button>
+        <button
+          disabled={disabled}
+          className={styles.button}
+          onPointerDown={() => {
+            const { hand } = state
+            invariant(hand?.type === HandType.ApplyForce)
+            hand.active = true
+            hand.direction = 'cw'
+            hand.runningEnergyDiff = 0
+          }}
+          onPointerUp={() => {
+            const { hand } = state
+            invariant(hand?.type === HandType.ApplyForce)
+            hand.active = false
+            console.log(
+              'energy diff:',
+              hand.runningEnergyDiff,
+            )
+          }}
+        >
+          CW
+        </button>
+      </Overlay>
+    </>
   )
 }
