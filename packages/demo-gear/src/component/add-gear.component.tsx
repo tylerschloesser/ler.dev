@@ -9,10 +9,10 @@ import {
 } from '../build.js'
 import { moveCamera } from '../camera.js'
 import { MAX_RADIUS, MIN_RADIUS } from '../const.js'
-import { AppContext } from './context.js'
 import { CameraListenerFn, HandType } from '../types.js'
 import { clamp } from '../util.js'
 import styles from './add-gear.module.scss'
+import { AppContext } from './context.js'
 
 export function AddGear() {
   const state = use(AppContext)
