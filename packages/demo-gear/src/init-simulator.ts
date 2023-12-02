@@ -3,6 +3,8 @@ import { TICK_DURATION, TWO_PI } from './const.js'
 import {
   ConnectionType,
   Gear,
+  GearBehavior,
+  GearBehaviorType,
   HandType,
   InitFn,
   World,
@@ -52,6 +54,29 @@ export const initSimulator: InitFn = async (state) => {
           )
         }
         break
+      }
+    }
+
+    for (const gear of Object.values(world.gears)) {
+      switch (gear.behavior?.type) {
+        case GearBehaviorType.enum.Force:{
+          const { behavior } = gear
+          applyForce(
+            gear,
+            (behavior.direction === 'ccw' ? -1 : 1) *
+              behavior.magnitude,
+            elapsed,
+            world,
+          )
+          break
+        }
+        case GearBehaviorType.enum.Friction: {
+          const { behavior } = gear
+          invariant(false, 'TODO')
+          // applyFriction(gear, coeffecient, elapsed, world)
+          break
+        }
+
       }
     }
 
