@@ -1,4 +1,6 @@
 import {
+  Dispatch,
+  SetStateAction,
   use,
   useCallback,
   useEffect,
@@ -18,12 +20,108 @@ import {
 import styles from './configure.module.scss'
 import { AppContext } from './context.js'
 
+function SelectGearBehaviorType({
+  behavior,
+  setBehavior,
+}: {
+  behavior: GearBehavior | null
+  setBehavior: Dispatch<SetStateAction<GearBehavior | null>>
+}) {
+  return (
+    <fieldset>
+      <legend>behavior</legend>
+      <label>
+        <input
+          type="radio"
+          value=""
+          checked={behavior === null}
+          onChange={() => {
+            setBehavior(null)
+          }}
+        />
+        None
+      </label>
+      <label>
+        <input
+          type="radio"
+          value={GearBehaviorType.enum.Force}
+          checked={
+            behavior?.type === GearBehaviorType.enum.Force
+          }
+          onChange={() => {
+            setBehavior({
+              type: GearBehaviorType.enum.Force,
+              direction: 'cw',
+              magnitude: 1,
+            })
+          }}
+        />
+        Force
+      </label>
+      <label>
+        <input
+          type="radio"
+          value={GearBehaviorType.enum.Friction}
+          checked={
+            behavior?.type ===
+            GearBehaviorType.enum.Friction
+          }
+          onChange={() => {
+            setBehavior({
+              type: GearBehaviorType.enum.Friction,
+              coeffecient: 0.5,
+              magnitude: 1,
+            })
+          }}
+        />
+        Friction
+      </label>
+    </fieldset>
+  )
+}
+
 function EditForceGearBehavior({
   behavior,
+  setBehavior,
 }: {
   behavior: ForceGearBehavior
+  setBehavior: Dispatch<SetStateAction<GearBehavior | null>>
 }) {
-  return <>TODO force</>
+  return (
+    <>
+      <fieldset>
+        <legend>Direction</legend>
+        <label>
+          <input
+            type="radio"
+            value="cw"
+            checked={behavior.direction === 'cw'}
+            onChange={() => {
+              setBehavior({
+                ...behavior,
+                direction: 'cw',
+              })
+            }}
+          />
+          CW
+        </label>
+        <label>
+          <input
+            type="radio"
+            value="ccw"
+            checked={behavior.direction === 'ccw'}
+            onChange={() => {
+              setBehavior({
+                ...behavior,
+                direction: 'ccw',
+              })
+            }}
+          />
+          CCW
+        </label>
+      </fieldset>
+    </>
+  )
 }
 
 function EditFrictionGearBehavior({
@@ -48,6 +146,20 @@ export function Configure() {
     },
     [state],
   )
+
+  useEffect(() => {
+    if (!state || !gearId) {
+      return
+    }
+    const gear = state.world.gears[gearId]
+    invariant(gear)
+    if (behavior === null) {
+      delete gear.behavior
+    } else {
+      gear.behavior = behavior
+    }
+  }, [gearId, behavior])
+
   useEffect(() => {
     if (!state) {
       return
@@ -84,7 +196,12 @@ export function Configure() {
   let edit = null
   switch (behavior?.type) {
     case GearBehaviorType.enum.Force:
-      edit = <EditForceGearBehavior behavior={behavior} />
+      edit = (
+        <EditForceGearBehavior
+          behavior={behavior}
+          setBehavior={setBehavior}
+        />
+      )
       break
     case GearBehaviorType.enum.Friction:
       edit = (
@@ -95,8 +212,16 @@ export function Configure() {
 
   return (
     <div className={styles.container}>
+      {gearId && (
+        <>
+          <SelectGearBehaviorType
+            behavior={behavior}
+            setBehavior={setBehavior}
+          />
+          {edit}
+        </>
+      )}
       {gearId} behavior: {JSON.stringify(behavior)}
-      {edit}
     </div>
   )
 }
