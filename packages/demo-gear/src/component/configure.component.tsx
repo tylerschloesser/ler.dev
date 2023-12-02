@@ -133,7 +133,6 @@ function EditForceGearBehavior({
           min={0}
           max={10}
           step={1}
-          size={2}
           value={behavior.magnitude}
           onChange={(e) => {
             setBehavior({
@@ -151,7 +150,6 @@ function EditForceGearBehavior({
           min={1}
           max={10}
           step={1}
-          size={2}
           value={behavior.governer}
           onChange={(e) => {
             setBehavior({
@@ -184,7 +182,6 @@ function EditFrictionGearBehavior({
           min={0}
           max={10}
           step={1}
-          size={4}
           value={behavior.coeffecient * 10}
           onChange={(e) => {
             setBehavior({
@@ -202,7 +199,6 @@ function EditFrictionGearBehavior({
           min={0}
           max={10}
           step={1}
-          size={2}
           value={behavior.magnitude}
           onChange={(e) => {
             setBehavior({

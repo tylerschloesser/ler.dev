@@ -20,8 +20,7 @@
 }
 
 .field-label {
-  font-weight: bold;
-  font-size: 0.8em;
+  @include field-label;
 }
 
 .stats {

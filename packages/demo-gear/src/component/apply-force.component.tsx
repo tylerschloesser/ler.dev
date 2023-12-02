@@ -4,20 +4,22 @@ import invariant from 'tiny-invariant'
 import { updateApplyForcePosition } from '../apply-force.js'
 import { moveCamera } from '../camera.js'
 import { CameraListenerFn, HandType } from '../types.js'
-import { clamp } from '../util.js'
 import styles from './apply-force.module.scss'
 import { AppContext } from './context.js'
 import { GearStats } from './gear-stats.component.js'
 import { Overlay } from './overlay.component.js'
 
-const MIN_MAGNITUDE = 1
+const INITIAL_MAGNITUDE = 10
+const MIN_MAGNITUDE = 0
 const MAX_MAGNITUDE = 1000
 
 export function ApplyForce() {
   const navigate = useNavigate()
   const state = use(AppContext)
 
-  const [magnitude, setMagnitude] = useState(1)
+  const [magnitude, setMagnitude] = useState(
+    INITIAL_MAGNITUDE,
+  )
   const [disabled, setDisabled] = useState<boolean>(true)
 
   useEffect(() => {
@@ -80,146 +82,90 @@ export function ApplyForce() {
         </Overlay>
       )}
       <Overlay>
-        <button
-          className={styles.button}
-          onPointerUp={() => {
-            navigate('..')
-          }}
-        >
-          Back
-        </button>
-        <button
-          className={styles.button}
-          disabled={magnitude === MIN_MAGNITUDE}
-          onPointerUp={() => {
-            setMagnitude((prev) =>
-              clamp(
-                prev - 100,
-                MIN_MAGNITUDE,
-                MAX_MAGNITUDE,
-              ),
-            )
-          }}
-        >
-          -100
-        </button>
-        <button
-          className={styles.button}
-          disabled={magnitude === MIN_MAGNITUDE}
-          onPointerUp={() => {
-            setMagnitude((prev) =>
-              clamp(
-                prev - 10,
-                MIN_MAGNITUDE,
-                MAX_MAGNITUDE,
-              ),
-            )
-          }}
-        >
-          -10
-        </button>
-        <button
-          className={styles.button}
-          disabled={magnitude === MIN_MAGNITUDE}
-          onPointerUp={() => {
-            setMagnitude((prev) =>
-              clamp(prev - 1, MIN_MAGNITUDE, MAX_MAGNITUDE),
-            )
-          }}
-        >
-          -1
-        </button>
-        <input
-          size={4}
-          className={styles.input}
-          readOnly
-          value={magnitude}
-        />
-        <button
-          className={styles.button}
-          disabled={magnitude === MAX_MAGNITUDE}
-          onPointerUp={() => {
-            setMagnitude((prev) =>
-              clamp(prev + 1, MIN_MAGNITUDE, MAX_MAGNITUDE),
-            )
-          }}
-        >
-          +1
-        </button>
-        <button
-          className={styles.button}
-          disabled={magnitude === MAX_MAGNITUDE}
-          onPointerUp={() => {
-            setMagnitude((prev) =>
-              clamp(
-                prev + 10,
-                MIN_MAGNITUDE,
-                MAX_MAGNITUDE,
-              ),
-            )
-          }}
-        >
-          +10
-        </button>
-        <button
-          className={styles.button}
-          disabled={magnitude === MAX_MAGNITUDE}
-          onPointerUp={() => {
-            setMagnitude((prev) =>
-              clamp(
-                prev + 100,
-                MIN_MAGNITUDE,
-                MAX_MAGNITUDE,
-              ),
-            )
-          }}
-        >
-          +100
-        </button>
-        <button
-          disabled={disabled}
-          className={styles.button}
-          onPointerDown={() => {
-            const { hand } = state
-            invariant(hand?.type === HandType.ApplyForce)
-            hand.active = true
-            hand.direction = 'ccw'
-            hand.runningEnergyDiff = 0
-          }}
-          onPointerUp={() => {
-            const { hand } = state
-            invariant(hand?.type === HandType.ApplyForce)
-            hand.active = false
-            console.log(
-              'energy diff:',
-              hand.runningEnergyDiff,
-            )
-          }}
-        >
-          CCW
-        </button>
-        <button
-          disabled={disabled}
-          className={styles.button}
-          onPointerDown={() => {
-            const { hand } = state
-            invariant(hand?.type === HandType.ApplyForce)
-            hand.active = true
-            hand.direction = 'cw'
-            hand.runningEnergyDiff = 0
-          }}
-          onPointerUp={() => {
-            const { hand } = state
-            invariant(hand?.type === HandType.ApplyForce)
-            hand.active = false
-            console.log(
-              'energy diff:',
-              hand.runningEnergyDiff,
-            )
-          }}
-        >
-          CW
-        </button>
+        <div className={styles['bottom-container']}>
+          <button
+            className={styles.button}
+            onPointerUp={() => {
+              navigate('..')
+            }}
+          >
+            Back
+          </button>
+          <div className={styles['bottom-main']}>
+            <div className={styles['field-label']}>
+              Magnitude
+            </div>
+            <div>
+              <pre className={styles['magnitude-value']}>
+                {magnitude}
+              </pre>
+              <input
+                type="range"
+                min={MIN_MAGNITUDE}
+                max={MAX_MAGNITUDE}
+                step={10}
+                value={magnitude}
+                onChange={(e) => {
+                  setMagnitude(parseInt(e.target.value))
+                }}
+              />
+            </div>
+            <div className={styles['bottom-buttons']}>
+              <button
+                disabled={disabled}
+                className={styles.button}
+                onPointerDown={() => {
+                  const { hand } = state
+                  invariant(
+                    hand?.type === HandType.ApplyForce,
+                  )
+                  hand.active = true
+                  hand.direction = 'ccw'
+                  hand.runningEnergyDiff = 0
+                }}
+                onPointerUp={() => {
+                  const { hand } = state
+                  invariant(
+                    hand?.type === HandType.ApplyForce,
+                  )
+                  hand.active = false
+                  console.log(
+                    'energy diff:',
+                    hand.runningEnergyDiff,
+                  )
+                }}
+              >
+                CCW
+              </button>
+              <button
+                disabled={disabled}
+                className={styles.button}
+                onPointerDown={() => {
+                  const { hand } = state
+                  invariant(
+                    hand?.type === HandType.ApplyForce,
+                  )
+                  hand.active = true
+                  hand.direction = 'cw'
+                  hand.runningEnergyDiff = 0
+                }}
+                onPointerUp={() => {
+                  const { hand } = state
+                  invariant(
+                    hand?.type === HandType.ApplyForce,
+                  )
+                  hand.active = false
+                  console.log(
+                    'energy diff:',
+                    hand.runningEnergyDiff,
+                  )
+                }}
+              >
+                CW
+              </button>
+            </div>
+          </div>
+        </div>
       </Overlay>
     </>
   )

@@ -1,9 +1,29 @@
 @import 'core';
 
+.bottom-container {
+  display: flex;
+}
+
+.bottom-main {
+  display: flex;
+  flex-direction: column;
+  padding: 0.5em;
+  padding-left: 0; // TODO do this cleaner
+}
+
+.bottom-buttons {
+  display: flex;
+}
+
 .button {
   @include button;
 }
 
-.input {
-  @include input;
+.field-label {
+  @include field-label;
+}
+
+.magnitude-value {
+  margin: 0;
+  display: block;
 }
