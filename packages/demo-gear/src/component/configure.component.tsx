@@ -7,13 +7,32 @@ import {
 import invariant from 'tiny-invariant'
 import {
   CenterTileIdListener,
+  ForceGearBehavior,
+  FrictionGearBehavior,
   GearBehavior,
+  GearBehaviorType,
   GearId,
   HandType,
   OnChangeGearFn,
 } from '../types.js'
 import styles from './configure.module.scss'
 import { AppContext } from './context.js'
+
+function EditForceGearBehavior({
+  behavior,
+}: {
+  behavior: ForceGearBehavior
+}) {
+  return <>TODO force</>
+}
+
+function EditFrictionGearBehavior({
+  behavior,
+}: {
+  behavior: FrictionGearBehavior
+}) {
+  return <>TODO friction</>
+}
 
 export function Configure() {
   const state = use(AppContext)
@@ -62,9 +81,22 @@ export function Configure() {
     }
   }, [state])
 
+  let edit = null
+  switch (behavior?.type) {
+    case GearBehaviorType.enum.Force:
+      edit = <EditForceGearBehavior behavior={behavior} />
+      break
+    case GearBehaviorType.enum.Friction:
+      edit = (
+        <EditFrictionGearBehavior behavior={behavior} />
+      )
+      break
+  }
+
   return (
     <div className={styles.container}>
       {gearId} behavior: {JSON.stringify(behavior)}
+      {edit}
     </div>
   )
 }
