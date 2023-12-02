@@ -1,11 +1,12 @@
-import { applyTorque } from './apply-torque.js'
+import {
+  applyForce,
+  applyFriction,
+} from './apply-torque.js'
 import { TWO_PI } from './const.js'
 import {
   AppState,
-  Gear,
   GearBehaviorType,
   HandType,
-  World,
 } from './types.js'
 
 export function tick(state: AppState, elapsed: number) {
@@ -82,26 +83,4 @@ export function tick(state: AppState, elapsed: number) {
       (gear.angle + gear.velocity * elapsed + TWO_PI) %
       TWO_PI
   }
-}
-
-function applyForce(
-  root: Gear,
-  force: number,
-  elapsed: number,
-  world: World,
-): number {
-  const rootTorque = force * root.radius
-  return applyTorque(root, rootTorque, elapsed, world)
-}
-
-function applyFriction(
-  root: Gear,
-  coeffecient: number,
-  magnitude: number,
-  elapsed: number,
-  world: World,
-): number {
-  const rootTorque =
-    coeffecient * root.velocity * -1 * magnitude
-  return applyTorque(root, rootTorque, elapsed, world)
 }

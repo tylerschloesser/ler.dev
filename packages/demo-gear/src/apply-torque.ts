@@ -51,7 +51,7 @@ function getTorqueMultiplierMap(
   return torqueMultiplierMap
 }
 
-export function applyTorque(
+function applyTorque(
   root: Gear,
   rootTorque: number,
   elapsed: number,
@@ -85,4 +85,26 @@ export function applyTorque(
   }
 
   return energyDiff
+}
+
+export function applyForce(
+  root: Gear,
+  force: number,
+  elapsed: number,
+  world: World,
+): number {
+  const rootTorque = force * root.radius
+  return applyTorque(root, rootTorque, elapsed, world)
+}
+
+export function applyFriction(
+  root: Gear,
+  coeffecient: number,
+  magnitude: number,
+  elapsed: number,
+  world: World,
+): number {
+  const rootTorque =
+    coeffecient * root.velocity * -1 * magnitude
+  return applyTorque(root, rootTorque, elapsed, world)
 }
