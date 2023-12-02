@@ -147,6 +147,7 @@ export type PointerListenerFn = (
 ) => void
 export type CameraListenerFn = (state: AppState) => void
 export type CenterTileIdListener = (state: AppState) => void
+export type TickListenerFn = (state: AppState) => void
 
 export interface Viewport {
   size: SimpleVec2
@@ -173,6 +174,7 @@ export interface AppState {
 
   pointerListeners: Set<PointerListenerFn>
   cameraListeners: Set<CameraListenerFn>
+  tickListeners: Set<TickListenerFn>
 
   navigate: NavigateFunction
 }

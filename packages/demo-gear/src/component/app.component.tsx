@@ -79,6 +79,7 @@ function useAppState(
       navigate,
       centerTileId: getCenterTileId(camera),
       centerTileIdListeners: new Set(),
+      tickListeners: new Set(),
     })
     return () => {
       controller.abort()
