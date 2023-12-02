@@ -7,3 +7,12 @@
 .input {
   @include input;
 }
+
+.bottom-container {
+  display: flex;
+}
+
+.bottom-main {
+  display: flex;
+  flex-direction: column;
+}

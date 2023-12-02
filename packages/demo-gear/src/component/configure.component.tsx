@@ -32,55 +32,57 @@ function SelectGearBehaviorType({
   setBehavior: Dispatch<SetStateAction<GearBehavior | null>>
 }) {
   return (
-    <fieldset>
-      <legend>behavior</legend>
-      <label>
-        <input
-          type="radio"
-          value=""
-          checked={behavior === null}
-          onChange={() => {
-            setBehavior(null)
-          }}
-        />
-        None
-      </label>
-      <label>
-        <input
-          type="radio"
-          value={GearBehaviorType.enum.Force}
-          checked={
-            behavior?.type === GearBehaviorType.enum.Force
-          }
-          onChange={() => {
-            setBehavior({
-              type: GearBehaviorType.enum.Force,
-              direction: 'cw',
-              magnitude: 1,
-            })
-          }}
-        />
-        Force
-      </label>
-      <label>
-        <input
-          type="radio"
-          value={GearBehaviorType.enum.Friction}
-          checked={
-            behavior?.type ===
-            GearBehaviorType.enum.Friction
-          }
-          onChange={() => {
-            setBehavior({
-              type: GearBehaviorType.enum.Friction,
-              coeffecient: 0.5,
-              magnitude: 1,
-            })
-          }}
-        />
-        Friction
-      </label>
-    </fieldset>
+    <div>
+      <div>behavior</div>
+      <div>
+        <label>
+          <input
+            type="radio"
+            value=""
+            checked={behavior === null}
+            onChange={() => {
+              setBehavior(null)
+            }}
+          />
+          None
+        </label>
+        <label>
+          <input
+            type="radio"
+            value={GearBehaviorType.enum.Force}
+            checked={
+              behavior?.type === GearBehaviorType.enum.Force
+            }
+            onChange={() => {
+              setBehavior({
+                type: GearBehaviorType.enum.Force,
+                direction: 'cw',
+                magnitude: 1,
+              })
+            }}
+          />
+          Force
+        </label>
+        <label>
+          <input
+            type="radio"
+            value={GearBehaviorType.enum.Friction}
+            checked={
+              behavior?.type ===
+              GearBehaviorType.enum.Friction
+            }
+            onChange={() => {
+              setBehavior({
+                type: GearBehaviorType.enum.Friction,
+                coeffecient: 0.5,
+                magnitude: 1,
+              })
+            }}
+          />
+          Friction
+        </label>
+      </div>
+    </div>
   )
 }
 
@@ -116,9 +118,9 @@ function EditForceGearBehavior({
   setBehavior: Dispatch<SetStateAction<GearBehavior | null>>
 }) {
   return (
-    <>
-      <fieldset>
-        <legend>Direction</legend>
+    <div>
+      <div>Direction</div>
+      <div>
         <label>
           <input
             type="radio"
@@ -147,8 +149,8 @@ function EditForceGearBehavior({
           />
           CCW
         </label>
-      </fieldset>
-    </>
+      </div>
+    </div>
   )
 }
 
@@ -257,24 +259,28 @@ export function Configure() {
         )}
         <pre>{JSON.stringify(behavior)}</pre>
       </Overlay>
-      <Overlay>
-        <button
-          className={styles.button}
-          onPointerUp={() => {
-            navigate('..')
-          }}
-        >
-          Back
-        </button>
-        {gearId && (
-          <>
-            <SelectGearBehaviorType
-              behavior={behavior}
-              setBehavior={setBehavior}
-            />
+      <Overlay position="bottom">
+        <div className={styles['bottom-container']}>
+          <button
+            className={styles.button}
+            onPointerUp={() => {
+              navigate('..')
+            }}
+          >
+            Back
+          </button>
+          <div className={styles['bottom-main']}>
+            {gearId && (
+              <>
+                <SelectGearBehaviorType
+                  behavior={behavior}
+                  setBehavior={setBehavior}
+                />
+              </>
+            )}
             {edit}
-          </>
-        )}
+          </div>
+        </div>
       </Overlay>
     </>
   )
