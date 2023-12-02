@@ -9,7 +9,10 @@ import { renderBuild } from './render-build.js'
 import { renderChain } from './render-chain.js'
 import { renderGears } from './render-gears.js'
 import { renderGrid } from './render-grid.js'
-import { renderGearOutline } from './render-outline.js'
+import {
+  renderGearOutline,
+  renderTileOutline,
+} from './render-outline.js'
 import { GpuState } from './types.js'
 
 export function render(
@@ -45,6 +48,8 @@ export function render(
     case HandType.Configure: {
       if (hand.gear) {
         renderGearOutline(state, gl, gpu, hand.gear)
+      } else {
+        renderTileOutline(state, gl, gpu)
       }
       break
     }
