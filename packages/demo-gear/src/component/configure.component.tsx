@@ -33,9 +33,7 @@ function SelectGearBehaviorType({
 }) {
   return (
     <div>
-      <div className={styles['radio-group-label']}>
-        Behavior
-      </div>
+      <div className={styles['field-label']}>Behavior</div>
       <div>
         <label>
           <input
@@ -122,9 +120,7 @@ function EditForceGearBehavior({
 }) {
   return (
     <div>
-      <div className={styles['radio-group-label']}>
-        Direction
-      </div>
+      <div className={styles['field-label']}>Direction</div>
       <div>
         <label>
           <input
@@ -155,8 +151,8 @@ function EditForceGearBehavior({
           CCW
         </label>
       </div>
-      <label>
-        Magnitude
+      <div className={styles['field-label']}>Magnitude</div>
+      <div>
         <input
           type="range"
           min={0}
@@ -171,7 +167,26 @@ function EditForceGearBehavior({
             })
           }}
         />
-      </label>
+        {behavior.magnitude}
+      </div>
+      <div className={styles['field-label']}>Governer</div>
+      <div>
+        <input
+          type="range"
+          min={1}
+          max={10}
+          step={1}
+          size={2}
+          value={behavior.governer}
+          onChange={(e) => {
+            setBehavior({
+              ...behavior,
+              governer: parseInt(e.target.value),
+            })
+          }}
+        />
+        {behavior.governer}
+      </div>
     </div>
   )
 }
