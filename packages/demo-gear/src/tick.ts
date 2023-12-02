@@ -45,13 +45,18 @@ export function tick(state: AppState, elapsed: number) {
     switch (gear.behavior?.type) {
       case GearBehaviorType.enum.Force: {
         const { behavior } = gear
-        applyForce(
-          gear,
-          (behavior.direction === 'ccw' ? -1 : 1) *
-            behavior.magnitude,
-          elapsed,
-          world,
-        )
+
+        if (gear.velocity < behavior.governer) {
+          // TODO this is a naive governer mechanism
+          applyForce(
+            gear,
+            (behavior.direction === 'ccw' ? -1 : 1) *
+              behavior.magnitude,
+            elapsed,
+            world,
+          )
+        }
+
         break
       }
       case GearBehaviorType.enum.Friction: {
