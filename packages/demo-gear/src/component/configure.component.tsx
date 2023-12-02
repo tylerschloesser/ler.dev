@@ -32,8 +32,10 @@ function SelectGearBehaviorType({
   setBehavior: Dispatch<SetStateAction<GearBehavior | null>>
 }) {
   return (
-    <div>
-      <div>behavior</div>
+    <div className={styles['radio-group']}>
+      <div className={styles['radio-group-label']}>
+        Behavior
+      </div>
       <div>
         <label>
           <input
@@ -119,8 +121,10 @@ function EditForceGearBehavior({
   setBehavior: Dispatch<SetStateAction<GearBehavior | null>>
 }) {
   return (
-    <div>
-      <div>Direction</div>
+    <div className={styles['radio-group']}>
+      <div className={styles['radio-group-label']}>
+        Direction
+      </div>
       <div>
         <label>
           <input
