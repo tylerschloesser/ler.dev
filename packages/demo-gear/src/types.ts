@@ -189,4 +189,5 @@ export type PartialGear = Pick<
   | 'angle'
   | 'velocity'
   | 'connections'
+  | 'behavior'
 >

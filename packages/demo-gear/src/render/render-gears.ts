@@ -33,7 +33,7 @@ export function renderGears(
   gl.uniform1f(gearTeeth.uniforms.tileSize, state.tileSize)
 
   for (const gear of Object.values(state.world.gears)) {
-    renderGear(gear, gl, gpu, state.camera.zoom)
+    renderGear(gear, gl, gpu, state.camera.zoom, 'blue')
   }
 }
 
@@ -42,7 +42,7 @@ export function renderGear(
   gl: WebGL2RenderingContext,
   gpu: GpuState,
   zoom: number,
-  color: 'blue' | 'red' | 'green' = 'blue',
+  color: 'blue' | 'red' | 'green',
 ): void {
   renderGearBody(gear, gl, gpu, color)
   renderGearTeeth(gear, gl, gpu, zoom)
