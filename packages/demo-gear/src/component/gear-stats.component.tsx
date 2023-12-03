@@ -1,4 +1,9 @@
-import { useEffect, useState } from 'react'
+import {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useState,
+} from 'react'
 import invariant from 'tiny-invariant'
 import {
   AppState,
@@ -15,7 +20,19 @@ export function GearStats({
   gearId: GearId
 }) {
   const [velocity, setVelocity] = useState<number>(0)
+  useTickListener(state, gearId, setVelocity)
+  return (
+    <div className={styles.stats}>
+      Velocity: <pre>{velocity.toFixed(2)}</pre>
+    </div>
+  )
+}
 
+function useTickListener(
+  state: AppState,
+  gearId: GearId,
+  setVelocity: Dispatch<SetStateAction<number>>,
+) {
   useEffect(() => {
     const listener: TickListenerFn = () => {
       const gear = state.world.gears[gearId]
@@ -27,10 +44,4 @@ export function GearStats({
       state.tickListeners.delete(listener)
     }
   }, [gearId])
-
-  return (
-    <div className={styles.stats}>
-      Velocity: <pre>{velocity.toFixed(2)}</pre>
-    </div>
-  )
 }
