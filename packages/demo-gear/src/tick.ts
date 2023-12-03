@@ -1,3 +1,4 @@
+import invariant from 'tiny-invariant'
 import {
   applyForce,
   applyFriction,
@@ -5,6 +6,8 @@ import {
 import { TWO_PI } from './const.js'
 import {
   AppState,
+  Connection,
+  ConnectionType,
   GearBehaviorType,
   HandType,
 } from './types.js'
@@ -103,10 +106,24 @@ export function tick(state: AppState, elapsed: number) {
     state.hand.gear
   ) {
     const { gear } = state.hand
-    if (state.hand.valid) {
-      gear.angle =
-        (gear.angle + gear.velocity * elapsed + TWO_PI) %
-        TWO_PI
+    const connection = gear.connections.at(0)
+    if (state.hand.valid && connection) {
+      // if valid, we can check any connected gear to get the angle
+      const neighbor = state.world.gears[connection.gearId]
+      invariant(neighbor)
+
+      switch (connection.type) {
+        case ConnectionType.enum.Attach:
+        case ConnectionType.enum.Chain:
+          gear.angle = neighbor.angle
+          break
+        case ConnectionType.enum.Adjacent:
+          // TODO
+          gear.angle = 0
+          break
+      }
+    } else {
+      gear.angle = 0
     }
   }
 }
