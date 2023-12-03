@@ -26,7 +26,7 @@ export function renderGearOutline(
 
   const size = 0.1 + (1 - state.camera.zoom) * 0.2
 
-  gl.uniform4f(outlineRect.uniforms.color, 1, 1, 1, 1)
+  gl.uniform4f(outlineRect.uniforms.color, 1, 1, 1, 0.5)
   gl.uniform1f(outlineRect.uniforms.size, size)
 
   updateModel(gpu.matrices, gear)
@@ -76,7 +76,7 @@ export function renderTileOutline(
 
   const size = 0.1 + (1 - state.camera.zoom) * 0.2
 
-  gl.uniform4f(outlineRect.uniforms.color, 1, 1, 1, 1)
+  gl.uniform4f(outlineRect.uniforms.color, 1, 1, 1, 0.5)
   gl.uniform1f(outlineRect.uniforms.size, size)
 
   mat4.identity(tileModel)
