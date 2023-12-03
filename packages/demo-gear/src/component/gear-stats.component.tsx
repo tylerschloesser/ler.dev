@@ -10,7 +10,7 @@ import {
   GearId,
   TickListenerFn,
 } from '../types.js'
-import styles from './configure.module.scss'
+import styles from './gear-stats.module.scss'
 
 export function GearStats({
   state,

@@ -22,11 +22,3 @@
 .field-label {
   @include field-label;
 }
-
-.stats {
-  padding: 0.5em;
-
-  pre {
-    display: inline;
-  }
-}
