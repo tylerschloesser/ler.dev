@@ -37,11 +37,14 @@ export function renderGears(
   gl.uniform1f(gearTeeth.uniforms.tileSize, state.tileSize)
 
   for (const gear of Object.values(state.world.gears)) {
-    let color: 'blue' | 'orange' = 'blue'
-    if (
-      gear.behavior?.type === GearBehaviorType.enum.Friction
-    ) {
-      color = 'orange'
+    let color: 'blue' | 'orange' | 'pink' = 'blue'
+    switch (gear.behavior?.type) {
+      case GearBehaviorType.enum.Friction:
+        color = 'orange'
+        break
+      case GearBehaviorType.enum.Force:
+        color = 'pink'
+        break
     }
     renderGear(gear, gl, gpu, state.camera.zoom, color)
   }
@@ -52,7 +55,7 @@ export function renderGear(
   gl: WebGL2RenderingContext,
   gpu: GpuState,
   zoom: number,
-  color: 'orange' | 'blue' | 'red' | 'green',
+  color: 'pink' | 'orange' | 'blue' | 'red' | 'green',
 ): void {
   renderGearBody(gear, gl, gpu, color)
   renderGearTeeth(gear, gl, gpu, zoom)
@@ -98,7 +101,7 @@ function renderGearBody(
   gear: PartialGear,
   gl: WebGL2RenderingContext,
   gpu: GpuState,
-  color: 'orange' | 'blue' | 'red' | 'green',
+  color: 'pink' | 'orange' | 'blue' | 'red' | 'green',
 ): void {
   const { gearBody } = gpu.programs
   gl.useProgram(gearBody.program)
@@ -111,6 +114,11 @@ function renderGearBody(
   )
 
   switch (color) {
+    case 'pink': {
+      // prettier-ignore
+      gl.uniform4f(gearBody.uniforms.color, 1.0, 0.0, 1.0, 1.0)
+      break
+    }
     case 'orange': {
       // prettier-ignore
       gl.uniform4f(gearBody.uniforms.color, 1.0, 0.647, 0.0, 1.0)
