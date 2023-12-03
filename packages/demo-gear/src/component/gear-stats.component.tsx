@@ -21,8 +21,13 @@ export function GearStats({
 }) {
   const [velocity, setVelocity] = useState<number>(0)
   useTickListener(state, gearId, setVelocity)
+
+  const gear = state.world.gears[gearId]
+  invariant(gear)
+
   return (
     <div className={styles.stats}>
+      Mass: <pre>{gear.mass.toFixed(2)}</pre>
       Velocity: <pre>{velocity.toFixed(2)}</pre>
     </div>
   )
