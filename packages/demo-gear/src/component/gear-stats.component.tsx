@@ -27,8 +27,19 @@ export function GearStats({
 
   return (
     <div className={styles.stats}>
-      Mass: <pre>{gear.mass.toFixed(2)}</pre>
-      Velocity: <pre>{velocity.toFixed(2)}</pre>
+      <div>
+        <span className={styles.key}>{'Mass: '}</span>
+        <span className={styles.value}>
+          {gear.mass.toFixed(2)}
+        </span>
+      </div>
+      <span className={styles.divider}>|</span>
+      <div>
+        <span className={styles.key}>Velocity: </span>
+        <span className={styles.value}>
+          {velocity.toFixed(2)}
+        </span>
+      </div>
     </div>
   )
 }
