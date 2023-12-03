@@ -83,6 +83,24 @@ function useAppState(
       centerTileIdListeners: new Set(),
       tickListeners: new Set([throttle(saveWorld, 500)]),
     })
+
+    // disable double tap magnifying glass in safari
+    // TODO not sure how well this will work...
+    // will this break other things?
+    //
+    // https://stackoverflow.com/a/75872162
+    //
+    // I think this works because safari uses touchend to set a timer
+    // to detect double tap.
+    //
+    window.addEventListener(
+      'touchend',
+      (e) => {
+        e.preventDefault()
+      },
+      { passive: false },
+    )
+
     return () => {
       controller.abort()
     }
