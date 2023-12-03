@@ -6,10 +6,7 @@ import {
 } from 'react'
 import { useNavigate } from 'react-router-dom'
 import invariant from 'tiny-invariant'
-import { updateApplyFrictionPosition } from '../apply-friction.js'
-import { moveCamera } from '../camera.js'
 import {
-  CameraListenerFn,
   CenterTileIdListener,
   HandType,
   OnChangeGearFn,
