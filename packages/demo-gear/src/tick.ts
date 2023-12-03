@@ -118,8 +118,9 @@ export function tick(state: AppState, elapsed: number) {
           gear.angle = neighbor.angle
           break
         case ConnectionType.enum.Adjacent:
-          // TODO
-          gear.angle = 0
+          gear.angle =
+            (TWO_PI - neighbor.angle) *
+            (neighbor.radius / gear.radius)
           break
       }
     } else {
