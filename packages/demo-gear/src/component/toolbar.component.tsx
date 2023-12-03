@@ -4,20 +4,16 @@ import { AppContext } from './context.js'
 import { Overlay } from './overlay.component.js'
 import styles from './toolbar.module.scss'
 import { resetCamera } from './use-camera.js'
-import { useResetWorld, useSaveWorld } from './use-world.js'
+import { useResetWorld } from './use-world.js'
 
 export function Toolbar() {
   const navigate = useNavigate()
   const state = use(AppContext)
-  const save = useSaveWorld(state?.world)
 
   const resetWorld = useResetWorld(state?.setWorld)
 
   return (
     <Overlay>
-      <button className={styles.button} onPointerUp={save}>
-        Save
-      </button>
       <button
         className={styles.button}
         onPointerUp={() => {
