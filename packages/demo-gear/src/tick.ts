@@ -103,8 +103,10 @@ export function tick(state: AppState, elapsed: number) {
     state.hand.gear
   ) {
     const { gear } = state.hand
-    gear.angle =
-      (gear.angle + gear.velocity * elapsed + TWO_PI) %
-      TWO_PI
+    if (state.hand.valid) {
+      gear.angle =
+        (gear.angle + gear.velocity * elapsed + TWO_PI) %
+        TWO_PI
+    }
   }
 }
