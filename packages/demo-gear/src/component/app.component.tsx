@@ -93,13 +93,13 @@ function useAppState(
     // I think this works because safari uses touchend to set a timer
     // to detect double tap.
     //
-    window.addEventListener(
-      'touchend',
-      (e) => {
-        e.preventDefault()
-      },
-      { passive: false },
-    )
+    // window.addEventListener(
+    //   'touchend',
+    //   (e) => {
+    //     e.preventDefault()
+    //   },
+    //   { passive: false },
+    // )
 
     return () => {
       controller.abort()
