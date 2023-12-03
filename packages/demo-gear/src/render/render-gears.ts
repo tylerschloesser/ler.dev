@@ -1,6 +1,10 @@
 import invariant from 'tiny-invariant'
 import { TEETH, TWO_PI } from '../const.js'
-import { AppState, PartialGear } from '../types.js'
+import {
+  AppState,
+  GearBehaviorType,
+  PartialGear,
+} from '../types.js'
 import {
   updateGearBodyModel,
   updateGearToothModel,
@@ -33,7 +37,13 @@ export function renderGears(
   gl.uniform1f(gearTeeth.uniforms.tileSize, state.tileSize)
 
   for (const gear of Object.values(state.world.gears)) {
-    renderGear(gear, gl, gpu, state.camera.zoom, 'blue')
+    let color: 'blue' | 'orange' = 'blue'
+    if (
+      gear.behavior?.type === GearBehaviorType.enum.Friction
+    ) {
+      color = 'orange'
+    }
+    renderGear(gear, gl, gpu, state.camera.zoom, color)
   }
 }
 
@@ -42,7 +52,7 @@ export function renderGear(
   gl: WebGL2RenderingContext,
   gpu: GpuState,
   zoom: number,
-  color: 'blue' | 'red' | 'green',
+  color: 'orange' | 'blue' | 'red' | 'green',
 ): void {
   renderGearBody(gear, gl, gpu, color)
   renderGearTeeth(gear, gl, gpu, zoom)
@@ -88,7 +98,7 @@ function renderGearBody(
   gear: PartialGear,
   gl: WebGL2RenderingContext,
   gpu: GpuState,
-  color: 'blue' | 'red' | 'green',
+  color: 'orange' | 'blue' | 'red' | 'green',
 ): void {
   const { gearBody } = gpu.programs
   gl.useProgram(gearBody.program)
@@ -101,6 +111,11 @@ function renderGearBody(
   )
 
   switch (color) {
+    case 'orange': {
+      // prettier-ignore
+      gl.uniform4f(gearBody.uniforms.color, 1.0, 0.647, 0.0, 1.0)
+      break
+    }
     case 'blue': {
       // prettier-ignore
       gl.uniform4f(gearBody.uniforms.color, 0.0, 0.0, 1.0, 1.0)
