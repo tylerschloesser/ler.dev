@@ -48,6 +48,7 @@ function useHandPosition(size: number): SimpleVec2 {
 export function Delete() {
   const navigate = useNavigate()
   const [size, setSize] = useState(MIN_SIZE)
+  const [disabled, setDisabled] = useState(true)
 
   invariant(size >= MIN_SIZE)
   invariant(size <= MAX_SIZE)
@@ -91,6 +92,11 @@ export function Delete() {
         hand.current.tileIds.add(tileId)
       }
     }
+
+    setDisabled(
+      hand.current.gearIds.size === 0 &&
+        hand.current.tileIds.size === 0,
+    )
   }, [size, position])
 
   return (
@@ -119,8 +125,10 @@ export function Delete() {
           <button
             className={styles.button}
             onPointerUp={() => {
+              if (disabled) return
               console.log('TODO')
             }}
+            disabled={disabled}
           >
             Delete
           </button>
