@@ -107,6 +107,7 @@ export enum HandType {
   Configure = 'configure',
   AddResource = 'add-resource',
   AddBelt = 'add-belt',
+  Delete = 'delete',
 }
 
 export interface BuildHand {
@@ -153,6 +154,11 @@ export interface AddBeltHand {
   valid: boolean
 }
 
+export interface DeleteHand {
+  type: HandType.Delete
+  radius: number
+}
+
 export type Hand =
   | BuildHand
   | ApplyForceHand
@@ -160,6 +166,7 @@ export type Hand =
   | ConfigureHand
   | AddResourceHand
   | AddBeltHand
+  | DeleteHand
 
 export type SetWorldFn = (world: World) => void
 

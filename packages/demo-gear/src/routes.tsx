@@ -7,6 +7,7 @@ import { App } from './component/app.component.js'
 import { ApplyForce } from './component/apply-force.component.js'
 import { ApplyFriction } from './component/apply-friction.component.js'
 import { Configure } from './component/configure.component.js'
+import { Delete } from './component/delete.component.js'
 import { Index } from './component/index.component.js'
 import { Toolbar } from './component/toolbar.component.js'
 
@@ -54,6 +55,10 @@ export const routes: RouteObject[] = [
           {
             path: 'configure',
             Component: Configure,
+          },
+          {
+            path: 'delete',
+            Component: Delete,
           },
         ],
       },
