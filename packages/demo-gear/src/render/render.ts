@@ -76,7 +76,14 @@ export function render(
           GEAR_OUTLINE,
         )
       } else {
-        renderTileOutline(context, gl, gpu, TILE_OUTLINE)
+        renderTileOutline(
+          context,
+          gl,
+          gpu,
+          TILE_OUTLINE,
+          Math.floor(context.camera.position.x),
+          Math.floor(context.camera.position.y),
+        )
       }
       break
     }
@@ -84,7 +91,14 @@ export function render(
       const color = hand.valid
         ? ADD_RESOURCE_VALID
         : ADD_RESOURCE_INVALID
-      renderTileOutline(context, gl, gpu, color)
+      renderTileOutline(
+        context,
+        gl,
+        gpu,
+        color,
+        Math.floor(context.camera.position.x),
+        Math.floor(context.camera.position.y),
+      )
       break
     }
     case HandType.AddBelt: {
