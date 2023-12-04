@@ -57,6 +57,7 @@ export const ADD_BELT_VALID: Color = BUILD_GEAR_VALID
 export const ADD_BELT_INVALID: Color = BUILD_GEAR_INVALID
 
 export const FUEL_COLOR: Color = rgb(255, 255, 51)
+export const BELT_COLOR: Color = rgb(128, 128, 128)
 
 function rgb(r: number, g: number, b: number): Color {
   return {

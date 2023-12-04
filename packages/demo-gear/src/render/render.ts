@@ -7,11 +7,13 @@ import { iterateConnections } from '../util.js'
 import {
   ADD_RESOURCE_INVALID,
   ADD_RESOURCE_VALID,
+  BELT_COLOR,
   GEAR_OUTLINE,
   TILE_OUTLINE,
 } from './color.js'
 import { updateProjection, updateView } from './matrices.js'
 import { renderBeltHand } from './render-belt-hand.js'
+import { renderBelt } from './render-belt.js'
 import { renderBuild } from './render-build.js'
 import { renderChain } from './render-chain.js'
 import { renderGears } from './render-gears.js'
@@ -50,6 +52,10 @@ export function render(
         context.camera.zoom,
       )
     }
+  }
+
+  for (const belt of Object.values(context.world.belts)) {
+    renderBelt(context, gl, gpu, belt.path, BELT_COLOR)
   }
 
   const { hand } = context
