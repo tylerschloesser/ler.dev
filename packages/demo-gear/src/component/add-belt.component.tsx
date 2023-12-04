@@ -14,15 +14,20 @@ import styles from './add-belt.module.scss'
 import { AppContext } from './context.js'
 import { Overlay } from './overlay.component.js'
 
+type PathDirection = 'x' | 'y'
+
 export function AddBelt() {
   const context = use(AppContext)
   const navigate = useNavigate()
+
+  const [direction, setDirection] =
+    useState<PathDirection>('x')
 
   const cameraTilePosition = useCameraTilePosition(context)
   const [savedStart, setSavedStart] = useSavedStart()
   const end = !savedStart ? null : cameraTilePosition
   const start = savedStart ?? cameraTilePosition
-  const path = getPath(start, end)
+  const path = getPath(start, end, 'x')
   const valid = isValid(context, path)
   useHand(path, valid)
 
@@ -58,13 +63,14 @@ export function AddBelt() {
 function getPath(
   start: SimpleVec2,
   end: SimpleVec2 | null,
+  direction: PathDirection,
 ): SimpleVec2[] {
   const path: SimpleVec2[] = [start]
   if (end) {
     const dx = end.x - start.x
     const dy = end.y - start.y
 
-    if (Math.abs(dx) >= Math.abs(dy)) {
+    if (direction === 'x') {
       for (
         let x = Math.sign(dx);
         Math.abs(x) <= Math.abs(dx);
