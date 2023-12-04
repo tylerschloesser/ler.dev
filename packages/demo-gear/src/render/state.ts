@@ -39,6 +39,7 @@ export async function initGpuState(
       square: initSquareBuffer(gl),
       gearBody: initGearBodyBuffers(gl),
       gearTooth: initGearToothBuffer(gl),
+      fillRect: initFillRectBuffer(gl),
       outlineRect: initOutlineRectBuffer(gl),
     },
     matrices: initMatrices(),
@@ -252,6 +253,26 @@ function initSquareBuffer(
       -1.0, -1.0,
       -1.0, 1.0,
       1.0, -1.0,
+      1.0, 1.0,
+    ]),
+    gl.STATIC_DRAW,
+  )
+  return buffer
+}
+
+function initFillRectBuffer(
+  gl: WebGL2RenderingContext,
+): WebGLBuffer {
+  const buffer = gl.createBuffer()
+  invariant(buffer)
+  gl.bindBuffer(gl.ARRAY_BUFFER, buffer)
+  gl.bufferData(
+    gl.ARRAY_BUFFER,
+    // prettier-ignore
+    new Float32Array([
+      0.0, 0.0,
+      0.0, 1.0,
+      1.0, 0.0,
       1.0, 1.0,
     ]),
     gl.STATIC_DRAW,

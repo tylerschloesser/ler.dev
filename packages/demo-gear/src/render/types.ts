@@ -83,6 +83,7 @@ export interface GpuState {
   }
   buffers: {
     square: WebGLBuffer
+    fillRect: WebGLBuffer
     outlineRect: WebGLBuffer
     gearBody: Record<
       number,
