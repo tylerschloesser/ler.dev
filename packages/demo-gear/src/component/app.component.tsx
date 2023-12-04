@@ -45,11 +45,7 @@ const updateCenterTileId: CameraListenerFn = (state) => {
 }
 
 function useAppState(
-  canvas: {
-    container: HTMLDivElement
-    cpu: HTMLCanvasElement
-    gpu: HTMLCanvasElement
-  } | null,
+  canvas: AppState['canvas'] | null,
 ): AppState | null {
   const [state, setState] = useState<AppState | null>(null)
   const [world, setWorld] = useWorld()
@@ -110,11 +106,9 @@ function useAppState(
 }
 
 export function App() {
-  const [canvas, setCanvas] = useState<{
-    container: HTMLDivElement
-    cpu: HTMLCanvasElement
-    gpu: HTMLCanvasElement
-  } | null>(null)
+  const [canvas, setCanvas] = useState<
+    AppState['canvas'] | null
+  >(null)
   const state = useAppState(canvas)
 
   useEffect(() => {

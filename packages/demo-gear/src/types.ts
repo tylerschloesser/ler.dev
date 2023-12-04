@@ -186,7 +186,6 @@ export interface Viewport {
 export interface AppState {
   canvas: {
     container: HTMLDivElement
-    cpu: HTMLCanvasElement
     gpu: HTMLCanvasElement
   }
   viewport: Viewport

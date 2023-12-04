@@ -1,7 +1,15 @@
 import { use, useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import {
+  useNavigate,
+  useSearchParams,
+} from 'react-router-dom'
 import invariant from 'tiny-invariant'
-import { CameraListenerFn, HandType } from '../types.js'
+import * as z from 'zod'
+import {
+  CameraListenerFn,
+  HandType,
+  SimpleVec2,
+} from '../types.js'
 import styles from './add-belt.module.scss'
 import { AppContext } from './context.js'
 import { Overlay } from './overlay.component.js'
@@ -11,9 +19,18 @@ enum ViewType {
   End = 'end',
 }
 
+const UrlState = z.strictObject({
+  start: SimpleVec2.optional(),
+  end: SimpleVec2.optional(),
+})
+type UrlState = z.infer<typeof UrlState>
+
 export function AddBelt() {
   const state = use(AppContext)
   const navigate = useNavigate()
+
+  const [searchParams, setSearchParams] = useSearchParams()
+
   const [viewType, setViewType] = useState<ViewType>(
     ViewType.Start,
   )
