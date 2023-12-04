@@ -196,5 +196,13 @@ function isValid(
   context: IAppContext,
   path: SimpleVec2[],
 ): boolean {
+  for (const position of path) {
+    const tileId = `${position.x}.${position.y}`
+    const tile = context.world.tiles[tileId]
+    if (!tile) continue
+    if (tile.gearId || tile.beltId) {
+      return false
+    }
+  }
   return true
 }

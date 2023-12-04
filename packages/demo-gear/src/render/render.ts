@@ -1,12 +1,10 @@
 import {
-  IAppContext,
   ConnectionType,
   HandType,
+  IAppContext,
 } from '../types.js'
 import { iterateConnections } from '../util.js'
 import {
-  ADD_BELT_INVALID,
-  ADD_BELT_VALID,
   ADD_RESOURCE_INVALID,
   ADD_RESOURCE_VALID,
   GEAR_OUTLINE,
@@ -84,12 +82,6 @@ export function render(
       break
     }
     case HandType.AddBelt: {
-      {
-        const color = hand.valid
-          ? ADD_BELT_VALID
-          : ADD_BELT_INVALID
-        renderTileOutline(context, gl, gpu, color)
-      }
       renderBeltHand(context, gl, gpu, hand)
       break
     }
