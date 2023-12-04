@@ -138,6 +138,7 @@ export type Hand =
   | ApplyForceHand
   | ApplyFrictionHand
   | ConfigureHand
+  | AddResourceHand
 
 export type SetWorldFn = (world: World) => void
 
