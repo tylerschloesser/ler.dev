@@ -1,4 +1,4 @@
-import { AppState, InitFn, SimpleVec2 } from './types.js'
+import { IAppContext, InitFn, SimpleVec2 } from './types.js'
 
 export const initPointer: InitFn = async (state) => {
   const { canvas, signal } = state
@@ -35,7 +35,7 @@ const position: SimpleVec2 = {
 }
 
 function handlePointer(
-  state: AppState,
+  state: IAppContext,
   e: PointerEvent,
 ): void {
   const { tileSize, camera } = state

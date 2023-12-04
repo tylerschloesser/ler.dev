@@ -5,7 +5,7 @@ import {
   MIN_TILE_SIZE_FACTOR,
   MIN_ZOOM,
 } from './const.js'
-import { AppState, PointerListenerFn } from './types.js'
+import { IAppContext, PointerListenerFn } from './types.js'
 import {
   clamp,
   clampTileSize,
@@ -17,7 +17,7 @@ type PointerId = number
 const pointerCache = new Map<PointerId, PointerEvent>()
 
 export const moveCamera: PointerListenerFn = (
-  state: AppState,
+  state: IAppContext,
   e: PointerEvent,
 ) => {
   switch (e.type) {
@@ -55,7 +55,7 @@ export const moveCamera: PointerListenerFn = (
 }
 
 export function handleWheel(
-  state: AppState,
+  state: IAppContext,
   e: WheelEvent,
 ): void {
   const { camera } = state
@@ -88,7 +88,7 @@ export function handleWheel(
 }
 
 function handlePointerOne(
-  state: AppState,
+  state: IAppContext,
   prev: PointerEvent,
   next: PointerEvent,
 ): void {
@@ -106,7 +106,7 @@ function handlePointerOne(
 }
 
 function handlePointerTwo(
-  state: AppState,
+  state: IAppContext,
   prev: PointerEvent,
   next: PointerEvent,
 ): void {
@@ -164,7 +164,7 @@ function handlePointerTwo(
 }
 
 function updateCamera(
-  state: AppState,
+  state: IAppContext,
   x: number,
   y: number,
   zoom: number,

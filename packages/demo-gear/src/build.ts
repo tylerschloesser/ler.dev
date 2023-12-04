@@ -1,7 +1,7 @@
 import invariant from 'tiny-invariant'
 import { addChainConnection, addGear } from './add-gear.js'
 import {
-  AppState,
+  IAppContext,
   BuildHand,
   ConnectionType,
   Gear,
@@ -15,7 +15,7 @@ import {
 import { Vec2 } from './vec2.js'
 
 export function initBuild(
-  state: AppState,
+  state: IAppContext,
   radius: number,
   onChangeValid: BuildHand['onChangeValid'],
 ): void {
@@ -40,7 +40,7 @@ export function initBuild(
 }
 
 export function updateRadius(
-  state: AppState,
+  state: IAppContext,
   radius: number,
 ): void {
   invariant(state.hand?.type === HandType.Build)
@@ -49,7 +49,7 @@ export function updateRadius(
 }
 
 export function updateBuildPosition(
-  state: AppState,
+  state: IAppContext,
   hand: BuildHand,
 ): void {
   const x = Math.round(state.camera.position.x)
@@ -67,7 +67,7 @@ export function updateBuildPosition(
 }
 
 export function executeBuild(
-  state: AppState,
+  state: IAppContext,
   hand: BuildHand,
 ): void {
   invariant(hand.gear)
@@ -102,7 +102,7 @@ export function executeBuild(
 }
 
 export function updateBuild(
-  state: AppState,
+  state: IAppContext,
   hand: BuildHand,
 ): void {
   invariant(hand.gear)

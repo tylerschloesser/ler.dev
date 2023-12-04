@@ -1,11 +1,11 @@
 import { mat4, vec3 } from 'gl-matrix'
-import { AppState, Gear } from '../types.js'
+import { IAppContext, Gear } from '../types.js'
 import { Color } from './color.js'
 import { updateModel } from './matrices.js'
 import { GpuState } from './types.js'
 
 export function renderGearOutline(
-  state: AppState,
+  state: IAppContext,
   gl: WebGL2RenderingContext,
   gpu: GpuState,
   gear: Gear,
@@ -63,7 +63,7 @@ const tileModel = mat4.create()
 const v3 = vec3.create()
 
 export function renderTileOutline(
-  state: AppState,
+  state: IAppContext,
   gl: WebGL2RenderingContext,
   gpu: GpuState,
   color: Color,

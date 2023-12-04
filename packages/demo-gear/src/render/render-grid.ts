@@ -1,8 +1,8 @@
-import { AppState } from '../types.js'
+import { IAppContext } from '../types.js'
 import { GpuState } from './types.js'
 
 export function renderGrid(
-  state: AppState,
+  state: IAppContext,
   gl: WebGL2RenderingContext,
   gpu: GpuState,
 ): void {

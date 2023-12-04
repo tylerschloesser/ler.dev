@@ -1,6 +1,6 @@
 import { mat4, vec3 } from 'gl-matrix'
 import { TEETH, TWO_PI } from '../const.js'
-import { AppState, Gear, PartialGear } from '../types.js'
+import { IAppContext, Gear, PartialGear } from '../types.js'
 import { GpuState } from './types.js'
 
 export function initMatrices(): GpuState['matrices'] {
@@ -173,7 +173,7 @@ export function updateGearToothModel(
 
 export function updateView(
   matrices: GpuState['matrices'],
-  state: AppState,
+  state: IAppContext,
 ): void {
   const { view } = matrices
 
@@ -197,7 +197,7 @@ export function updateView(
 
 export function updateProjection(
   matrices: GpuState['matrices'],
-  state: AppState,
+  state: IAppContext,
 ): void {
   const { projection } = matrices
 

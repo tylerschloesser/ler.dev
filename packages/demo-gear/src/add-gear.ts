@@ -1,6 +1,6 @@
 import invariant from 'tiny-invariant'
 import {
-  AppState,
+  IAppContext,
   ConnectionType,
   Gear,
   PartialGear,
@@ -11,7 +11,7 @@ import { getTotalMass, iterateGearTileIds } from './util.js'
 export function addChainConnection(
   gear1: Gear,
   gear2: Gear,
-  _state: AppState,
+  _state: IAppContext,
 ): void {
   // TODO validate
   gear1.connections.push({
@@ -28,7 +28,7 @@ export function addGear(
   partial: PartialGear,
   _chain: Gear | null, // TODO remove this
   attach: Gear | null,
-  state: AppState,
+  state: IAppContext,
 ): void {
   const { world } = state
 

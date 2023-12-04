@@ -7,7 +7,6 @@ import {
   updateBuildPosition,
   updateRadius,
 } from '../build.js'
-import { moveCamera } from '../camera.js'
 import { MAX_RADIUS, MIN_RADIUS } from '../const.js'
 import { CameraListenerFn, HandType } from '../types.js'
 import { clamp } from '../util.js'

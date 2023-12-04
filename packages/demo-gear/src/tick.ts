@@ -5,14 +5,14 @@ import {
 } from './apply-torque.js'
 import { TWO_PI } from './const.js'
 import {
-  AppState,
+  IAppContext,
   Connection,
   ConnectionType,
   GearBehaviorType,
   HandType,
 } from './types.js'
 
-export function tick(state: AppState, elapsed: number) {
+export function tick(state: IAppContext, elapsed: number) {
   const { world, hand } = state
 
   switch (hand?.type) {

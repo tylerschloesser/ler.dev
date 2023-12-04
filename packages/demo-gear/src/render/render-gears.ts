@@ -1,7 +1,7 @@
 import invariant from 'tiny-invariant'
 import { TEETH, TWO_PI } from '../const.js'
 import {
-  AppState,
+  IAppContext,
   GearBehaviorType,
   PartialGear,
 } from '../types.js'
@@ -18,7 +18,7 @@ import {
 import { GpuState } from './types.js'
 
 export function renderGears(
-  state: AppState,
+  state: IAppContext,
   gl: WebGL2RenderingContext,
   gpu: GpuState,
 ) {

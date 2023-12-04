@@ -1,8 +1,8 @@
-import { AddBeltHand, AppState } from '../types.js'
+import { AddBeltHand, IAppContext } from '../types.js'
 import { GpuState } from './types.js'
 
 export function renderBeltHand(
-  state: AppState,
+  state: IAppContext,
   gl: WebGL2RenderingContext,
   gpu: GpuState,
   hand: AddBeltHand,

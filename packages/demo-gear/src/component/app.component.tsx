@@ -7,7 +7,7 @@ import { initPointer } from '../init-pointer.js'
 import { initSimulator } from '../init-simulator.js'
 import { initWheel } from '../init-wheel.js'
 import {
-  AppState,
+  IAppContext,
   Camera,
   CameraListenerFn,
   InitFn,
@@ -45,9 +45,11 @@ const updateCenterTileId: CameraListenerFn = (state) => {
 }
 
 function useAppState(
-  canvas: AppState['canvas'] | null,
-): AppState | null {
-  const [state, setState] = useState<AppState | null>(null)
+  canvas: IAppContext['canvas'] | null,
+): IAppContext | null {
+  const [state, setState] = useState<IAppContext | null>(
+    null,
+  )
   const [world, setWorld] = useWorld()
   const saveWorld = useSaveWorld(world ?? undefined)
   const { camera, saveCamera } = useCamera()
@@ -107,7 +109,7 @@ function useAppState(
 
 export function App() {
   const [canvas, setCanvas] = useState<
-    AppState['canvas'] | null
+    IAppContext['canvas'] | null
   >(null)
   const state = useAppState(canvas)
 

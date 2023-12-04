@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
-import { AppState } from '../types.js'
+import { IAppContext } from '../types.js'
 import styles from './canvas.module.scss'
 
 export interface CanvasProps {
-  setCanvas(canvas: AppState['canvas']): void
+  setCanvas(canvas: IAppContext['canvas']): void
 }
 
 export function Canvas({ setCanvas }: CanvasProps) {

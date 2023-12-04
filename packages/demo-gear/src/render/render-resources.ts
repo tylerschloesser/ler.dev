@@ -1,6 +1,6 @@
 import { mat4, vec3 } from 'gl-matrix'
 import invariant from 'tiny-invariant'
-import { AppState } from '../types.js'
+import { IAppContext } from '../types.js'
 import { FUEL_COLOR } from './color.js'
 import { GpuState } from './types.js'
 
@@ -8,7 +8,7 @@ const model = mat4.create()
 const v3 = vec3.create()
 
 export function renderResources(
-  state: AppState,
+  state: IAppContext,
   gl: WebGL2RenderingContext,
   gpu: GpuState,
 ): void {

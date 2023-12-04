@@ -2,7 +2,7 @@ import invariant from 'tiny-invariant'
 import { zoomToTileSize } from './camera.js'
 import { render } from './render/render.js'
 import { initGpuState } from './render/state.js'
-import { AppState, InitFn } from './types.js'
+import { IAppContext, InitFn } from './types.js'
 
 export const initCanvas: InitFn = async (state) => {
   const { canvas, signal } = state
@@ -38,7 +38,7 @@ export const initCanvas: InitFn = async (state) => {
 }
 
 function updateViewport(
-  state: AppState,
+  state: IAppContext,
   rect: DOMRectReadOnly,
 ): void {
   const vx = rect.width

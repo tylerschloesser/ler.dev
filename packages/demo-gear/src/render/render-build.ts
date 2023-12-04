@@ -1,4 +1,4 @@
-import { AppState, BuildHand } from '../types.js'
+import { IAppContext, BuildHand } from '../types.js'
 import {
   BUILD_GEAR_INVALID,
   BUILD_GEAR_VALID,
@@ -8,7 +8,7 @@ import { renderGear } from './render-gears.js'
 import { GpuState } from './types.js'
 
 export function renderBuild(
-  state: AppState,
+  state: IAppContext,
   gl: WebGL2RenderingContext,
   gpu: GpuState,
   build: BuildHand,

@@ -1,5 +1,5 @@
 import {
-  AppState,
+  IAppContext,
   ConnectionType,
   HandType,
 } from '../types.js'
@@ -26,7 +26,7 @@ import { renderResources } from './render-resources.js'
 import { GpuState } from './types.js'
 
 export function render(
-  state: AppState,
+  state: IAppContext,
   gl: WebGL2RenderingContext,
   gpu: GpuState,
 ) {

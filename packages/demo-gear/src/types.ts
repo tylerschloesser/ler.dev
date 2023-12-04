@@ -170,20 +170,22 @@ export const Camera = z.strictObject({
 export type Camera = z.infer<typeof Camera>
 
 export type PointerListenerFn = (
-  state: AppState,
+  state: IAppContext,
   e: PointerEvent,
   position: Readonly<SimpleVec2>,
 ) => void
-export type CameraListenerFn = (state: AppState) => void
-export type CenterTileIdListener = (state: AppState) => void
-export type TickListenerFn = (state: AppState) => void
+export type CameraListenerFn = (state: IAppContext) => void
+export type CenterTileIdListener = (
+  state: IAppContext,
+) => void
+export type TickListenerFn = (state: IAppContext) => void
 
 export interface Viewport {
   size: SimpleVec2
   pixelRatio: number
 }
 
-export interface AppState {
+export interface IAppContext {
   canvas: {
     container: HTMLDivElement
     gpu: HTMLCanvasElement
@@ -207,7 +209,7 @@ export interface AppState {
   navigate: NavigateFunction
 }
 
-export type InitFn = (state: AppState) => Promise<void>
+export type InitFn = (state: IAppContext) => Promise<void>
 
 export type PartialGear = Pick<
   Gear,
