@@ -92,6 +92,7 @@ export const Belt = z.strictObject({
 export type Belt = z.infer<typeof Belt>
 
 export const World = z.strictObject({
+  version: z.number(),
   gears: z.record(GearId, Gear),
   tiles: z.record(TileId, Tile),
   belts: z.record(BeltId, Belt),

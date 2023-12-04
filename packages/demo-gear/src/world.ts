@@ -23,6 +23,7 @@ export async function clearWorld(): Promise<void> {
 
 export async function getDefaultWorld(): Promise<World> {
   const world: World = {
+    version: 1,
     gears: {},
     tiles: {},
     belts: {},
