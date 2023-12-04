@@ -87,7 +87,7 @@ export type Gear = z.infer<typeof Gear>
 
 export const Belt = z.strictObject({
   id: BeltId,
-  tilePositions: z.array(SimpleVec2),
+  path: z.array(SimpleVec2),
 })
 export type Belt = z.infer<typeof Belt>
 
