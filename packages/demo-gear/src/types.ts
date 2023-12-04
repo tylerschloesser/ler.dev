@@ -13,9 +13,13 @@ export type GearId = z.infer<typeof GearId>
 export const TileId = z.string()
 export type TileId = z.infer<typeof TileId>
 
+export const ResourceType = z.enum(['Fuel'])
+export type ResourceType = z.infer<typeof ResourceType>
+
 export const Tile = z.strictObject({
   gearId: GearId.optional(),
   attachedGearId: GearId.optional(),
+  resourceType: ResourceType.optional(),
 })
 export type Tile = z.infer<typeof Tile>
 
