@@ -136,6 +136,14 @@ export function render(
           DELETE,
         )
       }
+      for (const tileId of hand.tileIds) {
+        const [x, y] = tileId
+          .split('.')
+          .map((v) => parseInt(v))
+        invariant(typeof x === 'number')
+        invariant(typeof y === 'number')
+        renderRect(gl, gpu, x, y, 1, 1, DELETE)
+      }
     }
   }
 }
