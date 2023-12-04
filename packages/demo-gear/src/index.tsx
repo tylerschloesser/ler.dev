@@ -31,8 +31,11 @@ const router = createBrowserRouter([
       },
       {
         path: 'tools',
-        Component: Toolbar,
         children: [
+          {
+            index: true,
+            Component: Toolbar,
+          },
           {
             path: 'add-gear',
             Component: AddGear,
