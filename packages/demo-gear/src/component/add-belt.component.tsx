@@ -1,11 +1,14 @@
 import { use, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import invariant from 'tiny-invariant'
 import { HandType } from '../types.js'
+import styles from './add-belt.module.scss'
 import { AppContext } from './context.js'
 import { Overlay } from './overlay.component.js'
 
 export function AddBelt() {
   const state = use(AppContext)
+  const navigate = useNavigate()
 
   useEffect(() => {
     if (!state) return
@@ -24,5 +27,16 @@ export function AddBelt() {
     }
   }, [state])
 
-  return <Overlay>TODO</Overlay>
+  return (
+    <Overlay>
+      <button
+        className={styles.button}
+        onPointerUp={() => {
+          navigate('..')
+        }}
+      >
+        Back
+      </button>
+    </Overlay>
+  )
 }
