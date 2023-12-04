@@ -21,10 +21,6 @@ export function ApplyForce() {
   const [disabled, setDisabled] = useState<boolean>(true)
 
   useEffect(() => {
-    if (!context) {
-      return
-    }
-
     context.hand = {
       type: HandType.ApplyForce,
       position: null,
@@ -63,16 +59,9 @@ export function ApplyForce() {
   }, [context])
 
   useEffect(() => {
-    if (!context) {
-      return
-    }
     invariant(context.hand?.type === HandType.ApplyForce)
     context.hand.magnitude = magnitude
   }, [context, magnitude])
-
-  if (!context) {
-    return
-  }
 
   let gearId
   if (context.hand) {

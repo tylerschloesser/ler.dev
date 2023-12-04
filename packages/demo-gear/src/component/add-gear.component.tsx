@@ -20,10 +20,6 @@ export function AddGear() {
   const [valid, setValid] = useState(false)
 
   useEffect(() => {
-    if (!context) {
-      return
-    }
-
     initBuild(context, radius, setValid)
 
     const cameraListener: CameraListenerFn = () => {
@@ -39,17 +35,10 @@ export function AddGear() {
   }, [context])
 
   useEffect(() => {
-    if (!context) {
-      return
-    }
     updateRadius(context, radius)
   }, [context, radius])
 
   const navigate = useNavigate()
-
-  if (!context) {
-    return
-  }
 
   return (
     <Overlay>

@@ -23,10 +23,6 @@ export function ApplyFriction() {
   const [disabled, setDisabled] = useState<boolean>(true)
 
   useEffect(() => {
-    if (!context) {
-      return
-    }
-
     context.hand = {
       type: HandType.ApplyFriction,
       position: null,
@@ -64,17 +60,10 @@ export function ApplyFriction() {
   }, [context])
 
   useEffect(() => {
-    if (!context) {
-      return
-    }
     invariant(context.hand?.type === HandType.ApplyFriction)
     context.hand.coeffecient =
       coeffecient * COEFFECIENT_SCALE
   }, [context, coeffecient])
-
-  if (!context) {
-    return
-  }
 
   let gearId
   if (context.hand) {

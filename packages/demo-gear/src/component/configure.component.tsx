@@ -219,7 +219,7 @@ export function Configure() {
     useState<GearBehavior | null>(null)
 
   useEffect(() => {
-    if (!context || !gearId) {
+    if (!gearId) {
       return
     }
     const gear = context.world.gears[gearId]
@@ -232,10 +232,6 @@ export function Configure() {
   }, [gearId, behavior])
 
   useEffect(() => {
-    if (!context) {
-      return
-    }
-
     context.hand = {
       type: HandType.Configure,
       gear: null,
@@ -285,10 +281,6 @@ export function Configure() {
         />
       )
       break
-  }
-
-  if (!context) {
-    return
   }
 
   return (

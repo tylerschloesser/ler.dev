@@ -30,7 +30,6 @@ export function AddBelt() {
   })
 
   useEffect(() => {
-    if (!context) return
     invariant(context.hand === null)
 
     context.hand = {
@@ -83,7 +82,6 @@ export function AddBelt() {
           disabled={!valid}
           className={styles.button}
           onPointerUp={() => {
-            if (!context) return
             setStart({
               x: Math.floor(context.camera.position.x),
               y: Math.floor(context.camera.position.y),

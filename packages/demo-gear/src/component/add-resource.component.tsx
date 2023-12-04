@@ -21,9 +21,6 @@ export function AddResource() {
   const [valid, setValid] = useState<boolean>(false)
 
   useEffect(() => {
-    if (!context) {
-      return
-    }
     context.hand = {
       type: HandType.AddResource,
       position: { x: 0, y: 0 },
@@ -51,7 +48,6 @@ export function AddResource() {
   }, [context])
 
   const addResource = useCallback(() => {
-    if (!context) return
     invariant(context.hand?.type === HandType.AddResource)
     if (!context.hand.valid) return
     const { x, y } = context.hand.position
