@@ -1,4 +1,3 @@
-import invariant from 'tiny-invariant'
 import {
   applyForce,
   applyFriction,
@@ -6,7 +5,6 @@ import {
 import { updateBuildGearAngle } from './build.js'
 import { TWO_PI } from './const.js'
 import {
-  ConnectionType,
   GearBehaviorType,
   HandType,
   IAppContext,
