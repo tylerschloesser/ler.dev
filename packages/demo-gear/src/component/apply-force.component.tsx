@@ -13,7 +13,7 @@ const MAX_MAGNITUDE = 1000
 
 export function ApplyForce() {
   const navigate = useNavigate()
-  const state = use(AppContext)
+  const context = use(AppContext)
 
   const [magnitude, setMagnitude] = useState(
     INITIAL_MAGNITUDE,
@@ -21,11 +21,11 @@ export function ApplyForce() {
   const [disabled, setDisabled] = useState<boolean>(true)
 
   useEffect(() => {
-    if (!state) {
+    if (!context) {
       return
     }
 
-    state.hand = {
+    context.hand = {
       type: HandType.ApplyForce,
       position: null,
       active: false,
@@ -37,51 +37,54 @@ export function ApplyForce() {
 
     const centerTileIdListener: CenterTileIdListener =
       () => {
-        const tile = state.world.tiles[state.centerTileId]
+        const tile =
+          context.world.tiles[context.centerTileId]
         const gear =
           (tile?.gearId &&
-            state.world.gears[tile.gearId]) ||
+            context.world.gears[tile.gearId]) ||
           null
-        invariant(state.hand?.type === HandType.ApplyForce)
-        if (state.hand.gear !== gear) {
-          state.hand.gear = gear
+        invariant(
+          context.hand?.type === HandType.ApplyForce,
+        )
+        if (context.hand.gear !== gear) {
+          context.hand.gear = gear
           setDisabled(gear === null)
         }
       }
-    state.centerTileIdListeners.add(centerTileIdListener)
-    centerTileIdListener(state)
+    context.centerTileIdListeners.add(centerTileIdListener)
+    centerTileIdListener(context)
 
     return () => {
-      state.hand = null
-      state.centerTileIdListeners.delete(
+      context.hand = null
+      context.centerTileIdListeners.delete(
         centerTileIdListener,
       )
     }
-  }, [state])
+  }, [context])
 
   useEffect(() => {
-    if (!state) {
+    if (!context) {
       return
     }
-    invariant(state.hand?.type === HandType.ApplyForce)
-    state.hand.magnitude = magnitude
-  }, [state, magnitude])
+    invariant(context.hand?.type === HandType.ApplyForce)
+    context.hand.magnitude = magnitude
+  }, [context, magnitude])
 
-  if (!state) {
+  if (!context) {
     return
   }
 
   let gearId
-  if (state.hand) {
-    invariant(state.hand.type === HandType.ApplyForce)
-    gearId = state.hand.gear?.id ?? null
+  if (context.hand) {
+    invariant(context.hand.type === HandType.ApplyForce)
+    gearId = context.hand.gear?.id ?? null
   }
 
   return (
     <>
       {gearId && (
         <Overlay position="top">
-          <GearStats state={state} gearId={gearId} />
+          <GearStats context={context} gearId={gearId} />
         </Overlay>
       )}
       <Overlay>
@@ -118,7 +121,7 @@ export function ApplyForce() {
                 disabled={disabled}
                 className={styles.button}
                 onPointerDown={() => {
-                  const { hand } = state
+                  const { hand } = context
                   invariant(
                     hand?.type === HandType.ApplyForce,
                   )
@@ -127,7 +130,7 @@ export function ApplyForce() {
                   hand.runningEnergyDiff = 0
                 }}
                 onPointerUp={() => {
-                  const { hand } = state
+                  const { hand } = context
                   invariant(
                     hand?.type === HandType.ApplyForce,
                   )
@@ -144,7 +147,7 @@ export function ApplyForce() {
                 disabled={disabled}
                 className={styles.button}
                 onPointerDown={() => {
-                  const { hand } = state
+                  const { hand } = context
                   invariant(
                     hand?.type === HandType.ApplyForce,
                   )
@@ -153,7 +156,7 @@ export function ApplyForce() {
                   hand.runningEnergyDiff = 0
                 }}
                 onPointerUp={() => {
-                  const { hand } = state
+                  const { hand } = context
                   invariant(
                     hand?.type === HandType.ApplyForce,
                   )

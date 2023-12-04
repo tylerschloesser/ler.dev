@@ -1,13 +1,13 @@
 import { InitFn } from './types.js'
 
-export const initKeyboard: InitFn = async (state) => {
+export const initKeyboard: InitFn = async (context) => {
   window.addEventListener(
     'keyup',
     (e) => {
       if (e.key === 'q') {
-        state.navigate('/gears')
+        context.navigate('/gears')
       }
     },
-    { signal: state.signal },
+    { signal: context.signal },
   )
 }

@@ -173,31 +173,31 @@ export function updateGearToothModel(
 
 export function updateView(
   matrices: GpuState['matrices'],
-  state: IAppContext,
+  context: IAppContext,
 ): void {
   const { view } = matrices
 
   mat4.identity(view)
 
-  v3[0] = state.viewport.size.x / 2
-  v3[1] = state.viewport.size.y / 2
+  v3[0] = context.viewport.size.x / 2
+  v3[1] = context.viewport.size.y / 2
   v3[2] = 0
   mat4.translate(view, view, v3)
 
-  v3[0] = state.tileSize
-  v3[1] = state.tileSize
+  v3[0] = context.tileSize
+  v3[1] = context.tileSize
   v3[2] = 0
   mat4.scale(view, view, v3)
 
-  v3[0] = -state.camera.position.x
-  v3[1] = -state.camera.position.y
+  v3[0] = -context.camera.position.x
+  v3[1] = -context.camera.position.y
   v3[2] = 0
   mat4.translate(view, view, v3)
 }
 
 export function updateProjection(
   matrices: GpuState['matrices'],
-  state: IAppContext,
+  context: IAppContext,
 ): void {
   const { projection } = matrices
 
@@ -218,8 +218,8 @@ export function updateProjection(
   v3[2] = 0
   mat4.scale(projection, projection, v3)
 
-  v3[0] = 1 / state.viewport.size.x
-  v3[1] = 1 / state.viewport.size.y
+  v3[0] = 1 / context.viewport.size.x
+  v3[1] = 1 / context.viewport.size.y
   v3[2] = 0
   mat4.scale(projection, projection, v3)
 }

@@ -15,12 +15,12 @@ import {
 import { Vec2 } from './vec2.js'
 
 export function initBuild(
-  state: IAppContext,
+  context: IAppContext,
   radius: number,
   onChangeValid: BuildHand['onChangeValid'],
 ): void {
-  invariant(state.hand === null)
-  state.hand = {
+  invariant(context.hand === null)
+  context.hand = {
     type: HandType.Build,
     chain: null,
     gear: {
@@ -36,24 +36,24 @@ export function initBuild(
     valid: false,
     onChangeValid,
   }
-  updateBuildPosition(state, state.hand)
+  updateBuildPosition(context, context.hand)
 }
 
 export function updateRadius(
-  state: IAppContext,
+  context: IAppContext,
   radius: number,
 ): void {
-  invariant(state.hand?.type === HandType.Build)
-  state.hand.gear.radius = radius
-  updateBuild(state, state.hand)
+  invariant(context.hand?.type === HandType.Build)
+  context.hand.gear.radius = radius
+  updateBuild(context, context.hand)
 }
 
 export function updateBuildPosition(
-  state: IAppContext,
+  context: IAppContext,
   hand: BuildHand,
 ): void {
-  const x = Math.round(state.camera.position.x)
-  const y = Math.round(state.camera.position.y)
+  const x = Math.round(context.camera.position.x)
+  const y = Math.round(context.camera.position.y)
   if (
     hand.gear.position.x === x &&
     hand.gear.position.y === y
@@ -62,12 +62,12 @@ export function updateBuildPosition(
   } else {
     hand.gear.position.x = x
     hand.gear.position.y = y
-    updateBuild(state, hand)
+    updateBuild(context, hand)
   }
 }
 
 export function executeBuild(
-  state: IAppContext,
+  context: IAppContext,
   hand: BuildHand,
 ): void {
   invariant(hand.gear)
@@ -77,32 +77,32 @@ export function executeBuild(
 
   const { position } = hand.gear
   const tileId = `${position.x}.${position.y}`
-  const tile = state.world.tiles[tileId]
+  const tile = context.world.tiles[tileId]
 
   let gear: Gear | undefined
   if (tile?.attachedGearId) {
-    gear = state.world.gears[tile.attachedGearId]
+    gear = context.world.gears[tile.attachedGearId]
   } else if (tile?.gearId) {
-    gear = state.world.gears[tile.gearId]
+    gear = context.world.gears[tile.gearId]
   }
 
   if (gear?.radius === 1) {
     if (hand.chain) {
       invariant(gear !== hand.chain)
-      addChainConnection(gear, hand.chain, state)
+      addChainConnection(gear, hand.chain, context)
       hand.chain = null
     } else {
       hand.chain = gear
     }
   } else {
-    addGear(hand.gear, hand.chain, gear ?? null, state)
+    addGear(hand.gear, hand.chain, gear ?? null, context)
     hand.chain = null
   }
-  updateBuild(state, hand)
+  updateBuild(context, hand)
 }
 
 export function updateBuild(
-  state: IAppContext,
+  context: IAppContext,
   hand: BuildHand,
 ): void {
   invariant(hand.gear)
@@ -113,7 +113,7 @@ export function updateBuild(
   for (const gear of iterateOverlappingGears(
     hand.gear.position,
     hand.gear.radius,
-    state.world,
+    context.world,
   )) {
     if (
       hand.gear.radius === 1 &&
@@ -184,7 +184,7 @@ export function updateBuild(
       ...getAdjacentConnections(
         hand.gear.position,
         hand.gear.radius,
-        state.world,
+        context.world,
       ),
     )
   }
@@ -194,7 +194,7 @@ export function updateBuild(
 
     const connection = hand.gear.connections.at(0)
     invariant(connection)
-    const peer = state.world.gears[connection.gearId]
+    const peer = context.world.gears[connection.gearId]
     invariant(peer)
 
     // TODO this is duplicated in init-simulator
@@ -215,7 +215,7 @@ export function updateBuild(
   }
 
   if (valid) {
-    valid = isNetworkValid(hand.gear, state.world)
+    valid = isNetworkValid(hand.gear, context.world)
   }
 
   if (!valid) {

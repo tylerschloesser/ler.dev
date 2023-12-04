@@ -17,7 +17,7 @@ type PointerId = number
 const pointerCache = new Map<PointerId, PointerEvent>()
 
 export const moveCamera: PointerListenerFn = (
-  state: IAppContext,
+  context: IAppContext,
   e: PointerEvent,
 ) => {
   switch (e.type) {
@@ -41,11 +41,11 @@ export const moveCamera: PointerListenerFn = (
       }
       switch (pointerCache.size) {
         case 1: {
-          handlePointerOne(state, prev, e)
+          handlePointerOne(context, prev, e)
           break
         }
         case 2: {
-          handlePointerTwo(state, prev, e)
+          handlePointerTwo(context, prev, e)
           break
         }
       }
@@ -55,14 +55,14 @@ export const moveCamera: PointerListenerFn = (
 }
 
 export function handleWheel(
-  state: IAppContext,
+  context: IAppContext,
   e: WheelEvent,
 ): void {
-  const { camera } = state
+  const { camera } = context
   const pz = camera.zoom
-  const vx = state.viewport.size.x
-  const vy = state.viewport.size.y
-  const scale = vy * (1 + (1 - state.camera.zoom))
+  const vx = context.viewport.size.x
+  const vy = context.viewport.size.y
+  const scale = vy * (1 + (1 - context.camera.zoom))
   const nz = clampZoom(camera.zoom + -e.deltaY / scale)
 
   if (pz === nz) {
@@ -75,11 +75,11 @@ export function handleWheel(
   const rx = e.offsetX - vx / 2
   const ry = e.offsetY - vy / 2
 
-  const pts = state.tileSize
+  const pts = context.tileSize
   const nts = zoomToTileSize(nz, vx, vy)
 
   updateCamera(
-    state,
+    context,
     camera.position.x + rx / pts - rx / nts,
     camera.position.y + ry / pts - ry / nts,
     nz,

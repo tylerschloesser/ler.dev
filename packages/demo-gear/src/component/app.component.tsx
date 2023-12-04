@@ -34,17 +34,17 @@ function getCenterTileId(camera: Camera): TileId {
   return `${tileX}.${tileY}`
 }
 
-const updateCenterTileId: CameraListenerFn = (state) => {
-  const centerTileId = getCenterTileId(state.camera)
-  if (state.centerTileId !== centerTileId) {
-    state.centerTileId = centerTileId
-    for (const listener of state.centerTileIdListeners) {
-      listener(state)
+const updateCenterTileId: CameraListenerFn = (context) => {
+  const centerTileId = getCenterTileId(context.camera)
+  if (context.centerTileId !== centerTileId) {
+    context.centerTileId = centerTileId
+    for (const listener of context.centerTileIdListeners) {
+      listener(context)
     }
   }
 }
 
-function useAppState(
+function useAppContext(
   canvas: IAppContext['canvas'] | null,
 ): IAppContext | null {
   const [state, setState] = useState<IAppContext | null>(
@@ -111,21 +111,21 @@ export function App() {
   const [canvas, setCanvas] = useState<
     IAppContext['canvas'] | null
   >(null)
-  const state = useAppState(canvas)
+  const context = useAppContext(canvas)
 
   useEffect(() => {
-    if (!state) {
+    if (!context) {
       return
     }
     for (const init of INIT_FNS) {
-      init(state)
+      init(context)
     }
-  }, [state])
+  }, [context])
 
   // const hover = useMediaQuery('(hover: hover)')
 
   return (
-    <AppContext.Provider value={state}>
+    <AppContext.Provider value={context}>
       <div className={styles.container}>
         <div className={styles.canvas}>
           <Canvas setCanvas={setCanvas} />

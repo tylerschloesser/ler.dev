@@ -4,18 +4,18 @@ import { render } from './render/render.js'
 import { initGpuState } from './render/state.js'
 import { IAppContext, InitFn } from './types.js'
 
-export const initCanvas: InitFn = async (state) => {
-  const { canvas, signal } = state
+export const initCanvas: InitFn = async (context) => {
+  const { canvas, signal } = context
 
   updateViewport(
-    state,
+    context,
     canvas.container.getBoundingClientRect(),
   )
   const ro = new ResizeObserver((entries) => {
     invariant(entries.length === 1)
     const first = entries.at(0)
     invariant(first)
-    updateViewport(state, first.contentRect)
+    updateViewport(context, first.contentRect)
   })
   ro.observe(canvas.container)
   signal.addEventListener('abort', () => {
@@ -31,25 +31,29 @@ export const initCanvas: InitFn = async (state) => {
       return
     }
     invariant(gl)
-    render(state, gl, gpuState)
+    render(context, gl, gpuState)
     window.requestAnimationFrame(handleFrame)
   }
   window.requestAnimationFrame(handleFrame)
 }
 
 function updateViewport(
-  state: IAppContext,
+  context: IAppContext,
   rect: DOMRectReadOnly,
 ): void {
   const vx = rect.width
   const vy = rect.height
-  state.viewport.size.x = vx
-  state.viewport.size.y = vy
+  context.viewport.size.x = vx
+  context.viewport.size.y = vy
 
-  const { pixelRatio } = state.viewport
+  const { pixelRatio } = context.viewport
 
-  state.canvas.gpu.width = vx * pixelRatio
-  state.canvas.gpu.height = vy * pixelRatio
+  context.canvas.gpu.width = vx * pixelRatio
+  context.canvas.gpu.height = vy * pixelRatio
 
-  state.tileSize = zoomToTileSize(state.camera.zoom, vx, vy)
+  context.tileSize = zoomToTileSize(
+    context.camera.zoom,
+    vx,
+    vy,
+  )
 }

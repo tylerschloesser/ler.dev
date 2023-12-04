@@ -212,17 +212,17 @@ function EditFrictionGearBehavior({
 }
 
 export function Configure() {
-  const state = use(AppContext)
+  const context = use(AppContext)
   const navigate = useNavigate()
   const [gearId, setGearId] = useState<GearId | null>(null)
   const [behavior, setBehavior] =
     useState<GearBehavior | null>(null)
 
   useEffect(() => {
-    if (!state || !gearId) {
+    if (!context || !gearId) {
       return
     }
-    const gear = state.world.gears[gearId]
+    const gear = context.world.gears[gearId]
     invariant(gear)
     if (behavior === null) {
       delete gear.behavior
@@ -232,39 +232,40 @@ export function Configure() {
   }, [gearId, behavior])
 
   useEffect(() => {
-    if (!state) {
+    if (!context) {
       return
     }
 
-    state.hand = {
+    context.hand = {
       type: HandType.Configure,
       gear: null,
     }
 
     const centerTileIdListener: CenterTileIdListener =
       () => {
-        const tile = state.world.tiles[state.centerTileId]
+        const tile =
+          context.world.tiles[context.centerTileId]
         const gear =
           (tile?.gearId &&
-            state.world.gears[tile.gearId]) ||
+            context.world.gears[tile.gearId]) ||
           null
-        invariant(state.hand?.type === HandType.Configure)
-        if (state.hand.gear !== gear) {
-          state.hand.gear = gear
+        invariant(context.hand?.type === HandType.Configure)
+        if (context.hand.gear !== gear) {
+          context.hand.gear = gear
           setGearId(gear?.id ?? null)
           setBehavior(gear?.behavior ?? null)
         }
       }
-    state.centerTileIdListeners.add(centerTileIdListener)
-    centerTileIdListener(state)
+    context.centerTileIdListeners.add(centerTileIdListener)
+    centerTileIdListener(context)
 
     return () => {
-      state.hand = null
-      state.centerTileIdListeners.delete(
+      context.hand = null
+      context.centerTileIdListeners.delete(
         centerTileIdListener,
       )
     }
-  }, [state])
+  }, [context])
 
   let edit = null
   switch (behavior?.type) {
@@ -286,7 +287,7 @@ export function Configure() {
       break
   }
 
-  if (!state) {
+  if (!context) {
     return
   }
 
@@ -294,7 +295,7 @@ export function Configure() {
     <>
       {gearId && (
         <Overlay position="top">
-          <GearStats state={state} gearId={gearId} />
+          <GearStats context={context} gearId={gearId} />
         </Overlay>
       )}
       <Overlay position="bottom">

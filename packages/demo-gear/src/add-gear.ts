@@ -11,7 +11,7 @@ import { getTotalMass, iterateGearTileIds } from './util.js'
 export function addChainConnection(
   gear1: Gear,
   gear2: Gear,
-  _state: IAppContext,
+  _context: IAppContext,
 ): void {
   // TODO validate
   gear1.connections.push({
@@ -28,9 +28,9 @@ export function addGear(
   partial: PartialGear,
   _chain: Gear | null, // TODO remove this
   attach: Gear | null,
-  state: IAppContext,
+  context: IAppContext,
 ): void {
-  const { world } = state
+  const { world } = context
 
   const { position, radius, connections, angle } = partial
 

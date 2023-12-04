@@ -8,7 +8,7 @@ import { renderGear } from './render-gears.js'
 import { GpuState } from './types.js'
 
 export function renderBuild(
-  state: IAppContext,
+  context: IAppContext,
   gl: WebGL2RenderingContext,
   gpu: GpuState,
   build: BuildHand,
@@ -20,7 +20,7 @@ export function renderBuild(
     build.gear,
     gl,
     gpu,
-    state.camera.zoom,
+    context.camera.zoom,
     build.valid ? BUILD_GEAR_VALID : BUILD_GEAR_INVALID,
   )
 
@@ -30,7 +30,7 @@ export function renderBuild(
       build.chain,
       gl,
       gpu,
-      state.camera.zoom,
+      context.camera.zoom,
     )
   }
 }

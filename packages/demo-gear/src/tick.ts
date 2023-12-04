@@ -5,15 +5,17 @@ import {
 } from './apply-torque.js'
 import { TWO_PI } from './const.js'
 import {
-  IAppContext,
-  Connection,
   ConnectionType,
   GearBehaviorType,
   HandType,
+  IAppContext,
 } from './types.js'
 
-export function tick(state: IAppContext, elapsed: number) {
-  const { world, hand } = state
+export function tick(
+  context: IAppContext,
+  elapsed: number,
+) {
+  const { world, hand } = context
 
   switch (hand?.type) {
     case HandType.ApplyForce: {
@@ -102,14 +104,15 @@ export function tick(state: IAppContext, elapsed: number) {
   }
 
   if (
-    state.hand?.type === HandType.Build &&
-    state.hand.gear
+    context.hand?.type === HandType.Build &&
+    context.hand.gear
   ) {
-    const { gear } = state.hand
+    const { gear } = context.hand
     const connection = gear.connections.at(0)
-    if (state.hand.valid && connection) {
+    if (context.hand.valid && connection) {
       // if valid, we can check any connected gear to get the angle
-      const neighbor = state.world.gears[connection.gearId]
+      const neighbor =
+        context.world.gears[connection.gearId]
       invariant(neighbor)
 
       switch (connection.type) {

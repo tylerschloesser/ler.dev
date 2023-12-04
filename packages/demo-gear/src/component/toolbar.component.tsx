@@ -8,9 +8,9 @@ import { useResetWorld } from './use-world.js'
 
 export function Toolbar() {
   const navigate = useNavigate()
-  const state = use(AppContext)
+  const context = use(AppContext)
 
-  const resetWorld = useResetWorld(state?.setWorld)
+  const resetWorld = useResetWorld(context?.setWorld)
 
   return (
     <Overlay>

@@ -26,7 +26,7 @@ const UrlState = z.strictObject({
 type UrlState = z.infer<typeof UrlState>
 
 export function AddBelt() {
-  const state = use(AppContext)
+  const context = use(AppContext)
   const navigate = useNavigate()
 
   const [searchParams, setSearchParams] = useSearchParams()
@@ -37,10 +37,10 @@ export function AddBelt() {
   const [valid, setValid] = useState<boolean>(false)
 
   useEffect(() => {
-    if (!state) return
-    invariant(state.hand === null)
+    if (!context) return
+    invariant(context.hand === null)
 
-    state.hand = {
+    context.hand = {
       type: HandType.AddBelt,
       start: null,
       end: null,
@@ -48,27 +48,27 @@ export function AddBelt() {
     }
 
     const cameraListener: CameraListenerFn = () => {
-      invariant(state.hand?.type === HandType.AddBelt)
-      if (state.hand.start === null) {
-        const x = Math.floor(state.camera.position.x)
-        const y = Math.floor(state.camera.position.y)
+      invariant(context.hand?.type === HandType.AddBelt)
+      if (context.hand.start === null) {
+        const x = Math.floor(context.camera.position.x)
+        const y = Math.floor(context.camera.position.y)
         const tileId = `${x}.${y}`
-        const tile = state.world.tiles[tileId]
+        const tile = context.world.tiles[tileId]
         setValid(
-          (state.hand.valid = !(
+          (context.hand.valid = !(
             tile?.beltId || tile?.gearId
           )),
         )
       }
     }
-    state.cameraListeners.add(cameraListener)
-    cameraListener(state)
+    context.cameraListeners.add(cameraListener)
+    cameraListener(context)
 
     return () => {
-      state.hand = null
-      state.cameraListeners.delete(cameraListener)
+      context.hand = null
+      context.cameraListeners.delete(cameraListener)
     }
-  }, [state])
+  }, [context])
 
   return (
     <Overlay>
@@ -85,14 +85,16 @@ export function AddBelt() {
           disabled={!valid}
           className={styles.button}
           onPointerUp={() => {
-            if (!state) return
-            invariant(state.hand?.type === HandType.AddBelt)
-            invariant(state.hand.start === null)
-            invariant(state.hand.end === null)
+            if (!context) return
+            invariant(
+              context.hand?.type === HandType.AddBelt,
+            )
+            invariant(context.hand.start === null)
+            invariant(context.hand.end === null)
 
-            state.hand.start = {
-              x: Math.floor(state.camera.position.x),
-              y: Math.floor(state.camera.position.y),
+            context.hand.start = {
+              x: Math.floor(context.camera.position.x),
+              y: Math.floor(context.camera.position.y),
             }
 
             setViewType(ViewType.End)

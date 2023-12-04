@@ -2,7 +2,7 @@ import { TICK_DURATION } from './const.js'
 import { tick } from './tick.js'
 import { InitFn } from './types.js'
 
-export const initSimulator: InitFn = async (state) => {
+export const initSimulator: InitFn = async (context) => {
   let prev: number = performance.now()
 
   const interval = self.setInterval(() => {
@@ -20,10 +20,10 @@ export const initSimulator: InitFn = async (state) => {
     prev = now
 
     try {
-      tick(state, elapsed)
+      tick(context, elapsed)
 
-      for (const listener of state.tickListeners) {
-        listener(state)
+      for (const listener of context.tickListeners) {
+        listener(context)
       }
     } catch (e) {
       console.error(e)
@@ -32,7 +32,7 @@ export const initSimulator: InitFn = async (state) => {
     }
   }, TICK_DURATION)
 
-  state.signal.addEventListener('abort', () => {
+  context.signal.addEventListener('abort', () => {
     self.clearInterval(interval)
   })
 }

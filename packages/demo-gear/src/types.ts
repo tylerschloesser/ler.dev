@@ -170,15 +170,17 @@ export const Camera = z.strictObject({
 export type Camera = z.infer<typeof Camera>
 
 export type PointerListenerFn = (
-  state: IAppContext,
+  context: IAppContext,
   e: PointerEvent,
   position: Readonly<SimpleVec2>,
 ) => void
-export type CameraListenerFn = (state: IAppContext) => void
-export type CenterTileIdListener = (
-  state: IAppContext,
+export type CameraListenerFn = (
+  context: IAppContext,
 ) => void
-export type TickListenerFn = (state: IAppContext) => void
+export type CenterTileIdListener = (
+  context: IAppContext,
+) => void
+export type TickListenerFn = (context: IAppContext) => void
 
 export interface Viewport {
   size: SimpleVec2
@@ -209,7 +211,7 @@ export interface IAppContext {
   navigate: NavigateFunction
 }
 
-export type InitFn = (state: IAppContext) => Promise<void>
+export type InitFn = (context: IAppContext) => Promise<void>
 
 export type PartialGear = Pick<
   Gear,

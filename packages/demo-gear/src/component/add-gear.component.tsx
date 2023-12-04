@@ -15,39 +15,39 @@ import { AppContext } from './context.js'
 import { Overlay } from './overlay.component.js'
 
 export function AddGear() {
-  const state = use(AppContext)
+  const context = use(AppContext)
   const [radius, setRadius] = useState(1)
   const [valid, setValid] = useState(false)
 
   useEffect(() => {
-    if (!state) {
+    if (!context) {
       return
     }
 
-    initBuild(state, radius, setValid)
+    initBuild(context, radius, setValid)
 
     const cameraListener: CameraListenerFn = () => {
-      invariant(state.hand?.type === HandType.Build)
-      updateBuildPosition(state, state.hand)
+      invariant(context.hand?.type === HandType.Build)
+      updateBuildPosition(context, context.hand)
     }
-    state.cameraListeners.add(cameraListener)
+    context.cameraListeners.add(cameraListener)
 
     return () => {
-      state.hand = null
-      state.cameraListeners.delete(cameraListener)
+      context.hand = null
+      context.cameraListeners.delete(cameraListener)
     }
-  }, [state])
+  }, [context])
 
   useEffect(() => {
-    if (!state) {
+    if (!context) {
       return
     }
-    updateRadius(state, radius)
-  }, [state, radius])
+    updateRadius(context, radius)
+  }, [context, radius])
 
   const navigate = useNavigate()
 
-  if (!state) {
+  if (!context) {
     return
   }
 
@@ -93,9 +93,9 @@ export function AddGear() {
         className={styles.button}
         disabled={!valid}
         onPointerUp={() => {
-          const { hand } = state
+          const { hand } = context
           invariant(hand?.type === HandType.Build)
-          executeBuild(state, hand)
+          executeBuild(context, hand)
         }}
       >
         Build

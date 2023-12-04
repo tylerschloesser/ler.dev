@@ -8,7 +8,7 @@ const model = mat4.create()
 const v3 = vec3.create()
 
 export function renderResources(
-  state: IAppContext,
+  context: IAppContext,
   gl: WebGL2RenderingContext,
   gpu: GpuState,
 ): void {
@@ -33,7 +33,7 @@ export function renderResources(
   )
 
   for (const [tileId, tile] of Object.entries(
-    state.world.tiles,
+    context.world.tiles,
   )) {
     if (!tile.resourceType) {
       continue

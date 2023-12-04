@@ -18,7 +18,7 @@ import {
 import { GpuState } from './types.js'
 
 export function renderGears(
-  state: IAppContext,
+  context: IAppContext,
   gl: WebGL2RenderingContext,
   gpu: GpuState,
 ) {
@@ -40,9 +40,12 @@ export function renderGears(
     false,
     projection,
   )
-  gl.uniform1f(gearTeeth.uniforms.tileSize, state.tileSize)
+  gl.uniform1f(
+    gearTeeth.uniforms.tileSize,
+    context.tileSize,
+  )
 
-  for (const gear of Object.values(state.world.gears)) {
+  for (const gear of Object.values(context.world.gears)) {
     let color: Color = GEAR_BLUE
     switch (gear.behavior?.type) {
       case GearBehaviorType.enum.Friction:
@@ -52,7 +55,7 @@ export function renderGears(
         color = GEAR_PINK
         break
     }
-    renderGear(gear, gl, gpu, state.camera.zoom, color)
+    renderGear(gear, gl, gpu, context.camera.zoom, color)
   }
 }
 

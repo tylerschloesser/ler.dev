@@ -6,23 +6,23 @@ import {
 } from 'react'
 import invariant from 'tiny-invariant'
 import {
-  IAppContext,
   GearId,
+  IAppContext,
   TickListenerFn,
 } from '../types.js'
 import styles from './gear-stats.module.scss'
 
 export function GearStats({
-  state,
+  context,
   gearId,
 }: {
-  state: IAppContext
+  context: IAppContext
   gearId: GearId
 }) {
   const [velocity, setVelocity] = useState<number>(0)
-  useTickListener(state, gearId, setVelocity)
+  useTickListener(context, gearId, setVelocity)
 
-  const gear = state.world.gears[gearId]
+  const gear = context.world.gears[gearId]
   invariant(gear)
 
   return (
@@ -45,19 +45,19 @@ export function GearStats({
 }
 
 function useTickListener(
-  state: IAppContext,
+  context: IAppContext,
   gearId: GearId,
   setVelocity: Dispatch<SetStateAction<number>>,
 ) {
   useEffect(() => {
     const listener: TickListenerFn = () => {
-      const gear = state.world.gears[gearId]
+      const gear = context.world.gears[gearId]
       invariant(gear)
       setVelocity(gear.velocity)
     }
-    state.tickListeners.add(listener)
+    context.tickListeners.add(listener)
     return () => {
-      state.tickListeners.delete(listener)
+      context.tickListeners.delete(listener)
     }
   }, [gearId])
 }

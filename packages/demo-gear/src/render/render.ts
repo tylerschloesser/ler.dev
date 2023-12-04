@@ -26,32 +26,38 @@ import { renderResources } from './render-resources.js'
 import { GpuState } from './types.js'
 
 export function render(
-  state: IAppContext,
+  context: IAppContext,
   gl: WebGL2RenderingContext,
   gpu: GpuState,
 ) {
   gl.clearColor(1, 0, 0, 1)
   gl.clear(gl.COLOR_BUFFER_BIT)
 
-  updateView(gpu.matrices, state)
-  updateProjection(gpu.matrices, state)
+  updateView(gpu.matrices, context)
+  updateProjection(gpu.matrices, context)
 
-  renderGrid(state, gl, gpu)
-  renderResources(state, gl, gpu)
-  renderGears(state, gl, gpu)
+  renderGrid(context, gl, gpu)
+  renderResources(context, gl, gpu)
+  renderGears(context, gl, gpu)
 
   for (const { gear1, gear2, type } of iterateConnections(
-    state.world.gears,
+    context.world.gears,
   )) {
     if (type === ConnectionType.enum.Chain) {
-      renderChain(gear1, gear2, gl, gpu, state.camera.zoom)
+      renderChain(
+        gear1,
+        gear2,
+        gl,
+        gpu,
+        context.camera.zoom,
+      )
     }
   }
 
-  const { hand } = state
+  const { hand } = context
   switch (hand?.type) {
     case HandType.Build: {
-      renderBuild(state, gl, gpu, hand)
+      renderBuild(context, gl, gpu, hand)
       break
     }
     case HandType.ApplyForce:
@@ -59,14 +65,14 @@ export function render(
     case HandType.Configure: {
       if (hand.gear) {
         renderGearOutline(
-          state,
+          context,
           gl,
           gpu,
           hand.gear,
           GEAR_OUTLINE,
         )
       } else {
-        renderTileOutline(state, gl, gpu, TILE_OUTLINE)
+        renderTileOutline(context, gl, gpu, TILE_OUTLINE)
       }
       break
     }
@@ -74,7 +80,7 @@ export function render(
       const color = hand.valid
         ? ADD_RESOURCE_VALID
         : ADD_RESOURCE_INVALID
-      renderTileOutline(state, gl, gpu, color)
+      renderTileOutline(context, gl, gpu, color)
       break
     }
     case HandType.AddBelt: {
@@ -82,9 +88,9 @@ export function render(
         const color = hand.valid
           ? ADD_BELT_VALID
           : ADD_BELT_INVALID
-        renderTileOutline(state, gl, gpu, color)
+        renderTileOutline(context, gl, gpu, color)
       }
-      renderBeltHand(state, gl, gpu, hand)
+      renderBeltHand(context, gl, gpu, hand)
       break
     }
   }

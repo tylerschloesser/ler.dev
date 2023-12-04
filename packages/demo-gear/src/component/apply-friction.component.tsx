@@ -17,17 +17,17 @@ const COEFFECIENT_STEP = 1
 
 export function ApplyFriction() {
   const navigate = useNavigate()
-  const state = use(AppContext)
+  const context = use(AppContext)
 
   const [coeffecient, setCoeffecient] = useState(5)
   const [disabled, setDisabled] = useState<boolean>(true)
 
   useEffect(() => {
-    if (!state) {
+    if (!context) {
       return
     }
 
-    state.hand = {
+    context.hand = {
       type: HandType.ApplyFriction,
       position: null,
       active: false,
@@ -38,53 +38,55 @@ export function ApplyFriction() {
 
     const centerTileIdListener: CenterTileIdListener =
       () => {
-        const tile = state.world.tiles[state.centerTileId]
+        const tile =
+          context.world.tiles[context.centerTileId]
         const gear =
           (tile?.gearId &&
-            state.world.gears[tile.gearId]) ||
+            context.world.gears[tile.gearId]) ||
           null
         invariant(
-          state.hand?.type === HandType.ApplyFriction,
+          context.hand?.type === HandType.ApplyFriction,
         )
-        if (state.hand.gear !== gear) {
-          state.hand.gear = gear
+        if (context.hand.gear !== gear) {
+          context.hand.gear = gear
           setDisabled(gear === null)
         }
       }
-    state.centerTileIdListeners.add(centerTileIdListener)
-    centerTileIdListener(state)
+    context.centerTileIdListeners.add(centerTileIdListener)
+    centerTileIdListener(context)
 
     return () => {
-      state.hand = null
-      state.centerTileIdListeners.delete(
+      context.hand = null
+      context.centerTileIdListeners.delete(
         centerTileIdListener,
       )
     }
-  }, [state])
+  }, [context])
 
   useEffect(() => {
-    if (!state) {
+    if (!context) {
       return
     }
-    invariant(state.hand?.type === HandType.ApplyFriction)
-    state.hand.coeffecient = coeffecient * COEFFECIENT_SCALE
-  }, [state, coeffecient])
+    invariant(context.hand?.type === HandType.ApplyFriction)
+    context.hand.coeffecient =
+      coeffecient * COEFFECIENT_SCALE
+  }, [context, coeffecient])
 
-  if (!state) {
+  if (!context) {
     return
   }
 
   let gearId
-  if (state.hand) {
-    invariant(state.hand.type === HandType.ApplyFriction)
-    gearId = state.hand.gear?.id ?? null
+  if (context.hand) {
+    invariant(context.hand.type === HandType.ApplyFriction)
+    gearId = context.hand.gear?.id ?? null
   }
 
   return (
     <>
       {gearId && (
         <Overlay position="top">
-          <GearStats state={state} gearId={gearId} />
+          <GearStats context={context} gearId={gearId} />
         </Overlay>
       )}
       <Overlay>
@@ -144,13 +146,13 @@ export function ApplyFriction() {
           disabled={disabled}
           className={styles.button}
           onPointerDown={() => {
-            const { hand } = state
+            const { hand } = context
             invariant(hand?.type === HandType.ApplyFriction)
             hand.runningEnergyDiff = 0
             hand.active = true
           }}
           onPointerUp={() => {
-            const { hand } = state
+            const { hand } = context
             invariant(hand?.type === HandType.ApplyFriction)
             hand.active = false
             console.log(

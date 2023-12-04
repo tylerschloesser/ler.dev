@@ -2,7 +2,7 @@ import { IAppContext } from '../types.js'
 import { GpuState } from './types.js'
 
 export function renderGrid(
-  state: IAppContext,
+  context: IAppContext,
   gl: WebGL2RenderingContext,
   gpu: GpuState,
 ): void {
@@ -23,19 +23,19 @@ export function renderGrid(
 
   gl.uniform2f(
     grid.uniforms.viewport,
-    state.viewport.size.x,
-    state.viewport.size.y,
+    context.viewport.size.x,
+    context.viewport.size.y,
   )
 
-  gl.uniform1f(grid.uniforms.tileSize, state.tileSize)
+  gl.uniform1f(grid.uniforms.tileSize, context.tileSize)
 
   gl.uniform2f(
     grid.uniforms.camera,
-    state.camera.position.x,
-    state.camera.position.y,
+    context.camera.position.x,
+    context.camera.position.y,
   )
 
-  gl.uniform1f(grid.uniforms.zoom, state.camera.zoom)
+  gl.uniform1f(grid.uniforms.zoom, context.camera.zoom)
 
   gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4)
 }
