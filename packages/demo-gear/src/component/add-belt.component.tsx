@@ -15,18 +15,14 @@ import styles from './add-belt.module.scss'
 import { AppContext } from './context.js'
 import { Overlay } from './overlay.component.js'
 
-export function AddBelt() {
+function useHand(
+  start: SimpleVec2,
+  end: SimpleVec2 | null,
+): boolean {
   const context = use(AppContext)
-  const navigate = useNavigate()
-
-  const cameraTilePosition = useCameraTilePosition(context)
-  const [savedStart, setSavedStart] = useSavedStart()
-  const end = !savedStart ? null : cameraTilePosition
-
-  const start = savedStart ?? cameraTilePosition
 
   const [valid, setValid] = useState<boolean>(
-    isValid(context, start, null),
+    isValid(context, start, end),
   )
 
   const hand = useRef<AddBeltHand>({
@@ -53,6 +49,21 @@ export function AddBelt() {
     hand.current.end = end
     hand.current.valid = valid
   }, [start, end, valid])
+
+  return valid
+}
+
+export function AddBelt() {
+  const context = use(AppContext)
+  const navigate = useNavigate()
+
+  const cameraTilePosition = useCameraTilePosition(context)
+  const [savedStart, setSavedStart] = useSavedStart()
+  const end = !savedStart ? null : cameraTilePosition
+
+  const start = savedStart ?? cameraTilePosition
+
+  const valid = useHand(start, end)
 
   return (
     <Overlay>
