@@ -19,6 +19,7 @@ import {
   renderGearOutline,
   renderTileOutline,
 } from './render-outline.js'
+import { renderResources } from './render-resources.js'
 import { GpuState } from './types.js'
 
 export function render(
@@ -33,6 +34,7 @@ export function render(
   updateProjection(gpu.matrices, state)
 
   renderGrid(state, gl, gpu)
+  renderResources(state, gl, gpu)
   renderGears(state, gl, gpu)
 
   for (const { gear1, gear2, type } of iterateConnections(
