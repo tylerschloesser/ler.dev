@@ -27,8 +27,6 @@ export function AddGear() {
 
     initBuild(state, radius, setValid)
 
-    state.pointerListeners.clear()
-    state.pointerListeners.add(moveCamera)
     const cameraListener: CameraListenerFn = () => {
       invariant(state.hand?.type === HandType.Build)
       updateBuildPosition(state, state.hand)
