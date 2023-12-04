@@ -111,6 +111,10 @@ export function* iterateOverlappingGears(
     radius,
     world,
   )) {
+    if (!tile.gearId) {
+      continue
+    }
+
     if (
       tile.attachedGearId &&
       !seen.has(tile.attachedGearId)
@@ -150,7 +154,7 @@ function* iterateAdjacentGears(
       `.${position.y + dy * (radius + 1)}`
     const tile = world.tiles[tileId]
 
-    if (!tile) {
+    if (!tile?.gearId) {
       continue
     }
 

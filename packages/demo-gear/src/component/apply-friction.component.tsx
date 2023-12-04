@@ -57,7 +57,9 @@ export function ApplyFriction() {
       () => {
         const tile = state.world.tiles[state.centerTileId]
         const gear =
-          (tile && state.world.gears[tile.gearId]) ?? null
+          (tile?.gearId &&
+            state.world.gears[tile.gearId]) ||
+          null
         invariant(
           state.hand?.type === HandType.ApplyFriction,
         )

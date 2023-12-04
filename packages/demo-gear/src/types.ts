@@ -14,7 +14,7 @@ export const TileId = z.string()
 export type TileId = z.infer<typeof TileId>
 
 export const Tile = z.strictObject({
-  gearId: GearId,
+  gearId: GearId.optional(),
   attachedGearId: GearId.optional(),
 })
 export type Tile = z.infer<typeof Tile>
