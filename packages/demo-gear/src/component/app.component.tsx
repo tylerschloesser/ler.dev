@@ -125,13 +125,15 @@ export function App() {
   // const hover = useMediaQuery('(hover: hover)')
 
   return (
-    <AppContext.Provider value={context}>
-      <div className={styles.container}>
-        <div className={styles.canvas}>
-          <Canvas setCanvas={setCanvas} />
-        </div>
-        <Outlet />
+    <div className={styles.container}>
+      <div className={styles.canvas}>
+        <Canvas setCanvas={setCanvas} />
       </div>
-    </AppContext.Provider>
+      {context && (
+        <AppContext.Provider value={context}>
+          <Outlet />
+        </AppContext.Provider>
+      )}
+    </div>
   )
 }
