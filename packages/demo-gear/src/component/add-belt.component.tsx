@@ -69,6 +69,17 @@ export function AddBelt() {
           Start
         </button>
       )}
+      {savedStart && (
+        <button
+          disabled={!valid}
+          className={styles.button}
+          onPointerUp={() => {
+            console.log('TODO')
+          }}
+        >
+          Build
+        </button>
+      )}
     </Overlay>
   )
 }
