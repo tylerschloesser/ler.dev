@@ -3,6 +3,7 @@ import {
   useNavigate,
   useSearchParams,
 } from 'react-router-dom'
+import invariant from 'tiny-invariant'
 import {
   AddBeltHand,
   CameraListenerFn,
@@ -74,7 +75,24 @@ export function AddBelt() {
           disabled={!valid}
           className={styles.button}
           onPointerUp={() => {
-            console.log('TODO')
+            if (!valid) return
+            const { tiles, belts } = context.world
+            const beltId = `belt.${start.x}.${start.y}`
+            invariant(belts[beltId] === undefined)
+            belts[beltId] = {
+              id: beltId,
+              path,
+            }
+            for (const { x, y } of path) {
+              const tileId = `${x}.${y}`
+              let tile = tiles[tileId]
+              if (!tile) {
+                tile = tiles[tileId] = {}
+              }
+              invariant(tile.beltId === undefined)
+              tile.beltId = beltId
+            }
+            setSavedStart(null)
           }}
         >
           Build
