@@ -48,3 +48,7 @@ export const TILE_OUTLINE: Color = {
 }
 
 export const GEAR_OUTLINE: Color = TILE_OUTLINE
+
+export const ADD_RESOURCE_VALID: Color = BUILD_GEAR_VALID
+export const ADD_RESOURCE_INVALID: Color =
+  BUILD_GEAR_INVALID
