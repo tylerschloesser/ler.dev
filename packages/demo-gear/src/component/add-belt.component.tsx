@@ -27,7 +27,7 @@ export function AddBelt() {
   const [savedStart, setSavedStart] = useSavedStart()
   const end = !savedStart ? null : cameraTilePosition
   const start = savedStart ?? cameraTilePosition
-  const path = getPath(start, end, 'x')
+  const path = getPath(start, end, direction)
   const valid = isValid(context, path)
   useHand(path, valid)
 
@@ -45,12 +45,19 @@ export function AddBelt() {
       >
         Back
       </button>
-      <button
-        className={styles.button}
-        disabled={path.length < 2}
-      >
-        Flip
-      </button>
+      {end && (
+        <button
+          className={styles.button}
+          disabled={
+            start.x - end.x === 0 || start.y - end.y === 0
+          }
+          onPointerUp={() => {
+            setDirection(direction === 'x' ? 'y' : 'x')
+          }}
+        >
+          Flip
+        </button>
+      )}
       {!savedStart && (
         <button
           disabled={!valid}
@@ -72,52 +79,50 @@ function getPath(
   direction: PathDirection,
 ): SimpleVec2[] {
   const path: SimpleVec2[] = []
-  if (end) {
-    const dx = end.x - start.x
-    const dy = end.y - start.y
+  const dx = end ? end.x - start.x : 0
+  const dy = end ? end.y - start.y : 0
 
-    if (direction === 'x') {
-      for (
-        let x = 0;
-        Math.abs(x) <= Math.abs(dx);
-        x += Math.sign(dx) || 1
-      ) {
-        path.push({
-          x: start.x + x,
-          y: start.y,
-        })
-      }
-      for (
-        let y = Math.sign(dy) || 1;
-        Math.abs(y) <= Math.abs(dy);
-        y += Math.sign(dy) || 1
-      ) {
-        path.push({
-          x: end.x,
-          y: start.y + y,
-        })
-      }
-    } else {
-      for (
-        let y = 0;
-        Math.abs(y) <= Math.abs(dy);
-        y += Math.sign(dy) || 1
-      ) {
-        path.push({
-          x: start.x,
-          y: start.y + y,
-        })
-      }
-      for (
-        let x = Math.sign(dx) || 1;
-        Math.abs(x) <= Math.abs(dx);
-        x += Math.sign(dx) || 1
-      ) {
-        path.push({
-          x: start.x + x,
-          y: end.y,
-        })
-      }
+  if (direction === 'x') {
+    for (
+      let x = 0;
+      Math.abs(x) <= Math.abs(dx);
+      x += Math.sign(dx) || 1
+    ) {
+      path.push({
+        x: start.x + x,
+        y: start.y,
+      })
+    }
+    for (
+      let y = Math.sign(dy) || 1;
+      Math.abs(y) <= Math.abs(dy);
+      y += Math.sign(dy) || 1
+    ) {
+      path.push({
+        x: end?.x ?? start.x,
+        y: start.y + y,
+      })
+    }
+  } else {
+    for (
+      let y = 0;
+      Math.abs(y) <= Math.abs(dy);
+      y += Math.sign(dy) || 1
+    ) {
+      path.push({
+        x: start.x,
+        y: start.y + y,
+      })
+    }
+    for (
+      let x = Math.sign(dx) || 1;
+      Math.abs(x) <= Math.abs(dx);
+      x += Math.sign(dx) || 1
+    ) {
+      path.push({
+        x: start.x + x,
+        y: end?.y ?? start.y,
+      })
     }
   }
   return path
