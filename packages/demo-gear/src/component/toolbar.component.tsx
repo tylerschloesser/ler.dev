@@ -55,6 +55,14 @@ export function Toolbar() {
       <button
         className={styles.button}
         onPointerUp={() => {
+          navigate('add-belt')
+        }}
+      >
+        Add Belt
+      </button>
+      <button
+        className={styles.button}
+        onPointerUp={() => {
           navigate('apply-friction')
         }}
       >

@@ -1,5 +1,6 @@
 import { Navigate } from 'react-router-dom'
 import { RouteObject } from 'react-router-dom'
+import { AddBelt } from './component/add-belt.component.js'
 import { AddGear } from './component/add-gear.component.js'
 import { AddResource } from './component/add-resource.component.js'
 import { App } from './component/app.component.js'
@@ -37,6 +38,10 @@ export const routes: RouteObject[] = [
           {
             path: 'add-resource',
             Component: AddResource,
+          },
+          {
+            path: 'add-belt',
+            Component: AddBelt,
           },
           {
             path: 'apply-force',
