@@ -5,6 +5,7 @@ import {
   createBrowserRouter,
 } from 'react-router-dom'
 import { AddGear } from './component/add-gear.component.js'
+import { AddResource } from './component/add-resource.component.js'
 import { App } from './component/app.component.js'
 import { ApplyForce } from './component/apply-force.component.js'
 import { ApplyFriction } from './component/apply-friction.component.js'
@@ -39,6 +40,10 @@ const router = createBrowserRouter([
           {
             path: 'add-gear',
             Component: AddGear,
+          },
+          {
+            path: 'add-resource',
+            Component: AddResource,
           },
           {
             path: 'apply-force',

@@ -63,6 +63,14 @@ export function Toolbar() {
       <button
         className={styles.button}
         onPointerUp={() => {
+          navigate('add-resource')
+        }}
+      >
+        Add Resource
+      </button>
+      <button
+        className={styles.button}
+        onPointerUp={() => {
           navigate('add-gear')
         }}
       >
