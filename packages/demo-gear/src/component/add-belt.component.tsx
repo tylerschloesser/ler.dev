@@ -45,6 +45,12 @@ export function AddBelt() {
       >
         Back
       </button>
+      <button
+        className={styles.button}
+        disabled={path.length < 2}
+      >
+        Flip
+      </button>
       {!savedStart && (
         <button
           disabled={!valid}
@@ -65,14 +71,14 @@ function getPath(
   end: SimpleVec2 | null,
   direction: PathDirection,
 ): SimpleVec2[] {
-  const path: SimpleVec2[] = [start]
+  const path: SimpleVec2[] = []
   if (end) {
     const dx = end.x - start.x
     const dy = end.y - start.y
 
     if (direction === 'x') {
       for (
-        let x = Math.sign(dx);
+        let x = 0;
         Math.abs(x) <= Math.abs(dx);
         x += Math.sign(dx) || 1
       ) {
@@ -82,7 +88,7 @@ function getPath(
         })
       }
       for (
-        let y = Math.sign(dy);
+        let y = Math.sign(dy) || 1;
         Math.abs(y) <= Math.abs(dy);
         y += Math.sign(dy) || 1
       ) {
@@ -93,7 +99,7 @@ function getPath(
       }
     } else {
       for (
-        let y = Math.sign(dx);
+        let y = 0;
         Math.abs(y) <= Math.abs(dy);
         y += Math.sign(dy) || 1
       ) {
@@ -103,7 +109,7 @@ function getPath(
         })
       }
       for (
-        let x = Math.sign(dx);
+        let x = Math.sign(dx) || 1;
         Math.abs(x) <= Math.abs(dx);
         x += Math.sign(dx) || 1
       ) {
