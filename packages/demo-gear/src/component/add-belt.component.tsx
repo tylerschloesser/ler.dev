@@ -6,7 +6,6 @@ import {
 import invariant from 'tiny-invariant'
 import {
   AddBeltHand,
-  CameraListenerFn,
   HandType,
   IAppContext,
   SimpleVec2,
@@ -14,6 +13,7 @@ import {
 import styles from './add-belt.module.scss'
 import { AppContext } from './context.js'
 import { Overlay } from './overlay.component.js'
+import { useCameraTilePosition } from './use-camera-tile-position.js'
 
 type PathDirection = 'x' | 'y'
 
@@ -24,7 +24,7 @@ export function AddBelt() {
   const [direction, setDirection] =
     useState<PathDirection>('x')
 
-  const cameraTilePosition = useCameraTilePosition(context)
+  const cameraTilePosition = useCameraTilePosition()
   const [savedStart, setSavedStart] = useSavedStart()
   const end = !savedStart ? null : cameraTilePosition
   const start = savedStart ?? cameraTilePosition
@@ -182,34 +182,6 @@ function useHand(
   }, [path, valid])
 
   return valid
-}
-
-function useCameraTilePosition(
-  context: IAppContext,
-): SimpleVec2 {
-  const [position, setPosition] = useState<SimpleVec2>({
-    x: Math.floor(context.camera.position.x),
-    y: Math.floor(context.camera.position.y),
-  })
-
-  useEffect(() => {
-    const listener: CameraListenerFn = () => {
-      const x = Math.floor(context.camera.position.x)
-      const y = Math.floor(context.camera.position.y)
-      setPosition((prev) => {
-        if (prev.x === x && prev.y === y) {
-          return prev
-        }
-        return { x, y }
-      })
-    }
-    context.cameraListeners.add(listener)
-    return () => {
-      context.cameraListeners.delete(listener)
-    }
-  }, [])
-
-  return position
 }
 
 function useSavedStart(): [
