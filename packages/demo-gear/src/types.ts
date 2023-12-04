@@ -10,6 +10,9 @@ export type SimpleVec2 = z.infer<typeof SimpleVec2>
 export const GearId = z.string()
 export type GearId = z.infer<typeof GearId>
 
+export const BeltId = z.string()
+export type BeltId = z.infer<typeof BeltId>
+
 export const TileId = z.string()
 export type TileId = z.infer<typeof TileId>
 
@@ -20,6 +23,7 @@ export const Tile = z.strictObject({
   gearId: GearId.optional(),
   attachedGearId: GearId.optional(),
   resourceType: ResourceType.optional(),
+  beltId: BeltId.optional(),
 })
 export type Tile = z.infer<typeof Tile>
 
@@ -136,7 +140,6 @@ export interface AddResourceHand {
 
 export interface AddBeltHand {
   type: HandType.AddBelt
-  position: SimpleVec2
   start: SimpleVec2 | null
   end: SimpleVec2 | null
   valid: boolean
