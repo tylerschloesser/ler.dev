@@ -5,6 +5,8 @@ import {
 } from '../types.js'
 import { iterateConnections } from '../util.js'
 import {
+  ADD_BELT_INVALID,
+  ADD_BELT_VALID,
   ADD_RESOURCE_INVALID,
   ADD_RESOURCE_VALID,
   GEAR_OUTLINE,
@@ -76,7 +78,12 @@ export function render(
       break
     }
     case HandType.AddBelt: {
-      renderTileOutline(state, gl, gpu, TILE_OUTLINE)
+      {
+        const color = hand.valid
+          ? ADD_BELT_VALID
+          : ADD_BELT_INVALID
+        renderTileOutline(state, gl, gpu, color)
+      }
       renderBeltHand(state, gl, gpu, hand)
       break
     }
