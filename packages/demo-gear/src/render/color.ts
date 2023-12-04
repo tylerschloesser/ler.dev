@@ -52,3 +52,10 @@ export const GEAR_OUTLINE: Color = TILE_OUTLINE
 export const ADD_RESOURCE_VALID: Color = BUILD_GEAR_VALID
 export const ADD_RESOURCE_INVALID: Color =
   BUILD_GEAR_INVALID
+
+export const FUEL_COLOR: Color = {
+  r: 1,
+  g: 1,
+  b: 1,
+  a: 1,
+}
