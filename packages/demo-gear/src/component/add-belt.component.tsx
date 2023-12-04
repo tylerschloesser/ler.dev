@@ -63,19 +63,47 @@ function getPath(
   if (end) {
     const dx = end.x - start.x
     const dy = end.y - start.y
-    for (
-      let x = 0;
-      Math.abs(x) < Math.abs(dx);
-      x += Math.sign(dx)
-    ) {
+
+    if (Math.abs(dx) >= Math.abs(dy)) {
       for (
-        let y = 0;
-        Math.abs(y) < Math.abs(dy);
-        y += Math.sign(dy)
+        let x = 0;
+        Math.abs(x) <= Math.abs(dx);
+        x += Math.sign(dx) || 1
       ) {
         path.push({
           x: start.x + x,
+          y: start.y,
+        })
+      }
+      for (
+        let y = Math.sign(dy);
+        Math.abs(y) <= Math.abs(dy);
+        y += Math.sign(dy) || 1
+      ) {
+        path.push({
+          x: end.x,
           y: start.y + y,
+        })
+      }
+    } else {
+      for (
+        let y = 0;
+        Math.abs(y) <= Math.abs(dy);
+        y += Math.sign(dy) || 1
+      ) {
+        path.push({
+          x: start.x,
+          y: start.y + y,
+        })
+      }
+      for (
+        let x = Math.sign(dx);
+        Math.abs(x) <= Math.abs(dx);
+        x += Math.sign(dx) || 1
+      ) {
+        path.push({
+          x: start.x + x,
+          y: end.y,
         })
       }
     }
