@@ -139,6 +139,8 @@ function conserveAngularMomentum(
         case ConnectionType.enum.Attach:
           neighborMultiplier = 1
           break
+        case ConnectionType.enum.Belt:
+          invariant(false, 'TODO')
       }
 
       const multiplier =

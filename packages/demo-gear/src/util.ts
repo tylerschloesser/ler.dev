@@ -310,6 +310,8 @@ export function isNetworkValid(
         case ConnectionType.enum.Attach:
           n = 1
           break
+        case ConnectionType.enum.Belt:
+          invariant(false, 'TODO')
       }
 
       n = n * np

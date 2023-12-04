@@ -41,6 +41,8 @@ function getTorqueMultiplierMap(
         case ConnectionType.enum.Chain:
           neighborMultiplier = tailMultiplier
           break
+        case ConnectionType.enum.Belt:
+          invariant(false, 'TODO')
       }
 
       torqueMultiplierMap.set(neighbor, neighborMultiplier)

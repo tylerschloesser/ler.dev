@@ -31,6 +31,7 @@ export const ConnectionType = z.enum([
   'Adjacent',
   'Chain',
   'Attach',
+  'Belt',
 ])
 export type ConnectionType = z.infer<typeof ConnectionType>
 
