@@ -66,7 +66,7 @@ function getPath(
 
     if (Math.abs(dx) >= Math.abs(dy)) {
       for (
-        let x = 0;
+        let x = Math.sign(dx);
         Math.abs(x) <= Math.abs(dx);
         x += Math.sign(dx) || 1
       ) {
@@ -87,7 +87,7 @@ function getPath(
       }
     } else {
       for (
-        let y = 0;
+        let y = Math.sign(dx);
         Math.abs(y) <= Math.abs(dy);
         y += Math.sign(dy) || 1
       ) {
