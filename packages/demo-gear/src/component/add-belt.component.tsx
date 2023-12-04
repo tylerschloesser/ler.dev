@@ -15,44 +15,6 @@ import styles from './add-belt.module.scss'
 import { AppContext } from './context.js'
 import { Overlay } from './overlay.component.js'
 
-function useHand(
-  start: SimpleVec2,
-  end: SimpleVec2 | null,
-): boolean {
-  const context = use(AppContext)
-
-  const [valid, setValid] = useState<boolean>(
-    isValid(context, start, end),
-  )
-
-  const hand = useRef<AddBeltHand>({
-    type: HandType.AddBelt,
-    start,
-    end: null,
-    valid,
-  })
-
-  useEffect(() => {
-    context.hand = hand.current
-    return () => {
-      context.hand = null
-    }
-  }, [context])
-
-  useEffect(() => {
-    setValid(isValid(context, start, end))
-  }, [start, end])
-
-  useEffect(() => {
-    invariant(start || !end)
-    hand.current.start = start
-    hand.current.end = end
-    hand.current.valid = valid
-  }, [start, end, valid])
-
-  return valid
-}
-
 export function AddBelt() {
   const context = use(AppContext)
   const navigate = useNavigate()
@@ -92,6 +54,44 @@ export function AddBelt() {
       )}
     </Overlay>
   )
+}
+
+function useHand(
+  start: SimpleVec2,
+  end: SimpleVec2 | null,
+): boolean {
+  const context = use(AppContext)
+
+  const [valid, setValid] = useState<boolean>(
+    isValid(context, start, end),
+  )
+
+  const hand = useRef<AddBeltHand>({
+    type: HandType.AddBelt,
+    start,
+    end: null,
+    valid,
+  })
+
+  useEffect(() => {
+    context.hand = hand.current
+    return () => {
+      context.hand = null
+    }
+  }, [context])
+
+  useEffect(() => {
+    setValid(isValid(context, start, end))
+  }, [start, end])
+
+  useEffect(() => {
+    invariant(start || !end)
+    hand.current.start = start
+    hand.current.end = end
+    hand.current.valid = valid
+  }, [start, end, valid])
+
+  return valid
 }
 
 function useCameraTilePosition(
