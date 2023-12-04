@@ -156,7 +156,7 @@ export interface AddBeltHand {
 
 export interface DeleteHand {
   type: HandType.Delete
-  radius: number
+  size: number
 }
 
 export type Hand =

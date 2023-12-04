@@ -20,6 +20,7 @@ import { renderGears } from './render-gears.js'
 import { renderGrid } from './render-grid.js'
 import {
   renderGearOutline,
+  renderOutline,
   renderTileOutline,
 } from './render-outline.js'
 import { renderResources } from './render-resources.js'
@@ -104,6 +105,28 @@ export function render(
     case HandType.AddBelt: {
       renderBeltHand(context, gl, gpu, hand)
       break
+    }
+    case HandType.Delete: {
+      const x = Math.round(
+        context.camera.position.x - hand.size / 2,
+      )
+      const y = Math.round(
+        context.camera.position.y - hand.size / 2,
+      )
+      const w = hand.size
+      const h = hand.size
+      const lineWidth =
+        0.1 + (1 - context.camera.zoom) * 0.2
+      renderOutline(
+        gl,
+        gpu,
+        TILE_OUTLINE,
+        x,
+        y,
+        w,
+        h,
+        lineWidth,
+      )
     }
   }
 }

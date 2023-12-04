@@ -6,20 +6,20 @@ import { AppContext } from './context.js'
 import styles from './delete.module.scss'
 import { Overlay } from './overlay.component.js'
 
-const MIN_RADIUS = 1
-const MAX_RADIUS = 10
+const MIN_SIZE = 1
+const MAX_SIZE = 10
 
 export function Delete() {
   const navigate = useNavigate()
-  const [radius, setRadius] = useState(MIN_RADIUS)
+  const [size, setSize] = useState(MIN_SIZE)
 
-  invariant(radius >= MIN_RADIUS)
-  invariant(radius <= MAX_RADIUS)
-  invariant(radius === Math.abs(radius))
+  invariant(size >= MIN_SIZE)
+  invariant(size <= MAX_SIZE)
+  invariant(size === Math.abs(size))
 
   const hand = useRef<DeleteHand>({
     type: HandType.Delete,
-    radius,
+    size,
   })
 
   const context = use(AppContext)
@@ -31,8 +31,8 @@ export function Delete() {
   }, [])
 
   useEffect(() => {
-    hand.current.radius = radius
-  }, [radius])
+    hand.current.size = size
+  }, [size])
 
   return (
     <Overlay>
@@ -49,12 +49,12 @@ export function Delete() {
           <div className={styles['field-label']}>Size</div>
           <input
             type="range"
-            min={MIN_RADIUS}
-            max={MAX_RADIUS}
+            min={MIN_SIZE}
+            max={MAX_SIZE}
             step={1}
-            value={radius}
+            value={size}
             onChange={(e) => {
-              setRadius(parseInt(e.target.value))
+              setSize(parseInt(e.target.value))
             }}
           />
           <button
