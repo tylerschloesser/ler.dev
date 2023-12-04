@@ -53,5 +53,9 @@ export function render(
       }
       break
     }
+    case HandType.AddResource: {
+      renderTileOutline(state, gl, gpu)
+      break
+    }
   }
 }
