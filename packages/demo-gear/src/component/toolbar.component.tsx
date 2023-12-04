@@ -17,6 +17,14 @@ export function Toolbar() {
       <button
         className={styles.button}
         onPointerUp={() => {
+          navigate('..')
+        }}
+      >
+        Back
+      </button>
+      <button
+        className={styles.button}
+        onPointerUp={() => {
           if (self.confirm('Are you sure?')) {
             resetWorld()
             // TODO race condition here if
