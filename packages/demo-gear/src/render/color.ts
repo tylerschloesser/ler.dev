@@ -59,11 +59,22 @@ export const ADD_BELT_INVALID: Color = BUILD_GEAR_INVALID
 export const FUEL_COLOR: Color = rgb(255, 255, 51)
 export const BELT_COLOR: Color = rgb(128, 128, 128)
 
+export const DELETE: Color = rgba(255, 0, 0, 0.5)
+
 function rgb(r: number, g: number, b: number): Color {
+  return rgba(r, g, b, 1)
+}
+
+function rgba(
+  r: number,
+  g: number,
+  b: number,
+  a: number,
+): Color {
   return {
     r: r / 255,
     g: g / 255,
     b: b / 255,
-    a: 1,
+    a,
   }
 }

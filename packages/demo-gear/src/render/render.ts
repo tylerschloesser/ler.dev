@@ -1,3 +1,4 @@
+import invariant from 'tiny-invariant'
 import {
   ConnectionType,
   HandType,
@@ -8,6 +9,7 @@ import {
   ADD_RESOURCE_INVALID,
   ADD_RESOURCE_VALID,
   BELT_COLOR,
+  DELETE,
   GEAR_OUTLINE,
   TILE_OUTLINE,
 } from './color.js'
@@ -23,6 +25,7 @@ import {
   renderOutline,
   renderTileOutline,
 } from './render-outline.js'
+import { renderRect } from './render-rect.js'
 import { renderResources } from './render-resources.js'
 import { GpuState } from './types.js'
 
@@ -119,6 +122,20 @@ export function render(
         hand.size,
         lineWidth,
       )
+
+      for (const gearId of hand.gearIds) {
+        const gear = context.world.gears[gearId]
+        invariant(gear)
+        renderRect(
+          gl,
+          gpu,
+          gear.position.x - gear.radius,
+          gear.position.y - gear.radius,
+          gear.radius * 2,
+          gear.radius * 2,
+          DELETE,
+        )
+      }
     }
   }
 }
