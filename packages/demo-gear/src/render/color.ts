@@ -53,9 +53,13 @@ export const ADD_RESOURCE_VALID: Color = BUILD_GEAR_VALID
 export const ADD_RESOURCE_INVALID: Color =
   BUILD_GEAR_INVALID
 
-export const FUEL_COLOR: Color = {
-  r: 1,
-  g: 1,
-  b: 1,
-  a: 1,
+export const FUEL_COLOR: Color = rgb(255, 255, 51)
+
+function rgb(r: number, g: number, b: number): Color {
+  return {
+    r: r / 255,
+    g: g / 255,
+    b: b / 255,
+    a: 1,
+  }
 }
