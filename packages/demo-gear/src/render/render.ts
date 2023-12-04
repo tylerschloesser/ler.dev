@@ -76,6 +76,7 @@ export function render(
       break
     }
     case HandType.AddBelt: {
+      renderTileOutline(state, gl, gpu, TILE_OUTLINE)
       renderBeltHand(state, gl, gpu, hand)
       break
     }
