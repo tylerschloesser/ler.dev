@@ -21,10 +21,10 @@ export function AddBelt() {
   const cameraTilePosition = useCameraTilePosition(context)
   const [savedStart, setSavedStart] = useSavedStart()
   const end = !savedStart ? null : cameraTilePosition
-
   const start = savedStart ?? cameraTilePosition
-
-  const valid = useHand(start, end)
+  const path = getPath(start, end)
+  const valid = isValid(context, path)
+  useHand(path, valid)
 
   return (
     <Overlay>
@@ -84,18 +84,13 @@ function getPath(
 }
 
 function useHand(
-  start: SimpleVec2,
-  end: SimpleVec2 | null,
+  path: SimpleVec2[],
+  valid: boolean,
 ): boolean {
   const context = use(AppContext)
 
-  const path = getPath(start, end)
-  const valid = isValid(context, path)
-
   const hand = useRef<AddBeltHand>({
     type: HandType.AddBelt,
-    start,
-    end,
     path,
     valid,
   })
@@ -108,10 +103,9 @@ function useHand(
   }, [])
 
   useEffect(() => {
-    hand.current.start = start
-    hand.current.end = end
+    hand.current.path = path
     hand.current.valid = valid
-  }, [start, end, valid])
+  }, [path, valid])
 
   return valid
 }
