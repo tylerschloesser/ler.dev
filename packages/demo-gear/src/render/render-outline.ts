@@ -5,7 +5,7 @@ import { updateModel } from './matrices.js'
 import { GpuState } from './types.js'
 
 export function renderGearOutline(
-  state: IAppContext,
+  context: IAppContext,
   gl: WebGL2RenderingContext,
   gpu: GpuState,
   gear: Gear,
@@ -26,7 +26,7 @@ export function renderGearOutline(
     projection,
   )
 
-  const size = 0.1 + (1 - state.camera.zoom) * 0.2
+  const size = 0.1 + (1 - context.camera.zoom) * 0.2
 
   gl.uniform4f(
     outlineRect.uniforms.color,
@@ -63,7 +63,7 @@ const tileModel = mat4.create()
 const v3 = vec3.create()
 
 export function renderTileOutline(
-  state: IAppContext,
+  context: IAppContext,
   gl: WebGL2RenderingContext,
   gpu: GpuState,
   color: Color,
@@ -83,7 +83,7 @@ export function renderTileOutline(
     projection,
   )
 
-  const size = 0.1 + (1 - state.camera.zoom) * 0.2
+  const size = 0.1 + (1 - context.camera.zoom) * 0.2
 
   gl.uniform4f(
     outlineRect.uniforms.color,
@@ -103,8 +103,8 @@ export function renderTileOutline(
   // TODO clean this up for real...
   //
 
-  v3[0] = Math.floor(state.camera.position.x) + 0.5
-  v3[1] = Math.floor(state.camera.position.y) + 0.5
+  v3[0] = Math.floor(context.camera.position.x) + 0.5
+  v3[1] = Math.floor(context.camera.position.y) + 0.5
   v3[2] = 0
   mat4.translate(tileModel, tileModel, v3)
 

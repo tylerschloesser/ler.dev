@@ -88,29 +88,29 @@ export function handleWheel(
 }
 
 function handlePointerOne(
-  state: IAppContext,
+  context: IAppContext,
   prev: PointerEvent,
   next: PointerEvent,
 ): void {
-  const { camera, tileSize } = state
+  const { camera, tileSize } = context
   const dx = next.offsetX - prev.offsetX
   const dy = next.offsetY - prev.offsetY
 
   updateCamera(
-    state,
+    context,
     camera.position.x + -dx / tileSize,
     camera.position.y + -dy / tileSize,
     camera.zoom,
-    state.tileSize,
+    context.tileSize,
   )
 }
 
 function handlePointerTwo(
-  state: IAppContext,
+  context: IAppContext,
   prev: PointerEvent,
   next: PointerEvent,
 ): void {
-  const { camera } = state
+  const { camera } = context
   const other = getOtherPointer(next)
   if (!other.buttons) {
     return
@@ -133,10 +133,10 @@ function handlePointerTwo(
   const pd = dist(px, py, ox, oy)
   const nd = dist(nx, ny, ox, oy)
 
-  const vx = state.viewport.size.x
-  const vy = state.viewport.size.y
+  const vx = context.viewport.size.x
+  const vy = context.viewport.size.y
 
-  const pts = state.tileSize
+  const pts = context.tileSize
   const nts = clampTileSize(pts * (nd / pd), vx, vy)
 
   // how far did the center move, aka how much to move
@@ -155,7 +155,7 @@ function handlePointerTwo(
   const dy = ry / pts - (ry + dcy) / nts
 
   updateCamera(
-    state,
+    context,
     camera.position.x + dx,
     camera.position.y + dy,
     tileSizeToZoom(nts, vx, vy),
@@ -164,19 +164,19 @@ function handlePointerTwo(
 }
 
 function updateCamera(
-  state: IAppContext,
+  context: IAppContext,
   x: number,
   y: number,
   zoom: number,
   tileSize: number,
 ): void {
-  state.camera.position.x = x
-  state.camera.position.y = y
-  state.camera.zoom = zoom
-  state.tileSize = tileSize
+  context.camera.position.x = x
+  context.camera.position.y = y
+  context.camera.zoom = zoom
+  context.tileSize = tileSize
 
-  state.cameraListeners.forEach((listener) => {
-    listener(state)
+  context.cameraListeners.forEach((listener) => {
+    listener(context)
   })
 }
 
