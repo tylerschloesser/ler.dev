@@ -99,6 +99,24 @@ export function* iterateGearTiles(
   }
 }
 
+export function* iterateTiles(
+  x: number,
+  y: number,
+  w: number,
+  h: number,
+  world: World,
+) {
+  for (let xx = 0; xx < w; xx += 1) {
+    for (let yy = 0; yy < h; yy += 1) {
+      const tileId = `${x + xx}.${y + yy}`
+      const tile = world.tiles[tileId]
+      if (tile) {
+        yield { tileId, tile }
+      }
+    }
+  }
+}
+
 export function* iterateOverlappingGears(
   position: SimpleVec2,
   radius: number,

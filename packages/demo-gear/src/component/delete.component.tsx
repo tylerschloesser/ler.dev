@@ -7,6 +7,7 @@ import {
   HandType,
   SimpleVec2,
 } from '../types.js'
+import { iterateTiles } from '../util.js'
 import { AppContext } from './context.js'
 import styles from './delete.module.scss'
 import { Overlay } from './overlay.component.js'
@@ -58,6 +59,8 @@ export function Delete() {
     type: HandType.Delete,
     position,
     size,
+    gearIds: new Set(),
+    tileIds: new Set(),
   })
 
   const context = use(AppContext)
@@ -71,6 +74,23 @@ export function Delete() {
   useEffect(() => {
     hand.current.size = size
     hand.current.position = position
+
+    hand.current.gearIds.clear()
+    hand.current.tileIds.clear()
+
+    for (const { tileId, tile } of iterateTiles(
+      position.x,
+      position.y,
+      size,
+      size,
+      context.world,
+    )) {
+      if (tile.gearId) {
+        hand.current.gearIds.add(tile.gearId)
+      } else if (tile.beltId || tile.resourceType) {
+        hand.current.tileIds.add(tileId)
+      }
+    }
   }, [size, position])
 
   return (

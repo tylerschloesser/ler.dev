@@ -158,6 +158,8 @@ export interface DeleteHand {
   type: HandType.Delete
   position: SimpleVec2
   size: number
+  gearIds: Set<GearId>
+  tileIds: Set<TileId>
 }
 
 export type Hand =
