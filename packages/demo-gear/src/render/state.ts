@@ -3,6 +3,8 @@ import { GEAR_RADIUSES, TEETH, TWO_PI } from '../const.js'
 import { initMatrices } from './matrices.js'
 import chainFrag from './shaders/chain.frag.glsl'
 import chainVert from './shaders/chain.vert.glsl'
+import fillRectFrag from './shaders/fill-rect.frag.glsl'
+import fillRectVert from './shaders/fill-rect.vert.glsl'
 import gearBodyFrag from './shaders/gear-body.frag.glsl'
 import gearBodyVert from './shaders/gear-body.vert.glsl'
 import gearTeethFrag from './shaders/gear-teeth.frag.glsl'
@@ -31,6 +33,7 @@ export async function initGpuState(
       gearTeeth: initGearTeethProgram(gl),
       chain: initChainProgram(gl),
       outlineRect: initOutlineRectProgram(gl),
+      fillRect: initFillRectProgram(gl),
     },
     buffers: {
       square: initSquareBuffer(gl),
@@ -174,6 +177,31 @@ function initOutlineRectProgram(
       ),
       color: getUniformLocation(gl, program, 'uColor'),
       size: getUniformLocation(gl, program, 'uSize'),
+    },
+  }
+}
+
+function initFillRectProgram(
+  gl: WebGL2RenderingContext,
+): GpuState['programs']['fillRect'] {
+  const program = initProgram(gl, {
+    vert: fillRectVert,
+    frag: fillRectFrag,
+  })
+  return {
+    program,
+    attributes: {
+      vertex: getAttribLocation(gl, program, 'aVertex'),
+    },
+    uniforms: {
+      model: getUniformLocation(gl, program, 'uModel'),
+      view: getUniformLocation(gl, program, 'uView'),
+      projection: getUniformLocation(
+        gl,
+        program,
+        'uProjection',
+      ),
+      color: getUniformLocation(gl, program, 'uColor'),
     },
   }
 }

@@ -68,6 +68,18 @@ export interface GpuState {
         size: WebGLUniformLocation
       }
     }
+    fillRect: {
+      program: WebGLProgram
+      attributes: {
+        vertex: WebGLAttributeLocation
+      }
+      uniforms: {
+        model: WebGLUniformLocation
+        view: WebGLUniformLocation
+        projection: WebGLUniformLocation
+        color: WebGLUniformLocation
+      }
+    }
   }
   buffers: {
     square: WebGLBuffer
