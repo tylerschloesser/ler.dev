@@ -11,6 +11,7 @@ import {
   TILE_OUTLINE,
 } from './color.js'
 import { updateProjection, updateView } from './matrices.js'
+import { renderBeltHand } from './render-belt-hand.js'
 import { renderBuild } from './render-build.js'
 import { renderChain } from './render-chain.js'
 import { renderGears } from './render-gears.js'
@@ -72,6 +73,10 @@ export function render(
         ? ADD_RESOURCE_VALID
         : ADD_RESOURCE_INVALID
       renderTileOutline(state, gl, gpu, color)
+      break
+    }
+    case HandType.AddBelt: {
+      renderBeltHand(state, gl, gpu, hand)
       break
     }
   }

@@ -136,6 +136,10 @@ export interface AddResourceHand {
 
 export interface AddBeltHand {
   type: HandType.AddBelt
+  position: SimpleVec2
+  start: SimpleVec2 | null
+  end: SimpleVec2 | null
+  valid: boolean
 }
 
 export type Hand =
