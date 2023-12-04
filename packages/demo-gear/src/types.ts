@@ -85,9 +85,16 @@ export const Gear = z.strictObject({
 })
 export type Gear = z.infer<typeof Gear>
 
+export const Belt = z.strictObject({
+  id: BeltId,
+  tilePositions: z.array(SimpleVec2),
+})
+export type Belt = z.infer<typeof Belt>
+
 export const World = z.strictObject({
   gears: z.record(GearId, Gear),
   tiles: z.record(TileId, Tile),
+  belts: z.record(BeltId, Belt),
 })
 export type World = z.infer<typeof World>
 

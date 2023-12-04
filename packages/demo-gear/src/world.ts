@@ -25,6 +25,7 @@ export async function getDefaultWorld(): Promise<World> {
   const world: World = {
     gears: {},
     tiles: {},
+    belts: {},
   }
   return world
 }
