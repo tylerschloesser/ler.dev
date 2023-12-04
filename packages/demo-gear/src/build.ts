@@ -10,6 +10,7 @@ import {
 import {
   getAdjacentConnections,
   isNetworkValid,
+  iterateGearTiles,
   iterateOverlappingGears,
 } from './util.js'
 import { Vec2 } from './vec2.js'
@@ -110,31 +111,45 @@ export function updateBuild(
   let valid = true
   let attach: Gear | undefined
   let chain: Gear | undefined
-  for (const gear of iterateOverlappingGears(
+
+  for (const tile of iterateGearTiles(
     hand.gear.position,
     hand.gear.radius,
     context.world,
   )) {
-    if (
-      hand.gear.radius === 1 &&
-      Vec2.equal(gear.position, hand.gear.position)
-    ) {
-      if (gear.radius === 1) {
-        chain = gear
-      } else {
-        //
-        // assume we're attaching, because we would've
-        // already seen the attached gear in a previous
-        // iteration
-        //
-        attach = gear
-      }
-    } else {
+    if (tile.beltId) {
       valid = false
+      break
     }
+  }
 
-    // only need to look at one gear
-    break
+  if (valid) {
+    for (const gear of iterateOverlappingGears(
+      hand.gear.position,
+      hand.gear.radius,
+      context.world,
+    )) {
+      if (
+        hand.gear.radius === 1 &&
+        Vec2.equal(gear.position, hand.gear.position)
+      ) {
+        if (gear.radius === 1) {
+          chain = gear
+        } else {
+          //
+          // assume we're attaching, because we would've
+          // already seen the attached gear in a previous
+          // iteration
+          //
+          attach = gear
+        }
+      } else {
+        valid = false
+      }
+
+      // only need to look at one gear
+      break
+    }
   }
 
   if (valid && hand.chain) {
