@@ -5,4 +5,7 @@ export function renderResources(
   state: AppState,
   gl: WebGL2RenderingContext,
   gpu: GpuState,
-): void {}
+): void {
+  const { fillRect } = gpu.programs
+  gl.useProgram(fillRect.program)
+}
