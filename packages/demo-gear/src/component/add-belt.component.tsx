@@ -1,7 +1,7 @@
 import { use, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import invariant from 'tiny-invariant'
-import { HandType } from '../types.js'
+import { CameraListenerFn, HandType } from '../types.js'
 import styles from './add-belt.module.scss'
 import { AppContext } from './context.js'
 import { Overlay } from './overlay.component.js'
@@ -31,8 +31,13 @@ export function AddBelt() {
       valid: false,
     }
 
+    const cameraListener: CameraListenerFn = () => {}
+    state.cameraListeners.add(cameraListener)
+    cameraListener(state)
+
     return () => {
       state.hand = null
+      state.cameraListeners.delete(cameraListener)
     }
   }, [state])
 
