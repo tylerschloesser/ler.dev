@@ -156,6 +156,7 @@ export interface AddBeltHand {
 
 export interface DeleteHand {
   type: HandType.Delete
+  position: SimpleVec2
   size: number
 }
 
