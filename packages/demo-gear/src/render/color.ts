@@ -39,3 +39,12 @@ export const BUILD_GEAR_INVALID: Color = {
   b: 0,
   a: 0.5,
 }
+
+export const TILE_OUTLINE: Color = {
+  r: 1,
+  g: 1,
+  b: 1,
+  a: 0.5,
+}
+
+export const GEAR_OUTLINE: Color = TILE_OUTLINE

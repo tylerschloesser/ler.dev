@@ -1,5 +1,6 @@
 import { mat4, vec3 } from 'gl-matrix'
 import { AppState, Gear } from '../types.js'
+import { Color } from './color.js'
 import { updateModel } from './matrices.js'
 import { GpuState } from './types.js'
 
@@ -8,6 +9,7 @@ export function renderGearOutline(
   gl: WebGL2RenderingContext,
   gpu: GpuState,
   gear: Gear,
+  color: Color,
 ) {
   const { outlineRect } = gpu.programs
   gl.useProgram(outlineRect.program)
@@ -26,7 +28,13 @@ export function renderGearOutline(
 
   const size = 0.1 + (1 - state.camera.zoom) * 0.2
 
-  gl.uniform4f(outlineRect.uniforms.color, 1, 1, 1, 0.5)
+  gl.uniform4f(
+    outlineRect.uniforms.color,
+    color.r,
+    color.g,
+    color.b,
+    color.a,
+  )
   gl.uniform1f(outlineRect.uniforms.size, size)
 
   updateModel(gpu.matrices, gear)
@@ -58,6 +66,7 @@ export function renderTileOutline(
   state: AppState,
   gl: WebGL2RenderingContext,
   gpu: GpuState,
+  color: Color,
 ) {
   const { outlineRect } = gpu.programs
   gl.useProgram(outlineRect.program)
@@ -76,7 +85,13 @@ export function renderTileOutline(
 
   const size = 0.1 + (1 - state.camera.zoom) * 0.2
 
-  gl.uniform4f(outlineRect.uniforms.color, 1, 1, 1, 0.5)
+  gl.uniform4f(
+    outlineRect.uniforms.color,
+    color.r,
+    color.g,
+    color.b,
+    color.a,
+  )
   gl.uniform1f(outlineRect.uniforms.size, size)
 
   mat4.identity(tileModel)

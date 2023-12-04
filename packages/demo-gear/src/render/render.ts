@@ -4,6 +4,7 @@ import {
   HandType,
 } from '../types.js'
 import { iterateConnections } from '../util.js'
+import { GEAR_OUTLINE, TILE_OUTLINE } from './color.js'
 import { updateProjection, updateView } from './matrices.js'
 import { renderBuild } from './render-build.js'
 import { renderChain } from './render-chain.js'
@@ -47,14 +48,20 @@ export function render(
     case HandType.ApplyFriction:
     case HandType.Configure: {
       if (hand.gear) {
-        renderGearOutline(state, gl, gpu, hand.gear)
+        renderGearOutline(
+          state,
+          gl,
+          gpu,
+          hand.gear,
+          GEAR_OUTLINE,
+        )
       } else {
-        renderTileOutline(state, gl, gpu)
+        renderTileOutline(state, gl, gpu, TILE_OUTLINE)
       }
       break
     }
     case HandType.AddResource: {
-      renderTileOutline(state, gl, gpu)
+      renderTileOutline(state, gl, gpu, TILE_OUTLINE)
       break
     }
   }
