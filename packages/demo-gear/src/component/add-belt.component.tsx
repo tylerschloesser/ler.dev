@@ -4,7 +4,6 @@ import {
   useSearchParams,
 } from 'react-router-dom'
 import invariant from 'tiny-invariant'
-import * as z from 'zod'
 import {
   AddBeltHand,
   CameraListenerFn,
@@ -19,78 +18,67 @@ import { Overlay } from './overlay.component.js'
 export function AddBelt() {
   const context = use(AppContext)
   const navigate = useNavigate()
-  const [valid, setValid] = useState<boolean>(false)
+
   const cameraTilePosition = useCameraTilePosition(context)
+  const [savedStart, setSavedStart] = useSavedStart()
+  const end = !savedStart ? null : cameraTilePosition
+
+  const start = savedStart ?? cameraTilePosition
+
+  const [valid, setValid] = useState<boolean>(
+    isValid(context, start, null),
+  )
 
   const hand = useRef<AddBeltHand>({
     type: HandType.AddBelt,
-    start: cameraTilePosition,
+    start,
     end: null,
-    valid: false,
+    valid,
   })
 
   useEffect(() => {
-    invariant(context.hand === null)
-
-    context.hand = {
-      type: HandType.AddBelt,
-      start: cameraTilePosition,
-      end: null,
-      valid: false,
-    }
-
-    const cameraListener: CameraListenerFn = () => {
-      invariant(context.hand?.type === HandType.AddBelt)
-      const x = Math.floor(context.camera.position.x)
-      const y = Math.floor(context.camera.position.y)
-      if (context.hand.start === null) {
-        const tileId = `${x}.${y}`
-        const tile = context.world.tiles[tileId]
-        setValid(
-          (context.hand.valid = !(
-            tile?.beltId || tile?.gearId
-          )),
-        )
-      } else {
-      }
-    }
-    context.cameraListeners.add(cameraListener)
-    cameraListener(context)
-
+    context.hand = hand.current
     return () => {
       context.hand = null
-      context.cameraListeners.delete(cameraListener)
     }
   }, [context])
+
+  useEffect(() => {
+    setValid(isValid(context, start, end))
+  }, [start, end])
+
+  useEffect(() => {
+    invariant(start || !end)
+    hand.current.start = start
+    hand.current.end = end
+    hand.current.valid = valid
+  }, [start, end, valid])
 
   return (
     <Overlay>
       <button
         className={styles.button}
         onPointerUp={() => {
-          // if (start) {
-          //   setStart(null)
-          // } else {
-          //   navigate('..')
-          // }
+          if (savedStart) {
+            setSavedStart(null)
+          } else {
+            navigate('..')
+          }
         }}
       >
         Back
       </button>
-      {/* !start && (
+      {!savedStart && (
         <button
           disabled={!valid}
           className={styles.button}
           onPointerUp={() => {
-            setStart({
-              x: Math.floor(context.camera.position.x),
-              y: Math.floor(context.camera.position.y),
-            })
+            setSavedStart(cameraTilePosition)
           }}
         >
           Start
         </button>
-      ) */}
+      )}
     </Overlay>
   )
 }
@@ -123,30 +111,19 @@ function useCameraTilePosition(
   return position
 }
 
-const Start = SimpleVec2.nullable()
-type Start = z.infer<typeof Start>
-
-function useStart(
-  context: IAppContext,
-): [Start, (next: Start) => void] {
+function useSavedStart(): [
+  SimpleVec2 | null,
+  (start: SimpleVec2 | null) => void,
+] {
   const [searchParams, setSearchParams] = useSearchParams()
 
-  const parsed = Start.parse(
-    JSON.parse(searchParams.get('start') ?? 'null'),
-  )
-
-  useEffect(() => {}, [])
-
-  const start = useRef(parsed)
-
-  if (!isEqual(parsed, start.current)) {
-    start.current = parsed
+  const savedJson = searchParams.get('start')
+  let saved: SimpleVec2 | null = null
+  if (savedJson) {
+    saved = SimpleVec2.parse(JSON.parse(savedJson))
   }
 
   const setStart = (next: SimpleVec2 | null) => {
-    if (isEqual(next, start.current)) {
-      return
-    }
     setSearchParams((prev) => {
       if (next) {
         prev.set('start', JSON.stringify(next))
@@ -157,12 +134,13 @@ function useStart(
     })
   }
 
-  return [start.current, setStart]
+  return [saved, setStart]
 }
 
-function isEqual(
-  a: SimpleVec2 | null,
-  b: SimpleVec2 | null,
+function isValid(
+  context: IAppContext,
+  start: SimpleVec2,
+  end: SimpleVec2 | null,
 ): boolean {
-  return JSON.stringify(a) === JSON.stringify(b)
+  return true
 }
