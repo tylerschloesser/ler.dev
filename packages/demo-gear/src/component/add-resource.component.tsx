@@ -1,10 +1,15 @@
-import { use, useEffect, useState } from 'react'
+import {
+  use,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react'
 import { useNavigate } from 'react-router-dom'
 import invariant from 'tiny-invariant'
 import {
   CameraListenerFn,
-  CenterTileIdListener,
   HandType,
+  ResourceType,
 } from '../types.js'
 import styles from './add-resource.module.scss'
 import { AppContext } from './context.js'
@@ -31,9 +36,10 @@ export function AddResource() {
       const tileId = `${x}.${y}`
       invariant(state.hand?.type === HandType.AddResource)
       state.hand.position.x = x
-      state.hand.position.y = x
+      state.hand.position.y = y
 
       const tile = state.world.tiles[tileId]
+      console.log(tile, tileId)
       setValid((state.hand.valid = !tile?.resourceType))
     }
     state.cameraListeners.add(cameraListener)
@@ -42,6 +48,22 @@ export function AddResource() {
       state.hand = null
       state.cameraListeners.delete(cameraListener)
     }
+  }, [state])
+
+  const addResource = useCallback(() => {
+    if (!state) return
+    invariant(state.hand?.type === HandType.AddResource)
+    if (!state.hand.valid) return
+    const { x, y } = state.hand.position
+    const tileId = `${x}.${y}`
+    let tile = state.world.tiles[tileId]
+    invariant(!tile?.resourceType)
+    if (!tile) {
+      console.log(`set tile id: ${tileId}`)
+      tile = state.world.tiles[tileId] = {}
+    }
+    tile.resourceType = ResourceType.enum.Fuel
+    setValid((state.hand.valid = false))
   }, [state])
 
   return (
@@ -54,7 +76,11 @@ export function AddResource() {
       >
         Back
       </button>
-      <button disabled={!valid} className={styles.button}>
+      <button
+        disabled={!valid}
+        className={styles.button}
+        onPointerUp={addResource}
+      >
         Add Resource
       </button>
     </Overlay>
