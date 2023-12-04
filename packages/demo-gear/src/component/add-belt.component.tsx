@@ -3,7 +3,6 @@ import {
   useNavigate,
   useSearchParams,
 } from 'react-router-dom'
-import invariant from 'tiny-invariant'
 import {
   AddBeltHand,
   CameraListenerFn,
@@ -56,20 +55,48 @@ export function AddBelt() {
   )
 }
 
+function getPath(
+  start: SimpleVec2,
+  end: SimpleVec2 | null,
+): SimpleVec2[] {
+  const path: SimpleVec2[] = [start]
+  if (end) {
+    const dx = end.x - start.x
+    const dy = end.y - start.y
+    for (
+      let x = 0;
+      Math.abs(x) < Math.abs(dx);
+      x += Math.sign(dx)
+    ) {
+      for (
+        let y = 0;
+        Math.abs(y) < Math.abs(dy);
+        y += Math.sign(dy)
+      ) {
+        path.push({
+          x: start.x + x,
+          y: start.y + y,
+        })
+      }
+    }
+  }
+  return path
+}
+
 function useHand(
   start: SimpleVec2,
   end: SimpleVec2 | null,
 ): boolean {
   const context = use(AppContext)
 
-  const [valid, setValid] = useState<boolean>(
-    isValid(context, start, end),
-  )
+  const path = getPath(start, end)
+  const valid = isValid(context, path)
 
   const hand = useRef<AddBeltHand>({
     type: HandType.AddBelt,
     start,
-    end: null,
+    end,
+    path,
     valid,
   })
 
@@ -78,14 +105,9 @@ function useHand(
     return () => {
       context.hand = null
     }
-  }, [context])
+  }, [])
 
   useEffect(() => {
-    setValid(isValid(context, start, end))
-  }, [start, end])
-
-  useEffect(() => {
-    invariant(start || !end)
     hand.current.start = start
     hand.current.end = end
     hand.current.valid = valid
@@ -150,8 +172,7 @@ function useSavedStart(): [
 
 function isValid(
   context: IAppContext,
-  start: SimpleVec2,
-  end: SimpleVec2 | null,
+  path: SimpleVec2[],
 ): boolean {
   return true
 }

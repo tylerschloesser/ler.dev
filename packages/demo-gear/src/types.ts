@@ -150,6 +150,7 @@ export interface AddBeltHand {
   type: HandType.AddBelt
   start: SimpleVec2
   end: SimpleVec2 | null
+  path: SimpleVec2[]
   valid: boolean
 }
 
