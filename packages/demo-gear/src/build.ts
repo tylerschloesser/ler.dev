@@ -1,5 +1,6 @@
 import invariant from 'tiny-invariant'
 import { addChainConnection, addGear } from './add-gear.js'
+import { TWO_PI } from './const.js'
 import {
   IAppContext,
   BuildHand,
@@ -167,16 +168,13 @@ export function updateBuild(
   invariant(!(attach && chain))
 
   if (valid) {
-    // TODO not super graceful, but the order of connections
-    // matters here...
-    //
-    // Chain connections must be first, so that they're rendered
-    // with the correct angles...
-    //
-    // Additionally, the "source" chain takes precendence over
-    // that "target" chain, when applicable, for the same reason.
-    //
-
+    hand.gear.connections.push(
+      ...getAdjacentConnections(
+        hand.gear.position,
+        hand.gear.radius,
+        context.world,
+      ),
+    )
     if (hand.chain) {
       hand.gear.connections.push({
         type: ConnectionType.enum.Chain,
@@ -195,54 +193,45 @@ export function updateBuild(
         gearId: attach.id,
       })
     }
-    hand.gear.connections.push(
-      ...getAdjacentConnections(
-        hand.gear.position,
-        hand.gear.radius,
-        context.world,
-      ),
-    )
-  }
-
-  if (hand.gear.connections.length > 0) {
-    // TODO handle more than one connection
-
-    const connection = hand.gear.connections.at(0)
-    invariant(connection)
-    const peer = context.world.gears[connection.gearId]
-    invariant(peer)
-
-    // TODO this is duplicated in init-simulator
-    let n
-    switch (connection.type) {
-      case ConnectionType.enum.Adjacent:
-        n = (peer.radius / hand.gear.radius) * -1
-        break
-      case ConnectionType.enum.Chain:
-        n = peer.radius / hand.gear.radius
-        break
-      case ConnectionType.enum.Attach:
-        n = 1
-        break
-      case ConnectionType.enum.Belt:
-        invariant(false, 'TODO')
-    }
-
-    hand.gear.angle = peer.angle * n
-    hand.gear.velocity = peer.velocity * n
   }
 
   if (valid) {
     valid = isNetworkValid(hand.gear, context.world)
   }
 
-  if (!valid) {
-    hand.gear.angle = 0
-    hand.gear.velocity = 0
-  }
-
   if (hand.valid !== valid) {
     hand.valid = valid
     hand.onChangeValid?.(valid)
+  }
+
+  updateBuildGearAngle(context, hand)
+}
+
+export function updateBuildGearAngle(
+  context: IAppContext,
+  hand: BuildHand,
+): void {
+  const { gear } = hand
+  const connection = gear.connections.at(0)
+  if (hand.valid && connection) {
+    // if valid, we can check any connected gear to get the angle
+    const neighbor = context.world.gears[connection.gearId]
+    invariant(neighbor)
+
+    switch (connection.type) {
+      case ConnectionType.enum.Attach:
+      case ConnectionType.enum.Chain:
+        gear.angle = neighbor.angle
+        break
+      case ConnectionType.enum.Adjacent:
+        gear.angle =
+          (TWO_PI - neighbor.angle) *
+          (neighbor.radius / gear.radius)
+        break
+      case ConnectionType.enum.Belt:
+        invariant(false, 'TODO')
+    }
+  } else {
+    gear.angle = 0
   }
 }

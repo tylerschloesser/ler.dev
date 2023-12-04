@@ -3,6 +3,7 @@ import {
   applyForce,
   applyFriction,
 } from './apply-torque.js'
+import { updateBuildGearAngle } from './build.js'
 import { TWO_PI } from './const.js'
 import {
   ConnectionType,
@@ -103,31 +104,7 @@ export function tick(
       TWO_PI
   }
 
-  if (
-    context.hand?.type === HandType.Build &&
-    context.hand.gear
-  ) {
-    const { gear } = context.hand
-    const connection = gear.connections.at(0)
-    if (context.hand.valid && connection) {
-      // if valid, we can check any connected gear to get the angle
-      const neighbor =
-        context.world.gears[connection.gearId]
-      invariant(neighbor)
-
-      switch (connection.type) {
-        case ConnectionType.enum.Attach:
-        case ConnectionType.enum.Chain:
-          gear.angle = neighbor.angle
-          break
-        case ConnectionType.enum.Adjacent:
-          gear.angle =
-            (TWO_PI - neighbor.angle) *
-            (neighbor.radius / gear.radius)
-          break
-      }
-    } else {
-      gear.angle = 0
-    }
+  if (context.hand?.type === HandType.Build) {
+    updateBuildGearAngle(context, context.hand)
   }
 }
