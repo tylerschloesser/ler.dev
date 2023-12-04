@@ -92,6 +92,7 @@ export enum HandType {
   ApplyForce = 'apply-force',
   ApplyFriction = 'apply-friction',
   Configure = 'configure',
+  AddResource = 'add-resource',
 }
 
 export interface BuildHand {
@@ -102,8 +103,6 @@ export interface BuildHand {
   onChangeValid?(valid: boolean): void
 }
 
-export type OnChangeGearFn = (gear: Gear | null) => void
-
 export interface ApplyForceHand {
   type: HandType.ApplyForce
   position: SimpleVec2 | null
@@ -111,7 +110,6 @@ export interface ApplyForceHand {
   direction: 'cw' | 'ccw'
   magnitude: number
   gear: Gear | null
-  onChangeGear?: OnChangeGearFn
   runningEnergyDiff: number
 }
 
@@ -121,14 +119,18 @@ export interface ApplyFrictionHand {
   active: boolean
   coeffecient: number
   gear: Gear | null
-  onChangeGear?: OnChangeGearFn
   runningEnergyDiff: number
 }
 
 export interface ConfigureHand {
   type: HandType.Configure
   gear: Gear | null
-  onChangeGear?: OnChangeGearFn
+}
+
+export interface AddResourceHand {
+  type: HandType.AddResource
+  position: SimpleVec2
+  valid: boolean
 }
 
 export type Hand =

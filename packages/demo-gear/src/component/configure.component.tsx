@@ -2,7 +2,6 @@ import {
   Dispatch,
   SetStateAction,
   use,
-  useCallback,
   useEffect,
   useState,
 } from 'react'
@@ -16,7 +15,6 @@ import {
   GearBehaviorType,
   GearId,
   HandType,
-  OnChangeGearFn,
 } from '../types.js'
 import styles from './configure.module.scss'
 import { AppContext } from './context.js'
@@ -220,14 +218,6 @@ export function Configure() {
   const [behavior, setBehavior] =
     useState<GearBehavior | null>(null)
 
-  const onChangeGear = useCallback<OnChangeGearFn>(
-    (gear) => {
-      setGearId(gear?.id ?? null)
-      setBehavior(gear?.behavior ?? null)
-    },
-    [state],
-  )
-
   useEffect(() => {
     if (!state || !gearId) {
       return
@@ -249,7 +239,6 @@ export function Configure() {
     state.hand = {
       type: HandType.Configure,
       gear: null,
-      onChangeGear,
     }
 
     const centerTileIdListener: CenterTileIdListener =
@@ -262,7 +251,8 @@ export function Configure() {
         invariant(state.hand?.type === HandType.Configure)
         if (state.hand.gear !== gear) {
           state.hand.gear = gear
-          onChangeGear(gear)
+          setGearId(gear?.id ?? null)
+          setBehavior(gear?.behavior ?? null)
         }
       }
     state.centerTileIdListeners.add(centerTileIdListener)

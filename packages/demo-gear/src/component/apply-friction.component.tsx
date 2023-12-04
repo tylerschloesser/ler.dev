@@ -1,16 +1,7 @@
-import {
-  use,
-  useCallback,
-  useEffect,
-  useState,
-} from 'react'
+import { use, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import invariant from 'tiny-invariant'
-import {
-  CenterTileIdListener,
-  HandType,
-  OnChangeGearFn,
-} from '../types.js'
+import { CenterTileIdListener, HandType } from '../types.js'
 import { clamp } from '../util.js'
 import styles from './apply-friction.module.scss'
 import { AppContext } from './context.js'
@@ -31,13 +22,6 @@ export function ApplyFriction() {
   const [coeffecient, setCoeffecient] = useState(5)
   const [disabled, setDisabled] = useState<boolean>(true)
 
-  const onChangeGear = useCallback<OnChangeGearFn>(
-    (gear) => {
-      setDisabled(gear === null)
-    },
-    [state],
-  )
-
   useEffect(() => {
     if (!state) {
       return
@@ -49,7 +33,6 @@ export function ApplyFriction() {
       active: false,
       coeffecient: coeffecient * COEFFECIENT_SCALE,
       gear: null,
-      onChangeGear,
       runningEnergyDiff: 0,
     }
 
@@ -65,7 +48,7 @@ export function ApplyFriction() {
         )
         if (state.hand.gear !== gear) {
           state.hand.gear = gear
-          onChangeGear(gear)
+          setDisabled(gear === null)
         }
       }
     state.centerTileIdListeners.add(centerTileIdListener)

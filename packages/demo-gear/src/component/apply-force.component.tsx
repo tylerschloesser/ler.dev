@@ -1,16 +1,7 @@
-import {
-  use,
-  useCallback,
-  useEffect,
-  useState,
-} from 'react'
+import { use, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import invariant from 'tiny-invariant'
-import {
-  CenterTileIdListener,
-  HandType,
-  OnChangeGearFn,
-} from '../types.js'
+import { CenterTileIdListener, HandType } from '../types.js'
 import styles from './apply-force.module.scss'
 import { AppContext } from './context.js'
 import { GearStats } from './gear-stats.component.js'
@@ -29,13 +20,6 @@ export function ApplyForce() {
   )
   const [disabled, setDisabled] = useState<boolean>(true)
 
-  const onChangeGear = useCallback<OnChangeGearFn>(
-    (gear) => {
-      setDisabled(gear === null)
-    },
-    [state],
-  )
-
   useEffect(() => {
     if (!state) {
       return
@@ -48,7 +32,6 @@ export function ApplyForce() {
       direction: 'cw',
       magnitude,
       gear: null,
-      onChangeGear,
       runningEnergyDiff: 0,
     }
 
@@ -62,7 +45,7 @@ export function ApplyForce() {
         invariant(state.hand?.type === HandType.ApplyForce)
         if (state.hand.gear !== gear) {
           state.hand.gear = gear
-          onChangeGear(gear)
+          setDisabled(gear === null)
         }
       }
     state.centerTileIdListeners.add(centerTileIdListener)
