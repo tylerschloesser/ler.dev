@@ -1,6 +1,8 @@
-import { useState } from 'react'
+import { use, useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import invariant from 'tiny-invariant'
+import { DeleteHand, HandType } from '../types.js'
+import { AppContext } from './context.js'
 import styles from './delete.module.scss'
 import { Overlay } from './overlay.component.js'
 
@@ -14,6 +16,23 @@ export function Delete() {
   invariant(radius >= MIN_RADIUS)
   invariant(radius <= MAX_RADIUS)
   invariant(radius === Math.abs(radius))
+
+  const hand = useRef<DeleteHand>({
+    type: HandType.Delete,
+    radius,
+  })
+
+  const context = use(AppContext)
+  useEffect(() => {
+    context.hand = hand.current
+    return () => {
+      context.hand = null
+    }
+  }, [])
+
+  useEffect(() => {
+    hand.current.radius = radius
+  }, [radius])
 
   return (
     <Overlay>
@@ -38,6 +57,14 @@ export function Delete() {
               setRadius(parseInt(e.target.value))
             }}
           />
+          <button
+            className={styles.button}
+            onPointerUp={() => {
+              console.log('TODO')
+            }}
+          >
+            Delete
+          </button>
         </div>
       </div>
     </Overlay>
