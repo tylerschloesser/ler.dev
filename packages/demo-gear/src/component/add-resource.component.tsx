@@ -39,6 +39,7 @@ export function AddResource() {
     state.cameraListeners.add(cameraListener)
     cameraListener(state)
     return () => {
+      state.hand = null
       state.cameraListeners.delete(cameraListener)
     }
   }, [state])

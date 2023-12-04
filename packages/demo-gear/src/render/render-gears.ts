@@ -6,6 +6,12 @@ import {
   PartialGear,
 } from '../types.js'
 import {
+  Color,
+  GEAR_BLUE,
+  GEAR_ORANGE,
+  GEAR_PINK,
+} from './color.js'
+import {
   updateGearBodyModel,
   updateGearToothModel,
 } from './matrices.js'
@@ -37,13 +43,13 @@ export function renderGears(
   gl.uniform1f(gearTeeth.uniforms.tileSize, state.tileSize)
 
   for (const gear of Object.values(state.world.gears)) {
-    let color: 'blue' | 'orange' | 'pink' = 'blue'
+    let color: Color = GEAR_BLUE
     switch (gear.behavior?.type) {
       case GearBehaviorType.enum.Friction:
-        color = 'orange'
+        color = GEAR_ORANGE
         break
       case GearBehaviorType.enum.Force:
-        color = 'pink'
+        color = GEAR_PINK
         break
     }
     renderGear(gear, gl, gpu, state.camera.zoom, color)
@@ -55,7 +61,7 @@ export function renderGear(
   gl: WebGL2RenderingContext,
   gpu: GpuState,
   zoom: number,
-  color: 'pink' | 'orange' | 'blue' | 'red' | 'green',
+  color: Color,
 ): void {
   renderGearBody(gear, gl, gpu, color)
   renderGearTeeth(gear, gl, gpu, zoom)
@@ -101,7 +107,7 @@ function renderGearBody(
   gear: PartialGear,
   gl: WebGL2RenderingContext,
   gpu: GpuState,
-  color: 'pink' | 'orange' | 'blue' | 'red' | 'green',
+  color: Color,
 ): void {
   const { gearBody } = gpu.programs
   gl.useProgram(gearBody.program)
@@ -113,36 +119,13 @@ function renderGearBody(
     gpu.matrices.model,
   )
 
-  switch (color) {
-    case 'pink': {
-      // prettier-ignore
-      gl.uniform4f(gearBody.uniforms.color, 1.0, 0.0, 1.0, 1.0)
-      break
-    }
-    case 'orange': {
-      // prettier-ignore
-      gl.uniform4f(gearBody.uniforms.color, 1.0, 0.647, 0.0, 1.0)
-      break
-    }
-    case 'blue': {
-      // prettier-ignore
-      gl.uniform4f(gearBody.uniforms.color, 0.0, 0.0, 1.0, 1.0)
-      break
-    }
-    case 'red': {
-      // prettier-ignore
-      gl.uniform4f(gearBody.uniforms.color, 1.0, 0.0, 0.0, 0.5)
-      break
-    }
-    case 'green': {
-      // prettier-ignore
-      gl.uniform4f(gearBody.uniforms.color, 0.0, 1.0, 0.0, 0.5)
-      break
-    }
-    default: {
-      invariant(false)
-    }
-  }
+  gl.uniform4f(
+    gearBody.uniforms.color,
+    color.r,
+    color.g,
+    color.b,
+    color.a,
+  )
 
   const buffer = gpu.buffers.gearBody[gear.radius]
   invariant(buffer)
