@@ -93,6 +93,7 @@ export enum HandType {
   ApplyFriction = 'apply-friction',
   Configure = 'configure',
   AddResource = 'add-resource',
+  AddBelt = 'add-belt',
 }
 
 export interface BuildHand {
@@ -133,12 +134,17 @@ export interface AddResourceHand {
   valid: boolean
 }
 
+export interface AddBeltHand {
+  type: HandType.AddBelt
+}
+
 export type Hand =
   | BuildHand
   | ApplyForceHand
   | ApplyFrictionHand
   | ConfigureHand
   | AddResourceHand
+  | AddBeltHand
 
 export type SetWorldFn = (world: World) => void
 
