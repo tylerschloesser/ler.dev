@@ -36,7 +36,6 @@ export function AddResource() {
       context.hand.position.y = y
 
       const tile = context.world.tiles[tileId]
-      console.log(tile, tileId)
       setValid((context.hand.valid = !tile?.resourceType))
     }
     context.cameraListeners.add(cameraListener)
@@ -55,7 +54,6 @@ export function AddResource() {
     let tile = context.world.tiles[tileId]
     invariant(!tile?.resourceType)
     if (!tile) {
-      console.log(`set tile id: ${tileId}`)
       tile = context.world.tiles[tileId] = {}
     }
     tile.resourceType = ResourceType.enum.Fuel
