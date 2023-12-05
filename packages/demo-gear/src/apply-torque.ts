@@ -10,7 +10,7 @@ import { getTotalMass } from './util.js'
 function getTorqueMultiplierMap(
   root: PartialGear,
   world: World,
-): Map<PartialGear, number> {
+): Map<PartialGear, number> | null {
   const torqueMultiplierMap = new Map<PartialGear, number>()
   torqueMultiplierMap.set(root, 1)
 
@@ -47,10 +47,12 @@ function getTorqueMultiplierMap(
       }
 
       if (torqueMultiplierMap.has(neighbor)) {
-        invariant(
-          torqueMultiplierMap.get(neighbor) ===
-            neighborMultiplier,
-        )
+        if (
+          torqueMultiplierMap.get(neighbor) !==
+          neighborMultiplier
+        ) {
+          return null
+        }
         continue
       }
 
@@ -73,6 +75,7 @@ function applyTorque(
     root,
     world,
   )
+  invariant(torqueMultiplierMap)
 
   let energyDiff = 0
 
