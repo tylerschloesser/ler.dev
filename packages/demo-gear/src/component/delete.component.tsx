@@ -2,11 +2,15 @@ import {
   Dispatch,
   SetStateAction,
   use,
+  useCallback,
   useEffect,
   useRef,
   useState,
 } from 'react'
-import { useNavigate } from 'react-router-dom'
+import {
+  useNavigate,
+  useSearchParams,
+} from 'react-router-dom'
 import invariant from 'tiny-invariant'
 import {
   CameraListenerFn,
@@ -86,15 +90,31 @@ function checkDelete(
   setDisabled(gearIds.size === 0 && tileIds.size === 0)
 }
 
-function useSize(): [
-  number,
-  Dispatch<SetStateAction<number>>,
-] {
-  const [size, setSize] = useState(MIN_SIZE)
+function useSize(): [number, (size: number) => void] {
+  const [searchParams, setSearchParams] = useSearchParams()
+
+  const size = parseInt(
+    searchParams.get('size') ?? `${MIN_SIZE}`,
+  )
 
   invariant(size >= MIN_SIZE)
   invariant(size <= MAX_SIZE)
   invariant(size === Math.abs(size))
+
+  const setSize = useCallback(
+    (next: number) => {
+      setSearchParams(
+        (prev) => {
+          prev.set('size', `${next}`)
+          return prev
+        },
+        {
+          replace: true,
+        },
+      )
+    },
+    [setSearchParams],
+  )
 
   return [size, setSize]
 }
