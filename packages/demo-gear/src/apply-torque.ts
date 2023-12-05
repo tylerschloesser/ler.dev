@@ -21,10 +21,6 @@ function getTorqueMultiplierMap(
       const neighbor = world.gears[c.gearId]
       invariant(neighbor)
 
-      if (torqueMultiplierMap.has(neighbor)) {
-        continue
-      }
-
       let neighborMultiplier: number
       switch (c.type) {
         case ConnectionType.enum.Adjacent:
@@ -43,6 +39,14 @@ function getTorqueMultiplierMap(
           break
         case ConnectionType.enum.Belt:
           invariant(false, 'TODO')
+      }
+
+      if (torqueMultiplierMap.has(neighbor)) {
+        invariant(
+          torqueMultiplierMap.get(neighbor) ===
+            neighborMultiplier,
+        )
+        continue
       }
 
       torqueMultiplierMap.set(neighbor, neighborMultiplier)
