@@ -7,7 +7,7 @@ import {
 } from './types.js'
 import { getTotalMass } from './util.js'
 
-function getTorqueMultiplierMap(
+export function getTorqueMultiplierMap(
   root: PartialGear,
   world: World,
 ): Map<PartialGear, number> | null {

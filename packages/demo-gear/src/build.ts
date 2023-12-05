@@ -1,16 +1,16 @@
 import invariant from 'tiny-invariant'
 import { addChainConnection, addGear } from './add-gear.js'
+import { getTorqueMultiplierMap } from './apply-torque.js'
 import { TWO_PI } from './const.js'
 import {
-  IAppContext,
   BuildHand,
   ConnectionType,
   Gear,
   HandType,
+  IAppContext,
 } from './types.js'
 import {
   getAdjacentConnections,
-  isNetworkValid,
   iterateGearTiles,
   iterateOverlappingGears,
 } from './util.js'
@@ -211,7 +211,16 @@ export function updateBuild(
   }
 
   if (valid) {
-    valid = isNetworkValid(hand.gear, context.world)
+    // Check the torque multiplier function to ensure
+    // gear ratios are valid.
+    //
+    // This works even though there are no connections from the
+    // existing gears to the root gear because we still
+    // iterate through all root gear connections.
+    //
+    valid =
+      getTorqueMultiplierMap(hand.gear, context.world) !==
+      null
   }
 
   if (hand.valid !== valid) {
