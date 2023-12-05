@@ -84,6 +84,7 @@ export function getBeltPathConnections(
         connections.push({
           type: ConnectionType.enum.Adjacent,
           gearId: gear.id,
+          multiplier: 1, // TODO
         })
       }
     }

@@ -194,18 +194,21 @@ export function updateBuild(
       hand.gear.connections.push({
         type: ConnectionType.enum.Chain,
         gearId: hand.chain.id,
+        multiplier: 1,
       })
     }
     if (chain) {
       hand.gear.connections.push({
         type: ConnectionType.enum.Chain,
         gearId: chain.id,
+        multiplier: 1,
       })
     }
     if (attach) {
       hand.gear.connections.push({
         type: ConnectionType.enum.Attach,
         gearId: attach.id,
+        multiplier: (attach.radius / hand.gear.radius) ** 2,
       })
     }
   }

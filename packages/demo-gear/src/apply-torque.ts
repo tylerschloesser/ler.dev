@@ -30,23 +30,8 @@ export function getTorqueMultiplierMap(
       const neighbor = world.gears[c.gearId]
       invariant(neighbor)
 
-      let neighborMultiplier: number
-      switch (c.type) {
-        case ConnectionType.enum.Adjacent:
-          neighborMultiplier =
-            tailMultiplier *
-            (neighbor.radius / tail.radius) *
-            -1
-          break
-        case ConnectionType.enum.Attach:
-          neighborMultiplier =
-            tailMultiplier *
-            (neighbor.radius / tail.radius) ** 2
-          break
-        case ConnectionType.enum.Chain:
-          neighborMultiplier = tailMultiplier
-          break
-      }
+      const neighborMultiplier =
+        tailMultiplier * c.multiplier
 
       if (torqueMultiplierMap.has(neighbor)) {
         if (

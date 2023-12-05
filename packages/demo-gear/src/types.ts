@@ -38,6 +38,7 @@ export type ConnectionType = z.infer<typeof ConnectionType>
 export const AdjacentConnection = z.strictObject({
   type: z.literal(ConnectionType.enum.Adjacent),
   gearId: GearId,
+  multiplier: z.number(),
 })
 export type AdjacentConnection = z.infer<
   typeof AdjacentConnection
@@ -46,6 +47,7 @@ export type AdjacentConnection = z.infer<
 export const ChainConnection = z.strictObject({
   type: z.literal(ConnectionType.enum.Chain),
   gearId: GearId,
+  multiplier: z.number(),
 })
 export type ChainConnection = z.infer<
   typeof ChainConnection
@@ -54,6 +56,7 @@ export type ChainConnection = z.infer<
 export const AttachConnection = z.strictObject({
   type: z.literal(ConnectionType.enum.Attach),
   gearId: GearId,
+  multiplier: z.number(),
 })
 export type AttachConnection = z.infer<
   typeof AttachConnection
@@ -62,6 +65,7 @@ export type AttachConnection = z.infer<
 export const BeltConnection = z.strictObject({
   type: z.literal(ConnectionType.enum.Belt),
   beltId: BeltId,
+  multiplier: z.number(),
 })
 export type BeltConnection = z.infer<typeof BeltConnection>
 

@@ -17,10 +17,12 @@ export function addChainConnection(
   gear1.connections.push({
     type: ConnectionType.enum.Chain,
     gearId: gear2.id,
+    multiplier: 1,
   })
   gear2.connections.push({
     type: ConnectionType.enum.Chain,
     gearId: gear1.id,
+    multiplier: 1,
   })
 
   // TODO consolidate with add gear
@@ -63,9 +65,11 @@ export function addGear(
     // add the a connection in the other direction
     const node = world.gears[connection.gearId]
     invariant(node)
+
     node.connections.push({
       type: connection.type,
       gearId,
+      multiplier: 1 / connection.multiplier,
     })
   }
 
