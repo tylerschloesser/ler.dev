@@ -203,6 +203,7 @@ export interface AddResourceHand {
 export interface AddBeltHand {
   type: HandType.AddBelt
   path: BeltPath
+  connections: Connection[]
   valid: boolean
 }
 

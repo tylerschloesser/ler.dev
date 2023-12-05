@@ -1,5 +1,11 @@
 import invariant from 'tiny-invariant'
-import { BeltPath, Connection, World } from './types.js'
+import {
+  BeltConnection,
+  BeltPath,
+  Connection,
+  ConnectionType,
+  World,
+} from './types.js'
 
 export function addBelt(
   world: World,
@@ -30,9 +36,57 @@ export function addBelt(
   }
 }
 
-export function getAdjacentGears(
+export function getBeltPathConnections(
   world: World,
   path: BeltPath,
 ): Connection[] {
-  return []
+  const connections: Connection[] = []
+
+  for (const cell of path) {
+    let check
+    switch (cell.direction) {
+      case 'x':
+        check = [
+          { dx: 0, dy: -1 },
+          { dx: 0, dy: 1 },
+        ]
+        break
+      case 'y':
+        check = [
+          { dx: -1, dy: 0 },
+          { dx: 1, dy: 0 },
+        ]
+        break
+      default:
+        invariant(false)
+    }
+
+    for (const { dx, dy } of check) {
+      // prettier-ignore
+      const tileId = `${cell.position.x + dx}.${cell.position.y + dy}`
+      const tile = world.tiles[tileId]
+
+      if (!tile?.gearId) {
+        continue
+      }
+      invariant(!tile.beltId)
+
+      const gear = world.gears[tile.gearId]
+      invariant(gear)
+
+      if (
+        gear.position.x + -dx * gear.radius ===
+          cell.position.x &&
+        gear.position.y + -dy * gear.radius ===
+          cell.position.y
+      ) {
+        connections.push({
+          type: ConnectionType.enum.Adjacent,
+          gearId: gear.id,
+        })
+      }
+    }
+  }
+
+  return connections
 }

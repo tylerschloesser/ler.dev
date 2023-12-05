@@ -3,11 +3,12 @@ import {
   useNavigate,
   useSearchParams,
 } from 'react-router-dom'
-import { addBelt } from '../belt.js'
+import { addBelt, getBeltPathConnections } from '../belt.js'
 import {
   AddBeltHand,
   BeltCellDirection,
   BeltPath,
+  Connection,
   HandType,
   IAppContext,
   SimpleVec2,
@@ -28,7 +29,10 @@ export function AddBelt() {
   const start = savedStart ?? cameraTilePosition
   const path = getPath(start, end, direction)
   const valid = isValid(context, path)
-  useHand(path, valid)
+  const connections = valid
+    ? getBeltPathConnections(context.world, path)
+    : []
+  useHand(path, valid, connections)
 
   return (
     <Overlay>
@@ -147,13 +151,18 @@ function getPath(
   return path
 }
 
-function useHand(path: BeltPath, valid: boolean): boolean {
+function useHand(
+  path: BeltPath,
+  valid: boolean,
+  connections: Connection[],
+): boolean {
   const context = use(AppContext)
 
   const hand = useRef<AddBeltHand>({
     type: HandType.AddBelt,
     path,
     valid,
+    connections,
   })
 
   useEffect(() => {
