@@ -12,6 +12,7 @@ import {
   useSearchParams,
 } from 'react-router-dom'
 import invariant from 'tiny-invariant'
+import { addBelt } from '../belt.js'
 import {
   Belt,
   BeltId,
@@ -252,17 +253,15 @@ export function Delete() {
                   delete tile.beltId
                   if (hand.current.tileIds.has(tileId)) {
                     if (newPath.length) {
-                      const first = newPath.at(0)
-                      invariant(first)
-                      const newBeltId = `belt.${first.x}.${first.y}`
-                      const newBelt: Belt = {
-                        id: newBeltId,
-                        path: newPath,
-                      }
-                      for (const newPosition of newPath) {
-                      }
+                      addBelt(context.world, newPath)
+                      newPath = []
                     }
+                  } else {
+                    newPath.push(position)
                   }
+                }
+                if (newPath.length) {
+                  addBelt(context.world, newPath)
                 }
               }
 
