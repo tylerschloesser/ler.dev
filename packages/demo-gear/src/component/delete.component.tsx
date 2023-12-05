@@ -1,4 +1,11 @@
-import { use, useEffect, useRef, useState } from 'react'
+import {
+  Dispatch,
+  SetStateAction,
+  use,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 import { useNavigate } from 'react-router-dom'
 import invariant from 'tiny-invariant'
 import {
@@ -10,7 +17,6 @@ import {
 } from '../types.js'
 import {
   iterateGearTileIds,
-  iterateGearTiles,
   iterateTiles,
 } from '../util.js'
 import { AppContext } from './context.js'
@@ -68,7 +74,11 @@ function checkDelete(
   )) {
     if (tile.gearId) {
       gearIds.add(tile.gearId)
-    } else if (tile.beltId || tile.resourceType) {
+    }
+    if (tile.attachedGearId) {
+      gearIds.add(tile.attachedGearId)
+    }
+    if (tile.beltId || tile.resourceType) {
       tileIds.add(tileId)
     }
   }
@@ -76,14 +86,23 @@ function checkDelete(
   setDisabled(gearIds.size === 0 && tileIds.size === 0)
 }
 
-export function Delete() {
-  const navigate = useNavigate()
+function useSize(): [
+  number,
+  Dispatch<SetStateAction<number>>,
+] {
   const [size, setSize] = useState(MIN_SIZE)
-  const [disabled, setDisabled] = useState(true)
 
   invariant(size >= MIN_SIZE)
   invariant(size <= MAX_SIZE)
   invariant(size === Math.abs(size))
+
+  return [size, setSize]
+}
+
+export function Delete() {
+  const navigate = useNavigate()
+  const [disabled, setDisabled] = useState(true)
+  const [size, setSize] = useSize()
 
   const position = useHandPosition(size)
 
@@ -154,6 +173,7 @@ export function Delete() {
                     invariant(tile.gearId === gearId)
                     if (tile.attachedGearId) {
                       tile.gearId = tile.attachedGearId
+                      delete tile.attachedGearId
                     } else {
                       delete tile.gearId
                     }
@@ -177,6 +197,20 @@ export function Delete() {
                 }
 
                 delete context.world.gears[gearId]
+              }
+
+              for (const tileId of hand.current.tileIds) {
+                const tile = context.world.tiles[tileId]
+                invariant(tile)
+                if (tile.beltId) {
+                  invariant(false, 'TODO delete belt')
+                }
+                if (tile.resourceType) {
+                  delete tile.resourceType
+                }
+                if (Object.keys(tile).length === 0) {
+                  delete context.world.tiles[tileId]
+                }
               }
 
               checkDelete(
