@@ -122,30 +122,45 @@ export const Gear = z.strictObject({
 })
 export type Gear = z.infer<typeof Gear>
 
-export const BeltCellDirection = z.union([
+export const BeltDirection = z.union([
   z.literal('x'),
   z.literal('y'),
 ])
-export type BeltCellDirection = z.infer<
-  typeof BeltCellDirection
->
+export type BeltDirection = z.infer<typeof BeltDirection>
 
-export const BeltCell = z.strictObject({
-  position: SimpleVec2,
-  direction: BeltCellDirection,
-})
-export type BeltCell = z.infer<typeof BeltCell>
-
-export const BeltPath = z.array(BeltCell)
+export const BeltPath = z.array(SimpleVec2)
 export type BeltPath = z.infer<typeof BeltPath>
 
-export const Belt = z.strictObject({
+export const BeltType = z.enum(['Straight', 'Intersection'])
+export type BeltType = z.infer<typeof BeltType>
+
+export const StraightBelt = z.strictObject({
+  type: z.literal(BeltType.enum.Straight),
   id: BeltId,
   path: BeltPath,
+  direction: BeltDirection,
   offset: z.number(),
   velocity: z.number(),
   connections: z.array(Connection),
 })
+export type StraightBelt = z.infer<typeof StraightBelt>
+
+export const IntersectionBelt = z.strictObject({
+  type: z.literal(BeltType.enum.Intersection),
+  id: BeltId,
+  position: SimpleVec2,
+  offset: z.number(),
+  velocity: z.number(),
+  connections: z.array(Connection),
+})
+export type IntersectionBelt = z.infer<
+  typeof IntersectionBelt
+>
+
+export const Belt = z.discriminatedUnion('type', [
+  StraightBelt,
+  IntersectionBelt,
+])
 export type Belt = z.infer<typeof Belt>
 
 export const World = z.strictObject({
@@ -204,11 +219,11 @@ export interface AddResourceHand {
   valid: boolean
 }
 
+export type PartialBelt = Omit<Belt, 'id' | 'velocity'>
+
 export interface AddBeltHand {
   type: HandType.AddBelt
-  path: BeltPath
-  connections: Connection[]
-  offset: number
+  belts: PartialBelt[]
   valid: boolean
 }
 
