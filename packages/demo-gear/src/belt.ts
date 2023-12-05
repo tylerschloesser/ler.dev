@@ -5,6 +5,7 @@ import {
   Connection,
   ConnectionType,
   IAppContext,
+  TileId,
   World,
 } from './types.js'
 
@@ -48,23 +49,72 @@ export function getBeltPathConnections(
     switch (cell.direction) {
       case 'x':
         check = [
-          { dx: 0, dy: -1 },
-          { dx: 0, dy: 1 },
+          {
+            // where is the tile we're going to check
+            // relative to the cell position
+            dc: { x: 0, y: -1 },
+
+            // how to scale the gear radius when finding
+            // the connection point
+            sr: { x: 0, y: 1 },
+
+            // how to adjust the gear position when
+            // finding the connection point
+            dg: { x: 0, y: 0 },
+          },
+          {
+            dc: { x: 1, y: -1 },
+            sr: { x: 0, y: 1 },
+            dg: { x: -1, y: 0 },
+          },
+          {
+            dc: { x: 0, y: 1 },
+            sr: { x: 0, y: -1 },
+            dg: { x: 0, y: -1 },
+          },
+          {
+            dc: { x: 1, y: 1 },
+            sr: { x: 0, y: -1 },
+            dg: { x: -1, y: -1 },
+          },
         ]
         break
       case 'y':
         check = [
-          { dx: -1, dy: 0 },
-          { dx: 1, dy: 0 },
+          {
+            dc: { x: -1, y: -1 },
+            sr: { x: 1, y: 0 },
+            dg: { x: 0, y: 0 },
+          },
+          {
+            dc: { x: -1, y: 0 },
+            sr: { x: 1, y: 0 },
+            dg: { x: 0, y: -1 },
+          },
+          {
+            dc: { x: 1, y: -1 },
+            sr: { x: -1, y: 0 },
+            dg: { x: -1, y: 0 },
+          },
+          {
+            dc: { x: 1, y: 0 },
+            sr: { x: -1, y: 0 },
+            dg: { x: -1, y: -1 },
+          },
         ]
         break
       default:
         invariant(false)
     }
 
-    for (const { dx, dy } of check) {
-      // prettier-ignore
-      const tileId = `${cell.position.x + dx}.${cell.position.y + dy}`
+    const cx = cell.position.x
+    const cy = cell.position.y
+
+    for (const { dc, sr, dg } of check) {
+      const tx = cx + dc.x
+      const ty = cy + dc.y
+      const tileId = `${tx}.${ty}`
+
       const tile = world.tiles[tileId]
 
       if (!tile?.gearId) {
@@ -75,12 +125,11 @@ export function getBeltPathConnections(
       const gear = world.gears[tile.gearId]
       invariant(gear)
 
-      if (
-        gear.position.x + -dx * gear.radius ===
-          cell.position.x &&
-        gear.position.y + -dy * gear.radius ===
-          cell.position.y
-      ) {
+      const gx = gear.position.x + dg.x + gear.radius * sr.x
+      const gy = gear.position.y + dg.y + gear.radius * sr.y
+
+      // TODO fix duplicates
+      if (gx === cx && gy === cy) {
         let multiplier: number = 1 // TODO
 
         connections.push({
