@@ -4,6 +4,8 @@ import {
   useSearchParams,
 } from 'react-router-dom'
 import invariant from 'tiny-invariant'
+import { addBelt } from '../belt.js'
+import { handleWheel } from '../camera.js'
 import {
   AddBeltHand,
   HandType,
@@ -76,22 +78,7 @@ export function AddBelt() {
           className={styles.button}
           onPointerUp={() => {
             if (!valid) return
-            const { tiles, belts } = context.world
-            const beltId = `belt.${start.x}.${start.y}`
-            invariant(belts[beltId] === undefined)
-            belts[beltId] = {
-              id: beltId,
-              path,
-            }
-            for (const { x, y } of path) {
-              const tileId = `${x}.${y}`
-              let tile = tiles[tileId]
-              if (!tile) {
-                tile = tiles[tileId] = {}
-              }
-              invariant(tile.beltId === undefined)
-              tile.beltId = beltId
-            }
+            addBelt(context.world, path)
             setSavedStart(null)
           }}
         >

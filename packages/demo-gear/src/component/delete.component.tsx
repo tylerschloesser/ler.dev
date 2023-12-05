@@ -13,6 +13,8 @@ import {
 } from 'react-router-dom'
 import invariant from 'tiny-invariant'
 import {
+  Belt,
+  BeltId,
   CameraListenerFn,
   DeleteHand,
   HandType,
@@ -219,17 +221,48 @@ export function Delete() {
                 delete context.world.gears[gearId]
               }
 
+              const beltIds = new Set<BeltId>()
+
               for (const tileId of hand.current.tileIds) {
                 const tile = context.world.tiles[tileId]
                 invariant(tile)
                 if (tile.beltId) {
-                  invariant(false, 'TODO delete belt')
+                  beltIds.add(tile.beltId)
                 }
                 if (tile.resourceType) {
                   delete tile.resourceType
                 }
                 if (Object.keys(tile).length === 0) {
                   delete context.world.tiles[tileId]
+                }
+              }
+
+              for (const beltId of beltIds) {
+                const belt = context.world.belts[beltId]
+                invariant(belt)
+                const { path: oldPath } = belt
+                delete context.world.belts[beltId]
+
+                let newPath: SimpleVec2[] = []
+                for (const position of oldPath) {
+                  const tileId = `${position.x}.${position.y}`
+                  const tile = context.world.tiles[tileId]
+                  invariant(tile)
+                  invariant(tile.beltId === beltId)
+                  delete tile.beltId
+                  if (hand.current.tileIds.has(tileId)) {
+                    if (newPath.length) {
+                      const first = newPath.at(0)
+                      invariant(first)
+                      const newBeltId = `belt.${first.x}.${first.y}`
+                      const newBelt: Belt = {
+                        id: newBeltId,
+                        path: newPath,
+                      }
+                      for (const newPosition of newPath) {
+                      }
+                    }
+                  }
                 }
               }
 
