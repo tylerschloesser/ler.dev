@@ -15,12 +15,7 @@ export function renderBeltHand(
   const color = hand.valid
     ? ADD_BELT_VALID
     : ADD_BELT_INVALID
-  renderBelt(
-    context,
-    gl,
-    gpu,
-    hand.path,
-    hand.offset,
-    color,
-  )
+  for (const belt of hand.belts) {
+    renderBelt(context, gl, gpu, belt, color)
+  }
 }

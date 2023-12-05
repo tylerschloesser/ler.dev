@@ -3,14 +3,15 @@ import {
   useNavigate,
   useSearchParams,
 } from 'react-router-dom'
-import { addBelt, getBeltPathConnections } from '../belt.js'
+import { addBelts } from '../belt.js'
 import {
   AddBeltHand,
-  BeltCellDirection,
+  BeltDirection,
   BeltPath,
-  Connection,
+  BeltType,
   HandType,
   IAppContext,
+  PartialBelt,
   SimpleVec2,
 } from '../types.js'
 import styles from './add-belt.module.scss'
@@ -27,13 +28,9 @@ export function AddBelt() {
   const [savedStart, setSavedStart] = useSavedStart()
   const end = !savedStart ? null : cameraTilePosition
   const start = savedStart ?? cameraTilePosition
-  const path = getPath(start, end, direction)
-  const valid = isValid(context, path)
-  const connections = valid
-    ? getBeltPathConnections(context.world, path)
-    : []
-  console.log(connections)
-  useHand(path, valid, connections)
+  const belts = getBelts(start, end, direction)
+  const valid = isValid(context, belts)
+  useHand(belts, valid)
 
   return (
     <Overlay>
@@ -74,7 +71,7 @@ export function AddBelt() {
           className={styles.button}
           onPointerUp={() => {
             if (!valid) return
-            addBelt(context.world, path)
+            addBelts(context.world, belts)
             setSavedStart(null)
           }}
         >
@@ -85,86 +82,75 @@ export function AddBelt() {
   )
 }
 
-function getPath(
+function getBelts(
   start: SimpleVec2,
   end: SimpleVec2 | null,
-  direction: BeltCellDirection,
-): BeltPath {
-  const path: BeltPath = []
+  direction: BeltDirection,
+): PartialBelt[] {
   const dx = end ? end.x - start.x : 0
   const dy = end ? end.y - start.y : 0
 
+  const belts: PartialBelt[] = []
+
   if (direction === 'x') {
+    let path: BeltPath = []
     for (
       let x = 0;
-      Math.abs(x) <= Math.abs(dx);
-      x += Math.sign(dx) || 1
+      x < Math.abs(dx) + (dy === 0 ? 0 : 1);
+      x += 1
     ) {
       path.push({
-        position: {
-          x: start.x + x,
-          y: start.y,
-        },
-        direction: 'x',
+        x: start.x + x * Math.sign(dx),
+        y: start.y,
       })
     }
-    for (
-      let y = Math.sign(dy) || 1;
-      Math.abs(y) <= Math.abs(dy);
-      y += Math.sign(dy) || 1
-    ) {
-      path.push({
-        position: {
-          x: end?.x ?? start.x,
-          y: start.y + y,
-        },
+    belts.push({
+      type: BeltType.enum.Straight,
+      connections: [], // TODO
+      direction,
+      offset: 0,
+      path,
+    })
+
+    if (dy !== 0) {
+      belts.push({
+        type: BeltType.enum.Intersection,
+        connections: [], // TODO
+        offset: 0,
+        position: { x: start.x + dx, y: start.y },
+      })
+
+      path = []
+      for (let y = 1; y < Math.abs(dy) + 1; y += 1) {
+        path.push({
+          x: start.x + dx,
+          y: y * Math.sign(dy),
+        })
+      }
+      belts.push({
+        type: BeltType.enum.Straight,
+        connections: [], // TODO
         direction: 'y',
+        offset: 0,
+        path,
       })
     }
   } else {
-    for (
-      let y = 0;
-      Math.abs(y) <= Math.abs(dy);
-      y += Math.sign(dy) || 1
-    ) {
-      path.push({
-        position: {
-          x: start.x,
-          y: start.y + y,
-        },
-        direction: 'y',
-      })
-    }
-    for (
-      let x = Math.sign(dx) || 1;
-      Math.abs(x) <= Math.abs(dx);
-      x += Math.sign(dx) || 1
-    ) {
-      path.push({
-        position: {
-          x: start.x + x,
-          y: end?.y ?? start.y,
-        },
-        direction: 'x',
-      })
-    }
+    // TODO
   }
-  return path
+  return belts
 }
 
 function useHand(
-  path: BeltPath,
+  belts: PartialBelt[],
   valid: boolean,
-  connections: Connection[],
 ): boolean {
   const context = use(AppContext)
 
   const hand = useRef<AddBeltHand>({
     type: HandType.AddBelt,
-    path,
+    belts,
     valid,
-    connections,
-    offset: 0,
   })
 
   useEffect(() => {
@@ -175,10 +161,9 @@ function useHand(
   }, [])
 
   useEffect(() => {
-    hand.current.path = path
+    hand.current.belts = belts
     hand.current.valid = valid
-    hand.current.connections = connections
-  }, [path, valid, connections])
+  }, [belts, valid])
 
   return valid
 }
@@ -214,31 +199,37 @@ function useSavedStart(): [
 
 function isValid(
   context: IAppContext,
-  path: BeltPath,
+  belts: PartialBelt[],
 ): boolean {
-  for (const { position } of path) {
-    const tileId = `${position.x}.${position.y}`
-    const tile = context.world.tiles[tileId]
-    if (!tile) continue
-    if (tile.gearId || tile.beltId) {
-      return false
+  for (const belt of belts) {
+    const path =
+      belt.type === BeltType.enum.Straight
+        ? belt.path
+        : [belt.position]
+    for (const position of path) {
+      const tileId = `${position.x}.${position.y}`
+      const tile = context.world.tiles[tileId]
+      if (!tile) continue
+      if (tile.gearId || tile.beltId) {
+        return false
+      }
     }
   }
   return true
 }
 
 function useDirection(): [
-  BeltCellDirection,
-  (direction: BeltCellDirection) => void,
+  BeltDirection,
+  (direction: BeltDirection) => void,
 ] {
   const [searchParams, setSearchParams] = useSearchParams()
 
-  const direction = BeltCellDirection.parse(
+  const direction = BeltDirection.parse(
     searchParams.get('direction') ?? 'x',
   )
 
   const setDirection = useCallback(
-    (next: BeltCellDirection) => {
+    (next: BeltDirection) => {
       setSearchParams(
         (prev) => {
           prev.set('direction', next)

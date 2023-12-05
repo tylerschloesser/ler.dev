@@ -219,7 +219,17 @@ export interface AddResourceHand {
   valid: boolean
 }
 
-export type PartialBelt = Omit<Belt, 'id' | 'velocity'>
+export const PartialBelt = z.discriminatedUnion('type', [
+  StraightBelt.omit({
+    id: true,
+    velocity: true,
+  }),
+  IntersectionBelt.omit({
+    id: true,
+    velocity: true,
+  }),
+])
+export type PartialBelt = z.infer<typeof PartialBelt>
 
 export interface AddBeltHand {
   type: HandType.AddBelt

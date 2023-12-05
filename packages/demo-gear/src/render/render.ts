@@ -8,7 +8,6 @@ import { iterateConnections } from '../util.js'
 import {
   ADD_RESOURCE_INVALID,
   ADD_RESOURCE_VALID,
-  BELT_COLOR,
   DELETE,
   GEAR_OUTLINE,
   TILE_OUTLINE,
@@ -59,7 +58,7 @@ export function render(
   }
 
   for (const belt of Object.values(context.world.belts)) {
-    renderBelt(context, gl, gpu, belt.path, belt.offset)
+    renderBelt(context, gl, gpu, belt)
   }
 
   const { hand } = context

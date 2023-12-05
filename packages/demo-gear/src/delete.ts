@@ -1,5 +1,4 @@
 import invariant from 'tiny-invariant'
-import { addBelt } from './belt.js'
 import {
   BeltId,
   BeltPath,
@@ -77,31 +76,31 @@ export function executeDelete(
     }
   }
 
-  for (const beltId of beltIds) {
-    const belt = context.world.belts[beltId]
-    invariant(belt)
-    const { path: oldPath } = belt
-    delete context.world.belts[beltId]
+  // for (const beltId of beltIds) {
+  //   const belt = context.world.belts[beltId]
+  //   invariant(belt)
+  //   const { path: oldPath } = belt
+  //   delete context.world.belts[beltId]
 
-    let newPath: BeltPath = []
-    for (const cell of oldPath) {
-      const { position } = cell
-      const tileId = `${position.x}.${position.y}`
-      const tile = context.world.tiles[tileId]
-      invariant(tile)
-      invariant(tile.beltId === beltId)
-      delete tile.beltId
-      if (hand.tileIds.has(tileId)) {
-        if (newPath.length) {
-          addBelt(context.world, newPath)
-          newPath = []
-        }
-      } else {
-        newPath.push(cell)
-      }
-    }
-    if (newPath.length) {
-      addBelt(context.world, newPath)
-    }
-  }
+  //   let newPath: BeltPath = []
+  //   for (const cell of oldPath) {
+  //     const { position } = cell
+  //     const tileId = `${position.x}.${position.y}`
+  //     const tile = context.world.tiles[tileId]
+  //     invariant(tile)
+  //     invariant(tile.beltId === beltId)
+  //     delete tile.beltId
+  //     if (hand.tileIds.has(tileId)) {
+  //       if (newPath.length) {
+  //         addBelt(context.world, newPath)
+  //         newPath = []
+  //       }
+  //     } else {
+  //       newPath.push(cell)
+  //     }
+  //   }
+  //   if (newPath.length) {
+  //     addBelt(context.world, newPath)
+  //   }
+  // }
 }
