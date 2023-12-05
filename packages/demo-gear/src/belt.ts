@@ -1,9 +1,11 @@
 import invariant from 'tiny-invariant'
 import {
+  AddBeltHand,
   BeltConnection,
   BeltPath,
   Connection,
   ConnectionType,
+  IAppContext,
   World,
 } from './types.js'
 
@@ -90,3 +92,8 @@ export function getBeltPathConnections(
 
   return connections
 }
+
+export function updateAddBeltProgress(
+  context: IAppContext,
+  hand: AddBeltHand,
+): void {}
