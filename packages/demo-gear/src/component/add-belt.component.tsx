@@ -197,17 +197,14 @@ function useSavedStart(): [
 
   const setStart = useCallback(
     (next: SimpleVec2 | null) => {
-      setSearchParams(
-        (prev) => {
-          if (next) {
-            prev.set('start', JSON.stringify(next))
-          } else {
-            prev.delete('start')
-          }
-          return prev
-        },
-        { replace: true },
-      )
+      setSearchParams((prev) => {
+        if (next) {
+          prev.set('start', JSON.stringify(next))
+        } else {
+          prev.delete('start')
+        }
+        return prev
+      })
     },
     [setSearchParams],
   )
@@ -247,7 +244,7 @@ function useDirection(): [
           prev.set('direction', next)
           return prev
         },
-        { replace: false },
+        { replace: true },
       )
     },
     [setSearchParams],
