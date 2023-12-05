@@ -9,7 +9,7 @@ export function renderResources(
   gl: WebGL2RenderingContext,
   gpu: GpuState,
 ): void {
-  const render = batchRenderRect(gl, gpu, FUEL_COLOR)
+  const render = batchRenderRect(gl, gpu)
 
   for (const [tileId, tile] of Object.entries(
     context.world.tiles,
@@ -24,6 +24,6 @@ export function renderResources(
     invariant(typeof x === 'number')
     invariant(typeof y === 'number')
 
-    render(x, y, 1, 1)
+    render(x, y, 1, 1, FUEL_COLOR)
   }
 }

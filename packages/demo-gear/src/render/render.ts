@@ -59,7 +59,7 @@ export function render(
   }
 
   for (const belt of Object.values(context.world.belts)) {
-    renderBelt(context, gl, gpu, belt.path, BELT_COLOR)
+    renderBelt(context, gl, gpu, belt.path)
   }
 
   const { hand } = context

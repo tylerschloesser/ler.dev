@@ -1,5 +1,9 @@
 import { Belt, IAppContext } from '../types.js'
-import { Color } from './color.js'
+import {
+  BELT_COLOR,
+  BELT_LINE_COLOR,
+  Color,
+} from './color.js'
 import { batchRenderRect } from './render-rect.js'
 import { GpuState } from './types.js'
 
@@ -8,11 +12,15 @@ export function renderBelt(
   gl: WebGL2RenderingContext,
   gpu: GpuState,
   path: Belt['path'],
-  color: Color,
+  tint?: Color,
 ) {
-  const render = batchRenderRect(gl, gpu, color)
+  const render = batchRenderRect(gl, gpu)
 
   for (const { x, y } of path) {
-    render(x, y, 1, 1)
+    render(x, y, 1, 1, BELT_COLOR)
+    render(x + 0.5 - 0.1 / 2, y, 0.1, 1, BELT_LINE_COLOR)
+    if (tint) {
+      render(x, y, 1, 1, tint)
+    }
   }
 }

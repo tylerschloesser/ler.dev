@@ -8,7 +8,6 @@ const v = vec3.create()
 export function batchRenderRect(
   gl: WebGL2RenderingContext,
   gpu: GpuState,
-  color: Color,
 ) {
   const { fillRect } = gpu.programs
   gl.useProgram(fillRect.program)
@@ -21,15 +20,21 @@ export function batchRenderRect(
     projection,
   )
 
-  gl.uniform4f(
-    fillRect.uniforms.color,
-    color.r,
-    color.g,
-    color.b,
-    color.a,
-  )
+  return (
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+    color: Color,
+  ) => {
+    gl.uniform4f(
+      fillRect.uniforms.color,
+      color.r,
+      color.g,
+      color.b,
+      color.a,
+    )
 
-  return (x: number, y: number, w: number, h: number) => {
     mat4.identity(model)
 
     v[0] = x
