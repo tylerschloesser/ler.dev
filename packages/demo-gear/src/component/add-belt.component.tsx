@@ -54,19 +54,14 @@ export function AddBelt() {
       >
         Back
       </button>
-      {end && (
-        <button
-          className={styles.button}
-          disabled={
-            start.x - end.x === 0 || start.y - end.y === 0
-          }
-          onPointerUp={() => {
-            setDirection(direction === 'x' ? 'y' : 'x')
-          }}
-        >
-          Flip
-        </button>
-      )}
+      <button
+        className={styles.button}
+        onPointerUp={() => {
+          setDirection(direction === 'x' ? 'y' : 'x')
+        }}
+      >
+        Rotate
+      </button>
       {!savedStart && (
         <button
           disabled={!valid}
