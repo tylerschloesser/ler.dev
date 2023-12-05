@@ -96,7 +96,7 @@ function getBelts(
     let path: BeltPath = []
     for (
       let x = 0;
-      x < Math.abs(dx) + (dy === 0 ? 0 : 1);
+      x < Math.abs(dx) + (dy === 0 ? 1 : 0);
       x += 1
     ) {
       path.push({
@@ -124,7 +124,7 @@ function getBelts(
       for (let y = 1; y < Math.abs(dy) + 1; y += 1) {
         path.push({
           x: start.x + dx,
-          y: y * Math.sign(dy),
+          y: start.y + y * Math.sign(dy),
         })
       }
       belts.push({
@@ -136,8 +136,51 @@ function getBelts(
       })
     }
   } else {
-    // TODO
+    let path: BeltPath = []
+    for (
+      let y = 0;
+      y < Math.abs(dy) + (dx === 0 ? 1 : 0);
+      y += 1
+    ) {
+      path.push({
+        x: start.x,
+        y: start.y + y * Math.sign(dy),
+      })
+    }
+    belts.push({
+      type: BeltType.enum.Straight,
+      connections: [], // TODO
+      direction,
+      offset: 0,
+      path,
+    })
+
+    if (dx !== 0) {
+      belts.push({
+        type: BeltType.enum.Intersection,
+        connections: [], // TODO
+        offset: 0,
+        position: { x: start.x, y: start.y + dy },
+      })
+
+      path = []
+      for (let x = 1; x < Math.abs(dx) + 1; x += 1) {
+        path.push({
+          x: start.x + x * Math.sign(dx),
+          y: start.y + dy,
+        })
+      }
+      belts.push({
+        type: BeltType.enum.Straight,
+        connections: [], // TODO
+        direction: 'x',
+        offset: 0,
+        path,
+      })
+    }
   }
+
+  console.log(belts)
   return belts
 }
 
