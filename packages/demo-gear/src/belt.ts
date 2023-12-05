@@ -61,21 +61,25 @@ export function getBeltPathConnections(
             // how to adjust the gear position when
             // finding the connection point
             dg: { x: 0, y: 0 },
+            multiplier: -1,
           },
           {
             dc: { x: 1, y: -1 },
             sr: { x: 0, y: 1 },
             dg: { x: -1, y: 0 },
+            multiplier: -1,
           },
           {
             dc: { x: 0, y: 1 },
             sr: { x: 0, y: -1 },
             dg: { x: 0, y: -1 },
+            multiplier: 1,
           },
           {
             dc: { x: 1, y: 1 },
             sr: { x: 0, y: -1 },
             dg: { x: -1, y: -1 },
+            multiplier: 1,
           },
         ]
         break
@@ -85,21 +89,25 @@ export function getBeltPathConnections(
             dc: { x: -1, y: -1 },
             sr: { x: 1, y: 0 },
             dg: { x: 0, y: 0 },
+            multiplier: 1,
           },
           {
             dc: { x: -1, y: 0 },
             sr: { x: 1, y: 0 },
             dg: { x: 0, y: -1 },
+            multiplier: 1,
           },
           {
             dc: { x: 1, y: -1 },
             sr: { x: -1, y: 0 },
             dg: { x: -1, y: 0 },
+            multiplier: -1,
           },
           {
             dc: { x: 1, y: 0 },
             sr: { x: -1, y: 0 },
             dg: { x: -1, y: -1 },
+            multiplier: -1,
           },
         ]
         break
@@ -110,7 +118,7 @@ export function getBeltPathConnections(
     const cx = cell.position.x
     const cy = cell.position.y
 
-    for (const { dc, sr, dg } of check) {
+    for (const { dc, sr, dg, multiplier } of check) {
       const tx = cx + dc.x
       const ty = cy + dc.y
       const tileId = `${tx}.${ty}`
@@ -130,8 +138,6 @@ export function getBeltPathConnections(
 
       // TODO fix duplicates
       if (gx === cx && gy === cy) {
-        let multiplier: number = 1 // TODO
-
         connections.push({
           type: ConnectionType.enum.Adjacent,
           gearId: gear.id,
@@ -157,7 +163,11 @@ export function updateAddBeltProgress(
     const gear = context.world.gears[connection.gearId]
     invariant(gear)
 
-    hand.offset = gear.angle * gear.radius
+    hand.offset =
+      (((gear.angle * gear.radius * connection.multiplier) %
+        1) +
+        1) %
+      1
   } else {
     hand.offset = 0
   }
