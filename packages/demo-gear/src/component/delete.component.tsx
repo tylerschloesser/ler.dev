@@ -5,9 +5,14 @@ import {
   CameraListenerFn,
   DeleteHand,
   HandType,
+  IAppContext,
   SimpleVec2,
 } from '../types.js'
-import { iterateTiles } from '../util.js'
+import {
+  iterateGearTileIds,
+  iterateGearTiles,
+  iterateTiles,
+} from '../util.js'
 import { AppContext } from './context.js'
 import styles from './delete.module.scss'
 import { Overlay } from './overlay.component.js'
@@ -45,6 +50,32 @@ function useHandPosition(size: number): SimpleVec2 {
   return position
 }
 
+function checkDelete(
+  context: IAppContext,
+  hand: DeleteHand,
+  setDisabled: (disabled: boolean) => void,
+): void {
+  const { position, size, gearIds, tileIds } = hand
+  gearIds.clear()
+  tileIds.clear()
+
+  for (const { tileId, tile } of iterateTiles(
+    position.x,
+    position.y,
+    size,
+    size,
+    context.world,
+  )) {
+    if (tile.gearId) {
+      gearIds.add(tile.gearId)
+    } else if (tile.beltId || tile.resourceType) {
+      tileIds.add(tileId)
+    }
+  }
+
+  setDisabled(gearIds.size === 0 && tileIds.size === 0)
+}
+
 export function Delete() {
   const navigate = useNavigate()
   const [size, setSize] = useState(MIN_SIZE)
@@ -75,28 +106,7 @@ export function Delete() {
   useEffect(() => {
     hand.current.size = size
     hand.current.position = position
-
-    hand.current.gearIds.clear()
-    hand.current.tileIds.clear()
-
-    for (const { tileId, tile } of iterateTiles(
-      position.x,
-      position.y,
-      size,
-      size,
-      context.world,
-    )) {
-      if (tile.gearId) {
-        hand.current.gearIds.add(tile.gearId)
-      } else if (tile.beltId || tile.resourceType) {
-        hand.current.tileIds.add(tileId)
-      }
-    }
-
-    setDisabled(
-      hand.current.gearIds.size === 0 &&
-        hand.current.tileIds.size === 0,
-    )
+    checkDelete(context, hand.current, setDisabled)
   }, [size, position])
 
   return (
@@ -126,7 +136,54 @@ export function Delete() {
             className={styles.button}
             onPointerUp={() => {
               if (disabled) return
-              console.log('TODO')
+
+              for (const gearId of hand.current.gearIds) {
+                const gear = context.world.gears[gearId]
+                invariant(gear)
+
+                for (const tileId of iterateGearTileIds(
+                  gear.position,
+                  gear.radius,
+                )) {
+                  const tile = context.world.tiles[tileId]
+                  invariant(tile)
+
+                  if (tile.attachedGearId === gearId) {
+                    delete tile.attachedGearId
+                  } else {
+                    invariant(tile.gearId === gearId)
+                    if (tile.attachedGearId) {
+                      tile.gearId = tile.attachedGearId
+                    } else {
+                      delete tile.gearId
+                    }
+                  }
+
+                  if (!tile.gearId && !tile.resourceType) {
+                    delete context.world.tiles[tileId]
+                  }
+                }
+
+                for (const connection of gear.connections) {
+                  const neighbor =
+                    context.world.gears[connection.gearId]
+                  invariant(neighbor)
+                  const index =
+                    neighbor.connections.findIndex(
+                      ({ gearId }) => gearId === gear.id,
+                    )
+                  invariant(index !== -1)
+                  neighbor.connections.splice(index, 1)
+                }
+
+                delete context.world.gears[gearId]
+              }
+
+              checkDelete(
+                context,
+                hand.current,
+                setDisabled,
+              )
             }}
             disabled={disabled}
           >
