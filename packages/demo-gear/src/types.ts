@@ -138,6 +138,8 @@ export type BeltPath = z.infer<typeof BeltPath>
 export const Belt = z.strictObject({
   id: BeltId,
   path: BeltPath,
+  offset: z.number(),
+  velocity: z.number(),
   connections: z.array(Connection),
 })
 export type Belt = z.infer<typeof Belt>

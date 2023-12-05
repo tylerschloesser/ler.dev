@@ -1,5 +1,5 @@
 import invariant from 'tiny-invariant'
-import { BeltPath, World } from './types.js'
+import { BeltPath, Connection, World } from './types.js'
 
 export function addBelt(
   world: World,
@@ -15,6 +15,8 @@ export function addBelt(
     id: beltId,
     path,
     connections: [],
+    velocity: 0,
+    offset: 0,
   }
   for (const cell of path) {
     const { x, y } = cell.position
@@ -26,4 +28,11 @@ export function addBelt(
     invariant(tile.beltId === undefined)
     tile.beltId = beltId
   }
+}
+
+export function getAdjacentGears(
+  world: World,
+  path: BeltPath,
+): Connection[] {
+  return []
 }
