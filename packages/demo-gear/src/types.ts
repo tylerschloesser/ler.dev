@@ -86,9 +86,18 @@ export const Gear = z.strictObject({
 })
 export type Gear = z.infer<typeof Gear>
 
+export const BeltCell = z.strictObject({
+  position: SimpleVec2,
+  direction: z.union([z.literal('x'), z.literal('y')]),
+})
+export type BeltCell = z.infer<typeof BeltCell>
+
+export const BeltPath = z.array(BeltCell)
+export type BeltPath = z.infer<typeof BeltPath>
+
 export const Belt = z.strictObject({
   id: BeltId,
-  path: z.array(SimpleVec2),
+  path: BeltPath,
 })
 export type Belt = z.infer<typeof Belt>
 
@@ -150,7 +159,7 @@ export interface AddResourceHand {
 
 export interface AddBeltHand {
   type: HandType.AddBelt
-  path: SimpleVec2[]
+  path: BeltPath
   valid: boolean
 }
 

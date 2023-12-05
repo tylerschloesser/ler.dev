@@ -3,11 +3,10 @@ import {
   useNavigate,
   useSearchParams,
 } from 'react-router-dom'
-import invariant from 'tiny-invariant'
 import { addBelt } from '../belt.js'
-import { handleWheel } from '../camera.js'
 import {
   AddBeltHand,
+  BeltPath,
   HandType,
   IAppContext,
   SimpleVec2,
@@ -93,8 +92,8 @@ function getPath(
   start: SimpleVec2,
   end: SimpleVec2 | null,
   direction: PathDirection,
-): SimpleVec2[] {
-  const path: SimpleVec2[] = []
+): BeltPath {
+  const path: BeltPath = []
   const dx = end ? end.x - start.x : 0
   const dy = end ? end.y - start.y : 0
 
@@ -105,8 +104,11 @@ function getPath(
       x += Math.sign(dx) || 1
     ) {
       path.push({
-        x: start.x + x,
-        y: start.y,
+        position: {
+          x: start.x + x,
+          y: start.y,
+        },
+        direction: 'x',
       })
     }
     for (
@@ -115,8 +117,11 @@ function getPath(
       y += Math.sign(dy) || 1
     ) {
       path.push({
-        x: end?.x ?? start.x,
-        y: start.y + y,
+        position: {
+          x: end?.x ?? start.x,
+          y: start.y + y,
+        },
+        direction: 'y',
       })
     }
   } else {
@@ -126,8 +131,11 @@ function getPath(
       y += Math.sign(dy) || 1
     ) {
       path.push({
-        x: start.x,
-        y: start.y + y,
+        position: {
+          x: start.x,
+          y: start.y + y,
+        },
+        direction: 'y',
       })
     }
     for (
@@ -136,18 +144,18 @@ function getPath(
       x += Math.sign(dx) || 1
     ) {
       path.push({
-        x: start.x + x,
-        y: end?.y ?? start.y,
+        position: {
+          x: start.x + x,
+          y: end?.y ?? start.y,
+        },
+        direction: 'x',
       })
     }
   }
   return path
 }
 
-function useHand(
-  path: SimpleVec2[],
-  valid: boolean,
-): boolean {
+function useHand(path: BeltPath, valid: boolean): boolean {
   const context = use(AppContext)
 
   const hand = useRef<AddBeltHand>({
@@ -199,9 +207,9 @@ function useSavedStart(): [
 
 function isValid(
   context: IAppContext,
-  path: SimpleVec2[],
+  path: BeltPath,
 ): boolean {
-  for (const position of path) {
+  for (const { position } of path) {
     const tileId = `${position.x}.${position.y}`
     const tile = context.world.tiles[tileId]
     if (!tile) continue

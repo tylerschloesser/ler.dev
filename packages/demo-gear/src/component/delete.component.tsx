@@ -1,6 +1,4 @@
 import {
-  Dispatch,
-  SetStateAction,
   use,
   useCallback,
   useEffect,
@@ -14,8 +12,8 @@ import {
 import invariant from 'tiny-invariant'
 import { addBelt } from '../belt.js'
 import {
-  Belt,
   BeltId,
+  BeltPath,
   CameraListenerFn,
   DeleteHand,
   HandType,
@@ -244,8 +242,9 @@ export function Delete() {
                 const { path: oldPath } = belt
                 delete context.world.belts[beltId]
 
-                let newPath: SimpleVec2[] = []
-                for (const position of oldPath) {
+                let newPath: BeltPath = []
+                for (const cell of oldPath) {
+                  const { position } = cell
                   const tileId = `${position.x}.${position.y}`
                   const tile = context.world.tiles[tileId]
                   invariant(tile)
@@ -257,7 +256,7 @@ export function Delete() {
                       newPath = []
                     }
                   } else {
-                    newPath.push(position)
+                    newPath.push(cell)
                   }
                 }
                 if (newPath.length) {
