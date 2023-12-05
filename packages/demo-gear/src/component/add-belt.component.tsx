@@ -1,8 +1,15 @@
-import { use, useEffect, useRef, useState } from 'react'
+import {
+  use,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 import {
   useNavigate,
   useSearchParams,
 } from 'react-router-dom'
+import * as z from 'zod'
 import { addBelt } from '../belt.js'
 import {
   AddBeltHand,
@@ -16,7 +23,11 @@ import { AppContext } from './context.js'
 import { Overlay } from './overlay.component.js'
 import { useCameraTilePosition } from './use-camera-tile-position.js'
 
-type PathDirection = 'x' | 'y'
+const PathDirection = z.union([
+  z.literal('x'),
+  z.literal('y'),
+])
+type PathDirection = z.infer<typeof PathDirection>
 
 export function AddBelt() {
   const context = use(AppContext)
@@ -184,19 +195,22 @@ function useSavedStart(): [
     saved = SimpleVec2.parse(JSON.parse(savedJson))
   }
 
-  const setStart = (next: SimpleVec2 | null) => {
-    setSearchParams(
-      (prev) => {
-        if (next) {
-          prev.set('start', JSON.stringify(next))
-        } else {
-          prev.delete('start')
-        }
-        return prev
-      },
-      { replace: true },
-    )
-  }
+  const setStart = useCallback(
+    (next: SimpleVec2 | null) => {
+      setSearchParams(
+        (prev) => {
+          if (next) {
+            prev.set('start', JSON.stringify(next))
+          } else {
+            prev.delete('start')
+          }
+          return prev
+        },
+        { replace: true },
+      )
+    },
+    [setSearchParams],
+  )
 
   return [saved, setStart]
 }
@@ -220,7 +234,24 @@ function useDirection(): [
   PathDirection,
   (direction: PathDirection) => void,
 ] {
-  const [direction, setDirection] =
-    useState<PathDirection>('x')
+  const [searchParams, setSearchParams] = useSearchParams()
+
+  const direction = PathDirection.parse(
+    searchParams.get('direction') ?? 'x',
+  )
+
+  const setDirection = useCallback(
+    (next: PathDirection) => {
+      setSearchParams(
+        (prev) => {
+          prev.set('direction', next)
+          return prev
+        },
+        { replace: false },
+      )
+    },
+    [setSearchParams],
+  )
+
   return [direction, setDirection]
 }
