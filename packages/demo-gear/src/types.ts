@@ -118,9 +118,17 @@ export const Gear = z.strictObject({
 })
 export type Gear = z.infer<typeof Gear>
 
+export const BeltCellDirection = z.union([
+  z.literal('x'),
+  z.literal('y'),
+])
+export type BeltCellDirection = z.infer<
+  typeof BeltCellDirection
+>
+
 export const BeltCell = z.strictObject({
   position: SimpleVec2,
-  direction: z.union([z.literal('x'), z.literal('y')]),
+  direction: BeltCellDirection,
 })
 export type BeltCell = z.infer<typeof BeltCell>
 

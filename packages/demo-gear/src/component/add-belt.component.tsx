@@ -3,10 +3,10 @@ import {
   useNavigate,
   useSearchParams,
 } from 'react-router-dom'
-import * as z from 'zod'
 import { addBelt } from '../belt.js'
 import {
   AddBeltHand,
+  BeltCellDirection,
   BeltPath,
   HandType,
   IAppContext,
@@ -16,12 +16,6 @@ import styles from './add-belt.module.scss'
 import { AppContext } from './context.js'
 import { Overlay } from './overlay.component.js'
 import { useCameraTilePosition } from './use-camera-tile-position.js'
-
-const PathDirection = z.union([
-  z.literal('x'),
-  z.literal('y'),
-])
-type PathDirection = z.infer<typeof PathDirection>
 
 export function AddBelt() {
   const context = use(AppContext)
@@ -89,7 +83,7 @@ export function AddBelt() {
 function getPath(
   start: SimpleVec2,
   end: SimpleVec2 | null,
-  direction: PathDirection,
+  direction: BeltCellDirection,
 ): BeltPath {
   const path: BeltPath = []
   const dx = end ? end.x - start.x : 0
@@ -222,17 +216,17 @@ function isValid(
 }
 
 function useDirection(): [
-  PathDirection,
-  (direction: PathDirection) => void,
+  BeltCellDirection,
+  (direction: BeltCellDirection) => void,
 ] {
   const [searchParams, setSearchParams] = useSearchParams()
 
-  const direction = PathDirection.parse(
+  const direction = BeltCellDirection.parse(
     searchParams.get('direction') ?? 'x',
   )
 
   const setDirection = useCallback(
-    (next: PathDirection) => {
+    (next: BeltCellDirection) => {
       setSearchParams(
         (prev) => {
           prev.set('direction', next)
