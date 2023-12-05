@@ -1,7 +1,7 @@
 import invariant from 'tiny-invariant'
 import { IAppContext } from '../types.js'
 import { FUEL_COLOR } from './color.js'
-import { renderRect } from './render-rect.js'
+import { batchRenderRect } from './render-rect.js'
 import { GpuState } from './types.js'
 
 export function renderResources(
@@ -9,6 +9,8 @@ export function renderResources(
   gl: WebGL2RenderingContext,
   gpu: GpuState,
 ): void {
+  const render = batchRenderRect(gl, gpu, FUEL_COLOR)
+
   for (const [tileId, tile] of Object.entries(
     context.world.tiles,
   )) {
@@ -22,6 +24,6 @@ export function renderResources(
     invariant(typeof x === 'number')
     invariant(typeof y === 'number')
 
-    renderRect(gl, gpu, x, y, 1, 1, FUEL_COLOR)
+    render(x, y, 1, 1)
   }
 }
