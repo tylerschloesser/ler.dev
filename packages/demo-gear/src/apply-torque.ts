@@ -23,6 +23,10 @@ export function getTorqueMultiplierMap(
     invariant(tailMultiplier !== undefined)
 
     for (const c of tail.connections) {
+      invariant(
+        c.type !== ConnectionType.enum.Belt,
+        'TODO support belt connections',
+      )
       const neighbor = world.gears[c.gearId]
       invariant(neighbor)
 
@@ -42,8 +46,6 @@ export function getTorqueMultiplierMap(
         case ConnectionType.enum.Chain:
           neighborMultiplier = tailMultiplier
           break
-        case ConnectionType.enum.Belt:
-          invariant(false, 'TODO')
       }
 
       if (torqueMultiplierMap.has(neighbor)) {

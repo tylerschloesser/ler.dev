@@ -243,12 +243,19 @@ export function updateBuildGearAngle(
     // prioritize setting angle based on the chain
     // because chain gears require identical angles
     connection = gear.connections.find(
-      (c) => c.gearId === hand.chain?.id,
+      (c) =>
+        c.type !== ConnectionType.enum.Belt &&
+        c.gearId === hand.chain?.id,
     )
     invariant(connection)
   }
 
   if (hand.valid && connection) {
+    invariant(
+      connection.type !== ConnectionType.enum.Belt,
+      'TODO support belt connections',
+    )
+
     // if valid, we can check any connected gear to get the angle
     const neighbor = context.world.gears[connection.gearId]
     invariant(neighbor)
@@ -263,8 +270,6 @@ export function updateBuildGearAngle(
           (TWO_PI - neighbor.angle) *
           (neighbor.radius / gear.radius)
         break
-      case ConnectionType.enum.Belt:
-        invariant(false, 'TODO')
     }
   } else {
     gear.angle = 0

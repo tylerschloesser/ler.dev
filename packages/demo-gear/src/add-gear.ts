@@ -26,6 +26,10 @@ export function addChainConnection(
   // TODO consolidate with add gear
   const totalMass = getTotalMass(gear1, context.world)
   for (const c of gear1.connections) {
+    invariant(
+      c.type !== ConnectionType.enum.Belt,
+      'TODO support belt connections',
+    )
     const neighbor = context.world.gears[c.gearId]
     invariant(neighbor)
     conserveAngularMomentum(
@@ -52,6 +56,10 @@ export function addGear(
   invariant(world.gears[gearId] === undefined)
 
   for (const connection of connections) {
+    invariant(
+      connection.type !== ConnectionType.enum.Belt,
+      'TODO support belt connections',
+    )
     // add the a connection in the other direction
     const node = world.gears[connection.gearId]
     invariant(node)
@@ -96,6 +104,10 @@ export function addGear(
 
   const totalMass = getTotalMass(gear, world)
   for (const c of gear.connections) {
+    invariant(
+      c.type !== ConnectionType.enum.Belt,
+      'TODO support belt connections',
+    )
     const neighbor = world.gears[c.gearId]
     invariant(neighbor)
     conserveAngularMomentum(
@@ -138,6 +150,10 @@ function conserveAngularMomentum(
     seen.add(tail.gear)
 
     for (const c of tail.gear.connections) {
+      invariant(
+        c.type !== ConnectionType.enum.Belt,
+        'TODO support belt connections',
+      )
       const neighbor = world.gears[c.gearId]
       invariant(neighbor)
 
@@ -153,8 +169,6 @@ function conserveAngularMomentum(
         case ConnectionType.enum.Attach:
           neighborMultiplier = 1
           break
-        case ConnectionType.enum.Belt:
-          invariant(false, 'TODO')
       }
 
       const multiplier =

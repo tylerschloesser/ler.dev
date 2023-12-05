@@ -15,6 +15,7 @@ import {
   BeltId,
   BeltPath,
   CameraListenerFn,
+  ConnectionType,
   DeleteHand,
   HandType,
   IAppContext,
@@ -206,12 +207,20 @@ export function Delete() {
                 }
 
                 for (const connection of gear.connections) {
+                  invariant(
+                    connection.type !==
+                      ConnectionType.enum.Belt,
+                    'TODO support belt connections',
+                  )
                   const neighbor =
                     context.world.gears[connection.gearId]
                   invariant(neighbor)
                   const index =
                     neighbor.connections.findIndex(
-                      ({ gearId }) => gearId === gear.id,
+                      (c) =>
+                        c.type !==
+                          ConnectionType.enum.Belt &&
+                        c.gearId === gear.id,
                     )
                   invariant(index !== -1)
                   neighbor.connections.splice(index, 1)

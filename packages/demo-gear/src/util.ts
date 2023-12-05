@@ -10,7 +10,6 @@ import {
   ConnectionType,
   Gear,
   GearId,
-  PartialGear,
   SimpleVec2,
   World,
 } from './types.js'
@@ -25,6 +24,10 @@ export function* iterateConnections(
   const seen = new Map<string, ConnectionType>()
   for (const gear of Object.values(gears)) {
     for (const connection of gear.connections) {
+      invariant(
+        connection.type !== ConnectionType.enum.Belt,
+        'TODO support belt connections',
+      )
       const id = getConnectionId(gear.id, connection.gearId)
       if (seen.has(id)) {
         // sanity check the connection type
@@ -62,6 +65,10 @@ export function* iterateNetwork(root: Gear, world: World) {
 
     const { connections } = node
     connections.forEach((connection) => {
+      invariant(
+        connection.type !== ConnectionType.enum.Belt,
+        'TODO support belt connections',
+      )
       const neighbor = world.gears[connection.gearId]
       invariant(neighbor)
       stack.push(neighbor)
@@ -289,6 +296,10 @@ export function getTotalMass(
     mass += tail.mass
 
     for (const c of tail.connections) {
+      invariant(
+        c.type !== ConnectionType.enum.Belt,
+        'TODO support belt connections',
+      )
       const neighbor = world.gears[c.gearId]
       invariant(neighbor)
       stack.push(neighbor)

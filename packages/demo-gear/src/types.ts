@@ -35,10 +35,42 @@ export const ConnectionType = z.enum([
 ])
 export type ConnectionType = z.infer<typeof ConnectionType>
 
-export const Connection = z.strictObject({
-  type: ConnectionType,
+export const AdjacentConnection = z.strictObject({
+  type: z.literal(ConnectionType.enum.Adjacent),
   gearId: GearId,
 })
+export type AdjacentConnection = z.infer<
+  typeof AdjacentConnection
+>
+
+export const ChainConnection = z.strictObject({
+  type: z.literal(ConnectionType.enum.Chain),
+  gearId: GearId,
+})
+export type ChainConnection = z.infer<
+  typeof ChainConnection
+>
+
+export const AttachConnection = z.strictObject({
+  type: z.literal(ConnectionType.enum.Attach),
+  gearId: GearId,
+})
+export type AttachConnection = z.infer<
+  typeof AttachConnection
+>
+
+export const BeltConnection = z.strictObject({
+  type: z.literal(ConnectionType.enum.Belt),
+  beltId: BeltId,
+})
+export type BeltConnection = z.infer<typeof BeltConnection>
+
+export const Connection = z.discriminatedUnion('type', [
+  AdjacentConnection,
+  ChainConnection,
+  AttachConnection,
+  BeltConnection,
+])
 export type Connection = z.infer<typeof Connection>
 
 export const GearBehaviorType = z.enum([
