@@ -81,10 +81,12 @@ export function getBeltPathConnections(
         gear.position.y + -dy * gear.radius ===
           cell.position.y
       ) {
+        let multiplier: number = 1 // TODO
+
         connections.push({
           type: ConnectionType.enum.Adjacent,
           gearId: gear.id,
-          multiplier: 1, // TODO
+          multiplier,
         })
       }
     }
