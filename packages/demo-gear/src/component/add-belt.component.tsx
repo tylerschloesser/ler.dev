@@ -32,6 +32,7 @@ export function AddBelt() {
   const connections = valid
     ? getBeltPathConnections(context.world, path)
     : []
+  console.log(connections)
   useHand(path, valid, connections)
 
   return (
@@ -163,7 +164,7 @@ function useHand(
     path,
     valid,
     connections,
-    progress: 0,
+    offset: 0,
   })
 
   useEffect(() => {
@@ -176,7 +177,8 @@ function useHand(
   useEffect(() => {
     hand.current.path = path
     hand.current.valid = valid
-  }, [path, valid])
+    hand.current.connections = connections
+  }, [path, valid, connections])
 
   return valid
 }

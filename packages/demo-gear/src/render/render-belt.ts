@@ -13,6 +13,7 @@ export function renderBelt(
   gl: WebGL2RenderingContext,
   gpu: GpuState,
   path: Belt['path'],
+  offset: number,
   tint?: Color,
 ) {
   const render = batchRenderRect(gl, gpu)
@@ -23,10 +24,10 @@ export function renderBelt(
   } of path) {
     render(x, y, 1, 1, BELT_COLOR)
     if (direction === 'x') {
-      render(x + 0.5 - 0.1 / 2, y, 0.1, 1, BELT_LINE_COLOR)
+      render(x + (offset % 1), y, 0.1, 1, BELT_LINE_COLOR)
     } else {
       invariant(direction === 'y')
-      render(x, y + 0.5 - 0.1 / 2, 1, 0.1, BELT_LINE_COLOR)
+      render(x, y + (offset % 1), 1, 0.1, BELT_LINE_COLOR)
     }
     if (tint) {
       render(x, y, 1, 1, tint)
