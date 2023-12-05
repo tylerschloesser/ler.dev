@@ -18,12 +18,19 @@ import { useCameraTilePosition } from './use-camera-tile-position.js'
 
 type PathDirection = 'x' | 'y'
 
+function useDirection(): [
+  PathDirection,
+  (direction: PathDirection) => void,
+] {
+  const [direction, setDirection] =
+    useState<PathDirection>('x')
+  return [direction, setDirection]
+}
+
 export function AddBelt() {
   const context = use(AppContext)
   const navigate = useNavigate()
-
-  const [direction, setDirection] =
-    useState<PathDirection>('x')
+  const [direction, setDirection] = useDirection()
 
   const cameraTilePosition = useCameraTilePosition()
   const [savedStart, setSavedStart] = useSavedStart()
