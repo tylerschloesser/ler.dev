@@ -14,6 +14,7 @@ export function addBelt(
   belts[beltId] = {
     id: beltId,
     path,
+    connections: [],
   }
   for (const cell of path) {
     const { x, y } = cell.position
