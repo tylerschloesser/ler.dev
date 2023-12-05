@@ -163,6 +163,7 @@ function useHand(
     path,
     valid,
     connections,
+    progress: 0,
   })
 
   useEffect(() => {

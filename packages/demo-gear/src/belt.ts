@@ -1,4 +1,5 @@
 import invariant from 'tiny-invariant'
+import { TWO_PI } from './const.js'
 import {
   AddBeltHand,
   BeltConnection,
@@ -96,4 +97,18 @@ export function getBeltPathConnections(
 export function updateAddBeltProgress(
   context: IAppContext,
   hand: AddBeltHand,
-): void {}
+): void {
+  if (hand.valid && hand.connections.length > 0) {
+    const connection = hand.connections.at(0)
+    invariant(
+      connection?.type === ConnectionType.enum.Adjacent,
+    )
+
+    const gear = context.world.gears[connection.gearId]
+    invariant(gear)
+
+    hand.progress = gear.angle * gear.radius
+  } else {
+    hand.progress = 0
+  }
+}

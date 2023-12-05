@@ -204,6 +204,7 @@ export interface AddBeltHand {
   type: HandType.AddBelt
   path: BeltPath
   connections: Connection[]
+  progress: number
   valid: boolean
 }
 
