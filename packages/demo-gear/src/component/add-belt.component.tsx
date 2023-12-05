@@ -199,14 +199,17 @@ function useSavedStart(): [
   }
 
   const setStart = (next: SimpleVec2 | null) => {
-    setSearchParams((prev) => {
-      if (next) {
-        prev.set('start', JSON.stringify(next))
-      } else {
-        prev.delete('start')
-      }
-      return prev
-    })
+    setSearchParams(
+      (prev) => {
+        if (next) {
+          prev.set('start', JSON.stringify(next))
+        } else {
+          prev.delete('start')
+        }
+        return prev
+      },
+      { replace: true },
+    )
   }
 
   return [saved, setStart]
