@@ -11,7 +11,7 @@ import { getTotalMass, iterateGearTileIds } from './util.js'
 export function addChainConnection(
   gear1: Gear,
   gear2: Gear,
-  _context: IAppContext,
+  context: IAppContext,
 ): void {
   // TODO validate
   gear1.connections.push({
@@ -22,6 +22,20 @@ export function addChainConnection(
     type: ConnectionType.enum.Chain,
     gearId: gear1.id,
   })
+
+  // TODO consolidate with add gear
+  const totalMass = getTotalMass(gear1, context.world)
+  for (const c of gear1.connections) {
+    const neighbor = context.world.gears[c.gearId]
+    invariant(neighbor)
+    conserveAngularMomentum(
+      neighbor,
+      context.world,
+      totalMass - gear1.mass,
+      totalMass,
+    )
+    break
+  }
 }
 
 export function addGear(

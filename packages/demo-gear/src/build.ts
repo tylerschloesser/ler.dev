@@ -91,7 +91,22 @@ export function executeBuild(
   if (gear?.radius === 1) {
     if (hand.chain) {
       invariant(gear !== hand.chain)
+
+      if (gear.velocity === 0) {
+        gear.angle = hand.chain.angle
+      } else if (hand.chain.velocity === 0) {
+        hand.chain.angle = gear.angle
+      } else {
+        // Doesn't work at the moment because need to propogate
+        // chain angle
+        invariant(
+          false,
+          'TODO allow two spinning gears to be connected by chain',
+        )
+      }
+
       addChainConnection(gear, hand.chain, context)
+
       hand.chain = null
     } else {
       hand.chain = gear
@@ -212,7 +227,18 @@ export function updateBuildGearAngle(
   hand: BuildHand,
 ): void {
   const { gear } = hand
-  const connection = gear.connections.at(0)
+
+  let connection = gear.connections.at(0)
+
+  if (hand.valid && hand.chain) {
+    // prioritize setting angle based on the chain
+    // because chain gears require identical angles
+    connection = gear.connections.find(
+      (c) => c.gearId === hand.chain?.id,
+    )
+    invariant(connection)
+  }
+
   if (hand.valid && connection) {
     // if valid, we can check any connected gear to get the angle
     const neighbor = context.world.gears[connection.gearId]
