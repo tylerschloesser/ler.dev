@@ -1,3 +1,4 @@
+import invariant from 'tiny-invariant'
 import { Belt, IAppContext } from '../types.js'
 import {
   BELT_COLOR,
@@ -24,6 +25,7 @@ export function renderBelt(
     if (direction === 'x') {
       render(x + 0.5 - 0.1 / 2, y, 0.1, 1, BELT_LINE_COLOR)
     } else {
+      invariant(direction === 'y')
       render(x, y + 0.5 - 0.1 / 2, 1, 0.1, BELT_LINE_COLOR)
     }
     if (tint) {
