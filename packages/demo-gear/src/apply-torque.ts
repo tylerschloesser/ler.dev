@@ -1,15 +1,20 @@
 import invariant from 'tiny-invariant'
-import { ConnectionType, Gear, World } from './types.js'
+import {
+  ConnectionType,
+  Gear,
+  PartialGear,
+  World,
+} from './types.js'
 import { getTotalMass } from './util.js'
 
 function getTorqueMultiplierMap(
-  root: Gear,
+  root: PartialGear,
   world: World,
-): Map<Gear, number> {
-  const torqueMultiplierMap = new Map<Gear, number>()
+): Map<PartialGear, number> {
+  const torqueMultiplierMap = new Map<PartialGear, number>()
   torqueMultiplierMap.set(root, 1)
 
-  const stack = new Array<Gear>(root)
+  const stack = new Array<PartialGear>(root)
   while (stack.length) {
     const tail = stack.pop()
     invariant(tail)
