@@ -3,7 +3,7 @@ import {
   useNavigate,
   useSearchParams,
 } from 'react-router-dom'
-import { addBelts } from '../belt.js'
+import { addBelts, getBeltConnections } from '../belt.js'
 import {
   AddBeltHand,
   BeltDirection,
@@ -13,6 +13,7 @@ import {
   IAppContext,
   PartialBelt,
   SimpleVec2,
+  World,
 } from '../types.js'
 import styles from './add-belt.module.scss'
 import { AppContext } from './context.js'
@@ -28,7 +29,12 @@ export function AddBelt() {
   const [savedStart, setSavedStart] = useSavedStart()
   const end = !savedStart ? null : cameraTilePosition
   const start = savedStart ?? cameraTilePosition
-  const belts = getBelts(start, end, direction)
+  const belts = getBelts(
+    context.world,
+    start,
+    end,
+    direction,
+  )
   const valid = isValid(context, belts)
   useHand(belts, valid)
 
@@ -83,6 +89,7 @@ export function AddBelt() {
 }
 
 function getBelts(
+  world: World,
   start: SimpleVec2,
   end: SimpleVec2 | null,
   direction: BeltDirection,
@@ -106,7 +113,11 @@ function getBelts(
     }
     belts.push({
       type: BeltType.enum.Straight,
-      connections: [], // TODO
+      connections: getBeltConnections(
+        world,
+        path,
+        direction,
+      ),
       direction,
       offset: 0,
       path,
@@ -115,7 +126,7 @@ function getBelts(
     if (dy !== 0) {
       belts.push({
         type: BeltType.enum.Intersection,
-        connections: [], // TODO
+        connections: [],
         offset: 0,
         position: { x: start.x + dx, y: start.y },
       })
@@ -129,7 +140,7 @@ function getBelts(
       }
       belts.push({
         type: BeltType.enum.Straight,
-        connections: [], // TODO
+        connections: getBeltConnections(world, path, 'y'),
         direction: 'y',
         offset: 0,
         path,
@@ -149,7 +160,11 @@ function getBelts(
     }
     belts.push({
       type: BeltType.enum.Straight,
-      connections: [], // TODO
+      connections: getBeltConnections(
+        world,
+        path,
+        direction,
+      ),
       direction,
       offset: 0,
       path,
@@ -158,7 +173,7 @@ function getBelts(
     if (dx !== 0) {
       belts.push({
         type: BeltType.enum.Intersection,
-        connections: [], // TODO
+        connections: [],
         offset: 0,
         position: { x: start.x, y: start.y + dy },
       })
@@ -172,7 +187,7 @@ function getBelts(
       }
       belts.push({
         type: BeltType.enum.Straight,
-        connections: [], // TODO
+        connections: getBeltConnections(world, path, 'x'),
         direction: 'x',
         offset: 0,
         path,

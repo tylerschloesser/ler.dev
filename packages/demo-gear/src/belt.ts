@@ -1,6 +1,8 @@
 import invariant from 'tiny-invariant'
 import {
   AddBeltHand,
+  Belt,
+  BeltDirection,
   BeltPath,
   BeltType,
   Connection,
@@ -42,117 +44,110 @@ export function addBelts(
   }
 }
 
-// export function getBeltPathConnections(
-//   world: World,
-//   path: BeltPath,
-// ): Connection[] {
-//   const connections: Connection[] = []
-//
-//   for (const cell of path) {
-//     let check
-//     switch (cell.direction) {
-//       case 'x':
-//         check = [
-//           {
-//             // where is the tile we're going to check
-//             // relative to the cell position
-//             dc: { x: 0, y: -1 },
-//
-//             // how to scale the gear radius when finding
-//             // the connection point
-//             sr: { x: 0, y: 1 },
-//
-//             // how to adjust the gear position when
-//             // finding the connection point
-//             dg: { x: 0, y: 0 },
-//             multiplier: -1,
-//           },
-//           {
-//             dc: { x: 1, y: -1 },
-//             sr: { x: 0, y: 1 },
-//             dg: { x: -1, y: 0 },
-//             multiplier: -1,
-//           },
-//           {
-//             dc: { x: 0, y: 1 },
-//             sr: { x: 0, y: -1 },
-//             dg: { x: 0, y: -1 },
-//             multiplier: 1,
-//           },
-//           {
-//             dc: { x: 1, y: 1 },
-//             sr: { x: 0, y: -1 },
-//             dg: { x: -1, y: -1 },
-//             multiplier: 1,
-//           },
-//         ]
-//         break
-//       case 'y':
-//         check = [
-//           {
-//             dc: { x: -1, y: -1 },
-//             sr: { x: 1, y: 0 },
-//             dg: { x: 0, y: 0 },
-//             multiplier: 1,
-//           },
-//           {
-//             dc: { x: -1, y: 0 },
-//             sr: { x: 1, y: 0 },
-//             dg: { x: 0, y: -1 },
-//             multiplier: 1,
-//           },
-//           {
-//             dc: { x: 1, y: -1 },
-//             sr: { x: -1, y: 0 },
-//             dg: { x: -1, y: 0 },
-//             multiplier: -1,
-//           },
-//           {
-//             dc: { x: 1, y: 0 },
-//             sr: { x: -1, y: 0 },
-//             dg: { x: -1, y: -1 },
-//             multiplier: -1,
-//           },
-//         ]
-//         break
-//       default:
-//         invariant(false)
-//     }
-//
-//     const cx = cell.position.x
-//     const cy = cell.position.y
-//
-//     for (const { dc, sr, dg, multiplier } of check) {
-//       const tx = cx + dc.x
-//       const ty = cy + dc.y
-//       const tileId = `${tx}.${ty}`
-//
-//       const tile = world.tiles[tileId]
-//
-//       if (!tile?.gearId) {
-//         continue
-//       }
-//       invariant(!tile.beltId)
-//
-//       const gear = world.gears[tile.gearId]
-//       invariant(gear)
-//
-//       const gx = gear.position.x + dg.x + gear.radius * sr.x
-//       const gy = gear.position.y + dg.y + gear.radius * sr.y
-//
-//       // TODO fix duplicates
-//       if (gx === cx && gy === cy) {
-//         connections.push({
-//           type: ConnectionType.enum.Adjacent,
-//           gearId: gear.id,
-//           multiplier,
-//         })
-//       }
-//     }
-//   }
-//
-//   return connections
-// }
+export function getBeltConnections(
+  world: World,
+  path: BeltPath,
+  direction: BeltDirection,
+): Connection[] {
+  const connections: Connection[] = []
+
+  for (const position of path) {
+    let check
+    switch (direction) {
+      case 'x':
+        check = [
+          {
+            // where is the tile we're going to check
+            // relative to the cell position
+            dc: { x: 0, y: -1 },
+
+            // how to scale the gear radius when finding
+            // the connection point
+            sr: { x: 0, y: 1 },
+
+            // how to adjust the gear position when
+            // finding the connection point
+            dg: { x: 0, y: 0 },
+          },
+          {
+            dc: { x: 1, y: -1 },
+            sr: { x: 0, y: 1 },
+            dg: { x: -1, y: 0 },
+          },
+          {
+            dc: { x: 0, y: 1 },
+            sr: { x: 0, y: -1 },
+            dg: { x: 0, y: -1 },
+          },
+          {
+            dc: { x: 1, y: 1 },
+            sr: { x: 0, y: -1 },
+            dg: { x: -1, y: -1 },
+          },
+        ]
+        break
+      case 'y':
+        check = [
+          {
+            dc: { x: -1, y: -1 },
+            sr: { x: 1, y: 0 },
+            dg: { x: 0, y: 0 },
+          },
+          {
+            dc: { x: -1, y: 0 },
+            sr: { x: 1, y: 0 },
+            dg: { x: 0, y: -1 },
+          },
+          {
+            dc: { x: 1, y: -1 },
+            sr: { x: -1, y: 0 },
+            dg: { x: -1, y: 0 },
+          },
+          {
+            dc: { x: 1, y: 0 },
+            sr: { x: -1, y: 0 },
+            dg: { x: -1, y: -1 },
+          },
+        ]
+        break
+      default:
+        invariant(false)
+    }
+
+    const cx = position.x
+    const cy = position.y
+
+    for (const { dc, sr, dg } of check) {
+      const tx = cx + dc.x
+      const ty = cy + dc.y
+      const tileId = `${tx}.${ty}`
+
+      const tile = world.tiles[tileId]
+
+      if (!tile?.gearId) {
+        continue
+      }
+      invariant(!tile.beltId)
+
+      const gear = world.gears[tile.gearId]
+      invariant(gear)
+
+      const gx = gear.position.x + dg.x + gear.radius * sr.x
+      const gy = gear.position.y + dg.y + gear.radius * sr.y
+
+      // TODO fix duplicates
+      if (gx === cx && gy === cy) {
+        connections.push({
+          type: ConnectionType.enum.Adjacent,
+          gearId: gear.id,
+          multiplier: 1, // TODO
+        })
+      }
+    }
+  }
+
+  return connections
+}
 
 export function updateAddBeltProgress(
   context: IAppContext,
