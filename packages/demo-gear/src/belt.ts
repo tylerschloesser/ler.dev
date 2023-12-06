@@ -161,6 +161,7 @@ export function getBeltConnections(
 export function updateAddBeltProgress(
   context: IAppContext,
   hand: AddBeltHand,
+  elapsed: number,
 ): void {
   for (const belt of hand.belts) {
     if (hand.valid && belt.connections.length > 0) {
@@ -173,7 +174,11 @@ export function updateAddBeltProgress(
       invariant(gear)
 
       belt.offset = mod(
-        gear.angle * gear.radius * first.multiplier,
+        belt.offset +
+          gear.velocity *
+            gear.radius *
+            elapsed *
+            first.multiplier,
         1,
       )
     } else {
