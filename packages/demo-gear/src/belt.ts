@@ -11,6 +11,7 @@ import {
   PartialBelt,
   World,
 } from './types.js'
+import { mod } from './util.js'
 
 export function addBelts(
   world: World,
@@ -171,8 +172,10 @@ export function updateAddBeltProgress(
       const gear = context.world.gears[first.gearId]
       invariant(gear)
 
-      belt.offset =
-        gear.angle * gear.radius * first.multiplier
+      belt.offset = mod(
+        gear.angle * gear.radius * first.multiplier,
+        1,
+      )
     } else {
       belt.offset = 0
     }
