@@ -8,6 +8,7 @@ import {
   BELT_COLOR,
   BELT_LINE_COLOR,
   Color,
+  INTERSECTION_BELT_COLOR,
 } from './color.js'
 import { batchRenderRect } from './render-rect.js'
 import { GpuState } from './types.js'
@@ -48,6 +49,10 @@ export function renderBelt(
     }
   } else {
     invariant(belt.type === BeltType.enum.Intersection)
-    // TODO
+    const { x, y } = belt.position
+    render(x, y, 1, 1, INTERSECTION_BELT_COLOR)
+    if (tint) {
+      render(x, y, 1, 1, tint)
+    }
   }
 }
