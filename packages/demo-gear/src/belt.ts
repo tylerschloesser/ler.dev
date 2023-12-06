@@ -68,21 +68,25 @@ export function getBeltConnections(
             // how to adjust the gear position when
             // finding the connection point
             dg: { x: 0, y: 0 },
+            multiplier: -1,
           },
           {
             dc: { x: 1, y: -1 },
             sr: { x: 0, y: 1 },
             dg: { x: -1, y: 0 },
+            multiplier: -1,
           },
           {
             dc: { x: 0, y: 1 },
             sr: { x: 0, y: -1 },
             dg: { x: 0, y: -1 },
+            multiplier: 1,
           },
           {
             dc: { x: 1, y: 1 },
             sr: { x: 0, y: -1 },
             dg: { x: -1, y: -1 },
+            multiplier: 1,
           },
         ]
         break
@@ -92,21 +96,25 @@ export function getBeltConnections(
             dc: { x: -1, y: -1 },
             sr: { x: 1, y: 0 },
             dg: { x: 0, y: 0 },
+            multiplier: 1,
           },
           {
             dc: { x: -1, y: 0 },
             sr: { x: 1, y: 0 },
             dg: { x: 0, y: -1 },
+            multiplier: 1,
           },
           {
             dc: { x: 1, y: -1 },
             sr: { x: -1, y: 0 },
             dg: { x: -1, y: 0 },
+            multiplier: -1,
           },
           {
             dc: { x: 1, y: 0 },
             sr: { x: -1, y: 0 },
             dg: { x: -1, y: -1 },
+            multiplier: -1,
           },
         ]
         break
@@ -117,7 +125,7 @@ export function getBeltConnections(
     const cx = position.x
     const cy = position.y
 
-    for (const { dc, sr, dg } of check) {
+    for (const { dc, sr, dg, multiplier } of check) {
       const tx = cx + dc.x
       const ty = cy + dc.y
       const tileId = `${tx}.${ty}`
@@ -140,7 +148,7 @@ export function getBeltConnections(
         connections.push({
           type: ConnectionType.enum.Adjacent,
           gearId: gear.id,
-          multiplier: 1, // TODO
+          multiplier,
         })
       }
     }
@@ -163,7 +171,8 @@ export function updateAddBeltProgress(
       const gear = context.world.gears[first.gearId]
       invariant(gear)
 
-      belt.offset = gear.angle * gear.radius
+      belt.offset =
+        gear.angle * gear.radius * first.multiplier
     } else {
       belt.offset = 0
     }
