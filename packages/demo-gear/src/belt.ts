@@ -153,21 +153,19 @@ export function updateAddBeltProgress(
   context: IAppContext,
   hand: AddBeltHand,
 ): void {
-  //   if (hand.valid && hand.connections.length > 0) {
-  //     const connection = hand.connections.at(0)
-  //     invariant(
-  //       connection?.type === ConnectionType.enum.Adjacent,
-  //     )
-  //
-  //     const gear = context.world.gears[connection.gearId]
-  //     invariant(gear)
-  //
-  //     hand.offset =
-  //       (((gear.angle * gear.radius * connection.multiplier) %
-  //         1) +
-  //         1) %
-  //       1
-  //   } else {
-  //     hand.offset = 0
-  //   }
+  for (const belt of hand.belts) {
+    if (hand.valid && belt.connections.length > 0) {
+      const first = belt.connections.at(0)
+      invariant(first)
+
+      invariant(first.type === ConnectionType.enum.Adjacent)
+
+      const gear = context.world.gears[first.gearId]
+      invariant(gear)
+
+      belt.offset = gear.angle * gear.radius
+    } else {
+      belt.offset = 0
+    }
+  }
 }
