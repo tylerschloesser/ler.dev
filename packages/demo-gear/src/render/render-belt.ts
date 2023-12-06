@@ -23,25 +23,28 @@ export function renderBelt(
   const render = batchRenderRect(gl, gpu)
 
   if (belt.type === BeltType.enum.Straight) {
+    invariant(belt.offset >= 0)
+    invariant(belt.offset < 1)
     for (const { x, y } of belt.path) {
       render(x, y, 1, 1, BELT_COLOR)
+      const lineWidth = 0.1
       if (belt.direction === 'x') {
         render(
-          x + (belt.offset % 1),
+          x + belt.offset,
           y,
-          0.1,
+          lineWidth,
+          1,
+          BELT_LINE_COLOR,
+        )
+        render(
+          -1 + x + belt.offset,
+          y,
+          lineWidth,
           1,
           BELT_LINE_COLOR,
         )
       } else {
         invariant(belt.direction === 'y')
-        render(
-          x,
-          y + (belt.offset % 1),
-          1,
-          0.1,
-          BELT_LINE_COLOR,
-        )
       }
       if (tint) {
         render(x, y, 1, 1, tint)
