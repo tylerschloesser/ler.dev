@@ -75,9 +75,6 @@ function checkDelete(
     if (tile.gearId) {
       gearIds.add(tile.gearId)
     }
-    if (tile.attachedGearId) {
-      gearIds.add(tile.attachedGearId)
-    }
     if (tile.beltId || tile.resourceType) {
       tileIds.add(tileId)
     }

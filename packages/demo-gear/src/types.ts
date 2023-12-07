@@ -27,7 +27,6 @@ export type ResourceType = z.infer<typeof ResourceType>
 
 export const Tile = z.strictObject({
   gearId: GearId.optional(),
-  attachedGearId: GearId.optional(),
   resourceType: ResourceType.optional(),
   beltId: BeltId.optional(),
 })

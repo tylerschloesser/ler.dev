@@ -101,9 +101,8 @@ export function addGear(
     let tile = world.tiles[tileId]
 
     if (attach) {
-      invariant(tile?.gearId)
-      invariant(tile?.attachedGearId === undefined)
-      tile.attachedGearId = gearId
+      invariant(tile?.gearId === attach.id)
+      tile.gearId = gearId
     } else {
       invariant(tile === undefined)
       tile = world.tiles[tileId] = { gearId }

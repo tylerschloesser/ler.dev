@@ -11,53 +11,53 @@ export function executeDelete(
   context: IAppContext,
   hand: DeleteHand,
 ): void {
-  for (const gearId of hand.gearIds) {
-    const gear = context.world.gears[gearId]
-    invariant(gear)
+  // for (const gearId of hand.gearIds) {
+  //   const gear = context.world.gears[gearId]
+  //   invariant(gear)
 
-    for (const tileId of iterateGearTileIds(
-      gear.center,
-      gear.radius,
-    )) {
-      const tile = context.world.tiles[tileId]
-      invariant(tile)
+  //   for (const tileId of iterateGearTileIds(
+  //     gear.center,
+  //     gear.radius,
+  //   )) {
+  //     const tile = context.world.tiles[tileId]
+  //     invariant(tile)
 
-      if (tile.attachedGearId === gearId) {
-        delete tile.attachedGearId
-      } else {
-        invariant(tile.gearId === gearId)
-        if (tile.attachedGearId) {
-          tile.gearId = tile.attachedGearId
-          delete tile.attachedGearId
-        } else {
-          delete tile.gearId
-        }
-      }
+  //     if (tile.attachedGearId === gearId) {
+  //       delete tile.attachedGearId
+  //     } else {
+  //       invariant(tile.gearId === gearId)
+  //       if (tile.attachedGearId) {
+  //         tile.gearId = tile.attachedGearId
+  //         delete tile.attachedGearId
+  //       } else {
+  //         delete tile.gearId
+  //       }
+  //     }
 
-      if (!tile.gearId && !tile.resourceType) {
-        delete context.world.tiles[tileId]
-      }
-    }
+  //     if (!tile.gearId && !tile.resourceType) {
+  //       delete context.world.tiles[tileId]
+  //     }
+  //   }
 
-    for (const connection of gear.connections) {
-      invariant(
-        connection.type !== ConnectionType.enum.Belt,
-        'TODO support belt connections',
-      )
-      const neighbor =
-        context.world.gears[connection.gearId]
-      invariant(neighbor)
-      const index = neighbor.connections.findIndex(
-        (c) =>
-          c.type !== ConnectionType.enum.Belt &&
-          c.gearId === gear.id,
-      )
-      invariant(index !== -1)
-      neighbor.connections.splice(index, 1)
-    }
+  //   for (const connection of gear.connections) {
+  //     invariant(
+  //       connection.type !== ConnectionType.enum.Belt,
+  //       'TODO support belt connections',
+  //     )
+  //     const neighbor =
+  //       context.world.gears[connection.gearId]
+  //     invariant(neighbor)
+  //     const index = neighbor.connections.findIndex(
+  //       (c) =>
+  //         c.type !== ConnectionType.enum.Belt &&
+  //         c.gearId === gear.id,
+  //     )
+  //     invariant(index !== -1)
+  //     neighbor.connections.splice(index, 1)
+  //   }
 
-    delete context.world.gears[gearId]
-  }
+  //   delete context.world.gears[gearId]
+  // }
 
   const beltIds = new Set<BeltId>()
 

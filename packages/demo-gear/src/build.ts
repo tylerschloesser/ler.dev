@@ -82,9 +82,7 @@ export function executeBuild(
   const tile = context.world.tiles[tileId]
 
   let gear: Gear | undefined
-  if (tile?.attachedGearId) {
-    gear = context.world.gears[tile.attachedGearId]
-  } else if (tile?.gearId) {
+  if (tile?.gearId) {
     gear = context.world.gears[tile.gearId]
   }
 

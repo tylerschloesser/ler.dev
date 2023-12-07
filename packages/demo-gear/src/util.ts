@@ -136,17 +136,6 @@ export function* iterateOverlappingGears(
     if (!tile.gearId) {
       continue
     }
-
-    if (
-      tile.attachedGearId &&
-      !seen.has(tile.attachedGearId)
-    ) {
-      seen.add(tile.attachedGearId)
-      const attachedGear = world.gears[tile.attachedGearId]
-      invariant(attachedGear)
-      yield attachedGear
-    }
-
     if (!seen.has(tile.gearId)) {
       const gear = world.gears[tile.gearId]
       invariant(gear)
