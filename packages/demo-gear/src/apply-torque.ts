@@ -29,7 +29,7 @@ export function getForceMultiplierMap(
         'TODO support belt connections',
       )
       const neighbor = world.entities[c.entityId]
-      invariant(neighbor?.type === EntityType.enum.Gear)
+      invariant(neighbor)
 
       const neighborMultiplier =
         tailMultiplier * c.multiplier
