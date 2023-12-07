@@ -3,15 +3,17 @@ import {
   useNavigate,
   useSearchParams,
 } from 'react-router-dom'
+import invariant from 'tiny-invariant'
 import { addBelts, getBeltConnections } from '../belt.js'
 import {
   AddBeltHand,
+  Belt,
   BeltDirection,
+  BeltId,
   BeltPath,
   BeltType,
   HandType,
   IAppContext,
-  PartialBelt,
   SimpleVec2,
   World,
 } from '../types.js'
@@ -88,16 +90,32 @@ export function AddBelt() {
   )
 }
 
+function getBeltId(position: SimpleVec2): BeltId {
+  return `belt.${position.x}.${position.y}`
+}
+
+function getStraightBeltId(path: BeltPath): BeltId {
+  const first = path.at(0)
+  invariant(first)
+  return getBeltId(first)
+}
+
+function getIntersectionBeltId(
+  position: SimpleVec2,
+): BeltId {
+  return getBeltId(position)
+}
+
 function getBelts(
   world: World,
   start: SimpleVec2,
   end: SimpleVec2 | null,
   direction: BeltDirection,
-): PartialBelt[] {
+): Belt[] {
   const dx = end ? end.x - start.x : 0
   const dy = end ? end.y - start.y : 0
 
-  const belts: PartialBelt[] = []
+  const belts: Belt[] = []
 
   if (direction === 'x') {
     let path: BeltPath = []
@@ -112,6 +130,7 @@ function getBelts(
       })
     }
     belts.push({
+      id: getStraightBeltId(path),
       type: BeltType.enum.Straight,
       connections: getBeltConnections(
         world,
@@ -120,15 +139,22 @@ function getBelts(
       ),
       direction,
       offset: 0,
+      velocity: 0,
       path,
     })
 
     if (dy !== 0) {
+      const position: SimpleVec2 = {
+        x: start.x + dx,
+        y: start.y,
+      }
       belts.push({
+        id: getIntersectionBeltId(position),
         type: BeltType.enum.Intersection,
         connections: [],
         offset: 0,
-        position: { x: start.x + dx, y: start.y },
+        velocity: 0,
+        position,
       })
 
       path = []
@@ -139,10 +165,12 @@ function getBelts(
         })
       }
       belts.push({
+        id: getStraightBeltId(path),
         type: BeltType.enum.Straight,
         connections: getBeltConnections(world, path, 'y'),
         direction: 'y',
         offset: 0,
+        velocity: 0,
         path,
       })
     }
@@ -159,6 +187,7 @@ function getBelts(
       })
     }
     belts.push({
+      id: getStraightBeltId(path),
       type: BeltType.enum.Straight,
       connections: getBeltConnections(
         world,
@@ -167,15 +196,22 @@ function getBelts(
       ),
       direction,
       offset: 0,
+      velocity: 0,
       path,
     })
 
     if (dx !== 0) {
+      const position: SimpleVec2 = {
+        x: start.x,
+        y: start.y + dy,
+      }
       belts.push({
+        id: getIntersectionBeltId(position),
         type: BeltType.enum.Intersection,
         connections: [],
         offset: 0,
-        position: { x: start.x, y: start.y + dy },
+        velocity: 0,
+        position,
       })
 
       path = []
@@ -186,10 +222,12 @@ function getBelts(
         })
       }
       belts.push({
+        id: getStraightBeltId(path),
         type: BeltType.enum.Straight,
         connections: getBeltConnections(world, path, 'x'),
         direction: 'x',
         offset: 0,
+        velocity: 0,
         path,
       })
     }
@@ -199,10 +237,7 @@ function getBelts(
   return belts
 }
 
-function useHand(
-  belts: PartialBelt[],
-  valid: boolean,
-): boolean {
+function useHand(belts: Belt[], valid: boolean): boolean {
   const context = use(AppContext)
 
   const hand = useRef<AddBeltHand>({
@@ -257,7 +292,7 @@ function useSavedStart(): [
 
 function isValid(
   context: IAppContext,
-  belts: PartialBelt[],
+  belts: Belt[],
 ): boolean {
   for (const belt of belts) {
     const path =

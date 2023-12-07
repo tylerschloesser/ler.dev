@@ -1,9 +1,5 @@
 import invariant from 'tiny-invariant'
-import {
-  BeltType,
-  IAppContext,
-  PartialBelt,
-} from '../types.js'
+import { Belt, BeltType, IAppContext } from '../types.js'
 import {
   BELT_COLOR,
   BELT_LINE_COLOR,
@@ -61,7 +57,7 @@ export function renderBelt(
   _context: IAppContext,
   gl: WebGL2RenderingContext,
   gpu: GpuState,
-  belt: PartialBelt,
+  belt: Belt,
   tint?: Color,
 ) {
   const render = batchRenderRect(gl, gpu)

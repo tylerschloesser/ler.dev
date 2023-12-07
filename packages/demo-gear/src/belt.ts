@@ -1,20 +1,20 @@
 import invariant from 'tiny-invariant'
 import {
   AddBeltHand,
+  Belt,
   BeltDirection,
   BeltPath,
   BeltType,
   Connection,
   ConnectionType,
   IAppContext,
-  PartialBelt,
   World,
 } from './types.js'
 import { mod } from './util.js'
 
 export function addBelts(
   world: World,
-  belts: PartialBelt[],
+  belts: Belt[],
 ): void {
   for (const belt of belts) {
     const path =
@@ -26,11 +26,7 @@ export function addBelts(
 
     const beltId = `belt.${first.x}.${first.y}`
     invariant(world.belts[beltId] === undefined)
-    world.belts[beltId] = {
-      id: beltId,
-      velocity: 0,
-      ...belt,
-    }
+    world.belts[beltId] = belt
     for (const position of path) {
       const { x, y } = position
       const tileId = `${x}.${y}`
