@@ -1,7 +1,6 @@
 import invariant from 'tiny-invariant'
 import {
   AddBeltHand,
-  Belt,
   BeltDirection,
   BeltPath,
   BeltType,
@@ -144,13 +143,24 @@ export function getBeltConnections(
       const gx = gear.position.x + dg.x + gear.radius * sr.x
       const gy = gear.position.y + dg.y + gear.radius * sr.y
 
-      // TODO fix duplicates
       if (gx === cx && gy === cy) {
-        connections.push({
-          type: ConnectionType.enum.Adjacent,
-          gearId: gear.id,
-          multiplier,
-        })
+        if (
+          // hacky way to check duplicates,
+          // which happen because most points are checked twice
+          // (both belt corners)
+          !connections.find(
+            (c) =>
+              c.type === ConnectionType.enum.Adjacent &&
+              c.gearId === gear.id &&
+              c.multiplier === multiplier,
+          )
+        ) {
+          connections.push({
+            type: ConnectionType.enum.Adjacent,
+            gearId: gear.id,
+            multiplier,
+          })
+        }
       }
     }
   }
