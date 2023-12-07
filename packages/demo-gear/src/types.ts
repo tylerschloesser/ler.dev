@@ -150,7 +150,7 @@ export const BeltEntity = z.strictObject({
 })
 export type BeltEntity = z.infer<typeof BeltEntity>
 
-export const IntersectionBelt = z.strictObject({
+export const IntersectionBeltEntity = z.strictObject({
   type: z.literal(BeltType.enum.Intersection),
   id: EntityId,
   position: SimpleVec2,
@@ -158,13 +158,13 @@ export const IntersectionBelt = z.strictObject({
   velocity: z.number(),
   connections: z.array(Connection),
 })
-export type IntersectionBelt = z.infer<
-  typeof IntersectionBelt
+export type IntersectionBeltEntity = z.infer<
+  typeof IntersectionBeltEntity
 >
 
 export const Belt = z.discriminatedUnion('type', [
   BeltEntity,
-  IntersectionBelt,
+  IntersectionBeltEntity,
 ])
 export type Belt = z.infer<typeof Belt>
 
