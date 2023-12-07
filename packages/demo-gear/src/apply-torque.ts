@@ -1,6 +1,7 @@
 import invariant from 'tiny-invariant'
 import {
   ConnectionType,
+  Entity,
   EntityType,
   GearEntity,
   World,
@@ -8,13 +9,13 @@ import {
 import { getTotalMass } from './util.js'
 
 export function getForceMultiplierMap(
-  root: GearEntity,
+  root: Entity,
   world: World,
-): Map<GearEntity, number> | null {
-  const forceMultiplierMap = new Map<GearEntity, number>()
+): Map<Entity, number> | null {
+  const forceMultiplierMap = new Map<Entity, number>()
   forceMultiplierMap.set(root, 1)
 
-  const stack = new Array<GearEntity>(root)
+  const stack = new Array<Entity>(root)
   while (stack.length) {
     const tail = stack.pop()
     invariant(tail)
@@ -70,6 +71,8 @@ function applyTorque(
     gear,
     torqueMultiplier,
   ] of torqueMultiplierMap.entries()) {
+    invariant(gear.type === EntityType.enum.Gear)
+
     const r = gear.radius
     const I = (1 / 2) * m * r ** 2
     const torque = rootTorque * torqueMultiplier
