@@ -10,9 +10,6 @@ export type SimpleVec2 = z.infer<typeof SimpleVec2>
 export const EntityId = z.string()
 export type EntityId = z.infer<typeof EntityId>
 
-export const BeltId = z.string()
-export type BeltId = z.infer<typeof BeltId>
-
 export const TileId = z.string()
 export type TileId = z.infer<typeof TileId>
 
@@ -22,7 +19,7 @@ export type ResourceType = z.infer<typeof ResourceType>
 export const Tile = z.strictObject({
   entityId: EntityId.optional(),
   resourceType: ResourceType.optional(),
-  beltId: BeltId.optional(),
+  beltId: EntityId.optional(),
 })
 export type Tile = z.infer<typeof Tile>
 
@@ -63,7 +60,7 @@ export type AttachConnection = z.infer<
 
 export const BeltConnection = z.strictObject({
   type: z.literal(ConnectionType.enum.Belt),
-  beltId: BeltId,
+  entityId: EntityId,
   multiplier: z.number(),
 })
 export type BeltConnection = z.infer<typeof BeltConnection>
@@ -109,7 +106,7 @@ export const GearBehavior = z.discriminatedUnion('type', [
 ])
 export type GearBehavior = z.infer<typeof GearBehavior>
 
-export const EntityType = z.enum(['Gear'])
+export const EntityType = z.enum(['Gear', 'Belt'])
 export type EntityType = z.infer<typeof EntityType>
 
 export const GearEntity = z.strictObject({
@@ -140,7 +137,7 @@ export type BeltType = z.infer<typeof BeltType>
 
 export const StraightBelt = z.strictObject({
   type: z.literal(BeltType.enum.Straight),
-  id: BeltId,
+  id: EntityId,
   path: BeltPath,
   direction: BeltDirection,
   offset: z.number(),
@@ -151,7 +148,7 @@ export type StraightBelt = z.infer<typeof StraightBelt>
 
 export const IntersectionBelt = z.strictObject({
   type: z.literal(BeltType.enum.Intersection),
-  id: BeltId,
+  id: EntityId,
   position: SimpleVec2,
   offset: z.number(),
   velocity: z.number(),
@@ -171,7 +168,7 @@ export const World = z.strictObject({
   version: z.number(),
   gears: z.record(EntityId, GearEntity),
   tiles: z.record(TileId, Tile),
-  belts: z.record(BeltId, Belt),
+  belts: z.record(EntityId, Belt),
 })
 export type World = z.infer<typeof World>
 

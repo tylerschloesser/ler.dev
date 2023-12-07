@@ -9,10 +9,10 @@ import {
   AddBeltHand,
   Belt,
   BeltDirection,
-  BeltId,
   BeltPath,
   BeltType,
   ConnectionType,
+  EntityId,
   HandType,
   IAppContext,
   SimpleVec2,
@@ -91,11 +91,11 @@ export function AddBelt() {
   )
 }
 
-function getBeltId(position: SimpleVec2): BeltId {
-  return `belt.${position.x}.${position.y}`
+function getBeltId(position: SimpleVec2): EntityId {
+  return `${position.x}.${position.y}`
 }
 
-function getStraightBeltId(path: BeltPath): BeltId {
+function getStraightBeltId(path: BeltPath): EntityId {
   const first = path.at(0)
   invariant(first)
   return getBeltId(first)
@@ -103,7 +103,7 @@ function getStraightBeltId(path: BeltPath): BeltId {
 
 function getIntersectionBeltId(
   position: SimpleVec2,
-): BeltId {
+): EntityId {
   return getBeltId(position)
 }
 
@@ -250,26 +250,26 @@ function getBelts(
 
     straight1.connections.push({
       type: ConnectionType.enum.Belt,
-      beltId: intersection.id,
+      entityId: intersection.id,
       multiplier: 1,
     })
 
     intersection.connections.push(
       {
         type: ConnectionType.enum.Belt,
-        beltId: straight1.id,
+        entityId: straight1.id,
         multiplier: 1,
       },
       {
         type: ConnectionType.enum.Belt,
-        beltId: straight2.id,
+        entityId: straight2.id,
         multiplier: 1,
       },
     )
 
     straight2.connections.push({
       type: ConnectionType.enum.Belt,
-      beltId: intersection.id,
+      entityId: intersection.id,
       multiplier: 1,
     })
   }

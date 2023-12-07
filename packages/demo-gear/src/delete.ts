@@ -1,11 +1,5 @@
 import invariant from 'tiny-invariant'
-import {
-  BeltId,
-  ConnectionType,
-  DeleteHand,
-  IAppContext,
-} from './types.js'
-import { iterateGearTileIds } from './util.js'
+import { DeleteHand, IAppContext } from './types.js'
 
 export function executeDelete(
   context: IAppContext,
@@ -14,14 +8,12 @@ export function executeDelete(
   // for (const gearId of hand.gearIds) {
   //   const gear = context.world.gears[gearId]
   //   invariant(gear)
-
   //   for (const tileId of iterateGearTileIds(
   //     gear.center,
   //     gear.radius,
   //   )) {
   //     const tile = context.world.tiles[tileId]
   //     invariant(tile)
-
   //     if (tile.attachedGearId === gearId) {
   //       delete tile.attachedGearId
   //     } else {
@@ -33,12 +25,10 @@ export function executeDelete(
   //         delete tile.gearId
   //       }
   //     }
-
   //     if (!tile.gearId && !tile.resourceType) {
   //       delete context.world.tiles[tileId]
   //     }
   //   }
-
   //   for (const connection of gear.connections) {
   //     invariant(
   //       connection.type !== ConnectionType.enum.Belt,
@@ -55,32 +45,27 @@ export function executeDelete(
   //     invariant(index !== -1)
   //     neighbor.connections.splice(index, 1)
   //   }
-
   //   delete context.world.gears[gearId]
   // }
-
-  const beltIds = new Set<BeltId>()
-
-  for (const tileId of hand.tileIds) {
-    const tile = context.world.tiles[tileId]
-    invariant(tile)
-    if (tile.beltId) {
-      beltIds.add(tile.beltId)
-    }
-    if (tile.resourceType) {
-      delete tile.resourceType
-    }
-    if (Object.keys(tile).length === 0) {
-      delete context.world.tiles[tileId]
-    }
-  }
-
+  // const beltIds = new Set<BeltId>()
+  // for (const tileId of hand.tileIds) {
+  //   const tile = context.world.tiles[tileId]
+  //   invariant(tile)
+  //   if (tile.beltId) {
+  //     beltIds.add(tile.beltId)
+  //   }
+  //   if (tile.resourceType) {
+  //     delete tile.resourceType
+  //   }
+  //   if (Object.keys(tile).length === 0) {
+  //     delete context.world.tiles[tileId]
+  //   }
+  // }
   // for (const beltId of beltIds) {
   //   const belt = context.world.belts[beltId]
   //   invariant(belt)
   //   const { path: oldPath } = belt
   //   delete context.world.belts[beltId]
-
   //   let newPath: BeltPath = []
   //   for (const cell of oldPath) {
   //     const { position } = cell
