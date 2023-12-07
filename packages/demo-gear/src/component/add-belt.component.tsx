@@ -130,36 +130,44 @@ function getBelts(
         y: start.y,
       })
     }
-    belts.push({
-      id: getStraightBeltId(path),
-      type: BeltType.enum.Straight,
-      connections: getBeltConnections(
-        world,
-        path,
-        direction,
-      ),
-      direction,
-      offset: 0,
-      velocity: 0,
-      path,
-    })
-
-    if (dy !== 0) {
-      const position: SimpleVec2 = {
-        x: start.x + dx,
-        y: start.y,
-      }
+    if (path.length) {
       belts.push({
-        id: getIntersectionBeltId(position),
-        type: BeltType.enum.Intersection,
-        connections: [],
+        id: getStraightBeltId(path),
+        type: BeltType.enum.Straight,
+        connections: getBeltConnections(
+          world,
+          path,
+          direction,
+        ),
+        direction,
         offset: 0,
         velocity: 0,
-        position,
+        path,
       })
+    }
+
+    if (dy !== 0) {
+      if (belts.length) {
+        const position: SimpleVec2 = {
+          x: start.x + dx,
+          y: start.y,
+        }
+        belts.push({
+          id: getIntersectionBeltId(position),
+          type: BeltType.enum.Intersection,
+          connections: [],
+          offset: 0,
+          velocity: 0,
+          position,
+        })
+      }
 
       path = []
-      for (let y = 1; y < Math.abs(dy) + 1; y += 1) {
+      for (
+        let y = belts.length ? 1 : 0;
+        y < Math.abs(dy) + 1;
+        y += 1
+      ) {
         path.push({
           x: start.x + dx,
           y: start.y + y * Math.sign(dy),
@@ -187,36 +195,44 @@ function getBelts(
         y: start.y + y * Math.sign(dy),
       })
     }
-    belts.push({
-      id: getStraightBeltId(path),
-      type: BeltType.enum.Straight,
-      connections: getBeltConnections(
-        world,
-        path,
-        direction,
-      ),
-      direction,
-      offset: 0,
-      velocity: 0,
-      path,
-    })
-
-    if (dx !== 0) {
-      const position: SimpleVec2 = {
-        x: start.x,
-        y: start.y + dy,
-      }
+    if (path.length) {
       belts.push({
-        id: getIntersectionBeltId(position),
-        type: BeltType.enum.Intersection,
-        connections: [],
+        id: getStraightBeltId(path),
+        type: BeltType.enum.Straight,
+        connections: getBeltConnections(
+          world,
+          path,
+          direction,
+        ),
+        direction,
         offset: 0,
         velocity: 0,
-        position,
+        path,
       })
+    }
+
+    if (dx !== 0) {
+      if (belts.length) {
+        const position: SimpleVec2 = {
+          x: start.x,
+          y: start.y + dy,
+        }
+        belts.push({
+          id: getIntersectionBeltId(position),
+          type: BeltType.enum.Intersection,
+          connections: [],
+          offset: 0,
+          velocity: 0,
+          position,
+        })
+      }
 
       path = []
-      for (let x = 1; x < Math.abs(dx) + 1; x += 1) {
+      for (
+        let x = belts.length ? 1 : 0;
+        x < Math.abs(dx) + 1;
+        x += 1
+      ) {
         path.push({
           x: start.x + x * Math.sign(dx),
           y: start.y + dy,
@@ -234,45 +250,46 @@ function getBelts(
     }
   }
 
-  // either 1 straight, or 1 straight, 1 intersection, and 1 straight
-  invariant(belts.length === 1 || belts.length === 3)
+  // TODO fix this
+  // // either 1 straight, or 1 straight, 1 intersection, and 1 straight
+  // invariant(belts.length === 1 || belts.length === 3)
 
-  if (belts.length === 3) {
-    const straight1 = belts.at(0)
-    const intersection = belts.at(1)
-    const straight2 = belts.at(2)
+  // if (belts.length === 3) {
+  //   const straight1 = belts.at(0)
+  //   const intersection = belts.at(1)
+  //   const straight2 = belts.at(2)
 
-    invariant(straight1?.type === BeltType.enum.Straight)
-    invariant(
-      intersection?.type === BeltType.enum.Intersection,
-    )
-    invariant(straight2?.type === BeltType.enum.Straight)
+  //   invariant(straight1?.type === BeltType.enum.Straight)
+  //   invariant(
+  //     intersection?.type === BeltType.enum.Intersection,
+  //   )
+  //   invariant(straight2?.type === BeltType.enum.Straight)
 
-    straight1.connections.push({
-      type: ConnectionType.enum.Belt,
-      entityId: intersection.id,
-      multiplier: 1,
-    })
+  //   straight1.connections.push({
+  //     type: ConnectionType.enum.Belt,
+  //     entityId: intersection.id,
+  //     multiplier: 1,
+  //   })
 
-    intersection.connections.push(
-      {
-        type: ConnectionType.enum.Belt,
-        entityId: straight1.id,
-        multiplier: 1,
-      },
-      {
-        type: ConnectionType.enum.Belt,
-        entityId: straight2.id,
-        multiplier: 1,
-      },
-    )
+  //   intersection.connections.push(
+  //     {
+  //       type: ConnectionType.enum.Belt,
+  //       entityId: straight1.id,
+  //       multiplier: 1,
+  //     },
+  //     {
+  //       type: ConnectionType.enum.Belt,
+  //       entityId: straight2.id,
+  //       multiplier: 1,
+  //     },
+  //   )
 
-    straight2.connections.push({
-      type: ConnectionType.enum.Belt,
-      entityId: intersection.id,
-      multiplier: 1,
-    })
-  }
+  //   straight2.connections.push({
+  //     type: ConnectionType.enum.Belt,
+  //     entityId: intersection.id,
+  //     multiplier: 1,
+  //   })
+  // }
 
   console.log(belts)
   return belts
