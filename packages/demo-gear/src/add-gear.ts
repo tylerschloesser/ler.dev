@@ -52,9 +52,9 @@ export function addGear(
 ): void {
   const { world } = context
 
-  const { position, radius, connections, angle } = partial
+  const { center, radius, connections, angle } = partial
 
-  const gearId = `${position.x}.${position.y}.${radius}`
+  const gearId = `${center.x}.${center.y}.${radius}`
   invariant(world.gears[gearId] === undefined)
 
   for (const connection of connections) {
@@ -77,9 +77,9 @@ export function addGear(
 
   const gear: Gear = {
     id: gearId,
-    position: {
-      x: position.x,
-      y: position.y,
+    center: {
+      x: center.x,
+      y: center.y,
     },
     radius,
     mass,
@@ -90,10 +90,7 @@ export function addGear(
 
   world.gears[gear.id] = gear
 
-  for (const tileId of iterateGearTileIds(
-    position,
-    radius,
-  )) {
+  for (const tileId of iterateGearTileIds(center, radius)) {
     let tile = world.tiles[tileId]
 
     if (attach) {

@@ -186,9 +186,9 @@ function* iterateAdjacentGears(
     const gear = world.gears[tile.gearId]
     invariant(gear)
     if (
-      gear.position.x + (gear.radius + radius) * -dx ===
+      gear.center.x + (gear.radius + radius) * -dx ===
         position.x &&
-      gear.position.y + (gear.radius + radius) * -dy ===
+      gear.center.y + (gear.radius + radius) * -dy ===
         position.y
     ) {
       yield gear

@@ -29,7 +29,7 @@ export function initBuild(
       radius,
       angle: 0,
       connections: [],
-      position: {
+      center: {
         x: Number.NaN,
         y: Number.NaN,
       },
@@ -57,13 +57,13 @@ export function updateBuildPosition(
   const x = Math.round(context.camera.position.x)
   const y = Math.round(context.camera.position.y)
   if (
-    hand.gear.position.x === x &&
-    hand.gear.position.y === y
+    hand.gear.center.x === x &&
+    hand.gear.center.y === y
   ) {
     return
   } else {
-    hand.gear.position.x = x
-    hand.gear.position.y = y
+    hand.gear.center.x = x
+    hand.gear.center.y = y
     updateBuild(context, hand)
   }
 }
@@ -77,7 +77,7 @@ export function executeBuild(
     return
   }
 
-  const { position } = hand.gear
+  const { center: position } = hand.gear
   const tileId = `${position.x}.${position.y}`
   const tile = context.world.tiles[tileId]
 
@@ -129,7 +129,7 @@ export function updateBuild(
   let chain: Gear | undefined
 
   for (const tile of iterateGearTiles(
-    hand.gear.position,
+    hand.gear.center,
     hand.gear.radius,
     context.world,
   )) {
@@ -141,13 +141,13 @@ export function updateBuild(
 
   if (valid) {
     for (const gear of iterateOverlappingGears(
-      hand.gear.position,
+      hand.gear.center,
       hand.gear.radius,
       context.world,
     )) {
       if (
         hand.gear.radius === 1 &&
-        Vec2.equal(gear.position, hand.gear.position)
+        Vec2.equal(gear.center, hand.gear.center)
       ) {
         if (gear.radius === 1) {
           chain = gear
@@ -169,8 +169,8 @@ export function updateBuild(
   }
 
   if (valid && hand.chain) {
-    const dx = hand.gear.position.x - hand.chain.position.x
-    const dy = hand.gear.position.y - hand.chain.position.y
+    const dx = hand.gear.center.x - hand.chain.center.x
+    const dy = hand.gear.center.y - hand.chain.center.y
     valid =
       (dx === 0 || dy === 0) &&
       dx !== dy &&
@@ -185,7 +185,7 @@ export function updateBuild(
   if (valid) {
     hand.gear.connections.push(
       ...getAdjacentConnections(
-        hand.gear.position,
+        hand.gear.center,
         hand.gear.radius,
         context.world,
       ),

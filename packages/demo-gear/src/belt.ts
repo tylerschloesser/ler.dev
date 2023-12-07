@@ -137,8 +137,8 @@ export function getBeltConnections(
       const gear = world.gears[tile.gearId]
       invariant(gear)
 
-      const gx = gear.position.x + dg.x + gear.radius * sr.x
-      const gy = gear.position.y + dg.y + gear.radius * sr.y
+      const gx = gear.center.x + dg.x + gear.radius * sr.x
+      const gy = gear.center.y + dg.y + gear.radius * sr.y
 
       if (gx === cx && gy === cy) {
         if (

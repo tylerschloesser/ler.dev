@@ -128,8 +128,8 @@ export function render(
         renderRect(
           gl,
           gpu,
-          gear.position.x - gear.radius,
-          gear.position.y - gear.radius,
+          gear.center.x - gear.radius,
+          gear.center.y - gear.radius,
           gear.radius * 2,
           gear.radius * 2,
           DELETE,

@@ -20,8 +20,8 @@ export function updateModel(
   const { model } = matrices
   mat4.identity(model)
 
-  v3[0] = gear.position.x
-  v3[1] = gear.position.y
+  v3[0] = gear.center.x
+  v3[1] = gear.center.y
   v3[2] = 0
   mat4.translate(model, model, v3)
 
@@ -47,8 +47,8 @@ export function updateChainArcModel(
   // mat4.scale(model, model, v3)
   //
 
-  v3[0] = gear.position.x
-  v3[1] = gear.position.y
+  v3[0] = gear.center.x
+  v3[1] = gear.center.y
   v3[2] = 0
   mat4.translate(model, model, v3)
 
@@ -89,8 +89,8 @@ export function updateChainStraightModel(
   const { model } = matrices
   mat4.identity(model)
 
-  v3[0] = gear.position.x
-  v3[1] = gear.position.y
+  v3[0] = gear.center.x
+  v3[1] = gear.center.y
   v3[2] = 0
   mat4.translate(model, model, v3)
 
@@ -122,8 +122,8 @@ export function updateGearBodyModel(
   const { model } = matrices
   mat4.identity(model)
 
-  v3[0] = gear.position.x
-  v3[1] = gear.position.y
+  v3[0] = gear.center.x
+  v3[1] = gear.center.y
   v3[2] = 0
   mat4.translate(model, model, v3)
 
@@ -144,8 +144,8 @@ export function updateGearToothModel(
   const { model } = matrices
   mat4.identity(model)
 
-  v3[0] = gear.position.x
-  v3[1] = gear.position.y
+  v3[0] = gear.center.x
+  v3[1] = gear.center.y
   v3[2] = 0
   mat4.translate(model, model, v3)
 

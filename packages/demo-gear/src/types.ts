@@ -118,7 +118,7 @@ export type GearBehavior = z.infer<typeof GearBehavior>
 
 export const Gear = z.strictObject({
   id: GearId,
-  position: SimpleVec2,
+  center: SimpleVec2,
   radius: z.number(),
   angle: z.number(),
   velocity: z.number(),
@@ -302,7 +302,7 @@ export type InitFn = (context: IAppContext) => Promise<void>
 
 export type PartialGear = Pick<
   Gear,
-  | 'position'
+  | 'center'
   | 'radius'
   | 'angle'
   | 'velocity'

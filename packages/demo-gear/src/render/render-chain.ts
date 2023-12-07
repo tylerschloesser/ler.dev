@@ -52,10 +52,10 @@ export function renderChain(
     (gear1.radius * Math.sin((TWO_PI * (1 / teeth)) / 2))
 
   const d = dist(
-    gear1.position.x,
-    gear1.position.y,
-    gear2.position.x,
-    gear2.position.y,
+    gear1.center.x,
+    gear1.center.y,
+    gear2.center.x,
+    gear2.center.y,
   )
 
   const n = Math.floor(d / (2 * s1)) * 2
@@ -66,8 +66,8 @@ export function renderChain(
   invariant(s2 >= s1)
 
   const chainAngle = Math.atan2(
-    gear2.position.y - gear1.position.y,
-    gear2.position.x - gear1.position.x,
+    gear2.center.y - gear1.center.y,
+    gear2.center.x - gear1.center.x,
   )
 
   const theta = TWO_PI / teeth

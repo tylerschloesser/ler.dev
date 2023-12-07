@@ -17,7 +17,7 @@ export function executeDelete(
     invariant(gear)
 
     for (const tileId of iterateGearTileIds(
-      gear.position,
+      gear.center,
       gear.radius,
     )) {
       const tile = context.world.tiles[tileId]
