@@ -12,6 +12,7 @@ import {
   BeltId,
   BeltPath,
   BeltType,
+  ConnectionType,
   HandType,
   IAppContext,
   SimpleVec2,
@@ -235,6 +236,43 @@ function getBelts(
 
   // either 1 straight, or 1 straight, 1 intersection, and 1 straight
   invariant(belts.length === 1 || belts.length === 3)
+
+  if (belts.length === 3) {
+    const straight1 = belts.at(0)
+    const intersection = belts.at(1)
+    const straight2 = belts.at(2)
+
+    invariant(straight1?.type === BeltType.enum.Straight)
+    invariant(
+      intersection?.type === BeltType.enum.Intersection,
+    )
+    invariant(straight2?.type === BeltType.enum.Straight)
+
+    straight1.connections.push({
+      type: ConnectionType.enum.Belt,
+      beltId: intersection.id,
+      multiplier: 1,
+    })
+
+    intersection.connections.push(
+      {
+        type: ConnectionType.enum.Belt,
+        beltId: straight1.id,
+        multiplier: 1,
+      },
+      {
+        type: ConnectionType.enum.Belt,
+        beltId: straight2.id,
+        multiplier: 1,
+      },
+    )
+
+    straight2.connections.push({
+      type: ConnectionType.enum.Belt,
+      beltId: intersection.id,
+      multiplier: 1,
+    })
+  }
 
   console.log(belts)
   return belts

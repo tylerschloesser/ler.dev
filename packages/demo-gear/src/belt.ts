@@ -1,6 +1,7 @@
 import invariant from 'tiny-invariant'
 import {
   AddBeltHand,
+  AdjacentConnection,
   Belt,
   BeltDirection,
   BeltPath,
@@ -170,13 +171,19 @@ export function updateAddBeltProgress(
   elapsed: number,
 ): void {
   for (const belt of hand.belts) {
+    if (belt.type === BeltType.enum.Intersection) {
+      continue
+    }
     if (hand.valid && belt.connections.length > 0) {
-      const first = belt.connections.at(0)
-      invariant(first)
+      const adjacent = belt.connections.find(
+        (c): c is AdjacentConnection =>
+          c.type === ConnectionType.enum.Adjacent,
+      )
+      if (!adjacent) {
+        continue
+      }
 
-      invariant(first.type === ConnectionType.enum.Adjacent)
-
-      const gear = context.world.gears[first.gearId]
+      const gear = context.world.gears[adjacent.gearId]
       invariant(gear)
 
       belt.offset = mod(
@@ -184,7 +191,7 @@ export function updateAddBeltProgress(
           gear.velocity *
             gear.radius *
             elapsed *
-            first.multiplier,
+            adjacent.multiplier,
         1,
       )
     } else {
