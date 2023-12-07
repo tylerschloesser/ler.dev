@@ -233,6 +233,9 @@ function getBelts(
     }
   }
 
+  // either 1 straight, or 1 straight, 1 intersection, and 1 straight
+  invariant(belts.length === 1 || belts.length === 3)
+
   console.log(belts)
   return belts
 }
