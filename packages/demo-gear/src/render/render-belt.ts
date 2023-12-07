@@ -1,5 +1,10 @@
 import invariant from 'tiny-invariant'
-import { Belt, BeltType, IAppContext } from '../types.js'
+import {
+  BeltEntity,
+  EntityType,
+  IAppContext,
+  BeltIntersectionEntity,
+} from '../types.js'
 import {
   BELT_COLOR,
   BELT_LINE_COLOR,
@@ -57,14 +62,14 @@ export function renderBelt(
   _context: IAppContext,
   gl: WebGL2RenderingContext,
   gpu: GpuState,
-  belt: Belt,
+  belt: BeltEntity | BeltIntersectionEntity,
   tint?: Color,
 ) {
   const render = batchRenderRect(gl, gpu)
 
   const lineWidth = 0.1
 
-  if (belt.type === BeltType.enum.Straight) {
+  if (belt.type === EntityType.enum.Belt) {
     invariant(belt.offset >= 0)
     invariant(belt.offset < 1)
     for (const { x, y } of belt.path) {
@@ -94,7 +99,9 @@ export function renderBelt(
       }
     }
   } else {
-    invariant(belt.type === BeltType.enum.Intersection)
+    invariant(
+      belt.type === EntityType.enum.BeltIntersection,
+    )
     const { x, y } = belt.position
     render(x, y, 1, 1, INTERSECTION_BELT_COLOR)
     if (tint) {

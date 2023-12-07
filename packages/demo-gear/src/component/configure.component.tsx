@@ -15,6 +15,7 @@ import {
   GearBehaviorType,
   EntityId,
   HandType,
+  EntityType,
 } from '../types.js'
 import styles from './configure.module.scss'
 import { AppContext } from './context.js'
@@ -224,8 +225,8 @@ export function Configure() {
     if (!gearId) {
       return
     }
-    const gear = context.world.gears[gearId]
-    invariant(gear)
+    const gear = context.world.entities[gearId]
+    invariant(gear?.type === EntityType.enum.Gear)
     if (behavior === null) {
       delete gear.behavior
     } else {
@@ -243,15 +244,18 @@ export function Configure() {
       () => {
         const tile =
           context.world.tiles[context.centerTileId]
-        const gear =
+        const entity =
           (tile?.entityId &&
-            context.world.gears[tile.entityId]) ||
+            context.world.entities[tile.entityId]) ||
           null
         invariant(context.hand?.type === HandType.Configure)
-        if (context.hand.gear !== gear) {
-          context.hand.gear = gear
-          setGearId(gear?.id ?? null)
-          setBehavior(gear?.behavior ?? null)
+        if (entity?.type === EntityType.enum.Gear) {
+          context.hand.gear = entity
+          setGearId(entity.id)
+          setBehavior(entity.behavior ?? null)
+        } else {
+          setGearId(null)
+          setBehavior(null)
         }
       }
     context.centerTileIdListeners.add(centerTileIdListener)

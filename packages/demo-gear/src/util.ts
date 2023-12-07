@@ -12,24 +12,36 @@ import {
   EntityId,
   SimpleVec2,
   World,
+  EntityType,
+  Entity,
 } from './types.js'
 
 function getConnectionId(a: EntityId, b: EntityId) {
   return a < b ? `${a}.${b}` : `${b}.${a}`
 }
 
+const CONNECTION_ITERATOR: {
+  entity1: Entity
+  entity2: Entity
+  type: ConnectionType
+} = {
+  entity1: null!,
+  entity2: null!,
+  type: null!,
+}
+
 export function* iterateConnections(
-  gears: Record<EntityId, GearEntity>,
+  entities: Record<EntityId, Entity>,
 ) {
   const seen = new Map<string, ConnectionType>()
-  for (const gear of Object.values(gears)) {
-    for (const connection of gear.connections) {
+  for (const entity of Object.values(entities)) {
+    for (const connection of entity.connections) {
       invariant(
         connection.type !== ConnectionType.enum.Belt,
         'TODO support belt connections',
       )
       const id = getConnectionId(
-        gear.id,
+        entity.id,
         connection.entityId,
       )
       if (seen.has(id)) {
@@ -39,15 +51,14 @@ export function* iterateConnections(
       }
       seen.set(id, connection.type)
 
-      const peer = gears[connection.entityId]
+      const peer = entities[connection.entityId]
       invariant(peer)
 
-      // TODO cleanup GC
-      yield {
-        gear1: gear,
-        gear2: peer,
-        type: connection.type,
-      }
+      CONNECTION_ITERATOR.entity1 = entity
+      CONNECTION_ITERATOR.entity2 = peer
+      CONNECTION_ITERATOR.type = connection.type
+
+      yield CONNECTION_ITERATOR
     }
   }
 }
@@ -75,8 +86,8 @@ export function* iterateNetwork(
         connection.type !== ConnectionType.enum.Belt,
         'TODO support belt connections',
       )
-      const neighbor = world.gears[connection.entityId]
-      invariant(neighbor)
+      const neighbor = world.entities[connection.entityId]
+      invariant(neighbor?.type === EntityType.enum.Gear)
       stack.push(neighbor)
     })
   }
@@ -143,8 +154,8 @@ export function* iterateOverlappingGears(
       continue
     }
     if (!seen.has(tile.entityId)) {
-      const gear = world.gears[tile.entityId]
-      invariant(gear)
+      const gear = world.entities[tile.entityId]
+      invariant(gear?.type === EntityType.enum.Gear)
       yield gear
     }
     seen.add(tile.entityId)
@@ -175,8 +186,8 @@ function* iterateAdjacentGears(
       continue
     }
 
-    const gear = world.gears[tile.entityId]
-    invariant(gear)
+    const gear = world.entities[tile.entityId]
+    invariant(gear?.type === EntityType.enum.Gear)
     if (
       gear.center.x + (gear.radius + radius) * -dx ===
         center.x &&
@@ -293,8 +304,8 @@ export function getTotalMass(
         c.type !== ConnectionType.enum.Belt,
         'TODO support belt connections',
       )
-      const neighbor = world.gears[c.entityId]
-      invariant(neighbor)
+      const neighbor = world.entities[c.entityId]
+      invariant(neighbor?.type === EntityType.enum.Gear)
       stack.push(neighbor)
     }
   }

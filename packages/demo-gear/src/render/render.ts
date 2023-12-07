@@ -1,6 +1,9 @@
 import invariant from 'tiny-invariant'
 import {
+  BeltEntity,
+  BeltIntersectionEntity,
   ConnectionType,
+  EntityType,
   HandType,
   IAppContext,
 } from '../types.js'
@@ -43,13 +46,17 @@ export function render(
   renderResources(context, gl, gpu)
   renderGears(context, gl, gpu)
 
-  for (const { gear1, gear2, type } of iterateConnections(
-    context.world.gears,
-  )) {
+  for (const {
+    entity1,
+    entity2,
+    type,
+  } of iterateConnections(context.world.entities)) {
     if (type === ConnectionType.enum.Chain) {
+      invariant(entity1.type === EntityType.enum.Gear)
+      invariant(entity2.type === EntityType.enum.Gear)
       renderChain(
-        gear1,
-        gear2,
+        entity1,
+        entity2,
         gl,
         gpu,
         context.camera.zoom,
@@ -57,7 +64,13 @@ export function render(
     }
   }
 
-  for (const belt of Object.values(context.world.belts)) {
+  for (const belt of Object.values(
+    context.world.entities,
+  ).filter(
+    (e): e is BeltEntity | BeltIntersectionEntity =>
+      e.type === EntityType.enum.Belt ||
+      e.type === EntityType.enum.BeltIntersection,
+  )) {
     renderBelt(context, gl, gpu, belt)
   }
 
@@ -122,19 +135,20 @@ export function render(
         lineWidth,
       )
 
-      for (const gearId of hand.gearIds) {
-        const gear = context.world.gears[gearId]
-        invariant(gear)
-        renderRect(
-          gl,
-          gpu,
-          gear.center.x - gear.radius,
-          gear.center.y - gear.radius,
-          gear.radius * 2,
-          gear.radius * 2,
-          DELETE,
-        )
-      }
+      // TODO
+      // for (const gearId of hand.gearIds) {
+      //   const gear = context.world.gears[gearId]
+      //   invariant(gear)
+      //   renderRect(
+      //     gl,
+      //     gpu,
+      //     gear.center.x - gear.radius,
+      //     gear.center.y - gear.radius,
+      //     gear.radius * 2,
+      //     gear.radius * 2,
+      //     DELETE,
+      //   )
+      // }
       for (const tileId of hand.tileIds) {
         const [x, y] = tileId
           .split('.')

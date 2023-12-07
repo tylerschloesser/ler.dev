@@ -4,6 +4,7 @@ import {
   GearEntity,
   GearBehaviorType,
   IAppContext,
+  EntityType,
 } from '../types.js'
 import {
   Color,
@@ -45,7 +46,11 @@ export function renderGears(
     context.tileSize,
   )
 
-  for (const gear of Object.values(context.world.gears)) {
+  for (const gear of Object.values(
+    context.world.entities,
+  ).filter(
+    (e): e is GearEntity => e.type === EntityType.enum.Gear,
+  )) {
     let color: Color = GEAR_BLUE
     switch (gear.behavior?.type) {
       case GearBehaviorType.enum.Friction:

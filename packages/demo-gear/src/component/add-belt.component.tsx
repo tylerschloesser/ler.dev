@@ -7,12 +7,10 @@ import invariant from 'tiny-invariant'
 import { addBelts, getBeltConnections } from '../belt.js'
 import {
   AddBeltHand,
-  Belt,
   BeltDirection,
   BeltPath,
-  BeltType,
-  ConnectionType,
   EntityId,
+  EntityType,
   HandType,
   IAppContext,
   SimpleVec2,
@@ -112,11 +110,11 @@ function getBelts(
   start: SimpleVec2,
   end: SimpleVec2 | null,
   direction: BeltDirection,
-): Belt[] {
+): AddBeltHand['belts'] {
   const dx = end ? end.x - start.x : 0
   const dy = end ? end.y - start.y : 0
 
-  const belts: Belt[] = []
+  const belts: ReturnType<typeof getBelts> = []
 
   if (direction === 'x') {
     let path: BeltPath = []
@@ -133,7 +131,7 @@ function getBelts(
     if (path.length) {
       belts.push({
         id: getStraightBeltId(path),
-        type: BeltType.enum.Straight,
+        type: EntityType.enum.Belt,
         connections: getBeltConnections(
           world,
           path,
@@ -154,7 +152,7 @@ function getBelts(
         }
         belts.push({
           id: getIntersectionBeltId(position),
-          type: BeltType.enum.Intersection,
+          type: EntityType.enum.BeltIntersection,
           connections: [],
           offset: 0,
           velocity: 0,
@@ -175,7 +173,7 @@ function getBelts(
       }
       belts.push({
         id: getStraightBeltId(path),
-        type: BeltType.enum.Straight,
+        type: EntityType.enum.Belt,
         connections: getBeltConnections(world, path, 'y'),
         direction: 'y',
         offset: 0,
@@ -198,7 +196,7 @@ function getBelts(
     if (path.length) {
       belts.push({
         id: getStraightBeltId(path),
-        type: BeltType.enum.Straight,
+        type: EntityType.enum.Belt,
         connections: getBeltConnections(
           world,
           path,
@@ -219,7 +217,7 @@ function getBelts(
         }
         belts.push({
           id: getIntersectionBeltId(position),
-          type: BeltType.enum.Intersection,
+          type: EntityType.enum.BeltIntersection,
           connections: [],
           offset: 0,
           velocity: 0,
@@ -240,7 +238,7 @@ function getBelts(
       }
       belts.push({
         id: getStraightBeltId(path),
-        type: BeltType.enum.Straight,
+        type: EntityType.enum.Belt,
         connections: getBeltConnections(world, path, 'x'),
         direction: 'x',
         offset: 0,
@@ -295,7 +293,10 @@ function getBelts(
   return belts
 }
 
-function useHand(belts: Belt[], valid: boolean): boolean {
+function useHand(
+  belts: AddBeltHand['belts'],
+  valid: boolean,
+): boolean {
   const context = use(AppContext)
 
   const hand = useRef<AddBeltHand>({
@@ -350,11 +351,11 @@ function useSavedStart(): [
 
 function isValid(
   context: IAppContext,
-  belts: Belt[],
+  belts: AddBeltHand['belts'],
 ): boolean {
   for (const belt of belts) {
     const path =
-      belt.type === BeltType.enum.Straight
+      belt.type === EntityType.enum.Belt
         ? belt.path
         : [belt.position]
     for (const position of path) {

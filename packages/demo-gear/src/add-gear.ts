@@ -4,6 +4,7 @@ import {
   ConnectionType,
   GearEntity,
   World,
+  EntityType,
 } from './types.js'
 import { getTotalMass, iterateGearTileIds } from './util.js'
 
@@ -31,8 +32,8 @@ export function addChainConnection(
       c.type !== ConnectionType.enum.Belt,
       'TODO support belt connections',
     )
-    const neighbor = context.world.gears[c.entityId]
-    invariant(neighbor)
+    const neighbor = context.world.entities[c.entityId]
+    invariant(neighbor?.type === EntityType.enum.Gear)
     conserveAngularMomentum(
       neighbor,
       context.world,
@@ -50,7 +51,7 @@ export function addGear(
 ): void {
   const { world } = context
 
-  invariant(world.gears[gear.id] === undefined)
+  invariant(world.entities[gear.id] === undefined)
 
   for (const connection of gear.connections) {
     invariant(
@@ -58,7 +59,7 @@ export function addGear(
       'TODO support belt connections',
     )
     // add the a connection in the other direction
-    const node = world.gears[connection.entityId]
+    const node = world.entities[connection.entityId]
     invariant(node)
 
     node.connections.push({
@@ -68,7 +69,7 @@ export function addGear(
     })
   }
 
-  world.gears[gear.id] = gear
+  world.entities[gear.id] = gear
 
   for (const tileId of iterateGearTileIds(
     gear.center,
@@ -91,8 +92,8 @@ export function addGear(
       c.type !== ConnectionType.enum.Belt,
       'TODO support belt connections',
     )
-    const neighbor = world.gears[c.entityId]
-    invariant(neighbor)
+    const neighbor = world.entities[c.entityId]
+    invariant(neighbor?.type === EntityType.enum.Gear)
     conserveAngularMomentum(
       neighbor,
       world,
@@ -137,8 +138,8 @@ function conserveAngularMomentum(
         c.type !== ConnectionType.enum.Belt,
         'TODO support belt connections',
       )
-      const neighbor = world.gears[c.entityId]
-      invariant(neighbor)
+      const neighbor = world.entities[c.entityId]
+      invariant(neighbor?.type === EntityType.enum.Gear)
 
       let neighborMultiplier: number
       switch (c.type) {

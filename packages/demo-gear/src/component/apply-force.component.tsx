@@ -1,7 +1,11 @@
 import { use, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import invariant from 'tiny-invariant'
-import { CenterTileIdListener, HandType } from '../types.js'
+import {
+  CenterTileIdListener,
+  EntityType,
+  HandType,
+} from '../types.js'
 import styles from './apply-force.module.scss'
 import { AppContext } from './context.js'
 import { GearStats } from './gear-stats.component.js'
@@ -35,16 +39,18 @@ export function ApplyForce() {
       () => {
         const tile =
           context.world.tiles[context.centerTileId]
-        const gear =
+        const entity =
           (tile?.entityId &&
-            context.world.gears[tile.entityId]) ||
+            context.world.entities[tile.entityId]) ||
           null
         invariant(
           context.hand?.type === HandType.ApplyForce,
         )
-        if (context.hand.gear !== gear) {
-          context.hand.gear = gear
-          setDisabled(gear === null)
+        if (entity?.type === EntityType.enum.Gear) {
+          context.hand.gear = entity
+          setDisabled(false)
+        } else {
+          setDisabled(true)
         }
       }
     context.centerTileIdListeners.add(centerTileIdListener)

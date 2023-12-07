@@ -1,6 +1,7 @@
 import invariant from 'tiny-invariant'
 import {
   ConnectionType,
+  EntityType,
   GearEntity,
   World,
 } from './types.js'
@@ -26,8 +27,8 @@ export function getForceMultiplierMap(
         c.type !== ConnectionType.enum.Belt,
         'TODO support belt connections',
       )
-      const neighbor = world.gears[c.entityId]
-      invariant(neighbor)
+      const neighbor = world.entities[c.entityId]
+      invariant(neighbor?.type === EntityType.enum.Gear)
 
       const neighborMultiplier =
         tailMultiplier * c.multiplier

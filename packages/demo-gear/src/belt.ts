@@ -2,12 +2,11 @@ import invariant from 'tiny-invariant'
 import {
   AddBeltHand,
   AdjacentConnection,
-  Belt,
   BeltDirection,
   BeltPath,
-  BeltType,
   Connection,
   ConnectionType,
+  EntityType,
   IAppContext,
   World,
 } from './types.js'
@@ -15,19 +14,19 @@ import { mod } from './util.js'
 
 export function addBelts(
   world: World,
-  belts: Belt[],
+  belts: AddBeltHand['belts'],
 ): void {
   for (const belt of belts) {
     const path =
-      belt.type === BeltType.enum.Straight
+      belt.type === EntityType.enum.Belt
         ? belt.path
         : [belt.position]
     const first = path.at(0)
     invariant(first)
 
     const beltId = `belt.${first.x}.${first.y}`
-    invariant(world.belts[beltId] === undefined)
-    world.belts[beltId] = belt
+    invariant(world.entities[beltId] === undefined)
+    world.entities[beltId] = belt
     for (const position of path) {
       const { x, y } = position
       const tileId = `${x}.${y}`
@@ -134,8 +133,8 @@ export function getBeltConnections(
       }
       invariant(!tile.beltId)
 
-      const gear = world.gears[tile.entityId]
-      invariant(gear)
+      const gear = world.entities[tile.entityId]
+      invariant(gear?.type === EntityType.enum.Gear)
 
       const gx = gear.center.x + dg.x + gear.radius * sr.x
       const gy = gear.center.y + dg.y + gear.radius * sr.y
@@ -171,7 +170,7 @@ export function updateAddBeltProgress(
   elapsed: number,
 ): void {
   for (const belt of hand.belts) {
-    if (belt.type === BeltType.enum.Intersection) {
+    if (belt.type === EntityType.enum.BeltIntersection) {
       continue
     }
     if (hand.valid && belt.connections.length > 0) {
@@ -183,8 +182,8 @@ export function updateAddBeltProgress(
         continue
       }
 
-      const gear = context.world.gears[adjacent.entityId]
-      invariant(gear)
+      const gear = context.world.entities[adjacent.entityId]
+      invariant(gear?.type === EntityType.enum.Gear)
 
       belt.offset = mod(
         belt.offset +

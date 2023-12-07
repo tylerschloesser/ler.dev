@@ -6,7 +6,9 @@ import { updateAddBeltProgress } from './belt.js'
 import { updateBuildGearAngle } from './build.js'
 import { TWO_PI } from './const.js'
 import {
+  EntityType,
   GearBehaviorType,
+  GearEntity,
   HandType,
   IAppContext,
 } from './types.js'
@@ -46,7 +48,10 @@ export function tick(
     }
   }
 
-  for (const gear of Object.values(world.gears)) {
+  for (const gear of Object.values(world.entities).filter(
+    (entity): entity is GearEntity =>
+      entity.type === EntityType.enum.Gear,
+  )) {
     switch (gear.behavior?.type) {
       case GearBehaviorType.enum.Force: {
         const { behavior } = gear
@@ -97,7 +102,10 @@ export function tick(
     }
   }
 
-  for (const gear of Object.values(world.gears)) {
+  for (const gear of Object.values(world.entities).filter(
+    (entity): entity is GearEntity =>
+      entity.type === EntityType.enum.Gear,
+  )) {
     gear.angle =
       (gear.angle + gear.velocity * elapsed + TWO_PI) %
       TWO_PI

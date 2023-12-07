@@ -7,6 +7,7 @@ import {
 import invariant from 'tiny-invariant'
 import {
   EntityId,
+  EntityType,
   IAppContext,
   TickListenerFn,
 } from '../types.js'
@@ -22,8 +23,8 @@ export function GearStats({
   const [velocity, setVelocity] = useState<number>(0)
   useTickListener(context, gearId, setVelocity)
 
-  const gear = context.world.gears[gearId]
-  invariant(gear)
+  const gear = context.world.entities[gearId]
+  invariant(gear?.type === EntityType.enum.Gear)
 
   return (
     <div className={styles.stats}>
@@ -51,8 +52,8 @@ function useTickListener(
 ) {
   useEffect(() => {
     const listener: TickListenerFn = () => {
-      const gear = context.world.gears[gearId]
-      invariant(gear)
+      const gear = context.world.entities[gearId]
+      invariant(gear?.type === EntityType.enum.Gear)
       setVelocity(gear.velocity)
     }
     context.tickListeners.add(listener)

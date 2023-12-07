@@ -5,6 +5,7 @@ import { TWO_PI } from './const.js'
 import {
   BuildHand,
   ConnectionType,
+  Entity,
   EntityType,
   GearEntity,
   HandType,
@@ -102,10 +103,11 @@ export function executeBuild(
   const tileId = `${position.x}.${position.y}`
   const tile = context.world.tiles[tileId]
 
-  let gear: GearEntity | undefined
+  let gear: Entity | undefined
   if (tile?.entityId) {
-    gear = context.world.gears[tile.entityId]
+    gear = context.world.entities[tile.entityId]
   }
+  invariant(!gear || gear?.type === EntityType.enum.Gear)
 
   if (gear?.radius === 1) {
     if (hand.chain) {
@@ -284,8 +286,8 @@ export function updateBuildGearAngle(
 
     // if valid, we can check any connected gear to get the angle
     const neighbor =
-      context.world.gears[connection.entityId]
-    invariant(neighbor)
+      context.world.entities[connection.entityId]
+    invariant(neighbor?.type === EntityType.enum.Gear)
 
     switch (connection.type) {
       case ConnectionType.enum.Attach:
