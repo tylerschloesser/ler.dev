@@ -1,6 +1,6 @@
-import { Gear } from './types.js'
+import { GearEntity } from './types.js'
 
-export function getEnergy(gear: Gear): number {
+export function getEnergy(gear: GearEntity): number {
   return (
     (1 / 4) *
     gear.radius ** 2 *

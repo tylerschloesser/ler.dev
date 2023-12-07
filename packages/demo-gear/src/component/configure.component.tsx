@@ -13,7 +13,7 @@ import {
   FrictionGearBehavior,
   GearBehavior,
   GearBehaviorType,
-  GearId,
+  EntityId,
   HandType,
 } from '../types.js'
 import styles from './configure.module.scss'
@@ -214,7 +214,9 @@ function EditFrictionGearBehavior({
 export function Configure() {
   const context = use(AppContext)
   const navigate = useNavigate()
-  const [gearId, setGearId] = useState<GearId | null>(null)
+  const [gearId, setGearId] = useState<EntityId | null>(
+    null,
+  )
   const [behavior, setBehavior] =
     useState<GearBehavior | null>(null)
 
@@ -242,8 +244,8 @@ export function Configure() {
         const tile =
           context.world.tiles[context.centerTileId]
         const gear =
-          (tile?.gearId &&
-            context.world.gears[tile.gearId]) ||
+          (tile?.entityId &&
+            context.world.gears[tile.entityId]) ||
           null
         invariant(context.hand?.type === HandType.Configure)
         if (context.hand.gear !== gear) {

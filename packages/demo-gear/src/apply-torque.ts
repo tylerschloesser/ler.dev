@@ -1,15 +1,19 @@
 import invariant from 'tiny-invariant'
-import { ConnectionType, Gear, World } from './types.js'
+import {
+  ConnectionType,
+  GearEntity,
+  World,
+} from './types.js'
 import { getTotalMass } from './util.js'
 
 export function getForceMultiplierMap(
-  root: Gear,
+  root: GearEntity,
   world: World,
-): Map<Gear, number> | null {
-  const forceMultiplierMap = new Map<Gear, number>()
+): Map<GearEntity, number> | null {
+  const forceMultiplierMap = new Map<GearEntity, number>()
   forceMultiplierMap.set(root, 1)
 
-  const stack = new Array<Gear>(root)
+  const stack = new Array<GearEntity>(root)
   while (stack.length) {
     const tail = stack.pop()
     invariant(tail)
@@ -22,7 +26,7 @@ export function getForceMultiplierMap(
         c.type !== ConnectionType.enum.Belt,
         'TODO support belt connections',
       )
-      const neighbor = world.gears[c.gearId]
+      const neighbor = world.gears[c.entityId]
       invariant(neighbor)
 
       const neighborMultiplier =
@@ -47,7 +51,7 @@ export function getForceMultiplierMap(
 }
 
 function applyTorque(
-  root: Gear,
+  root: GearEntity,
   rootTorque: number,
   elapsed: number,
   world: World,
@@ -84,7 +88,7 @@ function applyTorque(
 }
 
 export function applyForce(
-  root: Gear,
+  root: GearEntity,
   force: number,
   elapsed: number,
   world: World,
@@ -94,7 +98,7 @@ export function applyForce(
 }
 
 export function applyFriction(
-  root: Gear,
+  root: GearEntity,
   coeffecient: number,
   magnitude: number,
   elapsed: number,

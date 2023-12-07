@@ -1,7 +1,7 @@
 import invariant from 'tiny-invariant'
 import { TEETH, TWO_PI } from '../const.js'
 import {
-  Gear,
+  GearEntity,
   GearBehaviorType,
   IAppContext,
 } from '../types.js'
@@ -60,7 +60,7 @@ export function renderGears(
 }
 
 export function renderGear(
-  gear: Gear,
+  gear: GearEntity,
   gl: WebGL2RenderingContext,
   gpu: GpuState,
   zoom: number,
@@ -71,7 +71,7 @@ export function renderGear(
 }
 
 function renderGearTeeth(
-  gear: Gear,
+  gear: GearEntity,
   gl: WebGL2RenderingContext,
   gpu: GpuState,
   zoom: number,
@@ -107,7 +107,7 @@ function renderGearTeeth(
 }
 
 function renderGearBody(
-  gear: Gear,
+  gear: GearEntity,
   gl: WebGL2RenderingContext,
   gpu: GpuState,
   color: Color,

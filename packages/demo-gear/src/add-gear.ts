@@ -2,25 +2,25 @@ import invariant from 'tiny-invariant'
 import {
   IAppContext,
   ConnectionType,
-  Gear,
+  GearEntity,
   World,
 } from './types.js'
 import { getTotalMass, iterateGearTileIds } from './util.js'
 
 export function addChainConnection(
-  gear1: Gear,
-  gear2: Gear,
+  gear1: GearEntity,
+  gear2: GearEntity,
   context: IAppContext,
 ): void {
   // TODO validate
   gear1.connections.push({
     type: ConnectionType.enum.Chain,
-    gearId: gear2.id,
+    entityId: gear2.id,
     multiplier: 1,
   })
   gear2.connections.push({
     type: ConnectionType.enum.Chain,
-    gearId: gear1.id,
+    entityId: gear1.id,
     multiplier: 1,
   })
 
@@ -31,7 +31,7 @@ export function addChainConnection(
       c.type !== ConnectionType.enum.Belt,
       'TODO support belt connections',
     )
-    const neighbor = context.world.gears[c.gearId]
+    const neighbor = context.world.gears[c.entityId]
     invariant(neighbor)
     conserveAngularMomentum(
       neighbor,
@@ -44,8 +44,8 @@ export function addChainConnection(
 }
 
 export function addGear(
-  gear: Gear,
-  attach: Gear | null,
+  gear: GearEntity,
+  attach: GearEntity | null,
   context: IAppContext,
 ): void {
   const { world } = context
@@ -58,12 +58,12 @@ export function addGear(
       'TODO support belt connections',
     )
     // add the a connection in the other direction
-    const node = world.gears[connection.gearId]
+    const node = world.gears[connection.entityId]
     invariant(node)
 
     node.connections.push({
       type: connection.type,
-      gearId: gear.id,
+      entityId: gear.id,
       multiplier: 1 / connection.multiplier,
     })
   }
@@ -77,11 +77,11 @@ export function addGear(
     let tile = world.tiles[tileId]
 
     if (attach) {
-      invariant(tile?.gearId === attach.id)
-      tile.gearId = gear.id
+      invariant(tile?.entityId === attach.id)
+      tile.entityId = gear.id
     } else {
       invariant(tile === undefined)
-      tile = world.tiles[tileId] = { gearId: gear.id }
+      tile = world.tiles[tileId] = { entityId: gear.id }
     }
   }
 
@@ -91,7 +91,7 @@ export function addGear(
       c.type !== ConnectionType.enum.Belt,
       'TODO support belt connections',
     )
-    const neighbor = world.gears[c.gearId]
+    const neighbor = world.gears[c.entityId]
     invariant(neighbor)
     conserveAngularMomentum(
       neighbor,
@@ -104,7 +104,7 @@ export function addGear(
 }
 
 function conserveAngularMomentum(
-  root: Gear,
+  root: GearEntity,
   world: World,
   totalMassBefore: number,
   totalMassAfter: number,
@@ -114,9 +114,9 @@ function conserveAngularMomentum(
   root.velocity =
     root.velocity * (totalMassBefore / totalMassAfter)
 
-  const seen = new Set<Gear>()
+  const seen = new Set<GearEntity>()
   const stack = new Array<{
-    gear: Gear
+    gear: GearEntity
     multiplier: number
   }>({
     gear: root,
@@ -137,7 +137,7 @@ function conserveAngularMomentum(
         c.type !== ConnectionType.enum.Belt,
         'TODO support belt connections',
       )
-      const neighbor = world.gears[c.gearId]
+      const neighbor = world.gears[c.entityId]
       invariant(neighbor)
 
       let neighborMultiplier: number

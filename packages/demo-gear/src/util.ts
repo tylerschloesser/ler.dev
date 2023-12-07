@@ -8,18 +8,18 @@ import {
 import {
   Connection,
   ConnectionType,
-  Gear,
-  GearId,
+  GearEntity,
+  EntityId,
   SimpleVec2,
   World,
 } from './types.js'
 
-function getConnectionId(a: GearId, b: GearId) {
+function getConnectionId(a: EntityId, b: EntityId) {
   return a < b ? `${a}.${b}` : `${b}.${a}`
 }
 
 export function* iterateConnections(
-  gears: Record<GearId, Gear>,
+  gears: Record<EntityId, GearEntity>,
 ) {
   const seen = new Map<string, ConnectionType>()
   for (const gear of Object.values(gears)) {
@@ -28,7 +28,10 @@ export function* iterateConnections(
         connection.type !== ConnectionType.enum.Belt,
         'TODO support belt connections',
       )
-      const id = getConnectionId(gear.id, connection.gearId)
+      const id = getConnectionId(
+        gear.id,
+        connection.entityId,
+      )
       if (seen.has(id)) {
         // sanity check the connection type
         invariant(seen.get(id) === connection.type)
@@ -36,7 +39,7 @@ export function* iterateConnections(
       }
       seen.set(id, connection.type)
 
-      const peer = gears[connection.gearId]
+      const peer = gears[connection.entityId]
       invariant(peer)
 
       // TODO cleanup GC
@@ -49,9 +52,12 @@ export function* iterateConnections(
   }
 }
 
-export function* iterateNetwork(root: Gear, world: World) {
-  const seen = new Set<Gear>()
-  const stack = new Array<Gear>(root)
+export function* iterateNetwork(
+  root: GearEntity,
+  world: World,
+) {
+  const seen = new Set<GearEntity>()
+  const stack = new Array<GearEntity>(root)
 
   while (stack.length) {
     const node = stack.pop()
@@ -69,7 +75,7 @@ export function* iterateNetwork(root: Gear, world: World) {
         connection.type !== ConnectionType.enum.Belt,
         'TODO support belt connections',
       )
-      const neighbor = world.gears[connection.gearId]
+      const neighbor = world.gears[connection.entityId]
       invariant(neighbor)
       stack.push(neighbor)
     })
@@ -126,22 +132,22 @@ export function* iterateOverlappingGears(
   radius: number,
   world: World,
 ) {
-  const seen = new Set<GearId>()
+  const seen = new Set<EntityId>()
 
   for (const tile of iterateGearTiles(
     center,
     radius,
     world,
   )) {
-    if (!tile.gearId) {
+    if (!tile.entityId) {
       continue
     }
-    if (!seen.has(tile.gearId)) {
-      const gear = world.gears[tile.gearId]
+    if (!seen.has(tile.entityId)) {
+      const gear = world.gears[tile.entityId]
       invariant(gear)
       yield gear
     }
-    seen.add(tile.gearId)
+    seen.add(tile.entityId)
   }
 }
 
@@ -165,11 +171,11 @@ function* iterateAdjacentGears(
       `.${center.y + dy * (radius + 1)}`
     const tile = world.tiles[tileId]
 
-    if (!tile?.gearId) {
+    if (!tile?.entityId) {
       continue
     }
 
-    const gear = world.gears[tile.gearId]
+    const gear = world.gears[tile.entityId]
     invariant(gear)
     if (
       gear.center.x + (gear.radius + radius) * -dx ===
@@ -195,7 +201,7 @@ export function getAdjacentConnections(
   )) {
     connections.push({
       type: ConnectionType.enum.Adjacent,
-      gearId: gear.id,
+      entityId: gear.id,
       multiplier: (gear.radius / radius) * -1,
     })
   }
@@ -263,11 +269,11 @@ export function throttle<A extends Array<unknown>>(
 }
 
 export function getTotalMass(
-  root: Gear,
+  root: GearEntity,
   world: World,
 ): number {
-  const stack = new Array<Gear>(root)
-  const seen = new Set<Gear>()
+  const stack = new Array<GearEntity>(root)
+  const seen = new Set<GearEntity>()
 
   let mass = 0
 
@@ -287,7 +293,7 @@ export function getTotalMass(
         c.type !== ConnectionType.enum.Belt,
         'TODO support belt connections',
       )
-      const neighbor = world.gears[c.gearId]
+      const neighbor = world.gears[c.entityId]
       invariant(neighbor)
       stack.push(neighbor)
     }

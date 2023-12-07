@@ -344,7 +344,7 @@ function isValid(
       const tileId = `${position.x}.${position.y}`
       const tile = context.world.tiles[tileId]
       if (!tile) continue
-      if (tile.gearId || tile.beltId) {
+      if (tile.entityId || tile.beltId) {
         return false
       }
     }

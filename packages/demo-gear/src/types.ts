@@ -7,8 +7,8 @@ export const SimpleVec2 = z.strictObject({
 })
 export type SimpleVec2 = z.infer<typeof SimpleVec2>
 
-export const GearId = z.string()
-export type GearId = z.infer<typeof GearId>
+export const EntityId = z.string()
+export type EntityId = z.infer<typeof EntityId>
 
 export const BeltId = z.string()
 export type BeltId = z.infer<typeof BeltId>
@@ -20,7 +20,7 @@ export const ResourceType = z.enum(['Fuel'])
 export type ResourceType = z.infer<typeof ResourceType>
 
 export const Tile = z.strictObject({
-  gearId: GearId.optional(),
+  entityId: EntityId.optional(),
   resourceType: ResourceType.optional(),
   beltId: BeltId.optional(),
 })
@@ -36,7 +36,7 @@ export type ConnectionType = z.infer<typeof ConnectionType>
 
 export const AdjacentConnection = z.strictObject({
   type: z.literal(ConnectionType.enum.Adjacent),
-  gearId: GearId,
+  entityId: EntityId,
   multiplier: z.number(),
 })
 export type AdjacentConnection = z.infer<
@@ -45,7 +45,7 @@ export type AdjacentConnection = z.infer<
 
 export const ChainConnection = z.strictObject({
   type: z.literal(ConnectionType.enum.Chain),
-  gearId: GearId,
+  entityId: EntityId,
   multiplier: z.number(),
 })
 export type ChainConnection = z.infer<
@@ -54,7 +54,7 @@ export type ChainConnection = z.infer<
 
 export const AttachConnection = z.strictObject({
   type: z.literal(ConnectionType.enum.Attach),
-  gearId: GearId,
+  entityId: EntityId,
   multiplier: z.number(),
 })
 export type AttachConnection = z.infer<
@@ -109,8 +109,8 @@ export const GearBehavior = z.discriminatedUnion('type', [
 ])
 export type GearBehavior = z.infer<typeof GearBehavior>
 
-export const Gear = z.strictObject({
-  id: GearId,
+export const GearEntity = z.strictObject({
+  id: EntityId,
   position: SimpleVec2,
   center: SimpleVec2,
   radius: z.number(),
@@ -120,7 +120,7 @@ export const Gear = z.strictObject({
   connections: z.array(Connection),
   behavior: GearBehavior.optional(),
 })
-export type Gear = z.infer<typeof Gear>
+export type GearEntity = z.infer<typeof GearEntity>
 
 export const BeltDirection = z.union([
   z.literal('x'),
@@ -165,7 +165,7 @@ export type Belt = z.infer<typeof Belt>
 
 export const World = z.strictObject({
   version: z.number(),
-  gears: z.record(GearId, Gear),
+  gears: z.record(EntityId, GearEntity),
   tiles: z.record(TileId, Tile),
   belts: z.record(BeltId, Belt),
 })
@@ -183,9 +183,9 @@ export enum HandType {
 
 export interface BuildHand {
   type: HandType.Build
-  gear: Gear
+  gear: GearEntity
   valid: boolean
-  chain: Gear | null
+  chain: GearEntity | null
   onChangeValid?(valid: boolean): void
 }
 
@@ -195,7 +195,7 @@ export interface ApplyForceHand {
   active: boolean
   direction: 'cw' | 'ccw'
   magnitude: number
-  gear: Gear | null
+  gear: GearEntity | null
   runningEnergyDiff: number
 }
 
@@ -204,13 +204,13 @@ export interface ApplyFrictionHand {
   position: SimpleVec2 | null
   active: boolean
   coeffecient: number
-  gear: Gear | null
+  gear: GearEntity | null
   runningEnergyDiff: number
 }
 
 export interface ConfigureHand {
   type: HandType.Configure
-  gear: Gear | null
+  gear: GearEntity | null
 }
 
 export interface AddResourceHand {
@@ -229,7 +229,7 @@ export interface DeleteHand {
   type: HandType.Delete
   position: SimpleVec2
   size: number
-  gearIds: Set<GearId>
+  gearIds: Set<EntityId>
   tileIds: Set<TileId>
 }
 

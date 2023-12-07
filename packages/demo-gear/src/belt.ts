@@ -129,12 +129,12 @@ export function getBeltConnections(
 
       const tile = world.tiles[tileId]
 
-      if (!tile?.gearId) {
+      if (!tile?.entityId) {
         continue
       }
       invariant(!tile.beltId)
 
-      const gear = world.gears[tile.gearId]
+      const gear = world.gears[tile.entityId]
       invariant(gear)
 
       const gx = gear.center.x + dg.x + gear.radius * sr.x
@@ -148,13 +148,13 @@ export function getBeltConnections(
           !connections.find(
             (c) =>
               c.type === ConnectionType.enum.Adjacent &&
-              c.gearId === gear.id &&
+              c.entityId === gear.id &&
               c.multiplier === multiplier,
           )
         ) {
           connections.push({
             type: ConnectionType.enum.Adjacent,
-            gearId: gear.id,
+            entityId: gear.id,
             multiplier,
           })
         }
@@ -183,7 +183,7 @@ export function updateAddBeltProgress(
         continue
       }
 
-      const gear = context.world.gears[adjacent.gearId]
+      const gear = context.world.gears[adjacent.entityId]
       invariant(gear)
 
       belt.offset = mod(

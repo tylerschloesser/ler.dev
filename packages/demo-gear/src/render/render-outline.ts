@@ -1,5 +1,5 @@
 import { mat4, vec3 } from 'gl-matrix'
-import { Gear, IAppContext } from '../types.js'
+import { GearEntity, IAppContext } from '../types.js'
 import { Color } from './color.js'
 import { GpuState } from './types.js'
 
@@ -74,7 +74,7 @@ export function renderGearOutline(
   context: IAppContext,
   gl: WebGL2RenderingContext,
   gpu: GpuState,
-  gear: Gear,
+  gear: GearEntity,
   color: Color,
 ) {
   const lineWidth = 0.1 + (1 - context.camera.zoom) * 0.2

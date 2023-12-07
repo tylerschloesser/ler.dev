@@ -6,7 +6,7 @@ import {
 } from 'react'
 import invariant from 'tiny-invariant'
 import {
-  GearId,
+  EntityId,
   IAppContext,
   TickListenerFn,
 } from '../types.js'
@@ -17,7 +17,7 @@ export function GearStats({
   gearId,
 }: {
   context: IAppContext
-  gearId: GearId
+  gearId: EntityId
 }) {
   const [velocity, setVelocity] = useState<number>(0)
   useTickListener(context, gearId, setVelocity)
@@ -46,7 +46,7 @@ export function GearStats({
 
 function useTickListener(
   context: IAppContext,
-  gearId: GearId,
+  gearId: EntityId,
   setVelocity: Dispatch<SetStateAction<number>>,
 ) {
   useEffect(() => {

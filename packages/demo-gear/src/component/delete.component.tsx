@@ -72,8 +72,8 @@ function checkDelete(
     size,
     context.world,
   )) {
-    if (tile.gearId) {
-      gearIds.add(tile.gearId)
+    if (tile.entityId) {
+      gearIds.add(tile.entityId)
     }
     if (tile.beltId || tile.resourceType) {
       tileIds.add(tileId)

@@ -5,7 +5,7 @@ import { TWO_PI } from './const.js'
 import {
   BuildHand,
   ConnectionType,
-  Gear,
+  GearEntity,
   HandType,
   IAppContext,
   SimpleVec2,
@@ -20,7 +20,7 @@ import { Vec2 } from './vec2.js'
 function newBuildGear(
   context: IAppContext,
   radius: number,
-): Gear {
+): GearEntity {
   const center: SimpleVec2 = {
     x: Math.round(context.camera.position.x),
     y: Math.round(context.camera.position.y),
@@ -100,9 +100,9 @@ export function executeBuild(
   const tileId = `${position.x}.${position.y}`
   const tile = context.world.tiles[tileId]
 
-  let gear: Gear | undefined
-  if (tile?.gearId) {
-    gear = context.world.gears[tile.gearId]
+  let gear: GearEntity | undefined
+  if (tile?.entityId) {
+    gear = context.world.gears[tile.entityId]
   }
 
   if (gear?.radius === 1) {
@@ -146,8 +146,8 @@ export function updateBuild(
   invariant(hand.gear)
 
   let valid = true
-  let attach: Gear | undefined
-  let chain: Gear | undefined
+  let attach: GearEntity | undefined
+  let chain: GearEntity | undefined
 
   for (const tile of iterateGearTiles(
     hand.gear.center,
@@ -214,21 +214,21 @@ export function updateBuild(
     if (hand.chain) {
       hand.gear.connections.push({
         type: ConnectionType.enum.Chain,
-        gearId: hand.chain.id,
+        entityId: hand.chain.id,
         multiplier: 1,
       })
     }
     if (chain) {
       hand.gear.connections.push({
         type: ConnectionType.enum.Chain,
-        gearId: chain.id,
+        entityId: chain.id,
         multiplier: 1,
       })
     }
     if (attach) {
       hand.gear.connections.push({
         type: ConnectionType.enum.Attach,
-        gearId: attach.id,
+        entityId: attach.id,
         multiplier: (attach.radius / hand.gear.radius) ** 2,
       })
     }
@@ -269,7 +269,7 @@ export function updateBuildGearAngle(
     connection = gear.connections.find(
       (c) =>
         c.type !== ConnectionType.enum.Belt &&
-        c.gearId === hand.chain?.id,
+        c.entityId === hand.chain?.id,
     )
     invariant(connection)
   }
@@ -281,7 +281,8 @@ export function updateBuildGearAngle(
     )
 
     // if valid, we can check any connected gear to get the angle
-    const neighbor = context.world.gears[connection.gearId]
+    const neighbor =
+      context.world.gears[connection.entityId]
     invariant(neighbor)
 
     switch (connection.type) {

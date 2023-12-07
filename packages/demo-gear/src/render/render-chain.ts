@@ -1,6 +1,6 @@
 import invariant from 'tiny-invariant'
 import { PI, TEETH, TWO_PI } from '../const.js'
-import { Gear } from '../types.js'
+import { GearEntity } from '../types.js'
 import { dist } from '../util.js'
 import {
   updateChainArcModel,
@@ -9,8 +9,8 @@ import {
 import { GpuState } from './types.js'
 
 export function renderChain(
-  gear1: Gear,
-  gear2: Gear,
+  gear1: GearEntity,
+  gear2: GearEntity,
   gl: WebGL2RenderingContext,
   gpu: GpuState,
   zoom: number,
