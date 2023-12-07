@@ -54,7 +54,12 @@ export function addGear(
 
   const { center, radius, connections, angle } = partial
 
-  const gearId = `${center.x}.${center.y}.${radius}`
+  const position = {
+    x: center.x - radius,
+    y: center.y - radius,
+  }
+
+  const gearId = `${position.x}.${position.y}`
   invariant(world.gears[gearId] === undefined)
 
   for (const connection of connections) {
@@ -77,10 +82,8 @@ export function addGear(
 
   const gear: Gear = {
     id: gearId,
-    center: {
-      x: center.x,
-      y: center.y,
-    },
+    position,
+    center,
     radius,
     mass,
     angle,

@@ -118,6 +118,7 @@ export type GearBehavior = z.infer<typeof GearBehavior>
 
 export const Gear = z.strictObject({
   id: GearId,
+  position: SimpleVec2,
   center: SimpleVec2,
   radius: z.number(),
   angle: z.number(),
