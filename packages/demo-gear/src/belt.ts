@@ -196,12 +196,3 @@ export function updateAddBeltProgress(
     1,
   )
 }
-
-// belt.offset = mod(
-//   belt.offset +
-//     gear.velocity *
-//       gear.radius *
-//       elapsed *
-//       adjacent.multiplier,
-//   1,
-// )
