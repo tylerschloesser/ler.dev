@@ -5,6 +5,7 @@ import { TWO_PI } from './const.js'
 import {
   BuildHand,
   ConnectionType,
+  EntityType,
   GearEntity,
   HandType,
   IAppContext,
@@ -31,6 +32,7 @@ function newBuildGear(
   }
   return {
     id: `${position.x}.${position.y}`,
+    type: EntityType.enum.Gear,
     position,
     center,
     angle: 0,

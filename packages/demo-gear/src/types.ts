@@ -109,8 +109,12 @@ export const GearBehavior = z.discriminatedUnion('type', [
 ])
 export type GearBehavior = z.infer<typeof GearBehavior>
 
+export const EntityType = z.enum(['Gear'])
+export type EntityType = z.infer<typeof EntityType>
+
 export const GearEntity = z.strictObject({
   id: EntityId,
+  type: z.literal(EntityType.enum.Gear),
   position: SimpleVec2,
   center: SimpleVec2,
   radius: z.number(),
