@@ -22,29 +22,57 @@ export function renderBelt(
 ) {
   const render = batchRenderRect(gl, gpu)
 
+  const lineWidth = 0.1
+  function renderLineX(
+    x: number,
+    y: number,
+    offset: number,
+  ): void {
+    if (offset + lineWidth < 0 || offset > 1) {
+      return
+    }
+    render(
+      x + Math.max(offset, 0),
+      y,
+      lineWidth +
+        Math.min(offset, 0) +
+        Math.min(1 - (offset + lineWidth), 0),
+      1,
+      BELT_LINE_COLOR,
+    )
+  }
+
+  function renderLineY(
+    x: number,
+    y: number,
+    offset: number,
+  ): void {
+    if (offset + lineWidth < 0 || offset > 1) {
+      return
+    }
+    render(
+      x,
+      y + Math.max(offset, 0),
+      1,
+      lineWidth +
+        Math.min(offset, 0) +
+        Math.min(1 - (offset + lineWidth), 0),
+      BELT_LINE_COLOR,
+    )
+  }
+
   if (belt.type === BeltType.enum.Straight) {
     invariant(belt.offset >= 0)
     invariant(belt.offset < 1)
     for (const { x, y } of belt.path) {
       render(x, y, 1, 1, BELT_COLOR)
-      const lineWidth = 0.1
       if (belt.direction === 'x') {
-        render(
-          x + belt.offset,
-          y,
-          lineWidth,
-          1,
-          BELT_LINE_COLOR,
-        )
-        render(
-          -1 + x + belt.offset,
-          y,
-          lineWidth,
-          1,
-          BELT_LINE_COLOR,
-        )
+        renderLineX(x, y, belt.offset)
+        renderLineX(x, y, -1 + belt.offset)
       } else {
         invariant(belt.direction === 'y')
+        renderLineY(x, y, belt.offset)
+        renderLineY(x, y, -1 + belt.offset)
       }
       if (tint) {
         render(x, y, 1, 1, tint)
