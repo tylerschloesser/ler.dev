@@ -7,19 +7,19 @@ import {
 } from './types.js'
 import { getTotalMass } from './util.js'
 
-export function getTorqueMultiplierMap(
+export function getForceMultiplierMap(
   root: PartialGear,
   world: World,
 ): Map<PartialGear, number> | null {
-  const torqueMultiplierMap = new Map<PartialGear, number>()
-  torqueMultiplierMap.set(root, 1)
+  const forceMultiplierMap = new Map<PartialGear, number>()
+  forceMultiplierMap.set(root, 1)
 
   const stack = new Array<PartialGear>(root)
   while (stack.length) {
     const tail = stack.pop()
     invariant(tail)
 
-    const tailMultiplier = torqueMultiplierMap.get(tail)
+    const tailMultiplier = forceMultiplierMap.get(tail)
     invariant(tailMultiplier !== undefined)
 
     for (const c of tail.connections) {
@@ -33,9 +33,9 @@ export function getTorqueMultiplierMap(
       const neighborMultiplier =
         tailMultiplier * c.multiplier
 
-      if (torqueMultiplierMap.has(neighbor)) {
+      if (forceMultiplierMap.has(neighbor)) {
         if (
-          torqueMultiplierMap.get(neighbor) !==
+          forceMultiplierMap.get(neighbor) !==
           neighborMultiplier
         ) {
           return null
@@ -43,12 +43,12 @@ export function getTorqueMultiplierMap(
         continue
       }
 
-      torqueMultiplierMap.set(neighbor, neighborMultiplier)
+      forceMultiplierMap.set(neighbor, neighborMultiplier)
       stack.push(neighbor)
     }
   }
 
-  return torqueMultiplierMap
+  return forceMultiplierMap
 }
 
 function applyTorque(
@@ -58,7 +58,7 @@ function applyTorque(
   world: World,
 ): number {
   const m = getTotalMass(root, world)
-  const torqueMultiplierMap = getTorqueMultiplierMap(
+  const torqueMultiplierMap = getForceMultiplierMap(
     root,
     world,
   )

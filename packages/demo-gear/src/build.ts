@@ -1,6 +1,6 @@
 import invariant from 'tiny-invariant'
 import { addChainConnection, addGear } from './add-gear.js'
-import { getTorqueMultiplierMap } from './apply-torque.js'
+import { getForceMultiplierMap } from './apply-torque.js'
 import { TWO_PI } from './const.js'
 import {
   BuildHand,
@@ -222,7 +222,7 @@ export function updateBuild(
     // iterate through all root gear connections.
     //
     valid =
-      getTorqueMultiplierMap(hand.gear, context.world) !==
+      getForceMultiplierMap(hand.gear, context.world) !==
       null
   }
 
