@@ -8,6 +8,7 @@ import {
   Gear,
   HandType,
   IAppContext,
+  SimpleVec2,
 } from './types.js'
 import {
   getAdjacentConnections,
@@ -15,6 +16,30 @@ import {
   iterateOverlappingGears,
 } from './util.js'
 import { Vec2 } from './vec2.js'
+
+function newBuildGear(
+  context: IAppContext,
+  radius: number,
+): Gear {
+  const center: SimpleVec2 = {
+    x: Math.round(context.camera.position.x),
+    y: Math.round(context.camera.position.y),
+  }
+  const position: SimpleVec2 = {
+    x: center.x - radius,
+    y: center.y - radius,
+  }
+  return {
+    id: `${position.x}.${position.y}`,
+    position,
+    center,
+    angle: 0,
+    connections: [],
+    mass: Math.PI * radius ** 2,
+    radius,
+    velocity: 0,
+  }
+}
 
 export function initBuild(
   context: IAppContext,
@@ -25,20 +50,11 @@ export function initBuild(
   context.hand = {
     type: HandType.Build,
     chain: null,
-    gear: {
-      radius,
-      angle: 0,
-      connections: [],
-      center: {
-        x: Number.NaN,
-        y: Number.NaN,
-      },
-      velocity: 0,
-    },
+    gear: newBuildGear(context, radius),
     valid: false,
     onChangeValid,
   }
-  updateBuildPosition(context, context.hand)
+  updateBuild(context, context.hand)
 }
 
 export function updateRadius(
@@ -46,7 +62,7 @@ export function updateRadius(
   radius: number,
 ): void {
   invariant(context.hand?.type === HandType.Build)
-  context.hand.gear.radius = radius
+  context.hand.gear = newBuildGear(context, radius)
   updateBuild(context, context.hand)
 }
 
@@ -62,6 +78,9 @@ export function updateBuildPosition(
   ) {
     return
   } else {
+    hand.gear.position.x = x - hand.gear.radius
+    hand.gear.position.y = y - hand.gear.radius
+    hand.gear.id = `${hand.gear.position.x}.${hand.gear.position.y}`
     hand.gear.center.x = x
     hand.gear.center.y = y
     updateBuild(context, hand)
@@ -110,7 +129,7 @@ export function executeBuild(
       hand.chain = gear
     }
   } else {
-    addGear(hand.gear, hand.chain, gear ?? null, context)
+    addGear(hand.gear, gear ?? null, context)
     hand.chain = null
   }
   updateBuild(context, hand)

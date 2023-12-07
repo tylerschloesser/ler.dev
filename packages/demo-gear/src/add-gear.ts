@@ -3,7 +3,6 @@ import {
   IAppContext,
   ConnectionType,
   Gear,
-  PartialGear,
   World,
 } from './types.js'
 import { getTotalMass, iterateGearTileIds } from './util.js'
@@ -45,24 +44,15 @@ export function addChainConnection(
 }
 
 export function addGear(
-  partial: PartialGear,
-  _chain: Gear | null, // TODO remove this
+  gear: Gear,
   attach: Gear | null,
   context: IAppContext,
 ): void {
   const { world } = context
 
-  const { center, radius, connections, angle } = partial
+  invariant(world.gears[gear.id] === undefined)
 
-  const position = {
-    x: center.x - radius,
-    y: center.y - radius,
-  }
-
-  const gearId = `${position.x}.${position.y}`
-  invariant(world.gears[gearId] === undefined)
-
-  for (const connection of connections) {
+  for (const connection of gear.connections) {
     invariant(
       connection.type !== ConnectionType.enum.Belt,
       'TODO support belt connections',
@@ -73,39 +63,25 @@ export function addGear(
 
     node.connections.push({
       type: connection.type,
-      gearId,
+      gearId: gear.id,
       multiplier: 1 / connection.multiplier,
     })
   }
 
-  const mass = Math.PI * radius ** 2
-
-  const gear: Gear = {
-    id: gearId,
-    position,
-    // need to copy because this is re-used
-    center: {
-      x: center.x,
-      y: center.y,
-    },
-    radius,
-    mass,
-    angle,
-    velocity: 0,
-    connections,
-  }
-
   world.gears[gear.id] = gear
 
-  for (const tileId of iterateGearTileIds(center, radius)) {
+  for (const tileId of iterateGearTileIds(
+    gear.center,
+    gear.radius,
+  )) {
     let tile = world.tiles[tileId]
 
     if (attach) {
       invariant(tile?.gearId === attach.id)
-      tile.gearId = gearId
+      tile.gearId = gear.id
     } else {
       invariant(tile === undefined)
-      tile = world.tiles[tileId] = { gearId }
+      tile = world.tiles[tileId] = { gearId: gear.id }
     }
   }
 
@@ -120,7 +96,7 @@ export function addGear(
     conserveAngularMomentum(
       neighbor,
       world,
-      totalMass - mass,
+      totalMass - gear.mass,
       totalMass,
     )
     break
