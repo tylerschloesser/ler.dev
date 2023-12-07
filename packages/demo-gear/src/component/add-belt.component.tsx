@@ -445,6 +445,7 @@ function isValid(
     belts,
   )
   if (!adjacent) {
+    // no adjacent gears, belt is not moving
     return { valid: true }
   }
 
