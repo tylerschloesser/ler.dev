@@ -195,6 +195,11 @@ function initFillRectProgram(
       vertex: getAttribLocation(gl, program, 'aVertex'),
     },
     uniforms: {
+      subModel: getUniformLocation(
+        gl,
+        program,
+        'uSubModel',
+      ),
       model: getUniformLocation(gl, program, 'uModel'),
       view: getUniformLocation(gl, program, 'uView'),
       projection: getUniformLocation(
@@ -203,6 +208,11 @@ function initFillRectProgram(
         'uProjection',
       ),
       color: getUniformLocation(gl, program, 'uColor'),
+      enableMask: getUniformLocation(
+        gl,
+        program,
+        'uEnableMask',
+      ),
     },
   }
 }

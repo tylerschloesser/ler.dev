@@ -74,10 +74,12 @@ export interface GpuState {
         vertex: WebGLAttributeLocation
       }
       uniforms: {
+        subModel: WebGLUniformLocation
         model: WebGLUniformLocation
         view: WebGLUniformLocation
         projection: WebGLUniformLocation
         color: WebGLUniformLocation
+        enableMask: WebGLUniformLocation
       }
     }
   }

@@ -10,7 +10,7 @@ import {
   Color,
   INTERSECTION_BELT_COLOR,
 } from './color.js'
-import { batchRenderRect } from './render-rect.js'
+import { batchRenderRectWithMask } from './render-rect.js'
 import { GpuState } from './types.js'
 
 export function renderBelt(
@@ -20,7 +20,8 @@ export function renderBelt(
   belt: PartialBelt,
   tint?: Color,
 ) {
-  const render = batchRenderRect(gl, gpu)
+  const { render, renderWithMask } =
+    batchRenderRectWithMask(gl, gpu)
 
   if (belt.type === BeltType.enum.Straight) {
     invariant(belt.offset >= 0)
@@ -29,17 +30,25 @@ export function renderBelt(
       render(x, y, 1, 1, BELT_COLOR)
       const lineWidth = 0.1
       if (belt.direction === 'x') {
-        render(
-          x + belt.offset,
-          y,
+        renderWithMask(
+          belt.offset,
+          0,
           lineWidth,
+          1,
+          x,
+          y,
+          1,
           1,
           BELT_LINE_COLOR,
         )
-        render(
-          -1 + x + belt.offset,
-          y,
+        renderWithMask(
+          -1 + belt.offset,
+          0,
           lineWidth,
+          1,
+          x,
+          y,
+          1,
           1,
           BELT_LINE_COLOR,
         )

@@ -2,6 +2,7 @@ import { mat4, vec3 } from 'gl-matrix'
 import { Color } from './color.js'
 import { GpuState } from './types.js'
 
+const subModel = mat4.create()
 const model = mat4.create()
 const v = vec3.create()
 
@@ -33,6 +34,13 @@ export function batchRenderRect(
       color.g,
       color.b,
       color.a,
+    )
+
+    mat4.identity(subModel)
+    gl.uniformMatrix4fv(
+      fillRect.uniforms.subModel,
+      false,
+      subModel,
     )
 
     mat4.identity(model)
@@ -69,6 +77,145 @@ export function batchRenderRect(
   }
 }
 
+export function batchRenderRectWithMask(
+  gl: WebGL2RenderingContext,
+  gpu: GpuState,
+) {
+  const { fillRect } = gpu.programs
+  gl.useProgram(fillRect.program)
+
+  const { view, projection } = gpu.matrices
+  gl.uniformMatrix4fv(fillRect.uniforms.view, false, view)
+  gl.uniformMatrix4fv(
+    fillRect.uniforms.projection,
+    false,
+    projection,
+  )
+
+  const render = (
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+    color: Color,
+  ) => {
+    gl.uniform1i(fillRect.uniforms.enableMask, 0)
+    gl.uniform4f(
+      fillRect.uniforms.color,
+      color.r,
+      color.g,
+      color.b,
+      color.a,
+    )
+
+    mat4.identity(subModel)
+    gl.uniformMatrix4fv(
+      fillRect.uniforms.subModel,
+      false,
+      subModel,
+    )
+
+    mat4.identity(model)
+
+    v[0] = x
+    v[1] = y
+    v[2] = 0
+    mat4.translate(model, model, v)
+
+    v[0] = w
+    v[1] = h
+    v[2] = 0
+    mat4.scale(model, model, v)
+
+    gl.uniformMatrix4fv(
+      fillRect.uniforms.model,
+      false,
+      model,
+    )
+
+    const buffer = gpu.buffers.fillRect
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffer)
+    gl.vertexAttribPointer(
+      fillRect.attributes.vertex,
+      2,
+      gl.FLOAT,
+      false,
+      0,
+      0,
+    )
+    gl.enableVertexAttribArray(fillRect.attributes.vertex)
+
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4)
+  }
+
+  const renderWithMask = (
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+    mx: number,
+    my: number,
+    mw: number,
+    mh: number,
+    color: Color,
+  ) => {
+    gl.uniform1i(fillRect.uniforms.enableMask, 1)
+    gl.uniform4f(
+      fillRect.uniforms.color,
+      color.r,
+      color.g,
+      color.b,
+      color.a,
+    )
+
+    mat4.identity(subModel)
+    v[0] = x
+    v[1] = y
+    v[2] = 0
+    mat4.translate(subModel, subModel, v)
+    v[0] = w
+    v[1] = h
+    v[2] = 0
+    mat4.scale(subModel, subModel, v)
+    gl.uniformMatrix4fv(
+      fillRect.uniforms.subModel,
+      false,
+      subModel,
+    )
+
+    mat4.identity(model)
+    v[0] = mx
+    v[1] = my
+    v[2] = 0
+    mat4.translate(model, model, v)
+    v[0] = mw
+    v[1] = mh
+    v[2] = 0
+    mat4.scale(model, model, v)
+    gl.uniformMatrix4fv(
+      fillRect.uniforms.model,
+      false,
+      model,
+    )
+
+    const buffer = gpu.buffers.fillRect
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffer)
+    gl.vertexAttribPointer(
+      fillRect.attributes.vertex,
+      2,
+      gl.FLOAT,
+      false,
+      0,
+      0,
+    )
+    gl.enableVertexAttribArray(fillRect.attributes.vertex)
+
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4)
+  }
+
+  return { render, renderWithMask }
+}
+
 export function renderRect(
   gl: WebGL2RenderingContext,
   gpu: GpuState,
@@ -80,6 +227,8 @@ export function renderRect(
 ): void {
   const { fillRect } = gpu.programs
   gl.useProgram(fillRect.program)
+
+  gl.uniform1i(fillRect.uniforms.enableMask, 0)
 
   const { view, projection } = gpu.matrices
   gl.uniformMatrix4fv(fillRect.uniforms.view, false, view)
@@ -95,6 +244,13 @@ export function renderRect(
     color.g,
     color.b,
     color.a,
+  )
+
+  mat4.identity(subModel)
+  gl.uniformMatrix4fv(
+    fillRect.uniforms.subModel,
+    false,
+    model,
   )
 
   mat4.identity(model)
