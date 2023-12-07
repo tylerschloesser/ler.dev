@@ -233,7 +233,7 @@ export function updateBuild(
       hand.gear.connections.push({
         type: ConnectionType.enum.Attach,
         entityId: attach.id,
-        multiplier: (attach.radius / hand.gear.radius) ** 2,
+        multiplier: attach.radius / hand.gear.radius,
       })
     }
   }
@@ -247,8 +247,10 @@ export function updateBuild(
     // iterate through all root gear connections.
     //
     valid =
-      getForceMultiplierMap(hand.gear, context.world) !==
-      null
+      getForceMultiplierMap(
+        hand.gear,
+        context.world.entities,
+      ) !== null
   }
 
   if (hand.valid !== valid) {

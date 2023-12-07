@@ -213,7 +213,7 @@ export function getAdjacentConnections(
     connections.push({
       type: ConnectionType.enum.Adjacent,
       entityId: gear.id,
-      multiplier: (gear.radius / radius) * -1,
+      multiplier: -1,
     })
   }
   return connections

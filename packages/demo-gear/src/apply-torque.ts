@@ -1,6 +1,5 @@
 import invariant from 'tiny-invariant'
 import {
-  ConnectionType,
   Entity,
   EntityType,
   GearEntity,
@@ -10,7 +9,7 @@ import { getTotalMass } from './util.js'
 
 export function getForceMultiplierMap(
   root: Entity,
-  world: World,
+  entities: World['entities'],
 ): Map<Entity, number> | null {
   const forceMultiplierMap = new Map<Entity, number>()
   forceMultiplierMap.set(root, 1)
@@ -24,11 +23,7 @@ export function getForceMultiplierMap(
     invariant(tailMultiplier !== undefined)
 
     for (const c of tail.connections) {
-      invariant(
-        c.type !== ConnectionType.enum.Belt,
-        'TODO support belt connections',
-      )
-      const neighbor = world.entities[c.entityId]
+      const neighbor = entities[c.entityId]
       invariant(neighbor)
 
       const neighborMultiplier =
@@ -39,6 +34,14 @@ export function getForceMultiplierMap(
           forceMultiplierMap.get(neighbor) !==
           neighborMultiplier
         ) {
+          console.log(
+            `expected neighbor multiplier to be ${neighborMultiplier}, found ${forceMultiplierMap.get(
+              neighbor,
+            )}`,
+          )
+          console.log('tail', tail)
+          console.log('neighbor', neighbor)
+          console.log(forceMultiplierMap)
           return null
         }
         continue
@@ -52,30 +55,30 @@ export function getForceMultiplierMap(
   return forceMultiplierMap
 }
 
-function applyTorque(
+export function applyForce(
   root: GearEntity,
-  rootTorque: number,
+  force: number,
   elapsed: number,
   world: World,
 ): number {
   const m = getTotalMass(root, world)
-  const torqueMultiplierMap = getForceMultiplierMap(
+  const forceMultiplierMap = getForceMultiplierMap(
     root,
-    world,
+    world.entities,
   )
-  invariant(torqueMultiplierMap)
+  invariant(forceMultiplierMap)
 
   let energyDiff = 0
 
   for (const [
     gear,
-    torqueMultiplier,
-  ] of torqueMultiplierMap.entries()) {
+    forceMultiplier,
+  ] of forceMultiplierMap.entries()) {
     invariant(gear.type === EntityType.enum.Gear)
 
     const r = gear.radius
     const I = (1 / 2) * m * r ** 2
-    const torque = rootTorque * torqueMultiplier
+    const torque = force * forceMultiplier * gear.radius
     const acceleration = torque / I
     const dv = acceleration * elapsed
 
@@ -91,16 +94,6 @@ function applyTorque(
   return energyDiff
 }
 
-export function applyForce(
-  root: GearEntity,
-  force: number,
-  elapsed: number,
-  world: World,
-): number {
-  const rootTorque = force * root.radius
-  return applyTorque(root, rootTorque, elapsed, world)
-}
-
 export function applyFriction(
   root: GearEntity,
   coeffecient: number,
@@ -108,7 +101,6 @@ export function applyFriction(
   elapsed: number,
   world: World,
 ): number {
-  const rootTorque =
-    coeffecient * root.velocity * -1 * magnitude
-  return applyTorque(root, rootTorque, elapsed, world)
+  const force = coeffecient * root.velocity * -1 * magnitude
+  return applyForce(root, force, elapsed, world)
 }
