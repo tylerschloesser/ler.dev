@@ -116,6 +116,8 @@ export function executeBuild(
     hand.chain = null
   }
   updateBuild(context, hand)
+
+  console.log(context)
 }
 
 export function updateBuild(

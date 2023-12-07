@@ -77,28 +77,25 @@ export function* iterateNetwork(root: Gear, world: World) {
 }
 
 export function* iterateGearTileIds(
-  position: SimpleVec2,
+  center: SimpleVec2,
   radius: number,
 ) {
   for (let x = -radius; x < radius; x++) {
     for (let y = -radius; y < radius; y++) {
       invariant(x === Math.floor(x))
       invariant(y === Math.floor(y))
-      const tileId = `${position.x + x}.${position.y + y}`
+      const tileId = `${center.x + x}.${center.y + y}`
       yield tileId
     }
   }
 }
 
 export function* iterateGearTiles(
-  position: SimpleVec2,
+  center: SimpleVec2,
   radius: number,
   world: World,
 ) {
-  for (const tileId of iterateGearTileIds(
-    position,
-    radius,
-  )) {
+  for (const tileId of iterateGearTileIds(center, radius)) {
     const tile = world.tiles[tileId]
     if (tile) {
       yield tile
@@ -125,14 +122,14 @@ export function* iterateTiles(
 }
 
 export function* iterateOverlappingGears(
-  position: SimpleVec2,
+  center: SimpleVec2,
   radius: number,
   world: World,
 ) {
   const seen = new Set<GearId>()
 
   for (const tile of iterateGearTiles(
-    position,
+    center,
     radius,
     world,
   )) {
@@ -167,7 +164,7 @@ const DELTAS = [
 ]
 
 function* iterateAdjacentGears(
-  position: SimpleVec2,
+  center: SimpleVec2,
   radius: number,
   world: World,
 ) {
@@ -175,8 +172,8 @@ function* iterateAdjacentGears(
     invariant(dx !== undefined)
     invariant(dy !== undefined)
     const tileId =
-      `${position.x + dx * (radius + 1)}` +
-      `.${position.y + dy * (radius + 1)}`
+      `${center.x + dx * (radius + 1)}` +
+      `.${center.y + dy * (radius + 1)}`
     const tile = world.tiles[tileId]
 
     if (!tile?.gearId) {
@@ -187,9 +184,9 @@ function* iterateAdjacentGears(
     invariant(gear)
     if (
       gear.center.x + (gear.radius + radius) * -dx ===
-        position.x &&
+        center.x &&
       gear.center.y + (gear.radius + radius) * -dy ===
-        position.y
+        center.y
     ) {
       yield gear
     }
@@ -197,13 +194,13 @@ function* iterateAdjacentGears(
 }
 
 export function getAdjacentConnections(
-  position: SimpleVec2,
+  center: SimpleVec2,
   radius: number,
   world: World,
 ): Connection[] {
   const connections: Connection[] = []
   for (const gear of iterateAdjacentGears(
-    position,
+    center,
     radius,
     world,
   )) {

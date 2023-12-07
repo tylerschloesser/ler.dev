@@ -1,7 +1,6 @@
 import invariant from 'tiny-invariant'
 import {
   BeltId,
-  BeltPath,
   ConnectionType,
   DeleteHand,
   IAppContext,

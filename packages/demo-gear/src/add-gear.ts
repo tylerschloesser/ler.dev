@@ -83,7 +83,11 @@ export function addGear(
   const gear: Gear = {
     id: gearId,
     position,
-    center,
+    // need to copy because this is re-used
+    center: {
+      x: center.x,
+      y: center.y,
+    },
     radius,
     mass,
     angle,
