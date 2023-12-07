@@ -13,6 +13,50 @@ import {
 import { batchRenderRect } from './render-rect.js'
 import { GpuState } from './types.js'
 
+type RenderFn = ReturnType<typeof batchRenderRect>
+
+function renderLineX(
+  render: RenderFn,
+  lineWidth: number,
+  x: number,
+  y: number,
+  offset: number,
+): void {
+  if (offset + lineWidth < 0 || offset > 1) {
+    return
+  }
+  render(
+    x + Math.max(offset, 0),
+    y,
+    lineWidth +
+      Math.min(offset, 0) +
+      Math.min(1 - (offset + lineWidth), 0),
+    1,
+    BELT_LINE_COLOR,
+  )
+}
+
+function renderLineY(
+  render: RenderFn,
+  lineWidth: number,
+  x: number,
+  y: number,
+  offset: number,
+): void {
+  if (offset + lineWidth < 0 || offset > 1) {
+    return
+  }
+  render(
+    x,
+    y + Math.max(offset, 0),
+    1,
+    lineWidth +
+      Math.min(offset, 0) +
+      Math.min(1 - (offset + lineWidth), 0),
+    BELT_LINE_COLOR,
+  )
+}
+
 export function renderBelt(
   _context: IAppContext,
   gl: WebGL2RenderingContext,
@@ -23,43 +67,6 @@ export function renderBelt(
   const render = batchRenderRect(gl, gpu)
 
   const lineWidth = 0.1
-  function renderLineX(
-    x: number,
-    y: number,
-    offset: number,
-  ): void {
-    if (offset + lineWidth < 0 || offset > 1) {
-      return
-    }
-    render(
-      x + Math.max(offset, 0),
-      y,
-      lineWidth +
-        Math.min(offset, 0) +
-        Math.min(1 - (offset + lineWidth), 0),
-      1,
-      BELT_LINE_COLOR,
-    )
-  }
-
-  function renderLineY(
-    x: number,
-    y: number,
-    offset: number,
-  ): void {
-    if (offset + lineWidth < 0 || offset > 1) {
-      return
-    }
-    render(
-      x,
-      y + Math.max(offset, 0),
-      1,
-      lineWidth +
-        Math.min(offset, 0) +
-        Math.min(1 - (offset + lineWidth), 0),
-      BELT_LINE_COLOR,
-    )
-  }
 
   if (belt.type === BeltType.enum.Straight) {
     invariant(belt.offset >= 0)
@@ -67,12 +74,24 @@ export function renderBelt(
     for (const { x, y } of belt.path) {
       render(x, y, 1, 1, BELT_COLOR)
       if (belt.direction === 'x') {
-        renderLineX(x, y, belt.offset)
-        renderLineX(x, y, -1 + belt.offset)
+        renderLineX(render, lineWidth, x, y, belt.offset)
+        renderLineX(
+          render,
+          lineWidth,
+          x,
+          y,
+          -1 + belt.offset,
+        )
       } else {
         invariant(belt.direction === 'y')
-        renderLineY(x, y, belt.offset)
-        renderLineY(x, y, -1 + belt.offset)
+        renderLineY(render, lineWidth, x, y, belt.offset)
+        renderLineY(
+          render,
+          lineWidth,
+          x,
+          y,
+          -1 + belt.offset,
+        )
       }
       if (tint) {
         render(x, y, 1, 1, tint)
