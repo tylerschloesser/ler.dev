@@ -1,19 +1,11 @@
 import invariant from 'tiny-invariant'
-import { getForceMultiplierMap } from './apply-torque.js'
 import {
   AddBeltHand,
-  AdjacentConnection,
-  BeltConnection,
   BeltDirection,
-  BeltEntity,
-  BeltIntersectionEntity,
   BeltPath,
   Connection,
   ConnectionType,
-  EntityId,
   EntityType,
-  GearEntity,
-  IAppContext,
   World,
 } from './types.js'
 import { mod } from './util.js'
@@ -171,7 +163,6 @@ export function getBeltConnections(
 }
 
 export function updateAddBeltProgress(
-  context: IAppContext,
   hand: AddBeltHand,
   elapsed: number,
 ): void {
@@ -192,8 +183,8 @@ export function updateAddBeltProgress(
     invariant(multiplier !== undefined)
     belt.offset = mod(
       belt.offset +
-        source.gear.velocity *
-          source.gear.radius *
+        source.velocity *
+          source.radius *
           elapsed *
           multiplier,
       1,

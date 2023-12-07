@@ -221,14 +221,8 @@ export interface AddResourceHand {
   valid: boolean
 }
 
-export interface BeltMotionSource {
-  gear: GearEntity
-  belt: BeltEntity | BeltIntersectionEntity
-  connection: AdjacentConnection
-}
-
 export interface BeltMotion {
-  source: BeltMotionSource
+  source: GearEntity
   forceMultiplierMap: Map<Entity, number>
 }
 

@@ -13,11 +13,11 @@ import {
   BeltEntity,
   BeltIntersectionEntity,
   BeltMotion,
-  BeltMotionSource,
   BeltPath,
   ConnectionType,
   EntityId,
   EntityType,
+  GearEntity,
   HandType,
   IAppContext,
   SimpleVec2,
@@ -397,10 +397,13 @@ function useSavedStart(): [
   return [saved, setStart]
 }
 
-function getBeltMotionSource(
+function getFirstAdjacentConnection(
   context: IAppContext,
   belts: AddBeltHand['belts'],
-): BeltMotionSource | null {
+): {
+  belt: BeltEntity | BeltIntersectionEntity
+  gear: GearEntity
+} | null {
   for (const belt of belts) {
     const connection = belt.connections.find(
       (c): c is AdjacentConnection =>
@@ -412,7 +415,7 @@ function getBeltMotionSource(
     const gear = context.world.entities[connection.entityId]
     invariant(gear?.type === EntityType.enum.Gear)
 
-    return { belt, gear, connection }
+    return { belt, gear }
   }
 
   return null
@@ -437,8 +440,11 @@ function isValid(
     }
   }
 
-  const source = getBeltMotionSource(context, belts)
-  if (!source) {
+  const adjacent = getFirstAdjacentConnection(
+    context,
+    belts,
+  )
+  if (!adjacent) {
     return { valid: true }
   }
 
@@ -448,7 +454,7 @@ function isValid(
   }
 
   const forceMultiplierMap = getForceMultiplierMap(
-    source.belt,
+    adjacent.belt,
     entities,
   )
 
@@ -460,7 +466,7 @@ function isValid(
     valid: true,
     motion: {
       forceMultiplierMap,
-      source,
+      source: adjacent.gear,
     },
   }
 }

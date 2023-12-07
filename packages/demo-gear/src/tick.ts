@@ -116,6 +116,6 @@ export function tick(
   }
 
   if (context.hand?.type === HandType.AddBelt) {
-    updateAddBeltProgress(context, context.hand, elapsed)
+    updateAddBeltProgress(context.hand, elapsed)
   }
 }
