@@ -1,12 +1,18 @@
 import invariant from 'tiny-invariant'
+import { getForceMultiplierMap } from './apply-torque.js'
 import {
   AddBeltHand,
   AdjacentConnection,
+  BeltConnection,
   BeltDirection,
+  BeltEntity,
+  BeltIntersectionEntity,
   BeltPath,
   Connection,
   ConnectionType,
+  EntityId,
   EntityType,
+  GearEntity,
   IAppContext,
   World,
 } from './types.js'
@@ -169,32 +175,33 @@ export function updateAddBeltProgress(
   hand: AddBeltHand,
   elapsed: number,
 ): void {
-  for (const belt of hand.belts) {
-    if (belt.type === EntityType.enum.BeltIntersection) {
-      continue
-    }
-    if (hand.valid && belt.connections.length > 0) {
-      const adjacent = belt.connections.find(
-        (c): c is AdjacentConnection =>
-          c.type === ConnectionType.enum.Adjacent,
-      )
-      if (!adjacent) {
-        continue
-      }
-
-      const gear = context.world.entities[adjacent.entityId]
-      invariant(gear?.type === EntityType.enum.Gear)
-
-      belt.offset = mod(
-        belt.offset +
-          gear.velocity *
-            gear.radius *
-            elapsed *
-            adjacent.multiplier,
-        1,
-      )
-    } else {
-      belt.offset = 0
-    }
+  if (
+    !hand.valid ||
+    hand.belts.length === 0 ||
+    !hand.motion
+  ) {
+    return
   }
+
+  const {
+    motion: { source, forceMultiplierMap },
+  } = hand
+
+  source.belt.offset = mod(
+    source.belt.offset +
+      source.gear.velocity *
+        source.gear.radius *
+        elapsed *
+        source.connection.multiplier,
+    1,
+  )
 }
+
+// belt.offset = mod(
+//   belt.offset +
+//     gear.velocity *
+//       gear.radius *
+//       elapsed *
+//       adjacent.multiplier,
+//   1,
+// )

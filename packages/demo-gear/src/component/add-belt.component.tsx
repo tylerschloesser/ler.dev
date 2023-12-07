@@ -8,9 +8,12 @@ import { getForceMultiplierMap } from '../apply-torque.js'
 import { addBelts, getBeltConnections } from '../belt.js'
 import {
   AddBeltHand,
+  AdjacentConnection,
   BeltDirection,
   BeltEntity,
   BeltIntersectionEntity,
+  BeltMotion,
+  BeltMotionSource,
   BeltPath,
   ConnectionType,
   EntityId,
@@ -338,7 +341,7 @@ function getBelts(
 
 function useHand(
   belts: AddBeltHand['belts'],
-  valid: boolean,
+  { valid, motion }: ReturnType<typeof isValid>,
 ): boolean {
   const context = use(AppContext)
 
@@ -346,6 +349,7 @@ function useHand(
     type: HandType.AddBelt,
     belts,
     valid,
+    motion,
   })
 
   useEffect(() => {
@@ -358,7 +362,8 @@ function useHand(
   useEffect(() => {
     hand.current.belts = belts
     hand.current.valid = valid
-  }, [belts, valid])
+    hand.current.motion = motion
+  }, [belts, valid, motion])
 
   return valid
 }
@@ -392,10 +397,31 @@ function useSavedStart(): [
   return [saved, setStart]
 }
 
+function getBeltMotionSource(
+  context: IAppContext,
+  belts: AddBeltHand['belts'],
+): BeltMotionSource | null {
+  for (const belt of belts) {
+    const connection = belt.connections.find(
+      (c): c is AdjacentConnection =>
+        c.type === ConnectionType.enum.Adjacent,
+    )
+    if (!connection) {
+      continue
+    }
+    const gear = context.world.entities[connection.entityId]
+    invariant(gear?.type === EntityType.enum.Gear)
+
+    return { belt, gear, connection }
+  }
+
+  return null
+}
+
 function isValid(
   context: IAppContext,
   belts: AddBeltHand['belts'],
-): boolean {
+): { valid: boolean; motion?: BeltMotion } {
   for (const belt of belts) {
     const path =
       belt.type === EntityType.enum.Belt
@@ -406,20 +432,37 @@ function isValid(
       const tile = context.world.tiles[tileId]
       if (!tile) continue
       if (tile.entityId || tile.beltId) {
-        return false
+        return { valid: false }
       }
     }
   }
 
-  const first = belts.at(0)
-  invariant(first)
+  const source = getBeltMotionSource(context, belts)
+  if (!source) {
+    return { valid: true }
+  }
 
   const entities = { ...context.world.entities }
   for (const belt of belts) {
     entities[belt.id] = belt
   }
 
-  return getForceMultiplierMap(first, entities) !== null
+  const forceMultiplierMap = getForceMultiplierMap(
+    source.belt,
+    entities,
+  )
+
+  if (!forceMultiplierMap) {
+    return { valid: false }
+  }
+
+  return {
+    valid: true,
+    motion: {
+      forceMultiplierMap,
+      source,
+    },
+  }
 }
 
 function useDirection(): [
