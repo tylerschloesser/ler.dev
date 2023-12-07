@@ -132,6 +132,8 @@ export function executeBuild(
     addGear(hand.gear, gear ?? null, context)
     hand.chain = null
   }
+
+  hand.gear = newBuildGear(context, hand.gear.radius)
   updateBuild(context, hand)
 
   console.log(context)
