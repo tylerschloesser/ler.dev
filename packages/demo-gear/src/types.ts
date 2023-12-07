@@ -1,6 +1,12 @@
 import { NavigateFunction } from 'react-router-dom'
 import * as z from 'zod'
 
+// export const NodeType = z.enum([
+//   'Gear',
+//   'BeltStraight',
+//   'BeltIntersection',
+// ])
+
 export const SimpleVec2 = z.strictObject({
   x: z.number(),
   y: z.number(),
