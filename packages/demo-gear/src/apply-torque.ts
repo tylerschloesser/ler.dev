@@ -34,14 +34,6 @@ export function getForceMultiplierMap(
           forceMultiplierMap.get(neighbor) !==
           neighborMultiplier
         ) {
-          console.log(
-            `expected neighbor multiplier to be ${neighborMultiplier}, found ${forceMultiplierMap.get(
-              neighbor,
-            )}`,
-          )
-          console.log('tail', tail)
-          console.log('neighbor', neighbor)
-          console.log(forceMultiplierMap)
           return null
         }
         continue

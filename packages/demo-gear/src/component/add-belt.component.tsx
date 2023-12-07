@@ -333,7 +333,6 @@ function getBelts(
     }
   }
 
-  console.log(belts)
   return belts
 }
 
