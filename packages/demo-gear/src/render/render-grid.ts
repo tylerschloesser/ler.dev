@@ -12,6 +12,14 @@ export function renderGrid(
   gl: WebGL2RenderingContext,
   gpu: GpuState,
 ): void {
+  renderPartialGrid(context, gl, gpu)
+}
+
+export function renderPartialGrid(
+  context: IAppContext,
+  gl: WebGL2RenderingContext,
+  gpu: GpuState,
+): void {
   const { fillInstanced } = gpu.programs
 
   gl.useProgram(fillInstanced.program)
