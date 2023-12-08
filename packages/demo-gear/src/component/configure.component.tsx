@@ -254,6 +254,7 @@ export function Configure() {
           setGearId(entity.id)
           setBehavior(entity.behavior ?? null)
         } else {
+          context.hand.gear = null
           setGearId(null)
           setBehavior(null)
         }
