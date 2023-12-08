@@ -348,7 +348,7 @@ function initOutlineRectBuffer(
 function initFillInstancedMatrices(
   gl: WebGL2RenderingContext,
 ): GpuState['buffers']['fillInstancedMatrices'] {
-  const count = 2 ** 0
+  const count = 2 ** 10
 
   const buffer = gl.createBuffer()
   invariant(buffer)

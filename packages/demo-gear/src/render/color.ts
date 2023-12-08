@@ -85,4 +85,4 @@ function rgba(
 
 export const BACKGROUND = rgb(255, 0, 0)
 
-export const CLEAR = rgb(2 ** 6)
+export const CLEAR = rgb(0)

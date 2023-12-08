@@ -1,7 +1,7 @@
 import { mat4, vec3 } from 'gl-matrix'
 import invariant from 'tiny-invariant'
 import { IAppContext } from '../types.js'
-import { BACKGROUND } from './color.js'
+import { mod } from '../util.js'
 import { GpuState } from './types.js'
 
 const transform: mat4 = mat4.create()
@@ -18,10 +18,10 @@ export function renderGridV2(
 
   gl.uniform4f(
     fillInstanced.uniforms.color,
-    BACKGROUND.r,
-    BACKGROUND.g,
-    BACKGROUND.b,
-    BACKGROUND.a,
+    0.25 * context.camera.zoom,
+    0.25 * context.camera.zoom,
+    0.25 * context.camera.zoom,
+    1,
   )
 
   mat4.identity(transform)
@@ -35,7 +35,19 @@ export function renderGridV2(
     1 / context.viewport.size.y,
   )
 
-  mat4Scale(transform, 2, context.viewport.size.y)
+  mat4Scale(transform, 1, context.viewport.size.y)
+  mat4Translate(transform, -0.5, 0)
+
+  mat4Translate(
+    transform,
+    mod(
+      context.viewport.size.x / 2 +
+        mod(-context.camera.position.x, 1) *
+          context.tileSize,
+      context.tileSize,
+    ),
+    0,
+  )
 
   // mat4Translate(
   //   transform,
@@ -70,9 +82,23 @@ export function renderGridV2(
   )
 
   const matrices = gpu.buffers.fillInstancedMatrices
-  const matrix = matrices.values.at(0)
-  invariant(matrix)
-  mat4.identity(matrix)
+
+  // add 2 to render lines outside the viewport, in case
+  // the line width causes them to stray into the viewport
+  const cols =
+    Math.ceil(context.viewport.size.x / context.tileSize) +
+    2
+
+  invariant(cols <= matrices.values.length)
+
+  for (let col = -1; col < cols; col++) {
+    const matrix = matrices.values.at(col)
+    invariant(matrix)
+
+    mat4.identity(matrix)
+    mat4Translate(matrix, col * context.tileSize, 0)
+    mat4Scale(matrix, 2)
+  }
 
   gl.bindBuffer(gl.ARRAY_BUFFER, matrices.buffer)
   gl.bufferSubData(gl.ARRAY_BUFFER, 0, matrices.data)
@@ -95,7 +121,7 @@ export function renderGridV2(
     gl.vertexAttribDivisor(index, 1)
   }
 
-  gl.drawArraysInstanced(gl.TRIANGLE_STRIP, 0, 4, 1)
+  gl.drawArraysInstanced(gl.TRIANGLE_STRIP, 0, 4, cols)
 }
 
 export function renderGridV1(

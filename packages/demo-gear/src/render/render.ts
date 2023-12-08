@@ -46,7 +46,7 @@ export function render(
   updateView(gpu.matrices, context)
   updateProjection(gpu.matrices, context)
 
-  renderGridV1(context, gl, gpu)
+  // renderGridV1(context, gl, gpu)
   renderGridV2(context, gl, gpu)
 
   renderResources(context, gl, gpu)
