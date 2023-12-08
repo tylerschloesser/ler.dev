@@ -139,8 +139,6 @@ export function executeBuild(
 
   hand.gear = newBuildGear(context, hand.gear.radius)
   updateBuild(context, hand)
-
-  console.log(context)
 }
 
 export function updateBuild(
@@ -158,7 +156,12 @@ export function updateBuild(
     hand.gear.radius,
     context.world,
   )) {
-    if (tile.entityId) {
+    if (!tile.entityId) {
+      continue
+    }
+    const entity = context.world.entities[tile.entityId]
+    invariant(entity)
+    if (entity.type !== EntityType.enum.Gear) {
       valid = false
       break
     }
@@ -233,7 +236,7 @@ export function updateBuild(
       hand.gear.connections.push({
         type: ConnectionType.enum.Attach,
         entityId: attach.id,
-        multiplier: attach.radius / hand.gear.radius,
+        multiplier: 1,
       })
     }
   }
