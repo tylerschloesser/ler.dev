@@ -36,10 +36,6 @@ export function* iterateConnections(
   const seen = new Map<string, ConnectionType>()
   for (const entity of Object.values(entities)) {
     for (const connection of entity.connections) {
-      invariant(
-        connection.type !== ConnectionType.enum.Belt,
-        'TODO support belt connections',
-      )
       const id = getConnectionId(
         entity.id,
         connection.entityId,

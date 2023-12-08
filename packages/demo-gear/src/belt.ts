@@ -34,6 +34,35 @@ export function addBelts(
       invariant(tile.entityId === undefined)
       tile.entityId = belt.id
     }
+
+    for (const connection of belt.connections) {
+      switch (connection.type) {
+        case ConnectionType.enum.Adjacent: {
+          const peer = world.entities[connection.entityId]
+          invariant(peer)
+          invariant(
+            !peer.connections.find(
+              (c) => c.entityId === belt.id,
+            ),
+          )
+          peer.connections.push({
+            type: ConnectionType.enum.Adjacent,
+            entityId: belt.id,
+            multiplier: 1 / connection.multiplier,
+          })
+          break
+        }
+        case ConnectionType.enum.Belt: {
+          invariant(
+            belts.find((b) => b.id === connection.entityId),
+          )
+          break
+        }
+        default: {
+          invariant(false)
+        }
+      }
+    }
   }
 }
 
@@ -128,10 +157,11 @@ export function getBeltConnections(
       if (!tile?.entityId) {
         continue
       }
-      invariant(!tile.beltId)
 
       const gear = world.entities[tile.entityId]
-      invariant(gear?.type === EntityType.enum.Gear)
+      if (gear?.type !== EntityType.enum.Gear) {
+        continue
+      }
 
       const gx = gear.center.x + dg.x + gear.radius * sr.x
       const gy = gear.center.y + dg.y + gear.radius * sr.y

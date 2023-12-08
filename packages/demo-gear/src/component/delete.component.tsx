@@ -61,26 +61,24 @@ function checkDelete(
   hand: DeleteHand,
   setDisabled: (disabled: boolean) => void,
 ): void {
-  const { position, size, gearIds, tileIds } = hand
-  gearIds.clear()
-  tileIds.clear()
-
-  for (const { tileId, tile } of iterateTiles(
-    position.x,
-    position.y,
-    size,
-    size,
-    context.world,
-  )) {
-    if (tile.entityId) {
-      gearIds.add(tile.entityId)
-    }
-    if (tile.beltId || tile.resourceType) {
-      tileIds.add(tileId)
-    }
-  }
-
-  setDisabled(gearIds.size === 0 && tileIds.size === 0)
+  // const { position, size, gearIds, tileIds } = hand
+  // gearIds.clear()
+  // tileIds.clear()
+  // for (const { tileId, tile } of iterateTiles(
+  //   position.x,
+  //   position.y,
+  //   size,
+  //   size,
+  //   context.world,
+  // )) {
+  //   if (tile.entityId) {
+  //     gearIds.add(tile.entityId)
+  //   }
+  //   if (tile.resourceType) {
+  //     tileIds.add(tileId)
+  //   }
+  // }
+  // setDisabled(gearIds.size === 0 && tileIds.size === 0)
 }
 
 function useSize(): [number, (size: number) => void] {

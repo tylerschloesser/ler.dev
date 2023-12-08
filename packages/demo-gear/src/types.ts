@@ -19,7 +19,6 @@ export type ResourceType = z.infer<typeof ResourceType>
 export const Tile = z.strictObject({
   entityId: EntityId.optional(),
   resourceType: ResourceType.optional(),
-  beltId: EntityId.optional(),
 })
 export type Tile = z.infer<typeof Tile>
 

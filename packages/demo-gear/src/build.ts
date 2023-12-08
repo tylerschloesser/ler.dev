@@ -158,7 +158,7 @@ export function updateBuild(
     hand.gear.radius,
     context.world,
   )) {
-    if (tile.beltId) {
+    if (tile.entityId) {
       valid = false
       break
     }
