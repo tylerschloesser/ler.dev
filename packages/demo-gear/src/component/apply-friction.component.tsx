@@ -50,6 +50,7 @@ export function ApplyFriction() {
           context.hand.gear = entity
           setDisabled(false)
         } else {
+          context.hand.gear = null
           setDisabled(true)
         }
       }
