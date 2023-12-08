@@ -2,14 +2,11 @@
 
 precision mediump float;
 
+uniform mat4 uTransform;
+
 in vec2 aVertex;
 in mat4 aMatrix;
 
 void main() {
-  // gl_Position = aMatrix * vec4(aVertex, 0, 1);
-  // if (aMatrix[0][0] == 1.234234) {
-    gl_Position = aMatrix * vec4(aVertex, 0, 1);
-  // } else {
-  //   gl_Position = vec4(aVertex, 0, 1);
-  // }
+  gl_Position = uTransform * aMatrix * vec4(aVertex, 0, 1);
 }

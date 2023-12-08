@@ -89,6 +89,7 @@ export interface GpuState {
       uniforms: {
         // view: WebGLUniformLocation
         // projection: WebGLUniformLocation
+        transform: WebGLUniformLocation
         color: WebGLUniformLocation
       }
     }

@@ -4,7 +4,7 @@ import { IAppContext } from '../types.js'
 import { BACKGROUND } from './color.js'
 import { GpuState } from './types.js'
 
-// const matrix: mat4 = mat4.create()
+const transform: mat4 = mat4.create()
 const v3: vec3 = vec3.create()
 
 export function renderGridV2(
@@ -22,6 +22,13 @@ export function renderGridV2(
     BACKGROUND.g,
     BACKGROUND.b,
     BACKGROUND.a,
+  )
+
+  mat4.identity(transform)
+  gl.uniformMatrix4fv(
+    fillInstanced.uniforms.transform,
+    false,
+    transform,
   )
 
   gl.bindBuffer(gl.ARRAY_BUFFER, gpu.buffers.fillRect)

@@ -232,6 +232,11 @@ function initFillInstancedProgram(
       //   program,
       //   'uProjection',
       // ),
+      transform: getUniformLocation(
+        gl,
+        program,
+        'uTransform',
+      ),
       color: getUniformLocation(gl, program, 'uColor'),
     },
   }
