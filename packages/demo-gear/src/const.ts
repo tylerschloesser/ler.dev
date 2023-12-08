@@ -28,3 +28,5 @@ export const MAX_ZOOM = 1
 
 export const MIN_TILE_SIZE_FACTOR = 1 / 256
 export const MAX_TILE_SIZE_FACTOR = 1 / 16
+
+export const BELT_SIZE = 1
