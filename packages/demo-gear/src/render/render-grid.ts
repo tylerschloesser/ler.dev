@@ -36,16 +36,11 @@ export function renderGridV2(
   gl.enableVertexAttribArray(
     fillInstanced.attributes.vertex,
   )
-  // gl.vertexAttribDivisor(fillInstanced.attributes.vertex, 0)
 
   const matrices = gpu.buffers.fillInstancedMatrices
   const matrix = matrices.values.at(0)
   invariant(matrix)
   mat4.identity(matrix)
-
-  for (let i = 0; i < 16; i++) {
-    // console.log(matrices.data[i], matrix[i])
-  }
 
   gl.bindBuffer(gl.ARRAY_BUFFER, matrices.buffer)
   gl.bufferSubData(gl.ARRAY_BUFFER, 0, matrices.data)
