@@ -1,3 +1,3 @@
 {
-  "extends": "@ler.dev/tsconfig"
+  "extends": "../tsconfig/tsconfig.json"
 }

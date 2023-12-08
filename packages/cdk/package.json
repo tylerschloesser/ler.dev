@@ -7,16 +7,14 @@
     "deploy-staging": "cdk deploy LerDev-Staging-*"
   },
   "dependencies": {
-    "@aws-cdk/aws-apigatewayv2-alpha": "^2.107.0-alpha.0",
-    "@aws-cdk/aws-apigatewayv2-integrations-alpha": "^2.107.0-alpha.0",
     "@ler.dev/tsconfig": "*",
-    "@types/lodash-es": "^4.17.11",
-    "aws-cdk": "^2.107.0",
-    "aws-cdk-lib": "^2.107.0",
+    "@types/lodash-es": "^4.17.12",
+    "aws-cdk": "^2.114.1",
+    "aws-cdk-lib": "^2.114.1",
     "constructs": "^10.3.0",
     "lodash-es": "^4.17.21"
   },
   "devDependencies": {
-    "esbuild": "^0.19.5"
+    "esbuild": "^0.19.8"
   }
 }
