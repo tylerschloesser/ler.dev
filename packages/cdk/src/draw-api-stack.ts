@@ -1,10 +1,10 @@
+import { Duration, Stack, StackProps } from 'aws-cdk-lib'
 import {
   DomainName,
   WebSocketApi,
   WebSocketStage,
-} from '@aws-cdk/aws-apigatewayv2-alpha'
-import { WebSocketLambdaIntegration } from '@aws-cdk/aws-apigatewayv2-integrations-alpha'
-import { Duration, Stack, StackProps } from 'aws-cdk-lib'
+} from 'aws-cdk-lib/aws-apigatewayv2'
+import { WebSocketLambdaIntegration } from 'aws-cdk-lib/aws-apigatewayv2-integrations'
 import {
   Certificate,
   CertificateValidation,
