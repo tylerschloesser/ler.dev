@@ -276,11 +276,11 @@ export function throttle<A extends Array<unknown>>(
 }
 
 export function getTotalMass(
-  root: GearEntity,
+  root: Entity,
   world: World,
 ): number {
-  const stack = new Array<GearEntity>(root)
-  const seen = new Set<GearEntity>()
+  const stack = new Array<Entity>(root)
+  const seen = new Set<Entity>()
 
   let mass = 0
 
@@ -293,15 +293,15 @@ export function getTotalMass(
     }
     seen.add(tail)
 
-    mass += tail.mass
+    if (tail.type === EntityType.enum.Gear) {
+      mass += tail.mass
+    } else {
+      // TODO add mass for other entity types
+    }
 
     for (const c of tail.connections) {
-      invariant(
-        c.type !== ConnectionType.enum.Belt,
-        'TODO support belt connections',
-      )
       const neighbor = world.entities[c.entityId]
-      invariant(neighbor?.type === EntityType.enum.Gear)
+      invariant(neighbor)
       stack.push(neighbor)
     }
   }
