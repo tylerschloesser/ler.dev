@@ -12,8 +12,6 @@ import gearBodyFrag from './shaders/gear-body.frag.glsl'
 import gearBodyVert from './shaders/gear-body.vert.glsl'
 import gearTeethFrag from './shaders/gear-teeth.frag.glsl'
 import gearTeethVert from './shaders/gear-teeth.vert.glsl'
-import gridFrag from './shaders/grid.frag.glsl'
-import gridVert from './shaders/grid.vert.glsl'
 import outlineRectFrag from './shaders/outline-rect.frag.glsl'
 import outlineRectVert from './shaders/outline-rect.vert.glsl'
 import { GpuState } from './types.js'
@@ -31,7 +29,6 @@ export async function initGpuState(
 
   return {
     programs: {
-      grid: initGridProgram(gl),
       gearBody: initGearBodyProgram(gl),
       gearTeeth: initGearTeethProgram(gl),
       chain: initChainProgram(gl),
@@ -128,35 +125,6 @@ function initGearTeethProgram(
         'uTileSize',
         false,
       ),
-    },
-  }
-}
-
-function initGridProgram(
-  gl: WebGL2RenderingContext,
-): GpuState['programs']['grid'] {
-  const program = initProgram(gl, {
-    vert: gridVert,
-    frag: gridFrag,
-  })
-  return {
-    program,
-    attributes: {
-      vertex: getAttribLocation(gl, program, 'aVertex'),
-    },
-    uniforms: {
-      viewport: getUniformLocation(
-        gl,
-        program,
-        'uViewport',
-      ),
-      tileSize: getUniformLocation(
-        gl,
-        program,
-        'uTileSize',
-      ),
-      camera: getUniformLocation(gl, program, 'uCamera'),
-      zoom: getUniformLocation(gl, program, 'uZoom'),
     },
   }
 }

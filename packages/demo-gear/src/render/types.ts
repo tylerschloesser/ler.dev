@@ -6,18 +6,6 @@ export type WebGLAttributeLocation = number
 
 export interface GpuState {
   programs: {
-    grid: {
-      program: WebGLProgram
-      attributes: {
-        vertex: WebGLAttributeLocation
-      }
-      uniforms: {
-        viewport: WebGLUniformLocation | null
-        tileSize: WebGLUniformLocation | null
-        camera: WebGLUniformLocation | null
-        zoom: WebGLUniformLocation | null
-      }
-    }
     gearBody: {
       program: WebGLProgram
       attributes: {

@@ -22,10 +22,7 @@ import { renderBelt } from './render-belt.js'
 import { renderBuild } from './render-build.js'
 import { renderChain } from './render-chain.js'
 import { renderGears } from './render-gears.js'
-import {
-  renderGridV1,
-  renderGridV2,
-} from './render-grid.js'
+import { renderGrid } from './render-grid.js'
 import {
   renderGearOutline,
   renderOutline,
@@ -46,8 +43,7 @@ export function render(
   updateView(gpu.matrices, context)
   updateProjection(gpu.matrices, context)
 
-  // renderGridV1(context, gl, gpu)
-  renderGridV2(context, gl, gpu)
+  renderGrid(context, gl, gpu)
 
   renderResources(context, gl, gpu)
   renderGears(context, gl, gpu)
