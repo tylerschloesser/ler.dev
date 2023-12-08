@@ -14,6 +14,7 @@ import {
   World,
   EntityType,
   Entity,
+  IAppContext,
 } from './types.js'
 
 function getConnectionId(a: EntityId, b: EntityId) {
@@ -101,6 +102,35 @@ export function* iterateGearTileIds(
       yield tileId
     }
   }
+}
+
+export function getOverlappingEntities(
+  context: IAppContext,
+  entity: Entity,
+): Entity[] {
+  let size: SimpleVec2
+  switch (entity.type) {
+    case EntityType.enum.Gear: {
+      size = { x: entity.radius * 2, y: entity.radius * 2 }
+      break
+    }
+    default: {
+      invariant(false, 'TODO')
+    }
+  }
+  const entities = new Set<Entity>()
+  for (let x = 0; x < size.x; x++) {
+    for (let y = 0; y < size.y; y++) {
+      const tileId = `${x}.${y}`
+      const tile = context.world.tiles[tileId]
+      if (!tile?.entityId) continue
+      const found = context.world.entities[tile.entityId]
+      invariant(found)
+      entities.add(found)
+    }
+  }
+
+  return [...entities]
 }
 
 export function* iterateGearTiles(

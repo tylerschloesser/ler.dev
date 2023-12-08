@@ -3,6 +3,7 @@ import {
   useCallback,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react'
 import {
@@ -10,23 +11,21 @@ import {
   useSearchParams,
 } from 'react-router-dom'
 import invariant from 'tiny-invariant'
-import {
-  executeBuild,
-  initBuild,
-  updateBuildPosition,
-  updateRadius,
-} from '../build.js'
+import { executeBuild } from '../build.js'
 import { MAX_RADIUS, MIN_RADIUS } from '../const.js'
 import {
+  BuildHand,
   CameraListenerFn,
   Entity,
   EntityId,
   EntityType,
   Gear,
   HandType,
+  IAppContext,
   SimpleVec2,
 } from '../types.js'
-import { clamp } from '../util.js'
+import { clamp, getOverlappingEntities } from '../util.js'
+import { Vec2 } from '../vec2.js'
 import styles from './build-gear.module.scss'
 import { AppContext } from './context.js'
 import { Overlay } from './overlay.component.js'
@@ -37,28 +36,10 @@ export function BuildGear() {
   const context = use(AppContext)
   const [radius, setRadius] = useRadius()
   const center = useGearCenter()
-  const { gear } = useGear(center, radius)
+  const chainFrom: Gear | null = null
+  const { gear, valid } = useGear(center, radius, chainFrom)
 
-  const [valid, setValid] = useState(false)
-
-  useEffect(() => {
-    initBuild(context, radius, setValid)
-
-    const cameraListener: CameraListenerFn = () => {
-      invariant(context.hand?.type === HandType.Build)
-      updateBuildPosition(context, context.hand)
-    }
-    context.cameraListeners.add(cameraListener)
-
-    return () => {
-      context.hand = null
-      context.cameraListeners.delete(cameraListener)
-    }
-  }, [context])
-
-  useEffect(() => {
-    updateRadius(context, radius)
-  }, [context, radius])
+  useHand(gear, valid)
 
   const navigate = useNavigate()
 
@@ -115,11 +96,28 @@ export function BuildGear() {
   )
 }
 
-function useHand(
-  entities: Record<EntityId, Entity>,
-  valid: boolean,
-): void {
+function useHand(gear: Gear, valid: boolean): void {
   const context = use(AppContext)
+
+  const hand = useRef<BuildHand>({
+    type: HandType.Build,
+    chain: null,
+    entities: { [gear.id]: gear },
+    valid,
+    onChangeValid: () => {},
+  })
+
+  useEffect(() => {
+    context.hand = hand.current
+    return () => {
+      context.hand = null
+    }
+  }, [])
+
+  useEffect(() => {
+    hand.current.entities = { [gear.id]: gear }
+    hand.current.valid = valid
+  }, [gear, valid])
 }
 
 function useRadius(): [number, (radius: number) => void] {
@@ -175,6 +173,7 @@ function useGearCenter(): SimpleVec2 {
 function useGear(
   center: SimpleVec2,
   radius: number,
+  chainFrom: Gear | null,
 ): { gear: Gear; valid: boolean } {
   const context = use(AppContext)
 
@@ -197,7 +196,55 @@ function useGear(
     }
 
     let valid: boolean = true
+    let chainTo: Gear | undefined
+    let attachTo: Gear | undefined
+
+    const overlapping = getOverlappingEntities(
+      context,
+      gear,
+    )
+    if (overlapping.length > 1) {
+      valid = false
+    } else if (overlapping.length === 1) {
+      const found = overlapping.at(0)
+      invariant(found)
+      if (
+        found.type === EntityType.enum.Gear &&
+        Vec2.equal(found.center, gear.center) &&
+        (found.radius === 1 || gear.radius === 1)
+      ) {
+        if (found.radius === 1 && gear.radius === 1) {
+          chainTo = found
+        } else {
+          attachTo = found
+        }
+      } else {
+        valid = false
+      }
+    }
+
+    if (valid && chainFrom) {
+      const dx = gear.center.x - chainFrom.center.x
+      const dy = gear.center.y - chainFrom.center.y
+      valid =
+        (dx === 0 || dy === 0) &&
+        dx !== dy &&
+        Math.abs(dx + dy) > gear.radius + chainFrom.radius
+    }
+
+    // TODO connections
+    //
+    // TODO validate accelerate map
 
     return { gear, valid }
-  }, [context, center, radius])
+  }, [context, center, radius, chainFrom])
+}
+
+function getEntity(
+  context: IAppContext,
+  entityId: EntityId,
+): Entity {
+  const entity = context.world.entities[entityId]
+  invariant(entity)
+  return entity
 }
