@@ -12,6 +12,7 @@ import {
   HandType,
   IAppContext,
 } from './types.js'
+import { mod } from './util.js'
 
 export function tick(
   context: IAppContext,
@@ -102,13 +103,25 @@ export function tick(
     }
   }
 
-  for (const gear of Object.values(world.entities).filter(
-    (entity): entity is GearEntity =>
-      entity.type === EntityType.enum.Gear,
-  )) {
-    gear.angle =
-      (gear.angle + gear.velocity * elapsed + TWO_PI) %
-      TWO_PI
+  for (const entity of Object.values(world.entities)) {
+    switch (entity.type) {
+      case EntityType.enum.Gear: {
+        entity.angle =
+          (entity.angle +
+            entity.velocity * elapsed +
+            TWO_PI) %
+          TWO_PI
+        break
+      }
+      case EntityType.enum.Belt:
+      case EntityType.enum.BeltIntersection: {
+        entity.offset = mod(
+          entity.offset + entity.velocity * elapsed,
+          1,
+        )
+        break
+      }
+    }
   }
 
   if (context.hand?.type === HandType.Build) {

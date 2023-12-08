@@ -64,24 +64,43 @@ export function applyForce(
   let energyDiff = 0
 
   for (const [
-    gear,
+    entity,
     forceMultiplier,
   ] of forceMultiplierMap.entries()) {
-    invariant(gear.type === EntityType.enum.Gear)
+    switch (entity.type) {
+      case EntityType.enum.Gear: {
+        const r = entity.radius
+        const I = (1 / 2) * m * r ** 2
+        const torque =
+          force * forceMultiplier * entity.radius
+        const acceleration = torque / I
+        const dv = acceleration * elapsed
 
-    const r = gear.radius
-    const I = (1 / 2) * m * r ** 2
-    const torque = force * forceMultiplier * gear.radius
-    const acceleration = torque / I
-    const dv = acceleration * elapsed
+        const energyBefore =
+          (1 / 2) * I * entity.velocity ** 2
 
-    const energyBefore = (1 / 2) * I * gear.velocity ** 2
+        entity.velocity += dv
 
-    gear.velocity += dv
+        const energyAfter =
+          (1 / 2) * I * entity.velocity ** 2
 
-    const energyAfter = (1 / 2) * I * gear.velocity ** 2
+        energyDiff += energyAfter - energyBefore
+        break
+      }
+      case EntityType.enum.Belt:
+      case EntityType.enum.BeltIntersection: {
+        const acceleration = force * forceMultiplier
+        const dv = acceleration * elapsed
+        entity.velocity += dv
 
-    energyDiff += energyAfter - energyBefore
+        // TODO update energy diff?
+
+        break
+      }
+      default: {
+        invariant(false)
+      }
+    }
   }
 
   return energyDiff
