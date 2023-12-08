@@ -5,7 +5,7 @@ import { BACKGROUND } from './color.js'
 import { GpuState } from './types.js'
 
 // const matrix: mat4 = mat4.create()
-// const v: vec3 = vec3.create()
+const v3: vec3 = vec3.create()
 
 export function renderGridV2(
   context: IAppContext,
@@ -41,6 +41,11 @@ export function renderGridV2(
   const matrix = matrices.values.at(0)
   invariant(matrix)
   mat4.identity(matrix)
+
+  v3[0] = 10
+  v3[1] = 10
+  v3[2] = 1
+  mat4.scale(matrix, matrix, v3)
 
   gl.bindBuffer(gl.ARRAY_BUFFER, matrices.buffer)
   gl.bufferSubData(gl.ARRAY_BUFFER, 0, matrices.data)
