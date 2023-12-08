@@ -247,7 +247,6 @@ export interface AddBeltHand {
   belts: Belt[]
   valid: boolean
   motion?: BeltMotion
-  points: Record<PointId, Point>
 }
 
 export interface DeleteHand {
@@ -318,12 +317,3 @@ export interface IAppContext {
 }
 
 export type InitFn = (context: IAppContext) => Promise<void>
-
-export const PointId = z.string()
-export type PointId = z.infer<typeof PointId>
-
-export const Point = z.strictObject({
-  id: PointId,
-  connections: z.set(Connection),
-})
-export type Point = z.infer<typeof Point>

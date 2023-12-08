@@ -253,7 +253,6 @@ function useHand(
     belts,
     valid,
     motion,
-    points: {},
   })
 
   useEffect(() => {
