@@ -4,8 +4,8 @@ import { AddResource } from './component/add-resource.component.js'
 import { App } from './component/app.component.js'
 import { ApplyForce } from './component/apply-force.component.js'
 import { ApplyFriction } from './component/apply-friction.component.js'
-import { AddBelt } from './component/build-belt.component.js'
-import { AddGear } from './component/build-gear.component.js'
+import { BuildBelt } from './component/build-belt.component.js'
+import { BuildGear } from './component/build-gear.component.js'
 import { Configure } from './component/configure.component.js'
 import { Delete } from './component/delete.component.js'
 import { Index } from './component/index.component.js'
@@ -34,7 +34,7 @@ export const routes: RouteObject[] = [
           },
           {
             path: 'build-gear',
-            Component: AddGear,
+            Component: BuildGear,
           },
           {
             path: 'add-resource',
@@ -42,7 +42,7 @@ export const routes: RouteObject[] = [
           },
           {
             path: 'build-belt',
-            Component: AddBelt,
+            Component: BuildBelt,
           },
           {
             path: 'apply-force',

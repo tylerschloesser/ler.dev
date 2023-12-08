@@ -34,7 +34,7 @@ import styles from './build-belt.module.scss'
 import { AppContext } from './context.js'
 import { Overlay } from './overlay.component.js'
 
-export function AddBelt() {
+export function BuildBelt() {
   const context = use(AppContext)
   const navigate = useNavigate()
   const [direction, setDirection] = useDirection()

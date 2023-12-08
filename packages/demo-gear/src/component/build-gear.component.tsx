@@ -14,7 +14,7 @@ import styles from './build-gear.module.scss'
 import { AppContext } from './context.js'
 import { Overlay } from './overlay.component.js'
 
-export function AddGear() {
+export function BuildGear() {
   const context = use(AppContext)
   const [radius, setRadius] = useState(1)
   const [valid, setValid] = useState(false)
