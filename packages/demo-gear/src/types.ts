@@ -159,6 +159,15 @@ export type BeltIntersectionEntity = z.infer<
   typeof BeltIntersectionEntity
 >
 
+export const Belt = z.union([
+  BeltEntity,
+  BeltIntersectionEntity,
+])
+export type Belt = z.infer<typeof Belt>
+
+export const Gear = GearEntity
+export type Gear = z.infer<typeof Gear>
+
 export const Entity = z.discriminatedUnion('type', [
   GearEntity,
   BeltEntity,
@@ -228,7 +237,7 @@ export interface BeltMotion {
 
 export interface AddBeltHand {
   type: HandType.AddBelt
-  belts: (BeltEntity | BeltIntersectionEntity)[]
+  belts: Belt[]
   valid: boolean
   motion?: BeltMotion
 }

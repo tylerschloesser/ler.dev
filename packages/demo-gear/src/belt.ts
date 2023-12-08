@@ -1,6 +1,7 @@
 import invariant from 'tiny-invariant'
 import {
   AddBeltHand,
+  Belt,
   BeltDirection,
   BeltPath,
   Connection,
@@ -12,19 +13,17 @@ import { mod } from './util.js'
 
 export function addBelts(
   world: World,
-  belts: AddBeltHand['belts'],
+  belts: Belt[],
 ): void {
   for (const belt of belts) {
+    invariant(world.entities[belt.id] === undefined)
+    world.entities[belt.id] = belt
+
     const path =
       belt.type === EntityType.enum.Belt
         ? belt.path
         : [belt.position]
-    const first = path.at(0)
-    invariant(first)
 
-    const beltId = `belt.${first.x}.${first.y}`
-    invariant(world.entities[beltId] === undefined)
-    world.entities[beltId] = belt
     for (const position of path) {
       const { x, y } = position
       const tileId = `${x}.${y}`
@@ -32,8 +31,8 @@ export function addBelts(
       if (!tile) {
         tile = world.tiles[tileId] = {}
       }
-      invariant(tile.beltId === undefined)
-      tile.beltId = beltId
+      invariant(tile.entityId === undefined)
+      tile.entityId = belt.id
     }
   }
 }

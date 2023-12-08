@@ -9,6 +9,7 @@ import { addBelts, getBeltConnections } from '../belt.js'
 import {
   AddBeltHand,
   AdjacentConnection,
+  Belt,
   BeltDirection,
   BeltEntity,
   BeltIntersectionEntity,
@@ -117,7 +118,7 @@ function getBelts(
   start: SimpleVec2,
   end: SimpleVec2 | null,
   direction: BeltDirection,
-): AddBeltHand['belts'] {
+): Belt[] {
   const dx = end ? end.x - start.x : 0
   const dy = end ? end.y - start.y : 0
 
@@ -340,7 +341,7 @@ function getBelts(
 }
 
 function useHand(
-  belts: AddBeltHand['belts'],
+  belts: Belt[],
   { valid, motion }: ReturnType<typeof isValid>,
 ): boolean {
   const context = use(AppContext)
@@ -399,7 +400,7 @@ function useSavedStart(): [
 
 function getFirstAdjacentConnection(
   context: IAppContext,
-  belts: AddBeltHand['belts'],
+  belts: Belt[],
 ): {
   belt: BeltEntity | BeltIntersectionEntity
   gear: GearEntity
@@ -424,7 +425,7 @@ function getFirstAdjacentConnection(
 
 function isValid(
   context: IAppContext,
-  belts: AddBeltHand['belts'],
+  belts: Belt[],
 ): { valid: boolean; motion?: BeltMotion } {
   for (const belt of belts) {
     const path =
