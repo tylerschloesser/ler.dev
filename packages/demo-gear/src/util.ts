@@ -183,8 +183,8 @@ function* iterateAdjacentGears(
     }
 
     const gear = world.entities[tile.entityId]
-    invariant(gear?.type === EntityType.enum.Gear)
     if (
+      gear?.type === EntityType.enum.Gear &&
       gear.center.x + (gear.radius + radius) * -dx ===
         center.x &&
       gear.center.y + (gear.radius + radius) * -dy ===
