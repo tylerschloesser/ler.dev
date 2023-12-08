@@ -51,17 +51,18 @@ export function applyForce(
   const I = (1 / 2) * m * root.radius ** 2
   const rootAcceleration = (force * root.radius) / I
 
-  const accelerationMap = getAccelerationMultiplierMap(
-    root,
-    rootAcceleration,
-    world.entities,
-  )
-  invariant(accelerationMap)
+  const accelerationMultiplierMap =
+    getAccelerationMultiplierMap(
+      root,
+      rootAcceleration,
+      world.entities,
+    )
+  invariant(accelerationMultiplierMap)
 
   for (const [
     entity,
     accelerationMultiplier,
-  ] of accelerationMap.entries()) {
+  ] of accelerationMultiplierMap.entries()) {
     const acceleration =
       rootAcceleration * accelerationMultiplier
     const dv = acceleration * elapsed
