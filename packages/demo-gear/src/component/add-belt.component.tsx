@@ -115,7 +115,7 @@ function getBelts(
   const dx = end ? end.x - start.x : 0
   const dy = end ? end.y - start.y : 0
 
-  const belts: ReturnType<typeof getBelts> = []
+  const belts = new Array<Belt>()
 
   if (direction === 'x') {
     for (
@@ -253,6 +253,7 @@ function useHand(
     belts,
     valid,
     motion,
+    points: {},
   })
 
   useEffect(() => {
