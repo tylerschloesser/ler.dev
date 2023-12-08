@@ -403,6 +403,7 @@ function getFirstAdjacentConnection(
 ): {
   belt: BeltEntity | BeltIntersectionEntity
   gear: GearEntity
+  connection: AdjacentConnection
 } | null {
   for (const belt of belts) {
     const connection = belt.connections.find(
@@ -415,7 +416,7 @@ function getFirstAdjacentConnection(
     const gear = context.world.entities[connection.entityId]
     invariant(gear?.type === EntityType.enum.Gear)
 
-    return { belt, gear }
+    return { belt, gear, connection }
   }
 
   return null
@@ -457,6 +458,7 @@ function isValid(
   const forceMultiplierMap = getForceMultiplierMap(
     adjacent.belt,
     entities,
+    adjacent.connection.multiplier,
   )
 
   if (!forceMultiplierMap) {

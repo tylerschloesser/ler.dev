@@ -10,9 +10,10 @@ import { getTotalMass } from './util.js'
 export function getForceMultiplierMap(
   root: Entity,
   entities: World['entities'],
+  rootMultiplier: number = 1,
 ): Map<Entity, number> | null {
   const forceMultiplierMap = new Map<Entity, number>()
-  forceMultiplierMap.set(root, 1)
+  forceMultiplierMap.set(root, rootMultiplier)
 
   const stack = new Array<Entity>(root)
   while (stack.length) {
