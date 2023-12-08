@@ -33,7 +33,6 @@ export function ApplyFriction() {
       active: false,
       coeffecient: coeffecient * COEFFECIENT_SCALE,
       gear: null,
-      runningEnergyDiff: 0,
     }
 
     const centerTileIdListener: CenterTileIdListener =
@@ -143,17 +142,12 @@ export function ApplyFriction() {
           onPointerDown={() => {
             const { hand } = context
             invariant(hand?.type === HandType.ApplyFriction)
-            hand.runningEnergyDiff = 0
             hand.active = true
           }}
           onPointerUp={() => {
             const { hand } = context
             invariant(hand?.type === HandType.ApplyFriction)
             hand.active = false
-            console.log(
-              'energy diff:',
-              hand.runningEnergyDiff,
-            )
           }}
         >
           Apply

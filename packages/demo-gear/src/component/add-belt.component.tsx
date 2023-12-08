@@ -464,8 +464,8 @@ function isValid(
 
   const forceMultiplierMap = getAccelerationMap(
     adjacent.belt,
-    entities,
     adjacent.connection.multiplier,
+    entities,
   )
 
   if (!forceMultiplierMap) {

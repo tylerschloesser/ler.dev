@@ -208,7 +208,6 @@ export interface ApplyForceHand {
   direction: 'cw' | 'ccw'
   magnitude: number
   gear: GearEntity | null
-  runningEnergyDiff: number
 }
 
 export interface ApplyFrictionHand {
@@ -217,7 +216,6 @@ export interface ApplyFrictionHand {
   active: boolean
   coeffecient: number
   gear: GearEntity | null
-  runningEnergyDiff: number
 }
 
 export interface ConfigureHand {

@@ -249,6 +249,7 @@ export function updateBuild(
     valid =
       getAccelerationMap(
         hand.gear,
+        1,
         context.world.entities,
       ) !== null
   }

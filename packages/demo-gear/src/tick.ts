@@ -26,18 +26,13 @@ export function tick(
         const force =
           (hand.direction === 'ccw' ? -1 : 1) *
           hand.magnitude
-        hand.runningEnergyDiff += applyForce(
-          hand.gear,
-          force,
-          elapsed,
-          world,
-        )
+        applyForce(hand.gear, force, elapsed, world)
       }
       break
     }
     case HandType.ApplyFriction: {
       if (hand.active && hand.gear) {
-        hand.runningEnergyDiff += applyFriction(
+        applyFriction(
           hand.gear,
           hand.coeffecient,
           100, // TODO

@@ -1,26 +1,21 @@
 import invariant from 'tiny-invariant'
-import {
-  Entity,
-  EntityType,
-  GearEntity,
-  World,
-} from './types.js'
+import { Entity, GearEntity, World } from './types.js'
 import { getTotalMass } from './util.js'
 
 export function getAccelerationMap(
   root: Entity,
+  rootAcceleration: number,
   entities: World['entities'],
-  rootAcceleration: number = 1,
 ): Map<Entity, number> | null {
-  const forceMultiplierMap = new Map<Entity, number>()
-  forceMultiplierMap.set(root, rootAcceleration)
+  const map = new Map<Entity, number>()
+  map.set(root, rootAcceleration)
 
   const stack = new Array<Entity>(root)
   while (stack.length) {
     const tail = stack.pop()
     invariant(tail)
 
-    const tailMultiplier = forceMultiplierMap.get(tail)
+    const tailMultiplier = map.get(tail)
     invariant(tailMultiplier !== undefined)
 
     for (const c of tail.connections) {
@@ -30,22 +25,19 @@ export function getAccelerationMap(
       const neighborMultiplier =
         tailMultiplier * c.multiplier
 
-      if (forceMultiplierMap.has(neighbor)) {
-        if (
-          forceMultiplierMap.get(neighbor) !==
-          neighborMultiplier
-        ) {
+      if (map.has(neighbor)) {
+        if (map.get(neighbor) !== neighborMultiplier) {
           return null
         }
         continue
       }
 
-      forceMultiplierMap.set(neighbor, neighborMultiplier)
+      map.set(neighbor, neighborMultiplier)
       stack.push(neighbor)
     }
   }
 
-  return forceMultiplierMap
+  return map
 }
 
 export function applyForce(
@@ -53,58 +45,28 @@ export function applyForce(
   force: number,
   elapsed: number,
   world: World,
-): number {
+): void {
   const m = getTotalMass(root, world)
-  const forceMultiplierMap = getAccelerationMap(
+
+  const I = (1 / 2) * m * root.radius ** 2
+  const rootAcceleration = (force * root.radius) / I
+
+  const accelerationMap = getAccelerationMap(
     root,
+    rootAcceleration,
     world.entities,
   )
-  invariant(forceMultiplierMap)
-
-  let energyDiff = 0
+  invariant(accelerationMap)
 
   for (const [
     entity,
-    forceMultiplier,
-  ] of forceMultiplierMap.entries()) {
-    switch (entity.type) {
-      case EntityType.enum.Gear: {
-        const r = entity.radius
-        const I = (1 / 2) * m * r ** 2
-        const torque =
-          force * forceMultiplier * entity.radius
-        const acceleration = torque / I
-        const dv = acceleration * elapsed
-
-        const energyBefore =
-          (1 / 2) * I * entity.velocity ** 2
-
-        entity.velocity += dv
-
-        const energyAfter =
-          (1 / 2) * I * entity.velocity ** 2
-
-        energyDiff += energyAfter - energyBefore
-        break
-      }
-      case EntityType.enum.Belt:
-      case EntityType.enum.BeltIntersection: {
-        const acceleration =
-          (force * forceMultiplier) / entity.mass
-        const dv = acceleration * elapsed
-        entity.velocity += dv
-
-        // TODO update energy diff?
-
-        break
-      }
-      default: {
-        invariant(false)
-      }
-    }
+    accelerationMultiplier,
+  ] of accelerationMap.entries()) {
+    const acceleration =
+      rootAcceleration * accelerationMultiplier
+    const dv = acceleration * elapsed
+    entity.velocity += dv
   }
-
-  return energyDiff
 }
 
 export function applyFriction(
@@ -113,7 +75,7 @@ export function applyFriction(
   magnitude: number,
   elapsed: number,
   world: World,
-): number {
+): void {
   const force = coeffecient * root.velocity * -1 * magnitude
   return applyForce(root, force, elapsed, world)
 }

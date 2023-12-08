@@ -32,7 +32,6 @@ export function ApplyForce() {
       direction: 'cw',
       magnitude,
       gear: null,
-      runningEnergyDiff: 0,
     }
 
     const centerTileIdListener: CenterTileIdListener =
@@ -122,7 +121,6 @@ export function ApplyForce() {
                   )
                   hand.active = true
                   hand.direction = 'ccw'
-                  hand.runningEnergyDiff = 0
                 }}
                 onPointerUp={() => {
                   const { hand } = context
@@ -130,10 +128,6 @@ export function ApplyForce() {
                     hand?.type === HandType.ApplyForce,
                   )
                   hand.active = false
-                  console.log(
-                    'energy diff:',
-                    hand.runningEnergyDiff,
-                  )
                 }}
               >
                 CCW
@@ -148,7 +142,6 @@ export function ApplyForce() {
                   )
                   hand.active = true
                   hand.direction = 'cw'
-                  hand.runningEnergyDiff = 0
                 }}
                 onPointerUp={() => {
                   const { hand } = context
@@ -156,10 +149,6 @@ export function ApplyForce() {
                     hand?.type === HandType.ApplyForce,
                   )
                   hand.active = false
-                  console.log(
-                    'energy diff:',
-                    hand.runningEnergyDiff,
-                  )
                 }}
               >
                 CW
