@@ -138,7 +138,7 @@ export type BeltPath = z.infer<typeof BeltPath>
 export const BeltEntity = z.strictObject({
   type: z.literal(EntityType.enum.Belt),
   id: EntityId,
-  path: BeltPath,
+  position: SimpleVec2,
   direction: BeltDirection,
   offset: z.number(),
   velocity: z.number(),

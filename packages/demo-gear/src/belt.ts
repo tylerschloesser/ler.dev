@@ -19,50 +19,14 @@ export function addBelts(
     invariant(world.entities[belt.id] === undefined)
     world.entities[belt.id] = belt
 
-    const path =
-      belt.type === EntityType.enum.Belt
-        ? belt.path
-        : [belt.position]
-
-    for (const position of path) {
-      const { x, y } = position
-      const tileId = `${x}.${y}`
-      let tile = world.tiles[tileId]
-      if (!tile) {
-        tile = world.tiles[tileId] = {}
-      }
-      invariant(tile.entityId === undefined)
-      tile.entityId = belt.id
+    const { x, y } = belt.position
+    const tileId = `${x}.${y}`
+    let tile = world.tiles[tileId]
+    if (!tile) {
+      tile = world.tiles[tileId] = {}
     }
-
-    for (const connection of belt.connections) {
-      switch (connection.type) {
-        case ConnectionType.enum.Adjacent: {
-          const peer = world.entities[connection.entityId]
-          invariant(peer)
-          invariant(
-            !peer.connections.find(
-              (c) => c.entityId === belt.id,
-            ),
-          )
-          peer.connections.push({
-            type: ConnectionType.enum.Adjacent,
-            entityId: belt.id,
-            multiplier: 1 / connection.multiplier,
-          })
-          break
-        }
-        case ConnectionType.enum.Belt: {
-          invariant(
-            belts.find((b) => b.id === connection.entityId),
-          )
-          break
-        }
-        default: {
-          invariant(false)
-        }
-      }
-    }
+    invariant(tile.entityId === undefined)
+    tile.entityId = belt.id
   }
 }
 

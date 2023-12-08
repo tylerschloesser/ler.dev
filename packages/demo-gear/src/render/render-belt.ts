@@ -72,31 +72,18 @@ export function renderBelt(
   if (belt.type === EntityType.enum.Belt) {
     invariant(belt.offset >= 0)
     invariant(belt.offset < 1)
-    for (const { x, y } of belt.path) {
-      render(x, y, 1, 1, BELT_COLOR)
-      if (belt.direction === 'x') {
-        renderLineX(render, lineWidth, x, y, belt.offset)
-        renderLineX(
-          render,
-          lineWidth,
-          x,
-          y,
-          -1 + belt.offset,
-        )
-      } else {
-        invariant(belt.direction === 'y')
-        renderLineY(render, lineWidth, x, y, belt.offset)
-        renderLineY(
-          render,
-          lineWidth,
-          x,
-          y,
-          -1 + belt.offset,
-        )
-      }
-      if (tint) {
-        render(x, y, 1, 1, tint)
-      }
+    const { x, y } = belt.position
+    render(x, y, 1, 1, BELT_COLOR)
+    if (belt.direction === 'x') {
+      renderLineX(render, lineWidth, x, y, belt.offset)
+      renderLineX(render, lineWidth, x, y, -1 + belt.offset)
+    } else {
+      invariant(belt.direction === 'y')
+      renderLineY(render, lineWidth, x, y, belt.offset)
+      renderLineY(render, lineWidth, x, y, -1 + belt.offset)
+    }
+    if (tint) {
+      render(x, y, 1, 1, tint)
     }
   } else {
     invariant(
