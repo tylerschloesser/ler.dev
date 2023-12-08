@@ -12,7 +12,6 @@ import {
 import invariant from 'tiny-invariant'
 import { getAccelerationMap } from '../apply-torque.js'
 import { addBelts, getBeltConnections } from '../belt.js'
-import { BELT_SIZE } from '../const.js'
 import {
   AddBeltHand,
   AdjacentConnection,
@@ -41,7 +40,7 @@ export function AddBelt() {
   const navigate = useNavigate()
   const [direction, setDirection] = useDirection()
 
-  const cameraTilePosition = useCameraBeltPosition()
+  const cameraTilePosition = useCameraTilePosition()
   const [savedStart, setSavedStart] = useSavedStart()
   const end = !savedStart ? null : cameraTilePosition
   const start = savedStart ?? cameraTilePosition
@@ -514,25 +513,17 @@ function useDirection(): [
   return [direction, setDirection]
 }
 
-function useCameraBeltPosition(): SimpleVec2 {
+function useCameraTilePosition(): SimpleVec2 {
   const context = use(AppContext)
   const [position, setPosition] = useState<SimpleVec2>({
-    x: Math.round(
-      context.camera.position.x - BELT_SIZE / 2,
-    ),
-    y: Math.round(
-      context.camera.position.y - BELT_SIZE / 2,
-    ),
+    x: Math.floor(context.camera.position.x),
+    y: Math.floor(context.camera.position.y),
   })
 
   useEffect(() => {
     const listener: CameraListenerFn = () => {
-      const x = Math.round(
-        context.camera.position.x - BELT_SIZE / 2,
-      )
-      const y = Math.round(
-        context.camera.position.y - BELT_SIZE / 2,
-      )
+      const x = Math.floor(context.camera.position.x)
+      const y = Math.floor(context.camera.position.y)
       setPosition((prev) => {
         if (prev.x === x && prev.y === y) {
           return prev
