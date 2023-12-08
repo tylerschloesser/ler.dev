@@ -34,9 +34,7 @@ export function renderGridV2(
     1 / context.viewport.size.x,
     1 / context.viewport.size.y,
   )
-
-  mat4Scale(transform, 1, context.viewport.size.y)
-  mat4Translate(transform, -0.5, 0)
+  mat4Translate(transform, -0.5, -0.5)
 
   mat4Translate(
     transform,
@@ -45,22 +43,14 @@ export function renderGridV2(
         mod(-context.camera.position.x, 1) *
           context.tileSize,
       context.tileSize,
-    ),
-    0,
+    ) - context.tileSize,
+    mod(
+      context.viewport.size.y / 2 +
+        mod(-context.camera.position.y, 1) *
+          context.tileSize,
+      context.tileSize,
+    ) - context.tileSize,
   )
-
-  // mat4Translate(
-  //   transform,
-  //   context.viewport.size.x / 2,
-  //   context.viewport.size.y / 2,
-  // )
-  // mat4Scale(transform, context.tileSize)
-
-  // mat4Translate(
-  //   transform,
-  //   mod(-context.camera.position.x, 1),
-  //   mod(-context.camera.position.y, 1),
-  // )
 
   gl.uniformMatrix4fv(
     fillInstanced.uniforms.transform,
@@ -83,22 +73,34 @@ export function renderGridV2(
 
   const matrices = gpu.buffers.fillInstancedMatrices
 
-  // add 2 to render lines outside the viewport, in case
-  // the line width causes them to stray into the viewport
   const cols =
     Math.ceil(context.viewport.size.x / context.tileSize) +
-    2
+    1
+  const rows =
+    Math.ceil(context.viewport.size.y / context.tileSize) +
+    1
 
-  invariant(cols <= matrices.values.length)
+  invariant(cols + rows <= matrices.values.length)
 
-  for (let col = -1; col < cols; col++) {
-    const matrix = matrices.values.at(col)
+  let mi = 0
+  for (let col = 0; col < cols; col++) {
+    const matrix = matrices.values.at(mi++)
     invariant(matrix)
 
     mat4.identity(matrix)
     mat4Translate(matrix, col * context.tileSize, 0)
-    mat4Scale(matrix, 2)
+    mat4Scale(matrix, 2, rows * context.tileSize)
   }
+  for (let row = 0; row < rows; row++) {
+    const matrix = matrices.values.at(mi++)
+    invariant(matrix)
+
+    mat4.identity(matrix)
+    mat4Translate(matrix, 0, row * context.tileSize)
+    mat4Scale(matrix, cols * context.tileSize, 2)
+  }
+
+  invariant(mi === cols + rows)
 
   gl.bindBuffer(gl.ARRAY_BUFFER, matrices.buffer)
   gl.bufferSubData(gl.ARRAY_BUFFER, 0, matrices.data)
@@ -117,11 +119,15 @@ export function renderGridV2(
       offset,
     )
 
-    // TODO do I need this??
     gl.vertexAttribDivisor(index, 1)
   }
 
-  gl.drawArraysInstanced(gl.TRIANGLE_STRIP, 0, 4, cols)
+  gl.drawArraysInstanced(
+    gl.TRIANGLE_STRIP,
+    0,
+    4,
+    cols + rows,
+  )
 }
 
 export function renderGridV1(
