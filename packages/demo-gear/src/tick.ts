@@ -106,11 +106,10 @@ export function tick(
   for (const entity of Object.values(world.entities)) {
     switch (entity.type) {
       case EntityType.enum.Gear: {
-        entity.angle =
-          (entity.angle +
-            entity.velocity * elapsed +
-            TWO_PI) %
-          TWO_PI
+        entity.angle = mod(
+          entity.angle + entity.velocity * elapsed,
+          TWO_PI,
+        )
         break
       }
       case EntityType.enum.Belt:

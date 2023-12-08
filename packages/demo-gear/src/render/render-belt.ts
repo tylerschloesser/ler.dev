@@ -59,7 +59,7 @@ function renderLineY(
 }
 
 export function renderBelt(
-  _context: IAppContext,
+  context: IAppContext,
   gl: WebGL2RenderingContext,
   gpu: GpuState,
   belt: BeltEntity | BeltIntersectionEntity,
@@ -67,7 +67,7 @@ export function renderBelt(
 ) {
   const render = batchRenderRect(gl, gpu)
 
-  const lineWidth = 0.1
+  const lineWidth = 0.1 + (1 - context.camera.zoom) * 0.1
 
   if (belt.type === EntityType.enum.Belt) {
     invariant(belt.offset >= 0)
