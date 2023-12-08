@@ -89,7 +89,8 @@ export function applyForce(
       }
       case EntityType.enum.Belt:
       case EntityType.enum.BeltIntersection: {
-        const acceleration = force * forceMultiplier
+        const acceleration =
+          (force * forceMultiplier) / entity.mass
         const dv = acceleration * elapsed
         entity.velocity += dv
 
