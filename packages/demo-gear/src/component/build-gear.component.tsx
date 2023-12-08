@@ -2,6 +2,7 @@ import {
   use,
   useCallback,
   useEffect,
+  useMemo,
   useState,
 } from 'react'
 import {
@@ -20,7 +21,10 @@ import {
   CameraListenerFn,
   Entity,
   EntityId,
+  EntityType,
+  Gear,
   HandType,
+  SimpleVec2,
 } from '../types.js'
 import { clamp } from '../util.js'
 import styles from './build-gear.module.scss'
@@ -32,6 +36,9 @@ const DEFAULT_RADIUS = MIN_RADIUS
 export function BuildGear() {
   const context = use(AppContext)
   const [radius, setRadius] = useRadius()
+  const center = useGearCenter()
+  const { gear } = useGear(center, radius)
+
   const [valid, setValid] = useState(false)
 
   useEffect(() => {
@@ -136,4 +143,61 @@ function useRadius(): [number, (radius: number) => void] {
     [setSearchParams],
   )
   return [radius, setRadius]
+}
+
+function useGearCenter(): SimpleVec2 {
+  const context = use(AppContext)
+  const [center, setCenter] = useState<SimpleVec2>({
+    x: Math.round(context.camera.position.x),
+    y: Math.round(context.camera.position.y),
+  })
+
+  useEffect(() => {
+    const listener: CameraListenerFn = () => {
+      const x = Math.floor(context.camera.position.x)
+      const y = Math.floor(context.camera.position.y)
+      setCenter((prev) => {
+        if (prev.x === x && prev.y === y) {
+          return prev
+        }
+        return { x, y }
+      })
+    }
+    context.cameraListeners.add(listener)
+    return () => {
+      context.cameraListeners.delete(listener)
+    }
+  }, [])
+
+  return center
+}
+
+function useGear(
+  center: SimpleVec2,
+  radius: number,
+): { gear: Gear; valid: boolean } {
+  const context = use(AppContext)
+
+  return useMemo(() => {
+    const position: SimpleVec2 = {
+      x: center.x - radius,
+      y: center.y - radius,
+    }
+
+    const gear: Gear = {
+      id: `${position.x}.${position.y}`,
+      type: EntityType.enum.Gear,
+      position,
+      center,
+      angle: 0,
+      connections: [],
+      mass: Math.PI * radius ** 2,
+      radius,
+      velocity: 0,
+    }
+
+    let valid: boolean = true
+
+    return { gear, valid }
+  }, [context, center, radius])
 }
