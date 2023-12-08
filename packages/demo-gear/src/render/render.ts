@@ -11,6 +11,7 @@ import { iterateConnections } from '../util.js'
 import {
   ADD_RESOURCE_INVALID,
   ADD_RESOURCE_VALID,
+  CLEAR,
   DELETE,
   GEAR_OUTLINE,
   TILE_OUTLINE,
@@ -36,7 +37,7 @@ export function render(
   gl: WebGL2RenderingContext,
   gpu: GpuState,
 ) {
-  gl.clearColor(1, 0, 0, 1)
+  gl.clearColor(CLEAR.r, CLEAR.g, CLEAR.b, CLEAR.a)
   gl.clear(gl.COLOR_BUFFER_BIT)
 
   updateView(gpu.matrices, context)

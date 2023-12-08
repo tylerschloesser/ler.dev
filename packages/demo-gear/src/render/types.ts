@@ -105,6 +105,11 @@ export interface GpuState {
       }
     >
     gearTooth: WebGLBuffer
+    fillInstancedMatrices: {
+      data: Float32Array
+      buffer: WebGLBuffer
+      values: mat4[]
+    }
   }
   matrices: {
     model: mat4

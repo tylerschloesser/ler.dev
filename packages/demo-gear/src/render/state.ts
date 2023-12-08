@@ -1,3 +1,4 @@
+import { mat4 } from 'gl-matrix'
 import invariant from 'tiny-invariant'
 import { GEAR_RADIUSES, TEETH, TWO_PI } from '../const.js'
 import { initMatrices } from './matrices.js'
@@ -44,6 +45,7 @@ export async function initGpuState(
       gearTooth: initGearToothBuffer(gl),
       fillRect: initFillRectBuffer(gl),
       outlineRect: initOutlineRectBuffer(gl),
+      fillInstancedMatrices: initFillInstancedMatrices(gl),
     },
     matrices: initMatrices(),
   }
@@ -336,6 +338,32 @@ function initOutlineRectBuffer(
     gl.STATIC_DRAW,
   )
   return buffer
+}
+
+function initFillInstancedMatrices(
+  gl: WebGL2RenderingContext,
+): GpuState['buffers']['fillInstancedMatrices'] {
+  const count = 2 ** 10
+
+  const buffer = gl.createBuffer()
+  invariant(buffer)
+  gl.bindBuffer(gl.ARRAY_BUFFER, buffer)
+
+  const data = new Float32Array(count * 16)
+
+  gl.bufferData(gl.ARRAY_BUFFER, data, gl.DYNAMIC_DRAW)
+
+  const values = new Array<mat4>(count)
+
+  for (let i = 0; i < count; i++) {
+    values[i] = new Float32Array(
+      data,
+      i * 16 * 4, // offset (bytes)
+      16, // size of the view
+    )
+  }
+
+  return { data, buffer, values }
 }
 
 function initGearToothBuffer(
