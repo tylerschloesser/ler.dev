@@ -63,9 +63,13 @@ export const INTERSECTION_BELT_COLOR = rgb(32)
 
 export const DELETE: Color = rgba(255, 0, 0, 0.5)
 
-function rgb(r: number, g: number, b: number): Color
-function rgb(r: number): Color
-function rgb(r: number, g?: number, b?: number): Color {
+export function rgb(r: number, g: number, b: number): Color
+export function rgb(r: number): Color
+export function rgb(
+  r: number,
+  g?: number,
+  b?: number,
+): Color {
   return rgba(r, g ?? r, b ?? r, 1)
 }
 

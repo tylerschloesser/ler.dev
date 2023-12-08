@@ -2,6 +2,7 @@ import { mat4, vec3 } from 'gl-matrix'
 import invariant from 'tiny-invariant'
 import { IAppContext } from '../types.js'
 import { mod } from '../util.js'
+import { Color, rgb } from './color.js'
 import { GpuState } from './types.js'
 
 const transform: mat4 = mat4.create()
@@ -12,13 +13,19 @@ export function renderGrid(
   gl: WebGL2RenderingContext,
   gpu: GpuState,
 ): void {
-  renderPartialGrid(context, gl, gpu)
+  renderPartialGrid(
+    context,
+    gl,
+    gpu,
+    rgb(0.25 * context.camera.zoom * 255),
+  )
 }
 
 export function renderPartialGrid(
   context: IAppContext,
   gl: WebGL2RenderingContext,
   gpu: GpuState,
+  color: Color,
 ): void {
   const { fillInstanced } = gpu.programs
 
@@ -26,10 +33,10 @@ export function renderPartialGrid(
 
   gl.uniform4f(
     fillInstanced.uniforms.color,
-    0.25 * context.camera.zoom,
-    0.25 * context.camera.zoom,
-    0.25 * context.camera.zoom,
-    1,
+    color.r,
+    color.g,
+    color.b,
+    color.a,
   )
 
   mat4.identity(transform)
