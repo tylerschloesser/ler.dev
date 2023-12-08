@@ -7,7 +7,7 @@ import { GpuState } from './types.js'
 // const matrix: mat4 = mat4.create()
 // const v: vec3 = vec3.create()
 
-export function renderGrid(
+export function renderGridV2(
   context: IAppContext,
   gl: WebGL2RenderingContext,
   gpu: GpuState,
@@ -43,6 +43,10 @@ export function renderGrid(
   invariant(matrix)
   mat4.identity(matrix)
 
+  for (let i = 0; i < 16; i++) {
+    // console.log(matrices.data[i], matrix[i])
+  }
+
   gl.bindBuffer(gl.ARRAY_BUFFER, matrices.buffer)
   gl.bufferSubData(gl.ARRAY_BUFFER, 0, matrices.data)
 
@@ -64,46 +68,44 @@ export function renderGrid(
     gl.vertexAttribDivisor(index, 1)
   }
 
-  // gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4)
-
   gl.drawArraysInstanced(gl.TRIANGLE_STRIP, 0, 4, 1)
 }
 
-// export function renderGrid(
-//   context: IAppContext,
-//   gl: WebGL2RenderingContext,
-//   gpu: GpuState,
-// ): void {
-//   const { grid } = gpu.programs
-//
-//   gl.useProgram(grid.program)
-//
-//   gl.bindBuffer(gl.ARRAY_BUFFER, gpu.buffers.square)
-//   gl.vertexAttribPointer(
-//     grid.attributes.vertex,
-//     2,
-//     gl.FLOAT,
-//     false,
-//     0,
-//     0,
-//   )
-//   gl.enableVertexAttribArray(grid.attributes.vertex)
-//
-//   gl.uniform2f(
-//     grid.uniforms.viewport,
-//     context.viewport.size.x,
-//     context.viewport.size.y,
-//   )
-//
-//   gl.uniform1f(grid.uniforms.tileSize, context.tileSize)
-//
-//   gl.uniform2f(
-//     grid.uniforms.camera,
-//     context.camera.position.x,
-//     context.camera.position.y,
-//   )
-//
-//   gl.uniform1f(grid.uniforms.zoom, context.camera.zoom)
-//
-//   gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4)
-// }
+export function renderGridV1(
+  context: IAppContext,
+  gl: WebGL2RenderingContext,
+  gpu: GpuState,
+): void {
+  const { grid } = gpu.programs
+
+  gl.useProgram(grid.program)
+
+  gl.bindBuffer(gl.ARRAY_BUFFER, gpu.buffers.square)
+  gl.vertexAttribPointer(
+    grid.attributes.vertex,
+    2,
+    gl.FLOAT,
+    false,
+    0,
+    0,
+  )
+  gl.enableVertexAttribArray(grid.attributes.vertex)
+
+  gl.uniform2f(
+    grid.uniforms.viewport,
+    context.viewport.size.x,
+    context.viewport.size.y,
+  )
+
+  gl.uniform1f(grid.uniforms.tileSize, context.tileSize)
+
+  gl.uniform2f(
+    grid.uniforms.camera,
+    context.camera.position.x,
+    context.camera.position.y,
+  )
+
+  gl.uniform1f(grid.uniforms.zoom, context.camera.zoom)
+
+  gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4)
+}

@@ -343,7 +343,7 @@ function initOutlineRectBuffer(
 function initFillInstancedMatrices(
   gl: WebGL2RenderingContext,
 ): GpuState['buffers']['fillInstancedMatrices'] {
-  const count = 2 ** 10
+  const count = 2 ** 0
 
   const buffer = gl.createBuffer()
   invariant(buffer)
@@ -356,11 +356,7 @@ function initFillInstancedMatrices(
   const values = new Array<mat4>(count)
 
   for (let i = 0; i < count; i++) {
-    values[i] = new Float32Array(
-      data,
-      i * 16 * 4, // offset (bytes)
-      16, // size of the view
-    )
+    values[i] = data.subarray(i * 16, (i + 1) * 16)
   }
 
   return { data, buffer, values }
