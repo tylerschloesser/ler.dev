@@ -147,7 +147,9 @@ export function getBeltConnections(
     const cx = position.x
     const cy = position.y
 
-    for (const { dc, sr, dg, multiplier } of check) {
+    for (const config of check) {
+      const { dc, sr, dg } = config
+
       const tx = cx + dc.x
       const ty = cy + dc.y
       const tileId = `${tx}.${ty}`
@@ -165,6 +167,8 @@ export function getBeltConnections(
 
       const gx = gear.center.x + dg.x + gear.radius * sr.x
       const gy = gear.center.y + dg.y + gear.radius * sr.y
+
+      const multiplier = config.multiplier / gear.radius
 
       if (gx === cx && gy === cy) {
         if (
