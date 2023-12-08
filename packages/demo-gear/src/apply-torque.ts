@@ -2,7 +2,7 @@ import invariant from 'tiny-invariant'
 import { Entity, GearEntity, World } from './types.js'
 import { getTotalMass } from './util.js'
 
-export function getAccelerationMap(
+export function getAccelerationMultiplierMap(
   root: Entity,
   rootAcceleration: number,
   entities: World['entities'],
@@ -51,7 +51,7 @@ export function applyForce(
   const I = (1 / 2) * m * root.radius ** 2
   const rootAcceleration = (force * root.radius) / I
 
-  const accelerationMap = getAccelerationMap(
+  const accelerationMap = getAccelerationMultiplierMap(
     root,
     rootAcceleration,
     world.entities,
