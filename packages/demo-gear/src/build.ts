@@ -8,7 +8,6 @@ import {
   ConnectionType,
   Entity,
   EntityType,
-  Gear,
   GearEntity,
   HandType,
   IAppContext,

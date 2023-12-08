@@ -2,7 +2,6 @@ import {
   use,
   useCallback,
   useEffect,
-  useRef,
   useState,
 } from 'react'
 import {
@@ -18,7 +17,6 @@ import {
 } from '../build.js'
 import { MAX_RADIUS, MIN_RADIUS } from '../const.js'
 import {
-  BuildHand,
   CameraListenerFn,
   Entity,
   EntityId,
