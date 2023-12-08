@@ -265,6 +265,9 @@ export function updateBuild(
   updateBuildGearAngle(context, hand)
 }
 
+// TODO move this to tick. set gear velocity and
+// accelerate like a normal gear to remove redundancy
+//
 export function updateBuildGearAngle(
   context: IAppContext,
   hand: BuildHand,
