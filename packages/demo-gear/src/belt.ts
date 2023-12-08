@@ -214,12 +214,11 @@ export function updateAddBeltProgress(
   for (const belt of hand.belts) {
     const multiplier = accelerationMap.get(belt)
     invariant(multiplier !== undefined)
+
+    belt.velocity =
+      source.velocity * source.radius * multiplier
     belt.offset = mod(
-      belt.offset +
-        source.velocity *
-          source.radius *
-          elapsed *
-          multiplier,
+      belt.offset + belt.velocity * elapsed,
       1,
     )
   }
