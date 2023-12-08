@@ -1,5 +1,13 @@
-import { use, useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import {
+  use,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react'
+import {
+  useNavigate,
+  useSearchParams,
+} from 'react-router-dom'
 import invariant from 'tiny-invariant'
 import {
   executeBuild,
@@ -14,9 +22,11 @@ import styles from './build-gear.module.scss'
 import { AppContext } from './context.js'
 import { Overlay } from './overlay.component.js'
 
+const DEFAULT_RADIUS = MIN_RADIUS
+
 export function BuildGear() {
   const context = use(AppContext)
-  const [radius, setRadius] = useState(1)
+  const [radius, setRadius] = useRadius()
   const [valid, setValid] = useState(false)
 
   useEffect(() => {
@@ -54,8 +64,8 @@ export function BuildGear() {
         className={styles.button}
         disabled={radius === MIN_RADIUS}
         onPointerUp={() => {
-          setRadius((prev) =>
-            clamp(prev - 1, MIN_RADIUS, MAX_RADIUS),
+          setRadius(
+            clamp(radius - 1, MIN_RADIUS, MAX_RADIUS),
           )
         }}
       >
@@ -71,8 +81,8 @@ export function BuildGear() {
         className={styles.button}
         disabled={radius === MAX_RADIUS}
         onPointerUp={() => {
-          setRadius((prev) =>
-            clamp(prev + 1, MIN_RADIUS, MAX_RADIUS),
+          setRadius(
+            clamp(radius + 1, MIN_RADIUS, MAX_RADIUS),
           )
         }}
       >
@@ -91,4 +101,24 @@ export function BuildGear() {
       </button>
     </Overlay>
   )
+}
+
+function useRadius(): [number, (radius: number) => void] {
+  const [searchParams, setSearchParams] = useSearchParams()
+  const radius = parseInt(
+    searchParams.get('radius') ?? `${DEFAULT_RADIUS}`,
+  )
+  invariant(radius >= MIN_RADIUS)
+  invariant(radius <= MAX_RADIUS)
+  invariant(radius === Math.min(radius))
+  const setRadius = useCallback(
+    (next: number) => {
+      setSearchParams((prev) => {
+        prev.set('radius', `${next}`)
+        return prev
+      })
+    },
+    [setSearchParams],
+  )
+  return [radius, setRadius]
 }

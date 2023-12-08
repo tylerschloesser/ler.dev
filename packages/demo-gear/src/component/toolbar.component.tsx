@@ -63,7 +63,7 @@ export function Toolbar() {
       <button
         className={styles.button}
         onPointerUp={() => {
-          navigate('add-belt')
+          navigate('build-belt')
         }}
       >
         Add Belt
@@ -87,7 +87,7 @@ export function Toolbar() {
       <button
         className={styles.button}
         onPointerUp={() => {
-          navigate('add-gear')
+          navigate('build-gear')
         }}
       >
         Add Gear
