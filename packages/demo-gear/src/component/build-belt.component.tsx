@@ -30,7 +30,7 @@ import {
   SimpleVec2,
   World,
 } from '../types.js'
-import styles from './add-belt.module.scss'
+import styles from './build-belt.module.scss'
 import { AppContext } from './context.js'
 import { Overlay } from './overlay.component.js'
 

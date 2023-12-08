@@ -1,11 +1,11 @@
 import { Navigate } from 'react-router-dom'
 import { RouteObject } from 'react-router-dom'
-import { AddBelt } from './component/add-belt.component.js'
-import { AddGear } from './component/add-gear.component.js'
 import { AddResource } from './component/add-resource.component.js'
 import { App } from './component/app.component.js'
 import { ApplyForce } from './component/apply-force.component.js'
 import { ApplyFriction } from './component/apply-friction.component.js'
+import { AddBelt } from './component/build-belt.component.js'
+import { AddGear } from './component/build-gear.component.js'
 import { Configure } from './component/configure.component.js'
 import { Delete } from './component/delete.component.js'
 import { Index } from './component/index.component.js'
@@ -33,7 +33,7 @@ export const routes: RouteObject[] = [
             Component: Toolbar,
           },
           {
-            path: 'add-gear',
+            path: 'build-gear',
             Component: AddGear,
           },
           {
@@ -41,7 +41,7 @@ export const routes: RouteObject[] = [
             Component: AddResource,
           },
           {
-            path: 'add-belt',
+            path: 'build-belt',
             Component: AddBelt,
           },
           {

@@ -10,7 +10,7 @@ import {
 import { MAX_RADIUS, MIN_RADIUS } from '../const.js'
 import { CameraListenerFn, HandType } from '../types.js'
 import { clamp } from '../util.js'
-import styles from './add-gear.module.scss'
+import styles from './build-gear.module.scss'
 import { AppContext } from './context.js'
 import { Overlay } from './overlay.component.js'
 
