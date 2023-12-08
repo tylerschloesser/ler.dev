@@ -1,3 +1,4 @@
+import { tempGetGear } from '../temp.js'
 import { IAppContext, BuildHand } from '../types.js'
 import {
   BUILD_GEAR_INVALID,
@@ -13,11 +14,9 @@ export function renderBuild(
   gpu: GpuState,
   build: BuildHand,
 ) {
-  if (!build.gear) {
-    return
-  }
+  const buildGear = tempGetGear(build)
   renderGear(
-    build.gear,
+    buildGear,
     gl,
     gpu,
     context.camera.zoom,
@@ -26,7 +25,7 @@ export function renderBuild(
 
   if (build.chain && build.valid) {
     renderChain(
-      build.gear,
+      buildGear,
       build.chain,
       gl,
       gpu,

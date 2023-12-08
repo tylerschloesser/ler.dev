@@ -2,11 +2,13 @@ import invariant from 'tiny-invariant'
 import { addChainConnection, addGear } from './add-gear.js'
 import { getAccelerationMap } from './apply-torque.js'
 import { TWO_PI } from './const.js'
+import { tempGetGear, tempSetGear } from './temp.js'
 import {
   BuildHand,
   ConnectionType,
   Entity,
   EntityType,
+  Gear,
   GearEntity,
   HandType,
   IAppContext,
@@ -50,13 +52,17 @@ export function initBuild(
   onChangeValid: BuildHand['onChangeValid'],
 ): void {
   invariant(context.hand === null)
+
+  const gear = newBuildGear(context, radius)
+
   context.hand = {
     type: HandType.Build,
     chain: null,
-    gear: newBuildGear(context, radius),
     valid: false,
     onChangeValid,
-    entities: {},
+    entities: {
+      [gear.id]: gear,
+    },
   }
   updateBuild(context, context.hand)
 }
@@ -66,7 +72,7 @@ export function updateRadius(
   radius: number,
 ): void {
   invariant(context.hand?.type === HandType.Build)
-  context.hand.gear = newBuildGear(context, radius)
+  tempSetGear(context.hand, newBuildGear(context, radius))
   updateBuild(context, context.hand)
 }
 
@@ -74,19 +80,17 @@ export function updateBuildPosition(
   context: IAppContext,
   hand: BuildHand,
 ): void {
+  const gear = tempGetGear(hand)
   const x = Math.round(context.camera.position.x)
   const y = Math.round(context.camera.position.y)
-  if (
-    hand.gear.center.x === x &&
-    hand.gear.center.y === y
-  ) {
+  if (gear.center.x === x && gear.center.y === y) {
     return
   } else {
-    hand.gear.position.x = x - hand.gear.radius
-    hand.gear.position.y = y - hand.gear.radius
-    hand.gear.id = `${hand.gear.position.x}.${hand.gear.position.y}`
-    hand.gear.center.x = x
-    hand.gear.center.y = y
+    gear.position.x = x - gear.radius
+    gear.position.y = y - gear.radius
+    gear.id = `${gear.position.x}.${gear.position.y}`
+    gear.center.x = x
+    gear.center.y = y
     updateBuild(context, hand)
   }
 }
@@ -95,12 +99,13 @@ export function executeBuild(
   context: IAppContext,
   hand: BuildHand,
 ): void {
-  invariant(hand.gear)
   if (!hand.valid) {
     return
   }
 
-  const { center: position } = hand.gear
+  const handGear = tempGetGear(hand)
+
+  const { center: position } = handGear
   const tileId = `${position.x}.${position.y}`
   const tile = context.world.tiles[tileId]
 
@@ -134,11 +139,11 @@ export function executeBuild(
       hand.chain = gear
     }
   } else {
-    addGear(hand.gear, gear ?? null, context)
+    addGear(handGear, gear ?? null, context)
     hand.chain = null
   }
 
-  hand.gear = newBuildGear(context, hand.gear.radius)
+  tempSetGear(hand, newBuildGear(context, handGear.radius))
   updateBuild(context, hand)
 }
 
@@ -146,15 +151,15 @@ export function updateBuild(
   context: IAppContext,
   hand: BuildHand,
 ): void {
-  invariant(hand.gear)
-
   let valid = true
   let attach: GearEntity | undefined
   let chain: GearEntity | undefined
 
+  const handGear = tempGetGear(hand)
+
   for (const tile of iterateGearTiles(
-    hand.gear.center,
-    hand.gear.radius,
+    handGear.center,
+    handGear.radius,
     context.world,
   )) {
     if (!tile.entityId) {
@@ -170,13 +175,13 @@ export function updateBuild(
 
   if (valid) {
     for (const gear of iterateOverlappingGears(
-      hand.gear.center,
-      hand.gear.radius,
+      handGear.center,
+      handGear.radius,
       context.world,
     )) {
       if (
-        hand.gear.radius === 1 &&
-        Vec2.equal(gear.center, hand.gear.center)
+        handGear.radius === 1 &&
+        Vec2.equal(gear.center, handGear.center)
       ) {
         if (gear.radius === 1) {
           chain = gear
@@ -198,43 +203,43 @@ export function updateBuild(
   }
 
   if (valid && hand.chain) {
-    const dx = hand.gear.center.x - hand.chain.center.x
-    const dy = hand.gear.center.y - hand.chain.center.y
+    const dx = handGear.center.x - hand.chain.center.x
+    const dy = handGear.center.y - hand.chain.center.y
     valid =
       (dx === 0 || dy === 0) &&
       dx !== dy &&
       Math.abs(dx + dy) >
-        hand.gear.radius + hand.chain.radius
+        handGear.radius + hand.chain.radius
   }
 
-  hand.gear.connections = []
+  handGear.connections = []
 
   invariant(!(attach && chain))
 
   if (valid) {
-    hand.gear.connections.push(
+    handGear.connections.push(
       ...getAdjacentConnections(
-        hand.gear.center,
-        hand.gear.radius,
+        handGear.center,
+        handGear.radius,
         context.world,
       ),
     )
     if (hand.chain) {
-      hand.gear.connections.push({
+      handGear.connections.push({
         type: ConnectionType.enum.Chain,
         entityId: hand.chain.id,
         multiplier: 1,
       })
     }
     if (chain) {
-      hand.gear.connections.push({
+      handGear.connections.push({
         type: ConnectionType.enum.Chain,
         entityId: chain.id,
         multiplier: 1,
       })
     }
     if (attach) {
-      hand.gear.connections.push({
+      handGear.connections.push({
         type: ConnectionType.enum.Attach,
         entityId: attach.id,
         multiplier: 1,
@@ -252,7 +257,7 @@ export function updateBuild(
     //
     valid =
       getAccelerationMap(
-        hand.gear,
+        handGear,
         1,
         context.world.entities,
       ) !== null
@@ -273,7 +278,7 @@ export function updateBuildGearAngle(
   context: IAppContext,
   hand: BuildHand,
 ): void {
-  const { gear } = hand
+  const gear = tempGetGear(hand)
 
   let connection = gear.connections.at(0)
 

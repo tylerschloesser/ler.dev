@@ -203,7 +203,6 @@ export enum HandType {
 
 export interface BuildHand {
   type: HandType.Build
-  gear: GearEntity
   valid: boolean
   chain: GearEntity | null
   onChangeValid?(valid: boolean): void
