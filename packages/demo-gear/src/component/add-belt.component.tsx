@@ -4,7 +4,7 @@ import {
   useSearchParams,
 } from 'react-router-dom'
 import invariant from 'tiny-invariant'
-import { getForceMultiplierMap } from '../apply-torque.js'
+import { getAccelerationMap } from '../apply-torque.js'
 import { addBelts, getBeltConnections } from '../belt.js'
 import {
   AddBeltHand,
@@ -462,7 +462,7 @@ function isValid(
     entities[belt.id] = belt
   }
 
-  const forceMultiplierMap = getForceMultiplierMap(
+  const forceMultiplierMap = getAccelerationMap(
     adjacent.belt,
     entities,
     adjacent.connection.multiplier,

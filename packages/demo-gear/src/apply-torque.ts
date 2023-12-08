@@ -7,13 +7,13 @@ import {
 } from './types.js'
 import { getTotalMass } from './util.js'
 
-export function getForceMultiplierMap(
+export function getAccelerationMap(
   root: Entity,
   entities: World['entities'],
-  rootMultiplier: number = 1,
+  rootAcceleration: number = 1,
 ): Map<Entity, number> | null {
   const forceMultiplierMap = new Map<Entity, number>()
-  forceMultiplierMap.set(root, rootMultiplier)
+  forceMultiplierMap.set(root, rootAcceleration)
 
   const stack = new Array<Entity>(root)
   while (stack.length) {
@@ -55,7 +55,7 @@ export function applyForce(
   world: World,
 ): number {
   const m = getTotalMass(root, world)
-  const forceMultiplierMap = getForceMultiplierMap(
+  const forceMultiplierMap = getAccelerationMap(
     root,
     world.entities,
   )
