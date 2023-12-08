@@ -25,6 +25,31 @@ export function renderGridV2(
   )
 
   mat4.identity(transform)
+  // flip the y axis so it matches canvas/dom
+  mat4Scale(transform, 1, -1)
+  mat4Translate(transform, -1)
+  mat4Scale(transform, 2)
+  mat4Scale(
+    transform,
+    1 / context.viewport.size.x,
+    1 / context.viewport.size.y,
+  )
+
+  mat4Scale(transform, 2, context.viewport.size.y)
+
+  // mat4Translate(
+  //   transform,
+  //   context.viewport.size.x / 2,
+  //   context.viewport.size.y / 2,
+  // )
+  // mat4Scale(transform, context.tileSize)
+
+  // mat4Translate(
+  //   transform,
+  //   mod(-context.camera.position.x, 1),
+  //   mod(-context.camera.position.y, 1),
+  // )
+
   gl.uniformMatrix4fv(
     fillInstanced.uniforms.transform,
     false,
@@ -48,11 +73,6 @@ export function renderGridV2(
   const matrix = matrices.values.at(0)
   invariant(matrix)
   mat4.identity(matrix)
-
-  v3[0] = 10
-  v3[1] = 10
-  v3[2] = 1
-  mat4.scale(matrix, matrix, v3)
 
   gl.bindBuffer(gl.ARRAY_BUFFER, matrices.buffer)
   gl.bufferSubData(gl.ARRAY_BUFFER, 0, matrices.data)
@@ -115,4 +135,48 @@ export function renderGridV1(
   gl.uniform1f(grid.uniforms.zoom, context.camera.zoom)
 
   gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4)
+}
+
+function mat4Scale(matrix: mat4, xy: number): void
+function mat4Scale(matrix: mat4, x: number, y: number): void
+function mat4Scale(
+  matrix: mat4,
+  x: number,
+  y: number,
+  z: number,
+): void
+function mat4Scale(
+  matrix: mat4,
+  x: number,
+  y?: number,
+  z?: number,
+): void {
+  v3[0] = x
+  v3[1] = y ?? x
+  v3[2] = z ?? 0
+  mat4.scale(matrix, matrix, v3)
+}
+
+function mat4Translate(matrix: mat4, xy: number): void
+function mat4Translate(
+  matrix: mat4,
+  x: number,
+  y: number,
+): void
+function mat4Translate(
+  matrix: mat4,
+  x: number,
+  y: number,
+  z: number,
+): void
+function mat4Translate(
+  matrix: mat4,
+  x: number,
+  y?: number,
+  z?: number,
+): void {
+  v3[0] = x
+  v3[1] = y ?? x
+  v3[2] = z ?? 1
+  mat4.translate(matrix, matrix, v3)
 }
