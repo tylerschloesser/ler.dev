@@ -462,20 +462,20 @@ function isValid(
     entities[belt.id] = belt
   }
 
-  const forceMultiplierMap = getAccelerationMap(
+  const accelerationMap = getAccelerationMap(
     adjacent.belt,
     adjacent.connection.multiplier,
     entities,
   )
 
-  if (!forceMultiplierMap) {
+  if (!accelerationMap) {
     return { valid: false }
   }
 
   return {
     valid: true,
     motion: {
-      forceMultiplierMap,
+      accelerationMap,
       source: adjacent.gear,
     },
   }

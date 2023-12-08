@@ -231,7 +231,7 @@ export interface AddResourceHand {
 
 export interface BeltMotion {
   source: GearEntity
-  forceMultiplierMap: Map<Entity, number>
+  accelerationMap: Map<Entity, number>
 }
 
 export interface AddBeltHand {
