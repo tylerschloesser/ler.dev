@@ -2,6 +2,7 @@ import {
   use,
   useCallback,
   useEffect,
+  useRef,
   useState,
 } from 'react'
 import {
@@ -16,7 +17,13 @@ import {
   updateRadius,
 } from '../build.js'
 import { MAX_RADIUS, MIN_RADIUS } from '../const.js'
-import { CameraListenerFn, HandType } from '../types.js'
+import {
+  BuildHand,
+  CameraListenerFn,
+  Entity,
+  EntityId,
+  HandType,
+} from '../types.js'
 import { clamp } from '../util.js'
 import styles from './build-gear.module.scss'
 import { AppContext } from './context.js'
@@ -101,6 +108,13 @@ export function BuildGear() {
       </button>
     </Overlay>
   )
+}
+
+function useHand(
+  entities: Record<EntityId, Entity>,
+  valid: boolean,
+): void {
+  const context = use(AppContext)
 }
 
 function useRadius(): [number, (radius: number) => void] {

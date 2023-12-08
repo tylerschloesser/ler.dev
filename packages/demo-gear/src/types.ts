@@ -207,6 +207,7 @@ export interface BuildHand {
   valid: boolean
   chain: GearEntity | null
   onChangeValid?(valid: boolean): void
+  entities: Record<EntityId, Entity>
 }
 
 export interface ApplyForceHand {

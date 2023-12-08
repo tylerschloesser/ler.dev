@@ -56,6 +56,7 @@ export function initBuild(
     gear: newBuildGear(context, radius),
     valid: false,
     onChangeValid,
+    entities: {},
   }
   updateBuild(context, context.hand)
 }
