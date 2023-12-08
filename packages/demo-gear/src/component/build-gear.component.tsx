@@ -35,7 +35,7 @@ const DEFAULT_RADIUS = MIN_RADIUS
 export function BuildGear() {
   const context = use(AppContext)
   const [radius, setRadius] = useRadius()
-  const center = useGearCenter()
+  const center = useCenter()
   const chainFrom: Gear | null = null
   const { gear, valid } = useGear(center, radius, chainFrom)
 
@@ -143,7 +143,7 @@ function useRadius(): [number, (radius: number) => void] {
   return [radius, setRadius]
 }
 
-function useGearCenter(): SimpleVec2 {
+function useCenter(): SimpleVec2 {
   const context = use(AppContext)
   const [center, setCenter] = useState<SimpleVec2>({
     x: Math.round(context.camera.position.x),
