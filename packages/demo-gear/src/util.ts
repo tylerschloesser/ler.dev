@@ -293,11 +293,7 @@ export function getTotalMass(
     }
     seen.add(tail)
 
-    if (tail.type === EntityType.enum.Gear) {
-      mass += tail.mass
-    } else {
-      // TODO add mass for other entity types
-    }
+    mass += tail.mass
 
     for (const c of tail.connections) {
       const neighbor = world.entities[c.entityId]

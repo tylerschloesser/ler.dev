@@ -149,6 +149,7 @@ function getBelts(
         offset: 0,
         velocity: 0,
         path,
+        mass: path.length,
       })
     }
 
@@ -167,6 +168,7 @@ function getBelts(
           offset: 0,
           velocity: 0,
           position,
+          mass: 1,
         }
 
         invariant(belts.length === 1)
@@ -211,6 +213,7 @@ function getBelts(
         offset: 0,
         velocity: 0,
         path,
+        mass: path.length,
       }
 
       if (intersection) {
@@ -255,6 +258,7 @@ function getBelts(
         offset: 0,
         velocity: 0,
         path,
+        mass: path.length,
       })
     }
 
@@ -273,6 +277,7 @@ function getBelts(
           offset: 0,
           velocity: 0,
           position,
+          mass: 1,
         }
 
         invariant(belts.length === 1)
@@ -316,6 +321,7 @@ function getBelts(
         offset: 0,
         velocity: 0,
         path,
+        mass: path.length,
       }
 
       if (intersection) {

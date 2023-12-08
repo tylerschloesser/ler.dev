@@ -143,6 +143,7 @@ export const BeltEntity = z.strictObject({
   offset: z.number(),
   velocity: z.number(),
   connections: z.array(Connection),
+  mass: z.number(),
 })
 export type BeltEntity = z.infer<typeof BeltEntity>
 
@@ -153,6 +154,7 @@ export const BeltIntersectionEntity = z.strictObject({
   offset: z.number(),
   velocity: z.number(),
   connections: z.array(Connection),
+  mass: z.number(),
 })
 export type BeltIntersectionEntity = z.infer<
   typeof BeltIntersectionEntity
