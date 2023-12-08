@@ -18,6 +18,7 @@ export function renderGrid(
     gl,
     gpu,
     rgb(0.25 * context.camera.zoom * 255),
+    1,
   )
 }
 
@@ -26,6 +27,7 @@ export function renderPartialGrid(
   gl: WebGL2RenderingContext,
   gpu: GpuState,
   color: Color,
+  step: number,
 ): void {
   const { fillInstanced } = gpu.programs
 
@@ -51,20 +53,20 @@ export function renderPartialGrid(
   )
   mat4Translate(transform, -0.5, -0.5)
 
+  const tileSize = context.tileSize
+
   mat4Translate(
     transform,
     mod(
       context.viewport.size.x / 2 +
-        mod(-context.camera.position.x, 1) *
-          context.tileSize,
-      context.tileSize,
-    ) - context.tileSize,
+        mod(-context.camera.position.x, 1) * tileSize,
+      tileSize,
+    ) - tileSize,
     mod(
       context.viewport.size.y / 2 +
-        mod(-context.camera.position.y, 1) *
-          context.tileSize,
-      context.tileSize,
-    ) - context.tileSize,
+        mod(-context.camera.position.y, 1) * tileSize,
+      tileSize,
+    ) - tileSize,
   )
 
   gl.uniformMatrix4fv(
@@ -89,11 +91,9 @@ export function renderPartialGrid(
   const matrices = gpu.buffers.fillInstancedMatrices
 
   const cols =
-    Math.ceil(context.viewport.size.x / context.tileSize) +
-    1
+    Math.ceil(context.viewport.size.x / tileSize) + 1
   const rows =
-    Math.ceil(context.viewport.size.y / context.tileSize) +
-    1
+    Math.ceil(context.viewport.size.y / tileSize) + 1
 
   invariant(cols + rows <= matrices.values.length)
 
@@ -103,16 +103,16 @@ export function renderPartialGrid(
     invariant(matrix)
 
     mat4.identity(matrix)
-    mat4Translate(matrix, col * context.tileSize, 0)
-    mat4Scale(matrix, 2, rows * context.tileSize)
+    mat4Translate(matrix, col * tileSize, 0)
+    mat4Scale(matrix, 2, rows * tileSize)
   }
   for (let row = 0; row < rows; row++) {
     const matrix = matrices.values.at(mi++)
     invariant(matrix)
 
     mat4.identity(matrix)
-    mat4Translate(matrix, 0, row * context.tileSize)
-    mat4Scale(matrix, cols * context.tileSize, 2)
+    mat4Translate(matrix, 0, row * tileSize)
+    mat4Scale(matrix, cols * tileSize, 2)
   }
 
   invariant(mi === cols + rows)
