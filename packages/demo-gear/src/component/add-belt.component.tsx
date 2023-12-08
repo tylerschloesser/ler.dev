@@ -1,4 +1,10 @@
-import { use, useCallback, useEffect, useRef } from 'react'
+import {
+  use,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 import {
   useNavigate,
   useSearchParams,
@@ -15,6 +21,7 @@ import {
   BeltIntersectionEntity,
   BeltMotion,
   BeltPath,
+  CameraListenerFn,
   ConnectionType,
   EntityId,
   EntityType,
@@ -27,7 +34,6 @@ import {
 import styles from './add-belt.module.scss'
 import { AppContext } from './context.js'
 import { Overlay } from './overlay.component.js'
-import { useCameraTilePosition } from './use-camera-tile-position.js'
 
 export function AddBelt() {
   const context = use(AppContext)
@@ -505,4 +511,31 @@ function useDirection(): [
   )
 
   return [direction, setDirection]
+}
+
+function useCameraTilePosition(): SimpleVec2 {
+  const context = use(AppContext)
+  const [position, setPosition] = useState<SimpleVec2>({
+    x: Math.floor(context.camera.position.x),
+    y: Math.floor(context.camera.position.y),
+  })
+
+  useEffect(() => {
+    const listener: CameraListenerFn = () => {
+      const x = Math.floor(context.camera.position.x)
+      const y = Math.floor(context.camera.position.y)
+      setPosition((prev) => {
+        if (prev.x === x && prev.y === y) {
+          return prev
+        }
+        return { x, y }
+      })
+    }
+    context.cameraListeners.add(listener)
+    return () => {
+      context.cameraListeners.delete(listener)
+    }
+  }, [])
+
+  return position
 }
