@@ -113,10 +113,13 @@ function useRadius(): [number, (radius: number) => void] {
   invariant(radius === Math.min(radius))
   const setRadius = useCallback(
     (next: number) => {
-      setSearchParams((prev) => {
-        prev.set('radius', `${next}`)
-        return prev
-      })
+      setSearchParams(
+        (prev) => {
+          prev.set('radius', `${next}`)
+          return prev
+        },
+        { replace: true },
+      )
     },
     [setSearchParams],
   )
