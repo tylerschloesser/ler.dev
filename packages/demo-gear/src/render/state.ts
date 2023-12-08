@@ -221,15 +221,15 @@ function initFillInstancedProgram(
     program,
     attributes: {
       vertex: getAttribLocation(gl, program, 'aVertex'),
-      model: getAttribLocation(gl, program, 'aModel'),
+      matrix: getAttribLocation(gl, program, 'aMatrix'),
     },
     uniforms: {
-      view: getUniformLocation(gl, program, 'uView'),
-      projection: getUniformLocation(
-        gl,
-        program,
-        'uProjection',
-      ),
+      // view: getUniformLocation(gl, program, 'uView'),
+      // projection: getUniformLocation(
+      //   gl,
+      //   program,
+      //   'uProjection',
+      // ),
       color: getUniformLocation(gl, program, 'uColor'),
     },
   }

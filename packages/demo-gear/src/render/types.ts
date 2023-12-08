@@ -84,11 +84,11 @@ export interface GpuState {
       program: WebGLProgram
       attributes: {
         vertex: WebGLAttributeLocation
-        model: WebGLAttributeLocation
+        matrix: WebGLAttributeLocation
       }
       uniforms: {
-        view: WebGLUniformLocation
-        projection: WebGLUniformLocation
+        // view: WebGLUniformLocation
+        // projection: WebGLUniformLocation
         color: WebGLUniformLocation
       }
     }

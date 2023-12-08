@@ -3,12 +3,8 @@
 precision mediump float;
 
 in vec2 aVertex;
-in mat4 aModel;
-
-uniform mat4 uView;
-uniform mat4 uProjection;
+in mat4 aMatrix;
 
 void main() {
-  mat4 mvp = uProjection * uView * aModel;
-  gl_Position = mvp * vec4(aVertex, 0, 1);
+  gl_Position = aMatrix * vec4(aVertex, 0, 1);
 }
