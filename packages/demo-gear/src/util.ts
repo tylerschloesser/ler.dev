@@ -340,3 +340,12 @@ export function getTotalMass(
 export function mod(n: number, m: number): number {
   return ((n % m) + m) % m
 }
+
+export function incrementBuildVersion(
+  context: IAppContext,
+): void {
+  context.buildVersion += 1
+  for (const listener of context.buildVersionListeners) {
+    listener(context.buildVersion)
+  }
+}

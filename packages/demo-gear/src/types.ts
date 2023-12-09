@@ -286,7 +286,9 @@ export type CenterTileIdListener = (
   context: IAppContext,
 ) => void
 export type TickListenerFn = (context: IAppContext) => void
-export type SyncBuildListenerFn = () => void
+export type BuildVersionListenerFn = (
+  version: number,
+) => void
 
 export interface Viewport {
   size: SimpleVec2
@@ -313,7 +315,9 @@ export interface IAppContext {
   pointerListeners: Set<PointerListenerFn>
   cameraListeners: Set<CameraListenerFn>
   tickListeners: Set<TickListenerFn>
-  syncBuildListeners: Set<SyncBuildListenerFn>
+
+  buildVersion: number
+  buildVersionListeners: Set<BuildVersionListenerFn>
 
   navigate: NavigateFunction
 }

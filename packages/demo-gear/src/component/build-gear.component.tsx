@@ -33,7 +33,7 @@ import { Vec2 } from '../vec2.js'
 import styles from './build-gear.module.scss'
 import { AppContext } from './context.js'
 import { Overlay } from './overlay.component.js'
-import { useSyncBuild } from './use-sync-build.js'
+import { useWorldBuildVersion } from './use-world-build-version.js'
 
 const DEFAULT_RADIUS = MIN_RADIUS
 
@@ -60,7 +60,6 @@ interface BuildAction {
 type Action = ChainAction | AttachAction | BuildAction
 
 export function BuildGear() {
-  useSyncBuild()
   const context = use(AppContext)
   const [radius, setRadius] = useRadius()
   const center = useCenter()
@@ -245,6 +244,7 @@ function useGear(
   chainFrom: Gear | null,
 ): { gear: Gear; valid: boolean; action: Action } {
   const context = use(AppContext)
+  const buildVersion = useWorldBuildVersion()
 
   return useMemo(() => {
     const position: SimpleVec2 = {
@@ -347,7 +347,7 @@ function useGear(
     }
 
     return { gear, valid, action }
-  }, [context, center, radius, chainFrom])
+  }, [context, center, radius, chainFrom, buildVersion])
 }
 
 function useChainFrom(): [

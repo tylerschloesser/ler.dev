@@ -6,7 +6,11 @@ import {
   World,
   EntityType,
 } from './types.js'
-import { getTotalMass, iterateGearTileIds } from './util.js'
+import {
+  getTotalMass,
+  incrementBuildVersion,
+  iterateGearTileIds,
+} from './util.js'
 
 export function addChainConnection(
   gear1: GearEntity,
@@ -42,6 +46,8 @@ export function addChainConnection(
     )
     break
   }
+
+  incrementBuildVersion(context)
 }
 
 export function addGear(
@@ -102,6 +108,8 @@ export function addGear(
     )
     break
   }
+
+  incrementBuildVersion(context)
 }
 
 function conserveAngularMomentum(
