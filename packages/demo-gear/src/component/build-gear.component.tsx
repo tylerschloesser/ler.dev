@@ -142,10 +142,12 @@ export function BuildGear() {
             }
             case ActionType.Attach: {
               addGear(gear, action.target, context)
+              setChainFrom(null)
               break
             }
             case ActionType.Build: {
               addGear(gear, null, context)
+              setChainFrom(null)
               break
             }
           }
