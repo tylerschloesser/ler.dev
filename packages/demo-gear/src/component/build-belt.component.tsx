@@ -7,14 +7,15 @@ import invariant from 'tiny-invariant'
 import { getAccelerationMap } from '../apply-torque.js'
 import { addBelts } from '../belt.js'
 import {
-  AddBeltHand,
   AdjacentConnection,
   Belt,
   BeltDirection,
   BeltEntity,
   BeltIntersectionEntity,
   BeltMotion,
+  BuildHand,
   ConnectionType,
+  Entity,
   EntityId,
   EntityType,
   GearEntity,
@@ -238,15 +239,19 @@ function getBelts(
 
 function useHand(
   belts: Belt[],
-  { valid, motion }: ReturnType<typeof isValid>,
+  { valid }: ReturnType<typeof isValid>,
 ): boolean {
   const context = use(AppContext)
 
-  const hand = useRef<AddBeltHand>({
-    type: HandType.AddBelt,
-    belts,
+  const entities: Record<EntityId, Entity> = {}
+  for (const belt of belts) {
+    entities[belt.id] = belt
+  }
+
+  const hand = useRef<BuildHand>({
+    type: HandType.Build,
+    entities,
     valid,
-    motion,
   })
 
   useEffect(() => {
@@ -257,10 +262,9 @@ function useHand(
   }, [])
 
   useEffect(() => {
-    hand.current.belts = belts
+    hand.current.entities = entities
     hand.current.valid = valid
-    hand.current.motion = motion
-  }, [belts, valid, motion])
+  }, [belts, valid])
 
   return valid
 }

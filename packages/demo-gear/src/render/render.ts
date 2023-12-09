@@ -17,7 +17,6 @@ import {
   TILE_OUTLINE,
 } from './color.js'
 import { updateProjection, updateView } from './matrices.js'
-import { renderBeltHand } from './render-belt-hand.js'
 import { renderBelt } from './render-belt.js'
 import { renderBuild } from './render-build.js'
 import { renderChain } from './render-chain.js'
@@ -120,8 +119,7 @@ export function render(
       break
     }
     case HandType.AddBelt: {
-      renderBeltHand(context, gl, gpu, hand)
-      break
+      invariant(false)
     }
     case HandType.Delete: {
       const lineWidth =

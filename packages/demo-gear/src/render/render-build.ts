@@ -1,15 +1,17 @@
 import invariant from 'tiny-invariant'
-import { tempGetGear } from '../temp.js'
 import {
-  IAppContext,
   BuildHand,
-  EntityType,
   ConnectionType,
+  EntityType,
+  IAppContext,
 } from '../types.js'
 import {
+  ADD_BELT_INVALID,
+  ADD_BELT_VALID,
   BUILD_GEAR_INVALID,
   BUILD_GEAR_VALID,
 } from './color.js'
+import { renderBelt } from './render-belt.js'
 import { renderChain } from './render-chain.js'
 import { renderGear } from './render-gears.js'
 import { GpuState } from './types.js'
@@ -49,6 +51,14 @@ export function renderBuild(
           )
         }
 
+        break
+      }
+      case EntityType.enum.Belt:
+      case EntityType.enum.BeltIntersection: {
+        const color = build.valid
+          ? ADD_BELT_VALID
+          : ADD_BELT_INVALID
+        renderBelt(context, gl, gpu, entity, color)
         break
       }
       default: {

@@ -1,6 +1,5 @@
 import invariant from 'tiny-invariant'
 import { TWO_PI } from './const.js'
-import { tempGetGear } from './temp.js'
 import {
   BuildHand,
   Connection,
@@ -14,8 +13,14 @@ export function tickBuild(
   context: IAppContext,
   hand: BuildHand,
 ): void {
-  const gear = tempGetGear(hand)
-  tickBuildGear(context, gear, hand.valid)
+  for (const entity of Object.values(hand.entities)) {
+    switch (entity.type) {
+      case EntityType.enum.Gear: {
+        tickBuildGear(context, entity, hand.valid)
+        break
+      }
+    }
+  }
 }
 
 // prioritize setting angle based on the chain
