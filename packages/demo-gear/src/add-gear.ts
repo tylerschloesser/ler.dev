@@ -5,6 +5,8 @@ import {
   GearEntity,
   World,
   EntityType,
+  EntityId,
+  Entity,
 } from './types.js'
 import {
   getTotalMass,
@@ -50,12 +52,30 @@ export function addChainConnection(
   incrementBuildVersion(context)
 }
 
+function getEntity(
+  context: IAppContext,
+  id: EntityId,
+): Entity {
+  const entity = context.world.entities[id]
+  invariant(entity)
+  return entity
+}
+
 export function addGear(
   gear: GearEntity,
-  attach: GearEntity | null,
   context: IAppContext,
 ): void {
   const { world } = context
+
+  let attach: GearEntity | null = null
+  for (const connection of gear.connections) {
+    if (connection.type === ConnectionType.enum.Attach) {
+      const entity = getEntity(context, connection.entityId)
+      invariant(entity.type === EntityType.enum.Gear)
+      invariant(attach === null)
+      attach = entity
+    }
+  }
 
   invariant(world.entities[gear.id] === undefined)
 

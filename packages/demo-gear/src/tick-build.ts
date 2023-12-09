@@ -32,7 +32,7 @@ function getPrioritizedFirstConnection(
   for (const connection of gear.connections) {
     if (connection.type === ConnectionType.enum.Chain) {
       return connection
-    } else if (other !== null) {
+    } else if (other === null) {
       other = connection
     }
   }

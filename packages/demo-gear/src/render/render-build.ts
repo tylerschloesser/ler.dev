@@ -38,7 +38,8 @@ export function renderBuild(
         const chainId = entity.connections.find(
           (c) => c.type === ConnectionType.enum.Chain,
         )?.entityId
-        if (chainId) {
+
+        if (build.valid && chainId) {
           const chain = context.world.entities[chainId]
           invariant(chain?.type === EntityType.enum.Gear)
 
