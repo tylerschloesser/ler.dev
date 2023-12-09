@@ -243,7 +243,7 @@ function useGear(
       type: EntityType.enum.Gear,
       position,
       center,
-      angle: 0,
+      angle: chainFrom?.angle ?? 0,
       connections,
       mass: Math.PI * radius ** 2,
       radius,

@@ -3,8 +3,8 @@ import {
   applyFriction,
 } from './apply-torque.js'
 import { updateAddBeltProgress } from './belt.js'
-import { updateBuildGearAngle } from './build.js'
 import { TWO_PI } from './const.js'
+import { tickBuild } from './tick-build.js'
 import {
   EntityType,
   GearBehaviorType,
@@ -119,7 +119,7 @@ export function tick(
   }
 
   if (context.hand?.type === HandType.Build) {
-    updateBuildGearAngle(context, context.hand)
+    tickBuild(context, context.hand)
   }
 
   if (context.hand?.type === HandType.AddBelt) {
