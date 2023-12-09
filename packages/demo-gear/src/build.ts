@@ -1,4 +1,5 @@
 import invariant from 'tiny-invariant'
+import { buildBelt } from './build-belt.js'
 import { buildGear } from './build-gear.js'
 import {
   BuildHand,
@@ -16,6 +17,11 @@ export function build(
     switch (entity.type) {
       case EntityType.enum.Gear: {
         buildGear(context, entity)
+        break
+      }
+      case EntityType.enum.Belt:
+      case EntityType.enum.BeltIntersection: {
+        buildBelt(context, entity)
         break
       }
       default: {

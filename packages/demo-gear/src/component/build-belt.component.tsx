@@ -5,7 +5,7 @@ import {
 } from 'react-router-dom'
 import invariant from 'tiny-invariant'
 import { getAccelerationMap } from '../apply-torque.js'
-import { addBelts } from '../belt.js'
+import { build } from '../build.js'
 import {
   AdjacentConnection,
   Belt,
@@ -45,7 +45,7 @@ export function BuildBelt() {
     direction,
   )
   const valid = isValid(context, belts)
-  useHand(belts, valid)
+  const hand = useHand(belts, valid)
 
   return (
     <Overlay>
@@ -86,7 +86,7 @@ export function BuildBelt() {
           className={styles.button}
           onPointerUp={() => {
             if (!valid) return
-            addBelts(context.world, belts)
+            build(context, hand)
             setSavedStart(null)
           }}
         >
@@ -240,7 +240,7 @@ function getBelts(
 function useHand(
   belts: Belt[],
   { valid }: ReturnType<typeof isValid>,
-): boolean {
+): BuildHand {
   const context = use(AppContext)
 
   const entities: Record<EntityId, Entity> = {}
@@ -266,7 +266,7 @@ function useHand(
     hand.current.valid = valid
   }, [belts, valid])
 
-  return valid
+  return hand.current
 }
 
 function useSavedStart(): [

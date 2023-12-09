@@ -1,6 +1,5 @@
 import invariant from 'tiny-invariant'
 import {
-  Belt,
   BeltDirection,
   BeltPath,
   Connection,
@@ -8,25 +7,6 @@ import {
   EntityType,
   World,
 } from './types.js'
-
-export function addBelts(
-  world: World,
-  belts: Belt[],
-): void {
-  for (const belt of belts) {
-    invariant(world.entities[belt.id] === undefined)
-    world.entities[belt.id] = belt
-
-    const { x, y } = belt.position
-    const tileId = `${x}.${y}`
-    let tile = world.tiles[tileId]
-    if (!tile) {
-      tile = world.tiles[tileId] = {}
-    }
-    invariant(tile.entityId === undefined)
-    tile.entityId = belt.id
-  }
-}
 
 export function getBeltConnections(
   world: World,
