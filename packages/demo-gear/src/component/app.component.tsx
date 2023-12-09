@@ -80,6 +80,7 @@ function useAppContext(
       centerTileId: getCenterTileId(camera),
       centerTileIdListeners: new Set(),
       tickListeners: new Set([throttle(saveWorld, 500)]),
+      syncBuildListeners: new Set(),
     })
 
     // disable double tap magnifying glass in safari

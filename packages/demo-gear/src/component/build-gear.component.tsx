@@ -33,6 +33,7 @@ import { Vec2 } from '../vec2.js'
 import styles from './build-gear.module.scss'
 import { AppContext } from './context.js'
 import { Overlay } from './overlay.component.js'
+import { useSyncBuild } from './use-sync-build.js'
 
 const DEFAULT_RADIUS = MIN_RADIUS
 
@@ -59,6 +60,7 @@ interface BuildAction {
 type Action = ChainAction | AttachAction | BuildAction
 
 export function BuildGear() {
+  useSyncBuild()
   const context = use(AppContext)
   const [radius, setRadius] = useRadius()
   const center = useCenter()
