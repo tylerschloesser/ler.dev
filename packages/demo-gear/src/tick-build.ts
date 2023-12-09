@@ -3,6 +3,7 @@ import { TWO_PI } from './const.js'
 import { tempGetGear } from './temp.js'
 import {
   BuildHand,
+  Connection,
   ConnectionType,
   EntityType,
   Gear,
@@ -14,28 +15,31 @@ export function tickBuild(
   hand: BuildHand,
 ): void {
   const gear = tempGetGear(hand)
-  tickBuildGear(context, gear, hand.valid, hand.chain)
+  tickBuildGear(context, gear, hand.valid)
+}
+
+// prioritize setting angle based on the chain
+// because chain gears require identical angles
+function getPrioritizedFirstConnection(
+  gear: Gear,
+): Connection | null {
+  let other: Connection | null = null
+  for (const connection of gear.connections) {
+    if (connection.type === ConnectionType.enum.Chain) {
+      return connection
+    } else if (other !== null) {
+      other = connection
+    }
+  }
+  return other
 }
 
 export function tickBuildGear(
   context: IAppContext,
   gear: Gear,
   valid: boolean,
-  chainFrom: Gear | null,
 ): void {
-  let connection = gear.connections.at(0)
-
-  if (valid && chainFrom) {
-    // prioritize setting angle based on the chain
-    // because chain gears require identical angles
-    connection = gear.connections.find(
-      (c) =>
-        c.type !== ConnectionType.enum.Belt &&
-        c.entityId === chainFrom?.id,
-    )
-    invariant(connection)
-  }
-
+  let connection = getPrioritizedFirstConnection(gear)
   if (valid && connection) {
     invariant(
       connection.type !== ConnectionType.enum.Belt,

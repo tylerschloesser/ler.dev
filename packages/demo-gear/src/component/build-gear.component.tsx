@@ -70,7 +70,7 @@ export function BuildGear() {
     chainFrom,
   )
 
-  useHand(gear, valid, chainFrom)
+  useHand(gear, valid)
 
   const navigate = useNavigate()
 
@@ -161,16 +161,11 @@ export function BuildGear() {
   )
 }
 
-function useHand(
-  gear: Gear,
-  valid: boolean,
-  chainFrom: Gear | null,
-): void {
+function useHand(gear: Gear, valid: boolean): void {
   const context = use(AppContext)
 
   const hand = useRef<BuildHand>({
     type: HandType.Build,
-    chain: chainFrom,
     entities: { [gear.id]: gear },
     valid,
   })
@@ -185,8 +180,7 @@ function useHand(
   useEffect(() => {
     hand.current.entities = { [gear.id]: gear }
     hand.current.valid = valid
-    hand.current.chain = chainFrom
-  }, [gear, valid, chainFrom])
+  }, [gear, valid])
 }
 
 function useRadius(): [number, (radius: number) => void] {

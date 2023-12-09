@@ -1,5 +1,11 @@
+import invariant from 'tiny-invariant'
 import { tempGetGear } from '../temp.js'
-import { IAppContext, BuildHand } from '../types.js'
+import {
+  IAppContext,
+  BuildHand,
+  EntityType,
+  ConnectionType,
+} from '../types.js'
 import {
   BUILD_GEAR_INVALID,
   BUILD_GEAR_VALID,
@@ -14,22 +20,40 @@ export function renderBuild(
   gpu: GpuState,
   build: BuildHand,
 ) {
-  const buildGear = tempGetGear(build)
-  renderGear(
-    buildGear,
-    gl,
-    gpu,
-    context.camera.zoom,
-    build.valid ? BUILD_GEAR_VALID : BUILD_GEAR_INVALID,
-  )
+  for (const entity of Object.values(build.entities)) {
+    switch (entity.type) {
+      case EntityType.enum.Gear: {
+        renderGear(
+          entity,
+          gl,
+          gpu,
+          context.camera.zoom,
+          build.valid
+            ? BUILD_GEAR_VALID
+            : BUILD_GEAR_INVALID,
+        )
 
-  if (build.chain && build.valid) {
-    renderChain(
-      buildGear,
-      build.chain,
-      gl,
-      gpu,
-      context.camera.zoom,
-    )
+        const chainId = entity.connections.find(
+          (c) => c.type === ConnectionType.enum.Chain,
+        )?.entityId
+        if (chainId) {
+          const chain = context.world.entities[chainId]
+          invariant(chain?.type === EntityType.enum.Gear)
+
+          renderChain(
+            entity,
+            chain,
+            gl,
+            gpu,
+            context.camera.zoom,
+          )
+        }
+
+        break
+      }
+      default: {
+        invariant(false, 'TODO')
+      }
+    }
   }
 }
