@@ -118,9 +118,6 @@ export function render(
       )
       break
     }
-    case HandType.AddBelt: {
-      invariant(false)
-    }
     case HandType.Delete: {
       const lineWidth =
         0.1 + (1 - context.camera.zoom) * 0.2

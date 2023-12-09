@@ -2,7 +2,6 @@ import {
   applyForce,
   applyFriction,
 } from './apply-torque.js'
-import { updateAddBeltProgress } from './belt.js'
 import { TWO_PI } from './const.js'
 import { tickBuild } from './tick-build.js'
 import {
@@ -120,9 +119,5 @@ export function tick(
 
   if (context.hand?.type === HandType.Build) {
     tickBuild(context, context.hand)
-  }
-
-  if (context.hand?.type === HandType.AddBelt) {
-    updateAddBeltProgress(context.hand, elapsed)
   }
 }

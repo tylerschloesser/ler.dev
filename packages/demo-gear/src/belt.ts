@@ -1,6 +1,5 @@
 import invariant from 'tiny-invariant'
 import {
-  AddBeltHand,
   Belt,
   BeltDirection,
   BeltPath,
@@ -9,7 +8,6 @@ import {
   EntityType,
   World,
 } from './types.js'
-import { mod } from './util.js'
 
 export function addBelts(
   world: World,
@@ -159,31 +157,31 @@ export function getBeltConnections(
   return connections
 }
 
-export function updateAddBeltProgress(
-  hand: AddBeltHand,
-  elapsed: number,
-): void {
-  if (
-    !hand.valid ||
-    hand.belts.length === 0 ||
-    !hand.motion
-  ) {
-    return
-  }
-
-  const {
-    motion: { source, accelerationMap },
-  } = hand
-
-  for (const belt of hand.belts) {
-    const multiplier = accelerationMap.get(belt)
-    invariant(multiplier !== undefined)
-
-    belt.velocity =
-      source.velocity * source.radius * multiplier
-    belt.offset = mod(
-      belt.offset + belt.velocity * elapsed,
-      1,
-    )
-  }
-}
+// export function updateAddBeltProgress(
+//   hand: AddBeltHand,
+//   elapsed: number,
+// ): void {
+//   if (
+//     !hand.valid ||
+//     hand.belts.length === 0 ||
+//     !hand.motion
+//   ) {
+//     return
+//   }
+//
+//   const {
+//     motion: { source, accelerationMap },
+//   } = hand
+//
+//   for (const belt of hand.belts) {
+//     const multiplier = accelerationMap.get(belt)
+//     invariant(multiplier !== undefined)
+//
+//     belt.velocity =
+//       source.velocity * source.radius * multiplier
+//     belt.offset = mod(
+//       belt.offset + belt.velocity * elapsed,
+//       1,
+//     )
+//   }
+// }

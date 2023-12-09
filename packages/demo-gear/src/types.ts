@@ -232,13 +232,6 @@ export interface BeltMotion {
   accelerationMap: Map<Entity, number>
 }
 
-export interface AddBeltHand {
-  type: HandType.AddBelt
-  belts: Belt[]
-  valid: boolean
-  motion?: BeltMotion
-}
-
 export interface DeleteHand {
   type: HandType.Delete
   position: SimpleVec2
@@ -253,7 +246,6 @@ export type Hand =
   | ApplyFrictionHand
   | ConfigureHand
   | AddResourceHand
-  | AddBeltHand
   | DeleteHand
 
 export type SetWorldFn = (world: World) => void
