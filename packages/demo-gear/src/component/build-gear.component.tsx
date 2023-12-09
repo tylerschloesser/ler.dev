@@ -11,8 +11,11 @@ import {
   useSearchParams,
 } from 'react-router-dom'
 import invariant from 'tiny-invariant'
-import { addChainConnection, addGear } from '../add-gear.js'
 import { getAccelerationMap } from '../apply-torque.js'
+import {
+  addChainConnection,
+  addGear,
+} from '../build-gear.js'
 import { MAX_RADIUS, MIN_RADIUS } from '../const.js'
 import {
   BuildHand,
