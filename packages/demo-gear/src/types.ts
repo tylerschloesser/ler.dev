@@ -30,18 +30,10 @@ export const ConnectionType = z.enum([
 ])
 export type ConnectionType = z.infer<typeof ConnectionType>
 
-export const ConnectionDirection = z.enum([
-  'N',
-  'S',
-  'E',
-  'W',
-])
-
 export const AdjacentConnection = z.strictObject({
   type: z.literal(ConnectionType.enum.Adjacent),
   entityId: EntityId,
   multiplier: z.number(),
-  direction: ConnectionDirection.optional(),
 })
 export type AdjacentConnection = z.infer<
   typeof AdjacentConnection
