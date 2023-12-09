@@ -197,7 +197,6 @@ export interface BuildHand {
   type: HandType.Build
   valid: boolean
   chain: GearEntity | null
-  onChangeValid?(valid: boolean): void
   entities: Record<EntityId, Entity>
 }
 

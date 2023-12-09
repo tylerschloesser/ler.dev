@@ -173,7 +173,6 @@ function useHand(
     chain: chainFrom,
     entities: { [gear.id]: gear },
     valid,
-    onChangeValid: () => {},
   })
 
   useEffect(() => {
