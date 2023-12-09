@@ -11,7 +11,6 @@ import {
   useSearchParams,
 } from 'react-router-dom'
 import invariant from 'tiny-invariant'
-import { executeBuild } from '../build.js'
 import { MAX_RADIUS, MIN_RADIUS } from '../const.js'
 import {
   BuildHand,
@@ -32,14 +31,42 @@ import { Overlay } from './overlay.component.js'
 
 const DEFAULT_RADIUS = MIN_RADIUS
 
+enum ActionType {
+  Chain = 'chain',
+  Attach = 'attach',
+  Build = 'build',
+}
+
+interface ChainAction {
+  type: ActionType.Chain
+  target: Gear
+}
+
+interface AttachAction {
+  type: ActionType.Attach
+  target: Gear
+}
+
+interface BuildAction {
+  type: ActionType.Build
+}
+
+type Action = ChainAction | AttachAction | BuildAction
+
 export function BuildGear() {
   const context = use(AppContext)
   const [radius, setRadius] = useRadius()
   const center = useCenter()
-  const chainFrom: Gear | null = null
-  const { gear, valid } = useGear(center, radius, chainFrom)
+  const [chainFrom, setChainFrom] = useChainFrom()
+  const { gear, valid, action } = useGear(
+    center,
+    radius,
+    chainFrom,
+  )
 
   useHand(gear, valid)
+
+  console.log(action)
 
   const navigate = useNavigate()
 
@@ -51,8 +78,18 @@ export function BuildGear() {
           navigate('..')
         }}
       >
-        Cancel
+        Back
       </button>
+      {chainFrom && (
+        <button
+          className={styles.button}
+          onPointerUp={() => {
+            setChainFrom(null)
+          }}
+        >
+          Cancel
+        </button>
+      )}
       <button
         className={styles.button}
         disabled={radius === MIN_RADIUS}
@@ -85,12 +122,22 @@ export function BuildGear() {
         className={styles.button}
         disabled={!valid}
         onPointerUp={() => {
-          const { hand } = context
-          invariant(hand?.type === HandType.Build)
-          executeBuild(context, hand)
+          switch (action.type) {
+            case ActionType.Chain: {
+              if (!chainFrom) {
+                setChainFrom(action.target)
+              } else {
+                // TODO
+              }
+              break
+            }
+            // TODO
+          }
         }}
       >
-        Build
+        {action.type === ActionType.Build && 'Build'}
+        {action.type === ActionType.Chain && 'Chain'}
+        {action.type === ActionType.Attach && 'Attach'}
       </button>
     </Overlay>
   )
@@ -174,7 +221,7 @@ function useGear(
   center: SimpleVec2,
   radius: number,
   chainFrom: Gear | null,
-): { gear: Gear; valid: boolean } {
+): { gear: Gear; valid: boolean; action: Action } {
   const context = use(AppContext)
 
   return useMemo(() => {
@@ -196,8 +243,8 @@ function useGear(
     }
 
     let valid: boolean = true
-    let chainTo: Gear | undefined
-    let attachTo: Gear | undefined
+    let chain: Gear | undefined
+    let attach: Gear | undefined
 
     const overlapping = getOverlappingEntities(
       context,
@@ -214,9 +261,9 @@ function useGear(
         (found.radius === 1 || gear.radius === 1)
       ) {
         if (found.radius === 1 && gear.radius === 1) {
-          chainTo = found
+          chain = found
         } else {
-          attachTo = found
+          attach = found
         }
       } else {
         valid = false
@@ -236,7 +283,17 @@ function useGear(
     //
     // TODO validate accelerate map
 
-    return { gear, valid }
+    let action: Action
+    invariant(!(chain && attach))
+    if (chain) {
+      action = { type: ActionType.Chain, target: chain }
+    } else if (attach) {
+      action = { type: ActionType.Attach, target: attach }
+    } else {
+      action = { type: ActionType.Build }
+    }
+
+    return { gear, valid, action }
   }, [context, center, radius, chainFrom])
 }
 
@@ -247,4 +304,37 @@ function getEntity(
   const entity = context.world.entities[entityId]
   invariant(entity)
   return entity
+}
+
+function useChainFrom(): [
+  Gear | null,
+  setChainFrom: (chainFrom: Gear | null) => void,
+] {
+  const context = use(AppContext)
+
+  const [searchParams, setSearchParams] = useSearchParams()
+  const chainFromId = searchParams.get('chainFrom')
+  let chainFrom: Gear | null = null
+  if (chainFromId) {
+    const entity = context.world.entities[chainFromId]
+    invariant(entity?.type === EntityType.enum.Gear)
+    chainFrom = entity
+  }
+  const setChainFrom = useCallback(
+    (next: Gear | null) => {
+      setSearchParams(
+        (prev) => {
+          if (next === null) {
+            prev.delete('chainFrom')
+          } else {
+            prev.set('chainFrom', next.id)
+          }
+          return prev
+        },
+        { replace: true },
+      )
+    },
+    [setSearchParams],
+  )
+  return [chainFrom, setChainFrom]
 }

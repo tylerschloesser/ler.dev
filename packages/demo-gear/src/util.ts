@@ -121,7 +121,8 @@ export function getOverlappingEntities(
   const entities = new Set<Entity>()
   for (let x = 0; x < size.x; x++) {
     for (let y = 0; y < size.y; y++) {
-      const tileId = `${x}.${y}`
+      // prettier-ignore
+      const tileId = `${entity.position.x + x}.${entity.position.y + y}`
       const tile = context.world.tiles[tileId]
       if (!tile?.entityId) continue
       const found = context.world.entities[tile.entityId]
