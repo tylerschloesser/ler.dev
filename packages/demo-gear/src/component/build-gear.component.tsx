@@ -12,10 +12,7 @@ import {
 } from 'react-router-dom'
 import invariant from 'tiny-invariant'
 import { getAccelerationMap } from '../apply-torque.js'
-import {
-  addChainConnection,
-  buildGear,
-} from '../build-gear.js'
+import { addChainConnection } from '../build-gear.js'
 import { build } from '../build.js'
 import { MAX_RADIUS, MIN_RADIUS } from '../const.js'
 import {
@@ -31,7 +28,7 @@ import {
 import {
   clamp,
   getAdjacentConnections,
-  getOverlappingEntities,
+  getIntersectingEntities,
 } from '../util.js'
 import { Vec2 } from '../vec2.js'
 import styles from './build-gear.module.scss'
@@ -250,37 +247,29 @@ function useGear(
 
     const connections = new Array<Connection>()
 
-    const gear: Gear = {
-      id: `${position.x}.${position.y}`,
-      type: EntityType.enum.Gear,
-      position,
-      center,
-      angle: chainFrom?.angle ?? 0,
-      connections,
-      mass: Math.PI * radius ** 2,
-      radius,
-      velocity: 0,
-    }
-
     let valid: boolean = true
     let chain: Gear | undefined
     let attach: Gear | undefined
 
-    const overlapping = getOverlappingEntities(
+    const intersecting = getIntersectingEntities(
       context,
-      gear,
+      position.x,
+      position.y,
+      radius * 2,
+      radius * 2,
     )
-    if (overlapping.length > 1) {
+
+    if (intersecting.length > 1) {
       valid = false
-    } else if (overlapping.length === 1) {
-      const found = overlapping.at(0)
+    } else if (intersecting.length === 1) {
+      const found = intersecting.at(0)
       invariant(found)
       if (
         found.type === EntityType.enum.Gear &&
-        Vec2.equal(found.center, gear.center) &&
-        (found.radius === 1 || gear.radius === 1)
+        Vec2.equal(found.center, center) &&
+        (found.radius === 1 || radius === 1)
       ) {
-        if (found.radius === 1 && gear.radius === 1) {
+        if (found.radius === 1 && radius === 1) {
           chain = found
         } else {
           attach = found
@@ -291,12 +280,12 @@ function useGear(
     }
 
     if (valid && chainFrom) {
-      const dx = gear.center.x - chainFrom.center.x
-      const dy = gear.center.y - chainFrom.center.y
+      const dx = center.x - chainFrom.center.x
+      const dy = center.y - chainFrom.center.y
       valid =
         (dx === 0 || dy === 0) &&
         dx !== dy &&
-        Math.abs(dx + dy) > gear.radius + chainFrom.radius
+        Math.abs(dx + dy) > radius + chainFrom.radius
     }
 
     if (valid) {
@@ -323,15 +312,6 @@ function useGear(
       }
     }
 
-    if (valid) {
-      valid =
-        getAccelerationMap(
-          gear,
-          1,
-          context.world.entities,
-        ) !== null
-    }
-
     let action: Action
     invariant(!(chain && attach))
     if (chain) {
@@ -340,6 +320,27 @@ function useGear(
       action = { type: ActionType.Attach }
     } else {
       action = { type: ActionType.Build }
+    }
+
+    const gear: Gear = {
+      id: `${position.x}.${position.y}`,
+      type: EntityType.enum.Gear,
+      position,
+      center,
+      angle: chainFrom?.angle ?? 0,
+      connections,
+      mass: Math.PI * radius ** 2,
+      radius,
+      velocity: 0,
+    }
+
+    if (valid) {
+      valid =
+        getAccelerationMap(
+          gear,
+          1,
+          context.world.entities,
+        ) !== null
     }
 
     return { gear, valid, action }

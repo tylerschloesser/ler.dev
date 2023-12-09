@@ -104,25 +104,17 @@ export function* iterateGearTileIds(
   }
 }
 
-export function getOverlappingEntities(
+export function getIntersectingEntities(
   context: IAppContext,
-  entity: Entity,
+  x: number,
+  y: number,
+  w: number,
+  h: number,
 ): Entity[] {
-  let size: SimpleVec2
-  switch (entity.type) {
-    case EntityType.enum.Gear: {
-      size = { x: entity.radius * 2, y: entity.radius * 2 }
-      break
-    }
-    default: {
-      invariant(false, 'TODO')
-    }
-  }
   const entities = new Set<Entity>()
-  for (let x = 0; x < size.x; x++) {
-    for (let y = 0; y < size.y; y++) {
-      // prettier-ignore
-      const tileId = `${entity.position.x + x}.${entity.position.y + y}`
+  for (let dx = 0; dx < w; dx++) {
+    for (let dy = 0; dy < h; dy++) {
+      const tileId = `${x + dx}.${y + dy}`
       const tile = context.world.tiles[tileId]
       if (!tile?.entityId) continue
       const found = context.world.entities[tile.entityId]
@@ -130,7 +122,6 @@ export function getOverlappingEntities(
       entities.add(found)
     }
   }
-
   return [...entities]
 }
 
