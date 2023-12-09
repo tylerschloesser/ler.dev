@@ -1,14 +1,13 @@
 import invariant from 'tiny-invariant'
 import {
-  IAppContext,
   ConnectionType,
-  GearEntity,
-  World,
   EntityType,
-  EntityId,
-  Entity,
+  GearEntity,
+  IAppContext,
+  World,
 } from './types.js'
 import {
+  getEntity,
   getTotalMass,
   incrementBuildVersion,
   iterateGearTileIds,
@@ -50,15 +49,6 @@ export function addChainConnection(
   }
 
   incrementBuildVersion(context)
-}
-
-function getEntity(
-  context: IAppContext,
-  id: EntityId,
-): Entity {
-  const entity = context.world.entities[id]
-  invariant(entity)
-  return entity
 }
 
 export function addGear(

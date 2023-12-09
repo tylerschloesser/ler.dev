@@ -349,3 +349,12 @@ export function incrementBuildVersion(
     listener(context.buildVersion)
   }
 }
+
+export function getEntity(
+  context: IAppContext,
+  id: EntityId,
+): Entity {
+  const entity = context.world.entities[id]
+  invariant(entity)
+  return entity
+}
