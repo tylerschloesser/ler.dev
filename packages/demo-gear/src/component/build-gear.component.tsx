@@ -11,19 +11,23 @@ import {
   useSearchParams,
 } from 'react-router-dom'
 import invariant from 'tiny-invariant'
+import { getAccelerationMap } from '../apply-torque.js'
 import { MAX_RADIUS, MIN_RADIUS } from '../const.js'
 import {
   BuildHand,
   CameraListenerFn,
-  Entity,
-  EntityId,
+  Connection,
+  ConnectionType,
   EntityType,
   Gear,
   HandType,
-  IAppContext,
   SimpleVec2,
 } from '../types.js'
-import { clamp, getOverlappingEntities } from '../util.js'
+import {
+  clamp,
+  getAdjacentConnections,
+  getOverlappingEntities,
+} from '../util.js'
 import { Vec2 } from '../vec2.js'
 import styles from './build-gear.module.scss'
 import { AppContext } from './context.js'
@@ -63,9 +67,7 @@ export function BuildGear() {
     chainFrom,
   )
 
-  useHand(gear, valid)
-
-  console.log(action)
+  useHand(gear, valid, chainFrom)
 
   const navigate = useNavigate()
 
@@ -142,12 +144,16 @@ export function BuildGear() {
   )
 }
 
-function useHand(gear: Gear, valid: boolean): void {
+function useHand(
+  gear: Gear,
+  valid: boolean,
+  chainFrom: Gear | null,
+): void {
   const context = use(AppContext)
 
   const hand = useRef<BuildHand>({
     type: HandType.Build,
-    chain: null,
+    chain: chainFrom,
     entities: { [gear.id]: gear },
     valid,
     onChangeValid: () => {},
@@ -163,7 +169,8 @@ function useHand(gear: Gear, valid: boolean): void {
   useEffect(() => {
     hand.current.entities = { [gear.id]: gear }
     hand.current.valid = valid
-  }, [gear, valid])
+    hand.current.chain = chainFrom
+  }, [gear, valid, chainFrom])
 }
 
 function useRadius(): [number, (radius: number) => void] {
@@ -229,13 +236,15 @@ function useGear(
       y: center.y - radius,
     }
 
+    const connections = new Array<Connection>()
+
     const gear: Gear = {
       id: `${position.x}.${position.y}`,
       type: EntityType.enum.Gear,
       position,
       center,
       angle: 0,
-      connections: [],
+      connections,
       mass: Math.PI * radius ** 2,
       radius,
       velocity: 0,
@@ -278,9 +287,38 @@ function useGear(
         Math.abs(dx + dy) > gear.radius + chainFrom.radius
     }
 
-    // TODO connections
-    //
-    // TODO validate accelerate map
+    if (valid) {
+      connections.push(
+        ...getAdjacentConnections(
+          center,
+          radius,
+          context.world,
+        ),
+      )
+      if (chainFrom) {
+        connections.push({
+          type: ConnectionType.enum.Chain,
+          entityId: chainFrom.id,
+          multiplier: 1,
+        })
+      }
+      if (attach) {
+        connections.push({
+          type: ConnectionType.enum.Attach,
+          entityId: attach.id,
+          multiplier: 1,
+        })
+      }
+    }
+
+    if (valid) {
+      valid =
+        getAccelerationMap(
+          gear,
+          1,
+          context.world.entities,
+        ) !== null
+    }
 
     let action: Action
     invariant(!(chain && attach))
@@ -294,15 +332,6 @@ function useGear(
 
     return { gear, valid, action }
   }, [context, center, radius, chainFrom])
-}
-
-function getEntity(
-  context: IAppContext,
-  entityId: EntityId,
-): Entity {
-  const entity = context.world.entities[entityId]
-  invariant(entity)
-  return entity
 }
 
 function useChainFrom(): [
