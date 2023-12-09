@@ -50,7 +50,6 @@ interface ChainAction {
 
 interface AttachAction {
   type: ActionType.Attach
-  target: Gear
 }
 
 interface BuildAction {
@@ -336,7 +335,7 @@ function useGear(
     if (chain) {
       action = { type: ActionType.Chain, target: chain }
     } else if (attach) {
-      action = { type: ActionType.Attach, target: attach }
+      action = { type: ActionType.Attach }
     } else {
       action = { type: ActionType.Build }
     }
