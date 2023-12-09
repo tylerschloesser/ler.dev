@@ -48,12 +48,13 @@ export function addChainConnection(
     break
   }
 
+  // TODO consolidate this with build somehow?
   incrementBuildVersion(context)
 }
 
-export function addGear(
-  gear: GearEntity,
+export function buildGear(
   context: IAppContext,
+  gear: GearEntity,
 ): void {
   const { world } = context
 
@@ -118,8 +119,6 @@ export function addGear(
     )
     break
   }
-
-  incrementBuildVersion(context)
 }
 
 function conserveAngularMomentum(

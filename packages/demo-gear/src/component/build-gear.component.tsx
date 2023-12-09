@@ -14,8 +14,9 @@ import invariant from 'tiny-invariant'
 import { getAccelerationMap } from '../apply-torque.js'
 import {
   addChainConnection,
-  addGear,
+  buildGear,
 } from '../build-gear.js'
+import { build } from '../build.js'
 import { MAX_RADIUS, MIN_RADIUS } from '../const.js'
 import {
   BuildHand,
@@ -72,7 +73,7 @@ export function BuildGear() {
     chainFrom,
   )
 
-  useHand(gear, valid)
+  const hand = useHand(gear, valid)
 
   const navigate = useNavigate()
 
@@ -142,13 +143,9 @@ export function BuildGear() {
               }
               break
             }
-            case ActionType.Attach: {
-              addGear(gear, context)
-              setChainFrom(null)
-              break
-            }
+            case ActionType.Attach:
             case ActionType.Build: {
-              addGear(gear, context)
+              build(context, hand)
               setChainFrom(null)
               break
             }
@@ -163,7 +160,7 @@ export function BuildGear() {
   )
 }
 
-function useHand(gear: Gear, valid: boolean): void {
+function useHand(gear: Gear, valid: boolean): BuildHand {
   const context = use(AppContext)
 
   const hand = useRef<BuildHand>({
@@ -183,6 +180,8 @@ function useHand(gear: Gear, valid: boolean): void {
     hand.current.entities = { [gear.id]: gear }
     hand.current.valid = valid
   }, [gear, valid])
+
+  return hand.current
 }
 
 function useRadius(): [number, (radius: number) => void] {
