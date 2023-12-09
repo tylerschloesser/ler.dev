@@ -11,6 +11,7 @@ import {
   useSearchParams,
 } from 'react-router-dom'
 import invariant from 'tiny-invariant'
+import { addChainConnection, addGear } from '../add-gear.js'
 import { getAccelerationMap } from '../apply-torque.js'
 import { MAX_RADIUS, MIN_RADIUS } from '../const.js'
 import {
@@ -58,6 +59,7 @@ interface BuildAction {
 type Action = ChainAction | AttachAction | BuildAction
 
 export function BuildGear() {
+  const context = use(AppContext)
   const [radius, setRadius] = useRadius()
   const center = useCenter()
   const [chainFrom, setChainFrom] = useChainFrom()
@@ -128,11 +130,23 @@ export function BuildGear() {
               if (!chainFrom) {
                 setChainFrom(action.target)
               } else {
-                // TODO
+                addChainConnection(
+                  chainFrom,
+                  action.target,
+                  context,
+                )
+                setChainFrom(null)
               }
               break
             }
-            // TODO
+            case ActionType.Attach: {
+              addGear(gear, action.target, context)
+              break
+            }
+            case ActionType.Build: {
+              addGear(gear, null, context)
+              break
+            }
           }
         }}
       >
