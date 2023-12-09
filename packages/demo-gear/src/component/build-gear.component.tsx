@@ -54,7 +54,6 @@ interface BuildAction {
 type Action = ChainAction | AttachAction | BuildAction
 
 export function BuildGear() {
-  const context = use(AppContext)
   const [radius, setRadius] = useRadius()
   const center = useCenter()
   const [chainFrom, setChainFrom] = useChainFrom()
