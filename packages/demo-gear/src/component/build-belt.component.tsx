@@ -1,4 +1,10 @@
-import { use, useCallback, useEffect, useRef } from 'react'
+import {
+  use,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+} from 'react'
 import {
   useNavigate,
   useSearchParams,
@@ -39,7 +45,7 @@ export function BuildBelt() {
   const [savedStart, setSavedStart] = useSavedStart()
   const end = !savedStart ? null : cameraTilePosition
   const start = savedStart ?? cameraTilePosition
-  const belts = getBelts(context, start, end, direction)
+  const belts = useBelts(context, start, end, direction)
   const valid = isValid(context, belts)
   const hand = useHand(belts, valid)
 
@@ -331,86 +337,22 @@ function addBeltIntersection(
   })
 }
 
-function getBelts(
+function useBelts(
   context: IAppContext,
   start: SimpleVec2,
   end: SimpleVec2 | null,
   direction: BeltDirection,
 ): Belt[] {
-  const dx = end ? end.x - start.x : 0
-  const dy = end ? end.y - start.y : 0
+  return useMemo(() => {
+    const dx = end ? end.x - start.x : 0
+    const dy = end ? end.y - start.y : 0
 
-  const belts = new Array<Belt>()
+    const belts = new Array<Belt>()
 
-  if (direction === 'x') {
-    for (
-      let x = 0;
-      x < Math.abs(dx) + (dy === 0 ? 1 : 0);
-      x += 1
-    ) {
-      addBelt(
-        context,
-        belts,
-        {
-          x: start.x + x * Math.sign(dx),
-          y: start.y,
-        },
-        direction,
-      )
-    }
-
-    if (dy !== 0) {
-      if (belts.length) {
-        addBeltIntersection(context, belts, {
-          x: start.x + dx,
-          y: start.y,
-        })
-      }
-
+    if (direction === 'x') {
       for (
-        let y = belts.length ? 1 : 0;
-        y < Math.abs(dy) + 1;
-        y += 1
-      ) {
-        addBelt(
-          context,
-          belts,
-          {
-            x: start.x + dx,
-            y: start.y + y * Math.sign(dy),
-          },
-          'y',
-        )
-      }
-    }
-  } else {
-    for (
-      let y = 0;
-      y < Math.abs(dy) + (dx === 0 ? 1 : 0);
-      y += 1
-    ) {
-      addBelt(
-        context,
-        belts,
-        {
-          x: start.x,
-          y: start.y + y * Math.sign(dy),
-        },
-        direction,
-      )
-    }
-
-    if (dx !== 0) {
-      if (belts.length) {
-        addBeltIntersection(context, belts, {
-          x: start.x,
-          y: start.y + dy,
-        })
-      }
-
-      for (
-        let x = belts.length ? 1 : 0;
-        x < Math.abs(dx) + 1;
+        let x = 0;
+        x < Math.abs(dx) + (dy === 0 ? 1 : 0);
         x += 1
       ) {
         addBelt(
@@ -418,15 +360,81 @@ function getBelts(
           belts,
           {
             x: start.x + x * Math.sign(dx),
-            y: start.y + dy,
+            y: start.y,
           },
-          'x',
+          direction,
         )
       }
-    }
-  }
 
-  return belts
+      if (dy !== 0) {
+        if (belts.length) {
+          addBeltIntersection(context, belts, {
+            x: start.x + dx,
+            y: start.y,
+          })
+        }
+
+        for (
+          let y = belts.length ? 1 : 0;
+          y < Math.abs(dy) + 1;
+          y += 1
+        ) {
+          addBelt(
+            context,
+            belts,
+            {
+              x: start.x + dx,
+              y: start.y + y * Math.sign(dy),
+            },
+            'y',
+          )
+        }
+      }
+    } else {
+      for (
+        let y = 0;
+        y < Math.abs(dy) + (dx === 0 ? 1 : 0);
+        y += 1
+      ) {
+        addBelt(
+          context,
+          belts,
+          {
+            x: start.x,
+            y: start.y + y * Math.sign(dy),
+          },
+          direction,
+        )
+      }
+
+      if (dx !== 0) {
+        if (belts.length) {
+          addBeltIntersection(context, belts, {
+            x: start.x,
+            y: start.y + dy,
+          })
+        }
+
+        for (
+          let x = belts.length ? 1 : 0;
+          x < Math.abs(dx) + 1;
+          x += 1
+        ) {
+          addBelt(
+            context,
+            belts,
+            {
+              x: start.x + x * Math.sign(dx),
+              y: start.y + dy,
+            },
+            'x',
+          )
+        }
+      }
+    }
+
+    return belts
+  }, [context, start, end, direction])
 }
 
 function useHand(
