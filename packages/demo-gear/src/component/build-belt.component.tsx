@@ -138,8 +138,108 @@ function getBeltConnections(
         }
       }
     }
+    // prettier-ignore
+    const south = context.world.tiles[`${position.x}.${position.y + 1}`]
+    if (south?.entityId) {
+      const entity = getEntity(context, south.entityId)
+      switch (entity.type) {
+        case EntityType.enum.Gear: {
+          if (
+            entity.center.x !== position.x &&
+            entity.center.x !== position.x + 1
+          ) {
+            break
+          }
+
+          if (
+            entity.center.y - entity.radius - 1 !==
+            position.y
+          ) {
+            break
+          }
+
+          connections.push({
+            type: ConnectionType.enum.Adjacent,
+            entityId: entity.id,
+            multiplier: 1,
+          })
+
+          break
+        }
+        default: {
+          invariant(false, 'TODO')
+        }
+      }
+    }
   } else {
     invariant(direction === 'y')
+
+    // prettier-ignore
+    const east = context.world.tiles[`${position.x + 1}.${position.y}`]
+    if (east?.entityId) {
+      const entity = getEntity(context, east.entityId)
+      switch (entity.type) {
+        case EntityType.enum.Gear: {
+          if (
+            entity.center.y !== position.y &&
+            entity.center.y !== position.y + 1
+          ) {
+            break
+          }
+
+          if (
+            entity.center.x - entity.radius - 1 !==
+            position.x
+          ) {
+            break
+          }
+
+          connections.push({
+            type: ConnectionType.enum.Adjacent,
+            entityId: entity.id,
+            multiplier: -1,
+          })
+
+          break
+        }
+        default: {
+          invariant(false, 'TODO')
+        }
+      }
+    }
+    const west =
+      context.world.tiles[`${position.x - 1}.${position.y}`]
+    if (west?.entityId) {
+      const entity = getEntity(context, west.entityId)
+      switch (entity.type) {
+        case EntityType.enum.Gear: {
+          if (
+            entity.center.y !== position.y &&
+            entity.center.y !== position.y + 1
+          ) {
+            break
+          }
+
+          if (
+            entity.center.x + entity.radius !==
+            position.x
+          ) {
+            break
+          }
+
+          connections.push({
+            type: ConnectionType.enum.Adjacent,
+            entityId: entity.id,
+            multiplier: 1,
+          })
+
+          break
+        }
+        default: {
+          invariant(false, 'TODO')
+        }
+      }
+    }
   }
 
   return connections
