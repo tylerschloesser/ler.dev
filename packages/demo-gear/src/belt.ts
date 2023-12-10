@@ -137,6 +137,7 @@ export function getBeltConnections(
   return connections
 }
 
+// TODO get this to work
 // export function updateAddBeltProgress(
 //   hand: AddBeltHand,
 //   elapsed: number,

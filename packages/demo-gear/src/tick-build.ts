@@ -1,6 +1,7 @@
 import invariant from 'tiny-invariant'
 import { TWO_PI } from './const.js'
 import {
+  BeltEntity,
   BuildHand,
   Connection,
   ConnectionType,
@@ -17,6 +18,10 @@ export function tickBuild(
     switch (entity.type) {
       case EntityType.enum.Gear: {
         tickBuildGear(context, entity, hand.valid)
+        break
+      }
+      case EntityType.enum.Belt: {
+        tickBuildBelt(context, entity, hand.valid)
         break
       }
     }
@@ -39,7 +44,7 @@ function getPrioritizedFirstConnection(
   return other
 }
 
-export function tickBuildGear(
+function tickBuildGear(
   context: IAppContext,
   gear: Gear,
   valid: boolean,
@@ -71,3 +76,9 @@ export function tickBuildGear(
     gear.angle = 0
   }
 }
+
+function tickBuildBelt(
+  context: IAppContext,
+  belt: BeltEntity,
+  valid: boolean,
+): void {}

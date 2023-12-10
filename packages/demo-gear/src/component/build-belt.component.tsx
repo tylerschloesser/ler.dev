@@ -24,6 +24,7 @@ import {
   IAppContext,
   SimpleVec2,
 } from '../types.js'
+import { getEntity } from '../util.js'
 import styles from './build-belt.module.scss'
 import { AppContext } from './context.js'
 import { Overlay } from './overlay.component.js'
@@ -101,7 +102,47 @@ function getBeltConnections(
   position: SimpleVec2,
   direction: BeltDirection,
 ): Connection[] {
-  return []
+  const connections: Connection[] = []
+
+  if (direction === 'x') {
+    // prettier-ignore
+    const north = context.world.tiles[`${position.x}.${position.y - 1}`]
+    if (north?.entityId) {
+      const entity = getEntity(context, north.entityId)
+      switch (entity.type) {
+        case EntityType.enum.Gear: {
+          if (
+            entity.center.x !== position.x &&
+            entity.center.x !== position.x + 1
+          ) {
+            break
+          }
+
+          if (
+            entity.center.y + entity.radius !==
+            position.y
+          ) {
+            break
+          }
+
+          connections.push({
+            type: ConnectionType.enum.Adjacent,
+            entityId: entity.id,
+            multiplier: -1,
+          })
+
+          break
+        }
+        default: {
+          invariant(false, 'TODO')
+        }
+      }
+    }
+  } else {
+    invariant(direction === 'y')
+  }
+
+  return connections
 }
 
 function addBelt(
