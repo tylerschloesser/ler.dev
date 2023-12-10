@@ -14,6 +14,7 @@ import {
   BeltIntersectionEntity,
   BeltMotion,
   BuildHand,
+  Connection,
   ConnectionType,
   Entity,
   EntityId,
@@ -22,7 +23,6 @@ import {
   HandType,
   IAppContext,
   SimpleVec2,
-  World,
 } from '../types.js'
 import styles from './build-belt.module.scss'
 import { AppContext } from './context.js'
@@ -38,12 +38,7 @@ export function BuildBelt() {
   const [savedStart, setSavedStart] = useSavedStart()
   const end = !savedStart ? null : cameraTilePosition
   const start = savedStart ?? cameraTilePosition
-  const belts = getBelts(
-    context.world,
-    start,
-    end,
-    direction,
-  )
+  const belts = getBelts(context, start, end, direction)
   const valid = isValid(context, belts)
   const hand = useHand(belts, valid)
 
@@ -101,8 +96,85 @@ function getBeltId(position: SimpleVec2): EntityId {
   return `${position.x}.${position.y}`
 }
 
+function getBeltConnections(
+  context: IAppContext,
+  position: SimpleVec2,
+  direction: BeltDirection,
+): Connection[] {
+  return []
+}
+
+function addBelt(
+  context: IAppContext,
+  belts: Belt[],
+  position: SimpleVec2,
+  direction: BeltDirection,
+): void {
+  const id = getBeltId(position)
+  const connections = getBeltConnections(
+    context,
+    position,
+    direction,
+  )
+  const prev = belts.at(-1)
+  if (prev) {
+    prev.connections.push({
+      entityId: id,
+      multiplier: 1,
+      type: ConnectionType.enum.Belt,
+    })
+    connections.push({
+      entityId: prev.id,
+      multiplier: 1,
+      type: ConnectionType.enum.Belt,
+    })
+  }
+
+  belts.push({
+    type: EntityType.enum.Belt,
+    id,
+    position,
+    connections,
+    direction,
+    offset: 0,
+    velocity: 0,
+    mass: 1,
+  })
+}
+
+function addBeltIntersection(
+  _context: IAppContext,
+  belts: Belt[],
+  position: SimpleVec2,
+): void {
+  const id = getBeltId(position)
+  const connections: Connection[] = []
+  const prev = belts.at(-1)
+  if (prev) {
+    prev.connections.push({
+      entityId: id,
+      multiplier: 1,
+      type: ConnectionType.enum.Belt,
+    })
+    connections.push({
+      entityId: prev.id,
+      multiplier: 1,
+      type: ConnectionType.enum.Belt,
+    })
+  }
+  belts.push({
+    id: getBeltId(position),
+    type: EntityType.enum.BeltIntersection,
+    position,
+    connections,
+    offset: 0,
+    velocity: 0,
+    mass: 1,
+  })
+}
+
 function getBelts(
-  world: World,
+  context: IAppContext,
   start: SimpleVec2,
   end: SimpleVec2 | null,
   direction: BeltDirection,
@@ -118,36 +190,22 @@ function getBelts(
       x < Math.abs(dx) + (dy === 0 ? 1 : 0);
       x += 1
     ) {
-      const position: SimpleVec2 = {
-        x: start.x + x * Math.sign(dx),
-        y: start.y,
-      }
-      belts.push({
-        type: EntityType.enum.Belt,
-        id: getBeltId(position),
-        position,
-        connections: [],
+      addBelt(
+        context,
+        belts,
+        {
+          x: start.x + x * Math.sign(dx),
+          y: start.y,
+        },
         direction,
-        offset: 0,
-        velocity: 0,
-        mass: 1,
-      })
+      )
     }
 
     if (dy !== 0) {
       if (belts.length) {
-        const position: SimpleVec2 = {
+        addBeltIntersection(context, belts, {
           x: start.x + dx,
           y: start.y,
-        }
-        belts.push({
-          id: getBeltId(position),
-          type: EntityType.enum.BeltIntersection,
-          position,
-          connections: [],
-          offset: 0,
-          velocity: 0,
-          mass: 1,
         })
       }
 
@@ -156,20 +214,15 @@ function getBelts(
         y < Math.abs(dy) + 1;
         y += 1
       ) {
-        const position: SimpleVec2 = {
-          x: start.x + dx,
-          y: start.y + y * Math.sign(dy),
-        }
-        belts.push({
-          type: EntityType.enum.Belt,
-          id: getBeltId(position),
-          position,
-          connections: [],
-          direction: 'y',
-          offset: 0,
-          velocity: 0,
-          mass: 1,
-        })
+        addBelt(
+          context,
+          belts,
+          {
+            x: start.x + dx,
+            y: start.y + y * Math.sign(dy),
+          },
+          'y',
+        )
       }
     }
   } else {
@@ -178,36 +231,22 @@ function getBelts(
       y < Math.abs(dy) + (dx === 0 ? 1 : 0);
       y += 1
     ) {
-      const position: SimpleVec2 = {
-        x: start.x,
-        y: start.y + y * Math.sign(dy),
-      }
-      belts.push({
-        type: EntityType.enum.Belt,
-        id: getBeltId(position),
-        position,
-        connections: [],
+      addBelt(
+        context,
+        belts,
+        {
+          x: start.x,
+          y: start.y + y * Math.sign(dy),
+        },
         direction,
-        offset: 0,
-        velocity: 0,
-        mass: 1,
-      })
+      )
     }
 
     if (dx !== 0) {
       if (belts.length) {
-        const position: SimpleVec2 = {
+        addBeltIntersection(context, belts, {
           x: start.x,
           y: start.y + dy,
-        }
-        belts.push({
-          id: getBeltId(position),
-          type: EntityType.enum.BeltIntersection,
-          connections: [],
-          offset: 0,
-          velocity: 0,
-          position,
-          mass: 1,
         })
       }
 
@@ -216,20 +255,15 @@ function getBelts(
         x < Math.abs(dx) + 1;
         x += 1
       ) {
-        const position: SimpleVec2 = {
-          x: start.x + x * Math.sign(dx),
-          y: start.y + dy,
-        }
-        belts.push({
-          type: EntityType.enum.Belt,
-          id: getBeltId(position),
-          position,
-          connections: [],
-          direction: 'x',
-          offset: 0,
-          velocity: 0,
-          mass: 1,
-        })
+        addBelt(
+          context,
+          belts,
+          {
+            x: start.x + x * Math.sign(dx),
+            y: start.y + dy,
+          },
+          'x',
+        )
       }
     }
   }
