@@ -66,8 +66,7 @@ export function validateBuild(
         continue
       }
 
-      const entity =
-        context.world.entities[connection.entityId]
+      const entity = hand.entities[connection.entityId]
       invariant(entity)
 
       if (!seen.has(entity)) {
