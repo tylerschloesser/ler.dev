@@ -1,5 +1,4 @@
 import invariant from 'tiny-invariant'
-import { isEntityName } from 'typescript'
 import { buildBelt } from './build-belt.js'
 import { buildGear } from './build-gear.js'
 import {
@@ -31,7 +30,7 @@ export function build(
       }
       case EntityType.enum.Belt:
       case EntityType.enum.BeltIntersection: {
-        buildBelt(context, entity)
+        buildBelt(context, hand, entity)
         break
       }
       default: {
