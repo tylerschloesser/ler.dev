@@ -259,14 +259,23 @@ function addBelt(
   )
   const prev = belts.at(-1)
   if (prev) {
+    let multiplier = 1
+    if (
+      prev.type === EntityType.enum.BeltIntersection &&
+      (prev.position.x > position.x ||
+        prev.position.y > position.y)
+    ) {
+      multiplier = -1
+    }
+
     prev.connections.push({
       entityId: id,
-      multiplier: 1,
+      multiplier,
       type: ConnectionType.enum.Belt,
     })
     connections.push({
       entityId: prev.id,
-      multiplier: 1,
+      multiplier,
       type: ConnectionType.enum.Belt,
     })
   }
@@ -292,14 +301,22 @@ function addBeltIntersection(
   const connections: Connection[] = []
   const prev = belts.at(-1)
   if (prev) {
+    let multiplier = -1
+    if (
+      prev.position.x < position.x ||
+      prev.position.y < position.y
+    ) {
+      multiplier = 1
+    }
+
     prev.connections.push({
       entityId: id,
-      multiplier: 1,
+      multiplier,
       type: ConnectionType.enum.Belt,
     })
     connections.push({
       entityId: prev.id,
-      multiplier: 1,
+      multiplier,
       type: ConnectionType.enum.Belt,
     })
   }
