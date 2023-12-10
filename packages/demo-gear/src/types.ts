@@ -227,11 +227,6 @@ export interface AddResourceHand {
   valid: boolean
 }
 
-export interface BeltMotion {
-  source: GearEntity
-  accelerationMap: Map<Entity, number>
-}
-
 export interface DeleteHand {
   type: HandType.Delete
   position: SimpleVec2

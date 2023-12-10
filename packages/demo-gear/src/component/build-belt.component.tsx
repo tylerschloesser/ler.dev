@@ -18,7 +18,6 @@ import {
   BeltDirection,
   BeltEntity,
   BeltIntersectionEntity,
-  BeltMotion,
   BuildHand,
   Connection,
   ConnectionType,
@@ -50,20 +49,27 @@ export function BuildBelt() {
   const valid = isValid(context, belts)
   const hand = useHand(belts, valid)
 
+  console.log(valid)
   return (
     <Overlay>
       <button
         className={styles.button}
         onPointerUp={() => {
-          if (savedStart) {
-            setSavedStart(null)
-          } else {
-            navigate('..')
-          }
+          navigate('..')
         }}
       >
         Back
       </button>
+      {savedStart && (
+        <button
+          className={styles.button}
+          onPointerUp={() => {
+            setSavedStart(null)
+          }}
+        >
+          Cancel
+        </button>
+      )}
       <button
         className={styles.button}
         onPointerUp={() => {
@@ -77,6 +83,7 @@ export function BuildBelt() {
           disabled={!valid}
           className={styles.button}
           onPointerUp={() => {
+            if (!valid) return
             setSavedStart(cameraTilePosition)
           }}
         >
@@ -459,10 +466,7 @@ function useBelts(
   }, [context, start, end, direction, buildVersion])
 }
 
-function useHand(
-  belts: Belt[],
-  { valid }: ReturnType<typeof isValid>,
-): BuildHand {
+function useHand(belts: Belt[], valid: boolean): BuildHand {
   const context = use(AppContext)
 
   const entities: Record<EntityId, Entity> = {}
@@ -548,13 +552,13 @@ function getFirstAdjacentConnection(
 function isValid(
   context: IAppContext,
   belts: Belt[],
-): { valid: boolean; motion?: BeltMotion } {
+): boolean {
   for (const { position } of belts) {
     const tileId = `${position.x}.${position.y}`
     const tile = context.world.tiles[tileId]
     if (!tile) continue
     if (tile.entityId) {
-      return { valid: false }
+      return false
     }
   }
 
@@ -564,7 +568,7 @@ function isValid(
   )
   if (!adjacent) {
     // no adjacent gears, belt is not moving
-    return { valid: true }
+    return true
   }
 
   const entities = { ...context.world.entities }
@@ -579,16 +583,10 @@ function isValid(
   )
 
   if (!accelerationMap) {
-    return { valid: false }
+    return false
   }
 
-  return {
-    valid: true,
-    motion: {
-      accelerationMap,
-      source: adjacent.gear,
-    },
-  }
+  return true
 }
 
 function useDirection(): [
