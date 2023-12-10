@@ -1,4 +1,5 @@
 import invariant from 'tiny-invariant'
+import { isEntityName } from 'typescript'
 import { buildBelt } from './build-belt.js'
 import { buildGear } from './build-gear.js'
 import {
@@ -14,6 +15,13 @@ export function build(
   hand: BuildHand,
 ): void {
   validateBuild(context, hand)
+
+  // assumption: all entities are connected (i.e. within the same network)
+
+  let totalMassBefore: number = 0
+  for (const entity of Object.values(hand.entities)) {
+    totalMassBefore += entity.mass
+  }
 
   for (const entity of Object.values(hand.entities)) {
     switch (entity.type) {
