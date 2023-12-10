@@ -118,6 +118,6 @@ export function tick(
   }
 
   if (context.hand?.type === HandType.Build) {
-    tickBuild(context, context.hand)
+    tickBuild(context, context.hand, elapsed)
   }
 }
