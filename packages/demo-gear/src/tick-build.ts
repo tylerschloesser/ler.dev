@@ -30,7 +30,7 @@ export function tickBuild(
 
 // prioritize setting angle based on the chain
 // because chain gears require identical angles
-function getPrioritizedFirstConnection(
+function getPrioritizedGearConnection(
   gear: Gear,
 ): Connection | null {
   let other: Connection | null = null
@@ -49,7 +49,7 @@ function tickBuildGear(
   gear: Gear,
   valid: boolean,
 ): void {
-  let connection = getPrioritizedFirstConnection(gear)
+  let connection = getPrioritizedGearConnection(gear)
   if (valid && connection) {
     invariant(
       connection.type !== ConnectionType.enum.Belt,
