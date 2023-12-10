@@ -35,6 +35,7 @@ import styles from './build-belt.module.scss'
 import { AppContext } from './context.js'
 import { Overlay } from './overlay.component.js'
 import { useCameraTilePosition } from './use-camera-tile-position.js'
+import { useWorldBuildVersion } from './use-world-build-version.js'
 
 export function BuildBelt() {
   const context = use(AppContext)
@@ -139,6 +140,11 @@ function getBeltConnections(
 
           break
         }
+        case EntityType.enum.Belt:
+        case EntityType.enum.BeltIntersection: {
+          // TODO
+          break
+        }
         default: {
           invariant(false, 'TODO')
         }
@@ -170,6 +176,11 @@ function getBeltConnections(
             multiplier: 1,
           })
 
+          break
+        }
+        case EntityType.enum.Belt:
+        case EntityType.enum.BeltIntersection: {
+          // TODO
           break
         }
         default: {
@@ -208,6 +219,11 @@ function getBeltConnections(
 
           break
         }
+        case EntityType.enum.Belt:
+        case EntityType.enum.BeltIntersection: {
+          // TODO
+          break
+        }
         default: {
           invariant(false, 'TODO')
         }
@@ -239,6 +255,11 @@ function getBeltConnections(
             multiplier: 1,
           })
 
+          break
+        }
+        case EntityType.enum.Belt:
+        case EntityType.enum.BeltIntersection: {
+          // TODO
           break
         }
         default: {
@@ -343,6 +364,7 @@ function useBelts(
   end: SimpleVec2 | null,
   direction: BeltDirection,
 ): Belt[] {
+  const buildVersion = useWorldBuildVersion()
   return useMemo(() => {
     const dx = end ? end.x - start.x : 0
     const dy = end ? end.y - start.y : 0
@@ -434,7 +456,7 @@ function useBelts(
     }
 
     return belts
-  }, [context, start, end, direction])
+  }, [context, start, end, direction, buildVersion])
 }
 
 function useHand(
