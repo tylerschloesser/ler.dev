@@ -9,7 +9,6 @@ import {
   EntityType,
   Gear,
   IAppContext,
-  World,
 } from './types.js'
 import { mod } from './util.js'
 
@@ -18,25 +17,14 @@ export function tickBuild(
   hand: BuildHand,
   elapsed: number,
 ): void {
-  const entities = { ...context.world.entities }
-
-  if (hand.valid) {
-    // only do this if valid because then we know there
-    // won't be overlap. Not the cleanest but oh well
-    for (const entity of Object.values(hand.entities)) {
-      invariant(!entities[entity.id])
-      entities[entity.id] = entity
-    }
-  }
-
   for (const entity of Object.values(hand.entities)) {
     switch (entity.type) {
       case EntityType.enum.Gear: {
-        tickBuildGear(entities, entity, hand.valid)
+        tickBuildGear(context, hand, entity)
         break
       }
       case EntityType.enum.Belt: {
-        tickBuildBelt(entities, entity, hand.valid, elapsed)
+        tickBuildBelt(context, hand, entity, elapsed)
         break
       }
     }
@@ -60,19 +48,20 @@ function getPrioritizedGearConnection(
 }
 
 function tickBuildGear(
-  entities: World['entities'],
+  context: IAppContext,
+  hand: BuildHand,
   gear: Gear,
-  valid: boolean,
 ): void {
   let connection = getPrioritizedGearConnection(gear)
-  if (valid && connection) {
+  if (hand.valid && connection) {
     invariant(
       connection.type !== ConnectionType.enum.Belt,
       'TODO support belt connections',
     )
 
     // if valid, we can check any connected gear to get the angle
-    const neighbor = entities[connection.entityId]
+    const neighbor =
+      context.world.entities[connection.entityId]
     invariant(neighbor?.type === EntityType.enum.Gear)
 
     switch (connection.type) {
@@ -92,7 +81,8 @@ function tickBuildGear(
 }
 
 function getFirstAdjacentGear(
-  entities: World['entities'],
+  context: IAppContext,
+  hand: BuildHand,
   root: BeltEntity,
 ): {
   gear: Gear
@@ -114,7 +104,10 @@ function getFirstAdjacentGear(
     seen.add(current.belt)
 
     for (const connection of current.belt.connections) {
-      const entity = entities[connection.entityId]
+      // first try to get the entity from the existing world, then the current build
+      const entity =
+        context.world.entities[connection.entityId] ??
+        hand.entities[connection.entityId]
       switch (connection.type) {
         case ConnectionType.enum.Adjacent: {
           invariant(entity?.type === EntityType.enum.Gear)
@@ -150,15 +143,15 @@ function getFirstAdjacentGear(
 }
 
 function tickBuildBelt(
-  entities: World['entities'],
+  context: IAppContext,
+  hand: BuildHand,
   belt: BeltEntity,
-  valid: boolean,
   elapsed: number,
 ): void {
-  if (!valid) {
+  if (!hand.valid) {
     return
   }
-  const first = getFirstAdjacentGear(entities, belt)
+  const first = getFirstAdjacentGear(context, hand, belt)
   if (first === null) {
     return
   }
