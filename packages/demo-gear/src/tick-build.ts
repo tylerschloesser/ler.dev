@@ -16,6 +16,10 @@ export function tickBuild(
   // update the velocities, otherwise set velocities to zero
   //
 
+  // 1 over the connection multipler, because this is a connection
+  // in the "wrong" direction (the connection from the first external
+  // entity to the build entity doesn't exist yet)
+  //
   root.velocity =
     external.velocity * (1 / connection.multiplier)
 
