@@ -4,7 +4,6 @@ import {
   EntityType,
   GearEntity,
   IAppContext,
-  World,
 } from './types.js'
 import {
   getEntity,
@@ -39,12 +38,8 @@ export function addChainConnection(
     )
     const neighbor = context.world.entities[c.entityId]
     invariant(neighbor?.type === EntityType.enum.Gear)
-    conserveAngularMomentum(
-      neighbor,
-      context.world,
-      totalMass - gear1.mass,
-      totalMass,
-    )
+
+    // TODO conserve energy!
     break
   }
 
@@ -86,81 +81,4 @@ export function buildGear(
       tile = world.tiles[tileId] = { entityId: gear.id }
     }
   }
-
-  const totalMass = getTotalMass(gear, world)
-  // TODO why do i need to loop?
-  for (const c of gear.connections) {
-    invariant(
-      c.type !== ConnectionType.enum.Belt,
-      'TODO support belt connections',
-    )
-    const neighbor = world.entities[c.entityId]
-    invariant(neighbor?.type === EntityType.enum.Gear)
-    conserveAngularMomentum(
-      neighbor,
-      world,
-      totalMass - gear.mass,
-      totalMass,
-    )
-    break
-  }
-}
-
-function conserveAngularMomentum(
-  root: GearEntity,
-  world: World,
-  totalMassBefore: number,
-  totalMassAfter: number,
-): void {
-  //   invariant(totalMassAfter > totalMassBefore)
-  //
-  //   root.velocity =
-  //     root.velocity * (totalMassBefore / totalMassAfter)
-  //
-  //   const seen = new Set<GearEntity>()
-  //   const stack = new Array<{
-  //     gear: GearEntity
-  //     multiplier: number
-  //   }>({
-  //     gear: root,
-  //     multiplier: 1,
-  //   })
-  //
-  //   while (stack.length) {
-  //     const tail = stack.pop()
-  //     invariant(tail)
-  //
-  //     if (seen.has(tail.gear)) {
-  //       continue
-  //     }
-  //     seen.add(tail.gear)
-  //
-  //     for (const c of tail.gear.connections) {
-  //       invariant(
-  //         c.type !== ConnectionType.enum.Belt,
-  //         'TODO support belt connections',
-  //       )
-  //       const neighbor = world.entities[c.entityId]
-  //       invariant(neighbor?.type === EntityType.enum.Gear)
-  //
-  //       let neighborMultiplier: number
-  //       switch (c.type) {
-  //         case ConnectionType.enum.Adjacent:
-  //           neighborMultiplier =
-  //             (tail.gear.radius / neighbor.radius) * -1
-  //           break
-  //         case ConnectionType.enum.Chain:
-  //           neighborMultiplier = 1
-  //           break
-  //         case ConnectionType.enum.Attach:
-  //           neighborMultiplier = 1
-  //           break
-  //       }
-  //
-  //       const multiplier =
-  //         tail.multiplier * neighborMultiplier
-  //       neighbor.velocity = root.velocity * multiplier
-  //       stack.push({ gear: neighbor, multiplier })
-  //     }
-  //   }
 }
