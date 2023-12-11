@@ -6,8 +6,12 @@ import {
   Entity,
   EntityType,
   IAppContext,
+  World,
 } from './types.js'
-import { incrementBuildVersion } from './util.js'
+import {
+  getTotalMass,
+  incrementBuildVersion,
+} from './util.js'
 
 export function build(
   context: IAppContext,
@@ -41,6 +45,17 @@ export function build(
       }
     }
   }
+
+  const root = Object.values(hand.entities).at(0)
+  invariant(root)
+  const totalMassAfter = getTotalMass(root, context.world)
+
+  conserveEnergy(
+    root,
+    context.world,
+    totalMassBefore,
+    totalMassAfter,
+  )
 
   hand.entities = {}
   incrementBuildVersion(context)
@@ -120,6 +135,50 @@ function addReverseConnections(
         multiplier: 1 / connection.multiplier,
         type: connection.type,
       })
+    }
+  }
+}
+
+function conserveEnergy(
+  root: Entity,
+  world: World,
+  totalMassBefore: number,
+  totalMassAfter: number,
+): void {
+  invariant(totalMassAfter >= totalMassBefore)
+
+  if (totalMassAfter === totalMassBefore) {
+    // optimization
+    return
+  }
+
+  root.velocity =
+    root.velocity * (totalMassBefore / totalMassAfter)
+
+  const seen = new Set<Entity>()
+  const stack = new Array<{
+    entity: Entity
+    multiplier: number
+  }>({
+    entity: root,
+    multiplier: 1,
+  })
+
+  while (stack.length) {
+    const tail = stack.pop()
+    invariant(tail)
+
+    if (seen.has(tail.entity)) {
+      continue
+    }
+    seen.add(tail.entity)
+
+    for (const c of tail.entity.connections) {
+      const neighbor = world.entities[c.entityId]
+      invariant(neighbor)
+      const multiplier = tail.multiplier * c.multiplier
+      neighbor.velocity = root.velocity * multiplier
+      stack.push({ entity: neighbor, multiplier })
     }
   }
 }
