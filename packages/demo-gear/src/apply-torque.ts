@@ -53,9 +53,6 @@ export function applyForce(
 ): void {
   const m = getTotalMass(root, world)
 
-  // const I = (1 / 2) * m * root.radius ** 2
-  // invariant(I > 0)
-  // const rootAcceleration = (force * root.radius) / I
   const rootAcceleration = force / m
 
   const accelerationMap = getAccelerationMap(
@@ -70,6 +67,7 @@ export function applyForce(
     acceleration,
   ] of accelerationMap.entries()) {
     const dv = acceleration * elapsed
+
     entity.velocity += dv
   }
 }

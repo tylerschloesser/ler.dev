@@ -289,6 +289,7 @@ export function Configure() {
       )
       break
   }
+  console.log(gearId)
 
   return (
     <>

@@ -162,29 +162,22 @@ function conserveEnergy(
     root.velocity * (totalMassBefore / totalMassAfter)
 
   const seen = new Set<Entity>()
-  const stack = new Array<{
-    entity: Entity
-    multiplier: number
-  }>({
-    entity: root,
-    multiplier: 1,
-  })
+  const stack = new Array<Entity>(root)
 
   while (stack.length) {
     const tail = stack.pop()
     invariant(tail)
 
-    if (seen.has(tail.entity)) {
+    if (seen.has(tail)) {
       continue
     }
-    seen.add(tail.entity)
+    seen.add(tail)
 
-    for (const c of tail.entity.connections) {
+    for (const c of tail.connections) {
       const neighbor = world.entities[c.entityId]
       invariant(neighbor)
-      const multiplier = tail.multiplier * c.multiplier
-      neighbor.velocity = root.velocity * multiplier
-      stack.push({ entity: neighbor, multiplier })
+      neighbor.velocity = tail.velocity * c.multiplier
+      stack.push(neighbor)
     }
   }
 }

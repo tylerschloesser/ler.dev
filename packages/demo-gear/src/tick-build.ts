@@ -14,33 +14,28 @@ export function tickBuild(
 
   // TODO get all incoming connections and if they're equal,
   // update the velocities, otherwise set velocities to zero
+  //
+
+  root.velocity =
+    external.velocity * (1 / connection.multiplier)
 
   const seen = new Set<Entity>()
-  const stack = new Array<{
-    entity: Entity
-    multiplier: number
-  }>({
-    entity: root,
-    multiplier: connection.multiplier,
-  })
+  const stack = new Array<Entity>(root)
 
   while (stack.length) {
     const current = stack.pop()
     invariant(current)
-    const { entity, multiplier } = current
-    invariant(!seen.has(entity))
-    seen.add(entity)
-    entity.velocity = external.velocity * multiplier
+    invariant(!seen.has(current))
+    seen.add(current)
 
-    for (const c of entity.connections) {
+    for (const c of current.connections) {
       if (!hand.entities[c.entityId]) continue
       const neighbor = hand.entities[c.entityId]
       invariant(neighbor)
+
       if (!seen.has(neighbor)) {
-        stack.push({
-          entity: neighbor,
-          multiplier: multiplier * c.multiplier,
-        })
+        neighbor.velocity = current.velocity * c.multiplier
+        stack.push(neighbor)
       }
     }
   }
