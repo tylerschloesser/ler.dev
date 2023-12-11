@@ -475,6 +475,39 @@ function getConnections(
           }
           break
         }
+        case EntityType.enum.Belt: {
+          let multiplier: number | null = null
+          switch (direction) {
+            case Direction.N: {
+              if (entity.direction === 'y') break
+              multiplier = 1
+              break
+            }
+            case Direction.S: {
+              if (entity.direction === 'y') break
+              multiplier = -1
+              break
+            }
+            case Direction.E: {
+              if (entity.direction === 'x') break
+              multiplier = 1
+              break
+            }
+            case Direction.W: {
+              if (entity.direction === 'x') break
+              multiplier = -1
+              break
+            }
+          }
+          if (multiplier !== null) {
+            connections.push({
+              type: ConnectionType.enum.Adjacent,
+              entityId: entity.id,
+              multiplier,
+            })
+          }
+          break
+        }
       }
     }
   }
