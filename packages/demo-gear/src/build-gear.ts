@@ -1,7 +1,6 @@
 import invariant from 'tiny-invariant'
 import {
   ConnectionType,
-  Entity,
   EntityType,
   GearEntity,
   IAppContext,

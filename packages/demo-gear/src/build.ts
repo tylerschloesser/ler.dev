@@ -11,8 +11,7 @@ import {
   World,
 } from './types.js'
 import {
-  getExternalConnections,
-  getTotalMass,
+  getExternalNetworks,
   incrementBuildVersion,
   resetEntities,
 } from './util.js'
@@ -27,16 +26,42 @@ export function build(
 
   const root = Object.values(hand.entities).at(0)
   invariant(root)
-  const external = getExternalConnections(
+
+  const newNetwork = Object.values(hand.networks).at(0)
+  invariant(newNetwork)
+  context.world.networks[newNetwork.id] = newNetwork
+
+  const externalNetworks = getExternalNetworks(
     context,
-    hand.entities,
+    hand,
     root,
   )
-  const first = external.at(0)
 
-  let totalMassBefore: number = 0
-  for (const entity of Object.values(hand.entities)) {
-    totalMassBefore += entity.mass
+  for (const networkId of Object.keys(externalNetworks)) {
+    const network = context.world.networks[networkId]
+    invariant(network)
+    newNetwork.mass += network.mass
+  }
+
+  root.velocity = 0
+  for (const [networkId, value] of Object.entries(
+    externalNetworks,
+  )) {
+    const network = context.world.networks[networkId]
+    invariant(network)
+    root.velocity +=
+      value.incomingVelocity *
+      (network.mass / newNetwork.mass)
+
+    for (const entityId of Object.keys(network.entityIds)) {
+      const entity = context.world.entities[entityId]
+      invariant(entity?.networkId === network.id)
+      entity.networkId = newNetwork.id
+      invariant(!newNetwork.entityIds[entity.id])
+      newNetwork.entityIds[entity.id] = true
+    }
+
+    delete context.world.networks[networkId]
   }
 
   for (const entity of Object.values(hand.entities)) {
@@ -59,17 +84,24 @@ export function build(
     }
   }
 
-  if (first) {
-    const totalMassAfter = getTotalMass(root, context.world)
-
-    conserveEnergy(
-      // TODO this needs to be the first external gear that
-      // is moving (if any)
-      first.target,
-      context.world,
-      totalMassBefore,
-      totalMassAfter,
-    )
+  // propogate the root velocity outward
+  const seen = new Set<Entity>()
+  const stack = new Array<Entity>(root)
+  while (stack.length) {
+    const current = stack.pop()
+    invariant(current)
+    invariant(!seen.has(current))
+    seen.add(current)
+    for (const connection of current.connections) {
+      const entity =
+        context.world.entities[connection.entityId]
+      invariant(entity?.networkId === root.networkId)
+      if (!seen.has(entity)) {
+        entity.velocity =
+          current.velocity * connection.multiplier
+        stack.push(entity)
+      }
+    }
   }
 
   hand.entities = {}

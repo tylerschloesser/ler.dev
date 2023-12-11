@@ -327,6 +327,7 @@ function useGear(
           multiplier: attach.radius / radius,
         })
       }
+      console.log(connections)
     }
 
     let action: Action
@@ -426,23 +427,23 @@ function getConnections(
       let dx: number, dy: number
       switch (direction) {
         case Direction.N: {
-          dx = i
+          dx = radius - 1 + i
           dy = -1
           break
         }
         case Direction.S: {
-          dx = i
+          dx = radius - 1 + i
           dy = radius * 2
           break
         }
         case Direction.E: {
           dx = radius * 2
-          dy = i
+          dy = radius - 1 + i
           break
         }
         case Direction.W: {
           dx = -1
-          dy = i
+          dy = radius - 1 + i
           break
         }
       }
