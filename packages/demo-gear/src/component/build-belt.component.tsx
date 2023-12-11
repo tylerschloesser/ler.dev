@@ -527,7 +527,7 @@ function useHand(
     return () => {
       context.hand = null
     }
-  }, [])
+  }, [hand])
 
   return hand
 }
