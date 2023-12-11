@@ -13,18 +13,14 @@ import invariant from 'tiny-invariant'
 import { getAccelerationMap } from '../apply-torque.js'
 import { build } from '../build.js'
 import {
-  AdjacentConnection,
   Belt,
   BeltDirection,
-  BeltEntity,
-  BeltIntersectionEntity,
   BuildHand,
   Connection,
   ConnectionType,
   Entity,
   EntityId,
   EntityType,
-  GearEntity,
   HandType,
   IAppContext,
   SimpleVec2,
@@ -52,7 +48,6 @@ export function BuildBelt() {
   const valid = isValid(context, belts)
   const hand = useHand(belts, valid)
 
-  console.log(valid)
   return (
     <Overlay>
       <button
@@ -320,6 +315,7 @@ function addBelt(
   belts.push({
     type: EntityType.enum.Belt,
     id,
+    networkId: 'TODO', // TODO!
     position,
     connections,
     direction,
@@ -359,6 +355,7 @@ function addBeltIntersection(
   }
   belts.push({
     id: getBeltId(position),
+    networkId: 'TODO', // TODO
     type: EntityType.enum.BeltIntersection,
     position,
     connections,
@@ -525,31 +522,6 @@ function useSavedStart(): [
   )
 
   return [saved, setStart]
-}
-
-function getFirstAdjacentConnection(
-  context: IAppContext,
-  belts: Belt[],
-): {
-  belt: BeltEntity | BeltIntersectionEntity
-  gear: GearEntity
-  connection: AdjacentConnection
-} | null {
-  for (const belt of belts) {
-    const connection = belt.connections.find(
-      (c): c is AdjacentConnection =>
-        c.type === ConnectionType.enum.Adjacent,
-    )
-    if (!connection) {
-      continue
-    }
-    const gear = context.world.entities[connection.entityId]
-    invariant(gear?.type === EntityType.enum.Gear)
-
-    return { belt, gear, connection }
-  }
-
-  return null
 }
 
 function isValid(

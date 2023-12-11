@@ -332,6 +332,7 @@ function useGear(
     const gear: Gear = {
       id: `${position.x}.${position.y}`,
       type: EntityType.enum.Gear,
+      networkId: 'TODO', // TODO
       position,
       center,
       angle: chainFrom?.angle ?? 0,

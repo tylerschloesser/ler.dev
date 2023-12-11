@@ -22,6 +22,16 @@ export const Tile = z.strictObject({
 })
 export type Tile = z.infer<typeof Tile>
 
+export const NetworkId = z.string()
+export type NetworkId = z.infer<typeof NetworkId>
+
+export const Network = z.strictObject({
+  id: NetworkId,
+  rootId: EntityId,
+  entityIds: z.record(EntityId, z.literal(true)),
+  mass: z.number(),
+})
+
 export const ConnectionType = z.enum([
   'Adjacent',
   'Chain',
@@ -112,16 +122,20 @@ export const EntityType = z.enum([
 ])
 export type EntityType = z.infer<typeof EntityType>
 
-export const GearEntity = z.strictObject({
+const EntityBase = z.strictObject({
   id: EntityId,
-  type: z.literal(EntityType.enum.Gear),
+  networkId: NetworkId,
   position: SimpleVec2,
+  connections: z.array(Connection),
+  velocity: z.number(),
+  mass: z.number(),
+})
+
+export const GearEntity = EntityBase.extend({
+  type: z.literal(EntityType.enum.Gear),
   center: SimpleVec2,
   radius: z.number(),
   angle: z.number(),
-  velocity: z.number(),
-  mass: z.number(),
-  connections: z.array(Connection),
   behavior: GearBehavior.optional(),
 })
 export type GearEntity = z.infer<typeof GearEntity>
@@ -135,26 +149,16 @@ export type BeltDirection = z.infer<typeof BeltDirection>
 export const BeltPath = z.array(SimpleVec2)
 export type BeltPath = z.infer<typeof BeltPath>
 
-export const BeltEntity = z.strictObject({
+export const BeltEntity = EntityBase.extend({
   type: z.literal(EntityType.enum.Belt),
-  id: EntityId,
-  position: SimpleVec2,
   direction: BeltDirection,
   offset: z.number(),
-  velocity: z.number(),
-  connections: z.array(Connection),
-  mass: z.number(),
 })
 export type BeltEntity = z.infer<typeof BeltEntity>
 
-export const BeltIntersectionEntity = z.strictObject({
+export const BeltIntersectionEntity = EntityBase.extend({
   type: z.literal(EntityType.enum.BeltIntersection),
-  id: EntityId,
-  position: SimpleVec2,
   offset: z.number(),
-  velocity: z.number(),
-  connections: z.array(Connection),
-  mass: z.number(),
 })
 export type BeltIntersectionEntity = z.infer<
   typeof BeltIntersectionEntity
@@ -175,16 +179,6 @@ export const Entity = z.discriminatedUnion('type', [
   BeltIntersectionEntity,
 ])
 export type Entity = z.infer<typeof Entity>
-
-export const NetworkId = z.string()
-export type NetworkId = z.infer<typeof NetworkId>
-
-export const Network = z.strictObject({
-  id: NetworkId,
-  rootId: EntityId,
-  entityIds: z.record(EntityId, z.literal(true)),
-  mass: z.number(),
-})
 
 export const World = z.strictObject({
   version: z.number(),
