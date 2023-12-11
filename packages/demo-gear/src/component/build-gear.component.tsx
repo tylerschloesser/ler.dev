@@ -129,6 +129,7 @@ export function BuildGear() {
         className={styles.button}
         disabled={!valid}
         onPointerUp={() => {
+          if (!valid) return
           switch (action.type) {
             case ActionType.Chain: {
               if (!chainFrom) {
