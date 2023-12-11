@@ -172,26 +172,24 @@ function useHand(
 ): BuildHand {
   const context = use(AppContext)
 
-  const hand = useRef<BuildHand>({
-    type: HandType.Build,
-    entities: { [gear.id]: gear },
-    networks: { [network.id]: network },
-    valid,
-  })
+  const hand = useMemo<BuildHand>(
+    () => ({
+      type: HandType.Build,
+      entities: { [gear.id]: gear },
+      networks: { [network.id]: network },
+      valid,
+    }),
+    [gear, network, valid],
+  )
 
   useEffect(() => {
-    context.hand = hand.current
+    context.hand = hand
     return () => {
       context.hand = null
     }
-  }, [])
+  }, [hand])
 
-  useEffect(() => {
-    hand.current.entities = { [gear.id]: gear }
-    hand.current.valid = valid
-  }, [gear, valid])
-
-  return hand.current
+  return hand
 }
 
 function useRadius(): [number, (radius: number) => void] {

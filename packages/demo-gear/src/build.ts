@@ -115,8 +115,13 @@ export function validateBuild(
 ): void {
   invariant(hand.valid)
 
-  // must be at least one entity
-  const root = Object.values(hand.entities).at(0)
+  // only one network is allowed for now
+  invariant(Object.keys(hand.networks).length === 1)
+
+  const network = Object.values(hand.networks).at(0)
+  invariant(network)
+
+  const root = hand.entities[network.rootId]
   invariant(root)
 
   // verify that all build entities are connected
@@ -137,11 +142,13 @@ export function validateBuild(
       if (context.world.entities[connection.entityId]) {
         // this is a connection to an already built entity
         invariant(!hand.entities[connection.entityId])
+        invariant(!network.entityIds[connection.entityId])
         continue
       }
 
       const entity = hand.entities[connection.entityId]
       invariant(entity)
+      invariant(network.entityIds[connection.entityId])
 
       if (!seen.has(entity)) {
         stack.push(entity)
