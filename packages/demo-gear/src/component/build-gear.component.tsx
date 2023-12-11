@@ -307,7 +307,7 @@ function useGear(
         connections.push({
           type: ConnectionType.enum.Attach,
           entityId: attach.id,
-          multiplier: 1,
+          multiplier: attach.radius / radius,
         })
       }
     }
