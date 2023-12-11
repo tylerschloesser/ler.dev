@@ -328,7 +328,6 @@ function useGear(
           multiplier: attach.radius / radius,
         })
       }
-      console.log(connections)
     }
 
     let action: Action
