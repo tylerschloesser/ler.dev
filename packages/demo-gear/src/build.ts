@@ -117,27 +117,27 @@ function addReverseConnections(
 ): void {
   // add connections to existing entities
   for (const connection of entity.connections) {
-    let neighbor = hand.entities[connection.entityId]
-    if (neighbor) {
+    let target = hand.entities[connection.entityId]
+    if (target) {
       // double check there is a connection back
       invariant(
-        neighbor.connections.find(
+        target.connections.find(
           (c) => c.entityId === entity.id,
         ),
       )
       continue
     }
-    neighbor = context.world.entities[connection.entityId]
-    invariant(neighbor)
+    target = context.world.entities[connection.entityId]
+    invariant(target)
 
     // verify there is currently no connection
     invariant(
-      !neighbor.connections.find(
+      !target.connections.find(
         (c) => c.entityId === entity.id,
       ),
     )
 
-    neighbor.connections.push({
+    target.connections.push({
       entityId: entity.id,
       multiplier: 1 / connection.multiplier,
       type: connection.type,

@@ -53,9 +53,10 @@ export function applyForce(
 ): void {
   const m = getTotalMass(root, world)
 
-  const I = (1 / 2) * m * root.radius ** 2
-  invariant(I > 0)
-  const rootAcceleration = (force * root.radius) / I
+  // const I = (1 / 2) * m * root.radius ** 2
+  // invariant(I > 0)
+  // const rootAcceleration = (force * root.radius) / I
+  const rootAcceleration = force / m
 
   const accelerationMap = getAccelerationMap(
     root,
@@ -69,17 +70,7 @@ export function applyForce(
     acceleration,
   ] of accelerationMap.entries()) {
     const dv = acceleration * elapsed
-    switch (entity.type) {
-      case EntityType.enum.Gear: {
-        entity.velocity += dv / entity.radius
-        break
-      }
-      case EntityType.enum.Belt:
-      case EntityType.enum.BeltIntersection: {
-        entity.velocity += dv
-        break
-      }
-    }
+    entity.velocity += dv
   }
 }
 
