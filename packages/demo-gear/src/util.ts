@@ -294,6 +294,54 @@ export function getEntity(
   return entity
 }
 
+export function getExternalConnections(
+  context: IAppContext,
+  hand: BuildHand,
+  root: Entity,
+): {
+  source: Entity
+  target: Entity
+  connection: Connection
+}[] {
+  invariant(hand.valid)
+  invariant(hand.entities[root.id] === root)
+
+  const result: ReturnType<typeof getExternalConnections> =
+    []
+
+  const seen = new Set<Entity>()
+  const stack = new Array<Entity>(root)
+
+  while (stack.length) {
+    const current = stack.pop()
+    invariant(current)
+
+    invariant(!seen.has(current))
+    seen.add(current)
+
+    for (const connection of current.connections) {
+      let entity =
+        context.world.entities[connection.entityId]
+      if (entity) {
+        invariant(!hand.entities[entity.id])
+        result.push({
+          source: current,
+          target: entity,
+          connection,
+        })
+        continue
+      }
+      entity = hand.entities[connection.entityId]
+      invariant(entity)
+      if (!seen.has(entity)) {
+        stack.push(entity)
+      }
+    }
+  }
+
+  return result
+}
+
 export function getFirstExternalConnection(
   context: IAppContext,
   hand: BuildHand,
@@ -333,4 +381,46 @@ export function getFirstExternalConnection(
   }
 
   return null
+}
+
+export function resetNetwork(
+  context: IAppContext,
+  root: Entity,
+  ignore: Set<Connection> = new Set(),
+): void {
+  const seen = new Set<Entity>()
+  const stack = new Array<Entity>(root)
+
+  while (stack.length) {
+    const current = stack.pop()
+    invariant(current)
+    invariant(!seen.has(current))
+    seen.add(current)
+
+    current.velocity = 0
+    switch (current.type) {
+      case EntityType.enum.Gear: {
+        current.angle = 0
+        break
+      }
+      case EntityType.enum.Belt:
+      case EntityType.enum.BeltIntersection: {
+        current.offset = 0
+        break
+      }
+      default: {
+        invariant(false)
+      }
+    }
+
+    for (const connection of current.connections) {
+      if (ignore.has(connection)) continue
+      const neighbor =
+        context.world.entities[connection.entityId]
+      invariant(neighbor)
+      if (!seen.has(neighbor)) {
+        stack.push(neighbor)
+      }
+    }
+  }
 }

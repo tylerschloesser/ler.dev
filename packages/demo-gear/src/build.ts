@@ -1,6 +1,6 @@
 import invariant from 'tiny-invariant'
 import { buildBelt } from './build-belt.js'
-import { buildGear, resetNetwork } from './build-gear.js'
+import { buildGear } from './build-gear.js'
 import {
   BuildHand,
   Connection,
@@ -14,6 +14,7 @@ import {
   getFirstExternalConnection,
   getTotalMass,
   incrementBuildVersion,
+  resetNetwork,
 } from './util.js'
 
 export function build(
