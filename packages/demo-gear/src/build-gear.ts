@@ -7,7 +7,6 @@ import {
 } from './types.js'
 import {
   getEntity,
-  getTotalMass,
   incrementBuildVersion,
   iterateGearTileIds,
 } from './util.js'
@@ -29,19 +28,7 @@ export function addChainConnection(
     multiplier: 1,
   })
 
-  // TODO consolidate with add gear
-  const totalMass = getTotalMass(gear1, context.world)
-  for (const c of gear1.connections) {
-    invariant(
-      c.type !== ConnectionType.enum.Belt,
-      'TODO support belt connections',
-    )
-    const neighbor = context.world.entities[c.entityId]
-    invariant(neighbor?.type === EntityType.enum.Gear)
-
-    // TODO conserve energy!
-    break
-  }
+  // TODO conserve energy!
 
   // TODO consolidate this with build somehow?
   incrementBuildVersion(context)
