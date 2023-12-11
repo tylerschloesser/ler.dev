@@ -31,6 +31,7 @@ export const Network = z.strictObject({
   entityIds: z.record(EntityId, z.literal(true)),
   mass: z.number(),
 })
+export type Network = z.infer<typeof Network>
 
 export const ConnectionType = z.enum([
   'Adjacent',
@@ -202,6 +203,7 @@ export interface BuildHand {
   type: HandType.Build
   valid: boolean
   entities: Record<EntityId, Entity>
+  networks: Record<NetworkId, Network>
 }
 
 export interface ApplyForceHand {

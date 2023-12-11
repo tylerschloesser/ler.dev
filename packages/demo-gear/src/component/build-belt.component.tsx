@@ -23,6 +23,7 @@ import {
   EntityType,
   HandType,
   IAppContext,
+  Network,
   SimpleVec2,
 } from '../types.js'
 import {
@@ -44,9 +45,14 @@ export function BuildBelt() {
   const [savedStart, setSavedStart] = useSavedStart()
   const end = !savedStart ? null : cameraTilePosition
   const start = savedStart ?? cameraTilePosition
-  const belts = useBelts(context, start, end, direction)
+  const { belts, network } = useBelts(
+    context,
+    start,
+    end,
+    direction,
+  )
   const valid = isValid(context, belts)
-  const hand = useHand(belts, valid)
+  const hand = useHand(belts, network, valid)
 
   return (
     <Overlay>
@@ -279,6 +285,7 @@ function getBeltConnections(
 
 function addBelt(
   context: IAppContext,
+  network: Network,
   belts: Belt[],
   position: SimpleVec2,
   direction: BeltDirection,
@@ -312,21 +319,27 @@ function addBelt(
     })
   }
 
+  const mass = 1
   belts.push({
     type: EntityType.enum.Belt,
     id,
-    networkId: 'TODO', // TODO!
+    networkId: network.id,
     position,
     connections,
     direction,
     offset: 0,
     velocity: 0,
-    mass: 1,
+    mass,
   })
+
+  invariant(!network.entityIds[id])
+  network.entityIds[id] = true
+  network.mass += mass
 }
 
 function addBeltIntersection(
   _context: IAppContext,
+  network: Network,
   belts: Belt[],
   position: SimpleVec2,
 ): void {
@@ -353,16 +366,22 @@ function addBeltIntersection(
       type: ConnectionType.enum.Belt,
     })
   }
+
+  const mass = 1
   belts.push({
     id: getBeltId(position),
-    networkId: 'TODO', // TODO
+    networkId: network.id,
     type: EntityType.enum.BeltIntersection,
     position,
     connections,
     offset: 0,
     velocity: 0,
-    mass: 1,
+    mass,
   })
+
+  invariant(!network.entityIds[id])
+  network.entityIds[id] = true
+  network.mass += mass
 }
 
 function useBelts(
@@ -370,13 +389,25 @@ function useBelts(
   start: SimpleVec2,
   end: SimpleVec2 | null,
   direction: BeltDirection,
-): Belt[] {
+): {
+  belts: Belt[]
+  network: Network
+} {
   const buildVersion = useWorldBuildVersion()
   return useMemo(() => {
     const dx = end ? end.x - start.x : 0
     const dy = end ? end.y - start.y : 0
 
     const belts = new Array<Belt>()
+
+    // TODO this doesn't seem super safe assumption
+    const rootId = `${start.x}.${start.y}`
+    const network: Network = {
+      id: rootId,
+      entityIds: {},
+      mass: 0,
+      rootId,
+    }
 
     if (direction === 'x') {
       for (
@@ -386,6 +417,7 @@ function useBelts(
       ) {
         addBelt(
           context,
+          network,
           belts,
           {
             x: start.x + x * Math.sign(dx),
@@ -397,7 +429,7 @@ function useBelts(
 
       if (dy !== 0) {
         if (belts.length) {
-          addBeltIntersection(context, belts, {
+          addBeltIntersection(context, network, belts, {
             x: start.x + dx,
             y: start.y,
           })
@@ -410,6 +442,7 @@ function useBelts(
         ) {
           addBelt(
             context,
+            network,
             belts,
             {
               x: start.x + dx,
@@ -427,6 +460,7 @@ function useBelts(
       ) {
         addBelt(
           context,
+          network,
           belts,
           {
             x: start.x,
@@ -438,7 +472,7 @@ function useBelts(
 
       if (dx !== 0) {
         if (belts.length) {
-          addBeltIntersection(context, belts, {
+          addBeltIntersection(context, network, belts, {
             x: start.x,
             y: start.y + dy,
           })
@@ -451,6 +485,7 @@ function useBelts(
         ) {
           addBelt(
             context,
+            network,
             belts,
             {
               x: start.x + x * Math.sign(dx),
@@ -462,11 +497,15 @@ function useBelts(
       }
     }
 
-    return belts
+    return { belts, network }
   }, [context, start, end, direction, buildVersion])
 }
 
-function useHand(belts: Belt[], valid: boolean): BuildHand {
+function useHand(
+  belts: Belt[],
+  network: Network,
+  valid: boolean,
+): BuildHand {
   const context = use(AppContext)
 
   const entities: Record<EntityId, Entity> = {}
@@ -477,6 +516,7 @@ function useHand(belts: Belt[], valid: boolean): BuildHand {
   const hand = useRef<BuildHand>({
     type: HandType.Build,
     entities,
+    networks: { [network.id]: network },
     valid,
   })
 

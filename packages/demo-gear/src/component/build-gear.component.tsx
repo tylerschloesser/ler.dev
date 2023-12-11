@@ -20,10 +20,12 @@ import {
   Connection,
   ConnectionType,
   Entity,
+  EntityId,
   EntityType,
   Gear,
   HandType,
   IAppContext,
+  Network,
   SimpleVec2,
 } from '../types.js'
 import {
@@ -65,13 +67,13 @@ export function BuildGear() {
   const [radius, setRadius] = useRadius()
   const center = useCenter()
   const [chainFrom, setChainFrom] = useChainFrom()
-  const { gear, valid, action } = useGear(
+  const { gear, network, valid, action } = useGear(
     center,
     radius,
     chainFrom,
   )
 
-  const hand = useHand(gear, valid)
+  const hand = useHand(gear, network, valid)
 
   const navigate = useNavigate()
 
@@ -163,12 +165,17 @@ export function BuildGear() {
   )
 }
 
-function useHand(gear: Gear, valid: boolean): BuildHand {
+function useHand(
+  gear: Gear,
+  network: Network,
+  valid: boolean,
+): BuildHand {
   const context = use(AppContext)
 
   const hand = useRef<BuildHand>({
     type: HandType.Build,
     entities: { [gear.id]: gear },
+    networks: { [network.id]: network },
     valid,
   })
 
@@ -241,7 +248,12 @@ function useGear(
   center: SimpleVec2,
   radius: number,
   chainFrom: Gear | null,
-): { gear: Gear; valid: boolean; action: Action } {
+): {
+  gear: Gear
+  valid: boolean
+  action: Action
+  network: Network
+} {
   const context = use(AppContext)
   const buildVersion = useWorldBuildVersion()
 
@@ -329,10 +341,11 @@ function useGear(
       action = { type: ActionType.Build }
     }
 
+    const id: EntityId = `${position.x}.${position.y}`
     const gear: Gear = {
-      id: `${position.x}.${position.y}`,
+      id,
       type: EntityType.enum.Gear,
-      networkId: 'TODO', // TODO
+      networkId: id,
       position,
       center,
       angle: chainFrom?.angle ?? 0,
@@ -340,6 +353,12 @@ function useGear(
       mass: Math.PI * radius ** 2,
       radius,
       velocity: 0,
+    }
+    const network: Network = {
+      id,
+      entityIds: { [id]: true },
+      rootId: id,
+      mass: gear.mass,
     }
 
     if (valid) {
@@ -351,7 +370,7 @@ function useGear(
         ) !== null
     }
 
-    return { gear, valid, action }
+    return { gear, valid, action, network }
   }, [context, center, radius, chainFrom, buildVersion])
 }
 
