@@ -23,6 +23,9 @@ export function build(
   }
 
   for (const entity of Object.values(hand.entities)) {
+    // must happen first because of gear logic atm
+    addReverseConnections(context, hand, entity)
+
     switch (entity.type) {
       case EntityType.enum.Gear: {
         buildGear(context, entity)
@@ -30,7 +33,7 @@ export function build(
       }
       case EntityType.enum.Belt:
       case EntityType.enum.BeltIntersection: {
-        buildBelt(context, hand, entity)
+        buildBelt(context, entity)
         break
       }
       default: {
@@ -39,6 +42,7 @@ export function build(
     }
   }
 
+  hand.entities = {}
   incrementBuildVersion(context)
 }
 
@@ -79,6 +83,43 @@ export function validateBuild(
       if (!seen.has(entity)) {
         stack.push(entity)
       }
+    }
+  }
+}
+
+function addReverseConnections(
+  context: IAppContext,
+  hand: BuildHand,
+  entity: Entity,
+): void {
+  // add connections to existing entities
+  for (const connection of entity.connections) {
+    if (hand.entities[connection.entityId]) {
+      const neighbor = hand.entities[connection.entityId]
+      // double check there is a connection back
+      invariant(
+        neighbor?.connections.find(
+          (c) => c.entityId === neighbor.id,
+        ),
+      )
+      continue
+    } else {
+      const neighbor =
+        context.world.entities[connection.entityId]
+      invariant(neighbor)
+
+      // verify there is currently no connection
+      invariant(
+        !neighbor.connections.find(
+          (c) => c.entityId === entity.id,
+        ),
+      )
+
+      neighbor.connections.push({
+        entityId: entity.id,
+        multiplier: 1 / connection.multiplier,
+        type: connection.type,
+      })
     }
   }
 }

@@ -70,22 +70,6 @@ export function buildGear(
 
   invariant(world.entities[gear.id] === undefined)
 
-  for (const connection of gear.connections) {
-    invariant(
-      connection.type !== ConnectionType.enum.Belt,
-      'TODO support belt connections',
-    )
-    // add the a connection in the other direction
-    const node = world.entities[connection.entityId]
-    invariant(node)
-
-    node.connections.push({
-      type: connection.type,
-      entityId: gear.id,
-      multiplier: 1 / connection.multiplier,
-    })
-  }
-
   world.entities[gear.id] = gear
 
   for (const tileId of iterateGearTileIds(
@@ -104,6 +88,7 @@ export function buildGear(
   }
 
   const totalMass = getTotalMass(gear, world)
+  // TODO why do i need to loop?
   for (const c of gear.connections) {
     invariant(
       c.type !== ConnectionType.enum.Belt,
