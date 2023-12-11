@@ -90,7 +90,7 @@ export function build(
   while (stack.length) {
     const current = stack.pop()
     invariant(current)
-    invariant(!seen.has(current))
+    if (seen.has(current)) continue
     seen.add(current)
     for (const connection of current.connections) {
       const entity =
