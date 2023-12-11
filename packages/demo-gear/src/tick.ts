@@ -97,7 +97,16 @@ export function tick(
     }
   }
 
-  for (const entity of Object.values(world.entities)) {
+  const entities = [...Object.values(world.entities)]
+  if (context.hand?.type === HandType.Build) {
+    tickBuild(context, context.hand, elapsed)
+    if (context.hand.valid) {
+      // tick these as well, if valid
+      entities.push(...Object.values(context.hand.entities))
+    }
+  }
+
+  for (const entity of entities) {
     switch (entity.type) {
       case EntityType.enum.Gear: {
         entity.angle = mod(
@@ -115,9 +124,5 @@ export function tick(
         break
       }
     }
-  }
-
-  if (context.hand?.type === HandType.Build) {
-    tickBuild(context, context.hand, elapsed)
   }
 }

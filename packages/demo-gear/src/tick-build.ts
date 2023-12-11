@@ -6,6 +6,7 @@ import {
   BuildHand,
   Connection,
   ConnectionType,
+  Entity,
   EntityType,
   Gear,
   IAppContext,
@@ -17,18 +18,56 @@ export function tickBuild(
   hand: BuildHand,
   elapsed: number,
 ): void {
-  for (const entity of Object.values(hand.entities)) {
-    switch (entity.type) {
-      case EntityType.enum.Gear: {
-        tickBuildGear(context, hand, entity)
-        break
-      }
-      case EntityType.enum.Belt: {
-        tickBuildBelt(context, hand, entity, elapsed)
-        break
+  if (!hand.valid) return
+  const first = getFirstExternalConnection(context, hand)
+  if (!first) return
+  const { root, external, connection } = first
+
+  // TODO get all incoming connections and if they're equal,
+  // update the velocities, otherwise set velocities to zero
+
+  const seen = new Set<Entity>()
+  const stack = new Array<{
+    entity: Entity
+    multiplier: number
+  }>({
+    entity: root,
+    multiplier: connection.multiplier,
+  })
+
+  while (stack.length) {
+    const current = stack.pop()
+    invariant(current)
+    const { entity, multiplier } = current
+    invariant(!seen.has(entity))
+    seen.add(entity)
+    entity.velocity = external.velocity * multiplier
+
+    for (const c of entity.connections) {
+      if (!hand.entities[c.entityId]) continue
+      const neighbor = hand.entities[c.entityId]
+      invariant(neighbor)
+      if (!seen.has(neighbor)) {
+        stack.push({
+          entity: neighbor,
+          multiplier: multiplier * c.multiplier,
+        })
       }
     }
   }
+
+  // for (const entity of Object.values(hand.entities)) {
+  //   switch (entity.type) {
+  //     case EntityType.enum.Gear: {
+  //       tickBuildGear(context, hand, entity)
+  //       break
+  //     }
+  //     case EntityType.enum.Belt: {
+  //       tickBuildBelt(context, hand, entity, elapsed)
+  //       break
+  //     }
+  //   }
+  // }
 }
 
 // prioritize setting angle based on the chain
@@ -78,6 +117,47 @@ function tickBuildGear(
   } else {
     gear.angle = 0
   }
+}
+
+function getFirstExternalConnection(
+  context: IAppContext,
+  hand: BuildHand,
+): {
+  external: Entity
+  root: Entity
+  connection: Connection
+} | null {
+  invariant(hand.valid)
+
+  const root = Object.values(hand.entities).at(0)
+  invariant(root)
+
+  const seen = new Set<Entity>()
+  const stack = new Array<Entity>(root)
+
+  while (stack.length) {
+    const current = stack.pop()
+    invariant(current)
+
+    invariant(!seen.has(current))
+    seen.add(current)
+
+    for (const connection of current.connections) {
+      let entity =
+        context.world.entities[connection.entityId]
+      if (entity) {
+        invariant(!hand.entities[entity.id])
+        return { root, external: entity, connection }
+      }
+      entity = hand.entities[connection.entityId]
+      invariant(entity)
+      if (!seen.has(entity)) {
+        stack.push(entity)
+      }
+    }
+  }
+
+  return null
 }
 
 function getFirstAdjacentGear(
