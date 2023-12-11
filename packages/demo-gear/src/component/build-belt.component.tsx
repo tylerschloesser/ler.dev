@@ -610,8 +610,6 @@ function isValid(
     entities,
   )
 
-  console.log(accelerationMap)
-
   if (!accelerationMap) {
     return false
   }
