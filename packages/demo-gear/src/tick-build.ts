@@ -16,7 +16,7 @@ export function tickBuild(
   invariant(root)
   const external = getExternalConnections(
     context,
-    hand,
+    hand.entities,
     root,
   )
   const ignore = new Set(

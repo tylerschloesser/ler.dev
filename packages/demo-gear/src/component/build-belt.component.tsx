@@ -28,11 +28,10 @@ import {
   HandType,
   IAppContext,
   SimpleVec2,
-  World,
 } from '../types.js'
 import {
   getEntity,
-  getFirstExternalConnection,
+  getExternalConnections,
 } from '../util.js'
 import styles from './build-belt.module.scss'
 import { AppContext } from './context.js'
@@ -566,18 +565,22 @@ function isValid(
     }
   }
 
-  const first = getFirstExternalConnection(context, {
-    type: HandType.Build,
-    // TODO need to refactor this because we don't have hand here yet..
-    entities: Object.values(belts).reduce(
-      (acc, belt) => ({
-        ...acc,
-        [belt.id]: belt,
-      }),
-      {},
-    ),
-    valid: true,
-  })
+  const buildEntities = Object.values(belts).reduce(
+    (acc, belt) => ({
+      ...acc,
+      [belt.id]: belt,
+    }),
+    {},
+  )
+
+  const root = Object.values(belts).at(0)
+  invariant(root)
+
+  const first = getExternalConnections(
+    context,
+    buildEntities,
+    root,
+  ).at(0)
 
   if (!first) {
     // no adjacent gears, belt is not moving
@@ -590,7 +593,7 @@ function isValid(
   }
 
   const accelerationMap = getAccelerationMap(
-    first.root,
+    first.source,
     1,
     entities,
   )

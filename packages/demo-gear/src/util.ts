@@ -8,14 +8,13 @@ import {
 import {
   Connection,
   ConnectionType,
-  GearEntity,
+  Entity,
   EntityId,
+  EntityType,
+  GearEntity,
+  IAppContext,
   SimpleVec2,
   World,
-  EntityType,
-  Entity,
-  IAppContext,
-  BuildHand,
 } from './types.js'
 
 function getConnectionId(a: EntityId, b: EntityId) {
@@ -296,15 +295,15 @@ export function getEntity(
 
 export function getExternalConnections(
   context: IAppContext,
-  hand: BuildHand,
+  buildEntities: World['entities'],
   root: Entity,
 ): {
   source: Entity
   target: Entity
   connection: Connection
 }[] {
-  invariant(hand.valid)
-  invariant(hand.entities[root.id] === root)
+  const worldEntities = context.world.entities
+  invariant(buildEntities[root.id] === root)
 
   const result: ReturnType<typeof getExternalConnections> =
     []
@@ -320,10 +319,9 @@ export function getExternalConnections(
     seen.add(current)
 
     for (const connection of current.connections) {
-      let entity =
-        context.world.entities[connection.entityId]
+      let entity = worldEntities[connection.entityId]
       if (entity) {
-        invariant(!hand.entities[entity.id])
+        invariant(!buildEntities[entity.id])
         result.push({
           source: current,
           target: entity,
@@ -331,7 +329,7 @@ export function getExternalConnections(
         })
         continue
       }
-      entity = hand.entities[connection.entityId]
+      entity = buildEntities[connection.entityId]
       invariant(entity)
       if (!seen.has(entity)) {
         stack.push(entity)
@@ -340,47 +338,6 @@ export function getExternalConnections(
   }
 
   return result
-}
-
-export function getFirstExternalConnection(
-  context: IAppContext,
-  hand: BuildHand,
-): {
-  external: Entity
-  root: Entity
-  connection: Connection
-} | null {
-  invariant(hand.valid)
-
-  const root = Object.values(hand.entities).at(0)
-  invariant(root)
-
-  const seen = new Set<Entity>()
-  const stack = new Array<Entity>(root)
-
-  while (stack.length) {
-    const current = stack.pop()
-    invariant(current)
-
-    invariant(!seen.has(current))
-    seen.add(current)
-
-    for (const connection of current.connections) {
-      let entity =
-        context.world.entities[connection.entityId]
-      if (entity) {
-        invariant(!hand.entities[entity.id])
-        return { root, external: entity, connection }
-      }
-      entity = hand.entities[connection.entityId]
-      invariant(entity)
-      if (!seen.has(entity)) {
-        stack.push(entity)
-      }
-    }
-  }
-
-  return null
 }
 
 export function resetNetwork(

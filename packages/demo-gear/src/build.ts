@@ -11,7 +11,7 @@ import {
   World,
 } from './types.js'
 import {
-  getFirstExternalConnection,
+  getExternalConnections,
   getTotalMass,
   incrementBuildVersion,
   resetNetwork,
@@ -25,7 +25,14 @@ export function build(
 
   // assumption: all entities are connected (i.e. within the same network)
 
-  const first = getFirstExternalConnection(context, hand)
+  const root = Object.values(hand.entities).at(0)
+  invariant(root)
+  const external = getExternalConnections(
+    context,
+    hand.entities,
+    root,
+  )
+  const first = external.at(0)
 
   let totalMassBefore: number = 0
   for (const entity of Object.values(hand.entities)) {
@@ -53,15 +60,12 @@ export function build(
   }
 
   if (first) {
-    const totalMassAfter = getTotalMass(
-      first.external,
-      context.world,
-    )
+    const totalMassAfter = getTotalMass(root, context.world)
 
     conserveEnergy(
       // TODO this needs to be the first external gear that
       // is moving (if any)
-      first.external,
+      first.target,
       context.world,
       totalMassBefore,
       totalMassAfter,
