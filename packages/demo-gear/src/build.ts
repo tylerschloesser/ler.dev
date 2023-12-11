@@ -14,7 +14,7 @@ import {
   getExternalConnections,
   getTotalMass,
   incrementBuildVersion,
-  resetNetwork,
+  resetEntities,
 } from './util.js'
 
 export function build(
@@ -104,7 +104,7 @@ export function addConnection(
   })
 
   // TODO conserve energy instead of lazily destroying it here
-  resetNetwork(context, source)
+  resetEntities(context.world.entities)
 
   incrementBuildVersion(context)
 }

@@ -1,9 +1,8 @@
 import invariant from 'tiny-invariant'
 import { BuildHand, Entity, IAppContext } from './types.js'
 import {
-  getExternalConnections,
   getExternalNetworks,
-  resetNetwork,
+  resetEntities,
 } from './util.js'
 
 export function tickBuild(
@@ -13,57 +12,39 @@ export function tickBuild(
 ): void {
   if (!hand.valid) return
 
+  const root = Object.values(hand.entities).at(0)
+  invariant(root)
   const externalNetworks = getExternalNetworks(
     context,
     hand,
-  )
-  console.log(externalNetworks)
-
-  const root = Object.values(hand.entities).at(0)
-  invariant(root)
-  const external = getExternalConnections(
-    context,
-    hand.entities,
     root,
   )
-  const ignore = new Set(
-    external.map(({ connection }) => connection),
-  )
-  if (external.length === 0) {
-    resetNetwork(context, root, ignore)
-    return
-  }
 
-  const first = external.at(0)
-  invariant(first)
-
-  // 1 over the connection multipler, because this is a connection
-  // in the "wrong" direction (the connection from the first external
-  // entity to the build entity doesn't exist yet)
-  //
-  const incomingVelocity =
-    first.target.velocity *
-    (1 / first.connection.multiplier)
-
-  // check whether all incoming velocities are the same
-  for (const check of external.slice(1)) {
-    if (
-      incomingVelocity !==
-      check.target.velocity *
-        (1 / check.connection.multiplier)
-    ) {
-      // in this case, we are connecting two separate networks.
-      // while building, don't show velocities
-
-      resetNetwork(context, root, ignore)
-      return
+  let incomingVelocity: number | undefined
+  for (const value of Object.values(externalNetworks)) {
+    if (value.incomingVelocity !== 0) {
+      if (incomingVelocity === undefined) {
+        incomingVelocity = value.incomingVelocity
+      } else if (
+        incomingVelocity !== value.incomingVelocity
+      ) {
+        // the networks have differing non-zero velocities
+        // in this case don't animate the build
+        incomingVelocity = undefined
+        break
+      }
     }
   }
 
-  first.source.velocity = incomingVelocity
+  if (incomingVelocity === undefined) {
+    resetEntities(hand.entities)
+    return
+  }
+
+  root.velocity = incomingVelocity
 
   const seen = new Set<Entity>()
-  const stack = new Array<Entity>(first.source)
+  const stack = new Array<Entity>(root)
 
   while (stack.length) {
     const current = stack.pop()

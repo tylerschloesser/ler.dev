@@ -14,7 +14,6 @@ import {
   EntityType,
   GearEntity,
   IAppContext,
-  Network,
   NetworkId,
   SimpleVec2,
   World,
@@ -343,43 +342,22 @@ export function getExternalConnections(
   return result
 }
 
-export function resetNetwork(
-  context: IAppContext,
-  root: Entity,
-  ignore: Set<Connection> = new Set(),
+export function resetEntities(
+  entities: World['entities'],
 ): void {
-  const seen = new Set<Entity>()
-  const stack = new Array<Entity>(root)
-
-  while (stack.length) {
-    const current = stack.pop()
-    invariant(current)
-    invariant(!seen.has(current))
-    seen.add(current)
-
-    current.velocity = 0
-    switch (current.type) {
+  for (const entity of Object.values(entities)) {
+    switch (entity.type) {
       case EntityType.enum.Gear: {
-        current.angle = 0
+        entity.angle = 0
         break
       }
       case EntityType.enum.Belt:
       case EntityType.enum.BeltIntersection: {
-        current.offset = 0
+        entity.offset = 0
         break
       }
       default: {
         invariant(false)
-      }
-    }
-
-    for (const connection of current.connections) {
-      if (ignore.has(connection)) continue
-      const neighbor =
-        context.world.entities[connection.entityId]
-      invariant(neighbor)
-      if (!seen.has(neighbor)) {
-        stack.push(neighbor)
       }
     }
   }
@@ -388,12 +366,13 @@ export function resetNetwork(
 export function getExternalNetworks(
   context: IAppContext,
   hand: BuildHand,
+  root: Entity,
 ): Record<
   NetworkId,
   {
     externalEntity: Entity
     internalEntity: Entity
-    outgoingConnection: Connection
+    incomingVelocity: number
   }
 > {
   invariant(Object.keys(hand.networks).length === 1)
@@ -403,29 +382,43 @@ export function getExternalNetworks(
   const worldEntities = context.world.entities
   const buildEntities = hand.entities
 
-  const root = Object.values(buildEntities).at(0)
-  invariant(root)
-
   const seen = new Set<Entity>()
-  const stack = new Array<Entity>(root)
+  const stack = new Array<{
+    entity: Entity
+    multiplier: number
+  }>({
+    entity: root,
+    multiplier: 1,
+  })
 
   while (stack.length) {
     const current = stack.pop()
     invariant(current)
 
-    invariant(!seen.has(current))
-    seen.add(current)
+    invariant(!seen.has(current.entity))
+    seen.add(current.entity)
 
-    for (const connection of current.connections) {
+    for (const connection of current.entity.connections) {
       let entity = worldEntities[connection.entityId]
+      const multiplier =
+        connection.multiplier * current.multiplier
+      invariant(multiplier !== 0)
       if (entity) {
         let entry = result[entity.networkId]
         if (!entry) {
           result[entity.networkId] = {
             externalEntity: entity,
-            internalEntity: current,
-            outgoingConnection: connection,
+            internalEntity: current.entity,
+            incomingVelocity:
+              entity.velocity * (1 / multiplier),
           }
+        } else {
+          // incoming velocities should be the same for all
+          // entities on the same network
+          invariant(
+            entry.incomingVelocity ===
+              entity.velocity * (1 / multiplier),
+          )
         }
         continue
       }
@@ -433,7 +426,7 @@ export function getExternalNetworks(
       entity = buildEntities[connection.entityId]
       invariant(entity)
       if (!seen.has(entity)) {
-        stack.push(entity)
+        stack.push({ entity, multiplier })
       }
     }
   }
