@@ -15,7 +15,6 @@ import { getAccelerationMap } from '../apply-torque.js'
 import { addChainConnection } from '../build-gear.js'
 import { build } from '../build.js'
 import { MAX_RADIUS, MIN_RADIUS } from '../const.js'
-import { getEnergy } from '../energy.js'
 import {
   BuildHand,
   CameraListenerFn,
@@ -27,14 +26,11 @@ import {
   HandType,
   IAppContext,
   SimpleVec2,
-  TileId,
-  World,
 } from '../types.js'
 import {
   clamp,
   getEntity,
   getIntersectingEntities,
-  iterateAdjacentGears,
 } from '../util.js'
 import { Vec2 } from '../vec2.js'
 import styles from './build-gear.module.scss'
@@ -448,6 +444,27 @@ function getConnections(
                   entity.center.y
               break
             }
+            case Direction.S: {
+              connected =
+                center.x === entity.center.x &&
+                center.y + (radius + entity.radius) ===
+                  entity.center.y
+              break
+            }
+            case Direction.E: {
+              connected =
+                center.y === entity.center.y &&
+                center.x + (radius + entity.radius) ===
+                  entity.center.x
+              break
+            }
+            case Direction.W: {
+              connected =
+                center.y === entity.center.y &&
+                center.x - (radius + entity.radius) ===
+                  entity.center.x
+              break
+            }
           }
           if (connected) {
             connections.push({
@@ -461,17 +478,5 @@ function getConnections(
       }
     }
   }
-
-  // for (const gear of iterateAdjacentGears(
-  //   center,
-  //   radius,
-  //   world,
-  // )) {
-  //   connections.push({
-  //     type: ConnectionType.enum.Adjacent,
-  //     entityId: gear.id,
-  //     multiplier: -1,
-  //   })
-  // }
   return connections
 }

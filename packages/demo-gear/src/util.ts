@@ -181,43 +181,6 @@ export function* iterateOverlappingGears(
   }
 }
 
-const DELTAS = [
-  [-1, 0],
-  [1, 0],
-  [0, -1],
-  [0, 1],
-]
-
-export function* iterateAdjacentGears(
-  center: SimpleVec2,
-  radius: number,
-  world: World,
-) {
-  for (const [dx, dy] of DELTAS) {
-    invariant(dx !== undefined)
-    invariant(dy !== undefined)
-    const tileId =
-      `${center.x + dx * (radius + 1)}` +
-      `.${center.y + dy * (radius + 1)}`
-    const tile = world.tiles[tileId]
-
-    if (!tile?.entityId) {
-      continue
-    }
-
-    const gear = world.entities[tile.entityId]
-    if (
-      gear?.type === EntityType.enum.Gear &&
-      gear.center.x + (gear.radius + radius) * -dx ===
-        center.x &&
-      gear.center.y + (gear.radius + radius) * -dy ===
-        center.y
-    ) {
-      yield gear
-    }
-  }
-}
-
 export function clamp(
   v: number,
   min: number,
