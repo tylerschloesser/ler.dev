@@ -1,8 +1,10 @@
 import invariant from 'tiny-invariant'
 import { buildBelt } from './build-belt.js'
-import { buildGear } from './build-gear.js'
+import { buildGear, resetNetwork } from './build-gear.js'
 import {
   BuildHand,
+  Connection,
+  ConnectionType,
   Entity,
   EntityType,
   IAppContext,
@@ -66,6 +68,39 @@ export function build(
   }
 
   hand.entities = {}
+  incrementBuildVersion(context)
+}
+
+export function addConnection(
+  context: IAppContext,
+  source: Entity,
+  target: Entity,
+  connection: Connection,
+): void {
+  invariant(source.type === EntityType.enum.Gear)
+  invariant(target.type === EntityType.enum.Gear)
+  invariant(connection.type === ConnectionType.enum.Chain)
+  invariant(connection.multiplier === 1)
+  invariant(target.id === connection.entityId)
+
+  // there shouldn't be any existing connections
+  // from source to target
+  invariant(
+    !source.connections.find(
+      (c) => c.entityId === target.id,
+    ),
+  )
+
+  source.connections.push(connection)
+  target.connections.push({
+    type: connection.type,
+    entityId: source.id,
+    multiplier: 1 / connection.multiplier,
+  })
+
+  // TODO conserve energy instead of lazily destroying it here
+  resetNetwork(context, source)
+
   incrementBuildVersion(context)
 }
 

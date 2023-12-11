@@ -12,8 +12,7 @@ import {
 } from 'react-router-dom'
 import invariant from 'tiny-invariant'
 import { getAccelerationMap } from '../apply-torque.js'
-import { addChainConnection } from '../build-gear.js'
-import { build } from '../build.js'
+import { addConnection, build } from '../build.js'
 import { MAX_RADIUS, MIN_RADIUS } from '../const.js'
 import {
   BuildHand,
@@ -133,10 +132,15 @@ export function BuildGear() {
               if (!chainFrom) {
                 setChainFrom(action.target)
               } else {
-                addChainConnection(
+                addConnection(
+                  context,
                   chainFrom,
                   action.target,
-                  context,
+                  {
+                    type: ConnectionType.enum.Chain,
+                    entityId: action.target.id,
+                    multiplier: 1,
+                  },
                 )
                 setChainFrom(null)
               }

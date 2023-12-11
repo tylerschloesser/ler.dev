@@ -1,38 +1,12 @@
 import invariant from 'tiny-invariant'
 import {
   ConnectionType,
+  Entity,
   EntityType,
   GearEntity,
   IAppContext,
 } from './types.js'
-import {
-  getEntity,
-  incrementBuildVersion,
-  iterateGearTileIds,
-} from './util.js'
-
-export function addChainConnection(
-  gear1: GearEntity,
-  gear2: GearEntity,
-  context: IAppContext,
-): void {
-  // TODO validate
-  gear1.connections.push({
-    type: ConnectionType.enum.Chain,
-    entityId: gear2.id,
-    multiplier: 1,
-  })
-  gear2.connections.push({
-    type: ConnectionType.enum.Chain,
-    entityId: gear1.id,
-    multiplier: 1,
-  })
-
-  // TODO conserve energy!
-
-  // TODO consolidate this with build somehow?
-  incrementBuildVersion(context)
-}
+import { getEntity, iterateGearTileIds } from './util.js'
 
 export function buildGear(
   context: IAppContext,
@@ -66,6 +40,46 @@ export function buildGear(
     } else {
       invariant(tile === undefined)
       tile = world.tiles[tileId] = { entityId: gear.id }
+    }
+  }
+}
+
+export function resetNetwork(
+  context: IAppContext,
+  root: Entity,
+): void {
+  const seen = new Set<Entity>()
+  const stack = new Array<Entity>(root)
+
+  while (stack.length) {
+    const current = stack.pop()
+    invariant(current)
+    invariant(!seen.has(current))
+    seen.add(current)
+
+    current.velocity = 0
+    switch (current.type) {
+      case EntityType.enum.Gear: {
+        current.angle = 0
+        break
+      }
+      case EntityType.enum.Belt:
+      case EntityType.enum.BeltIntersection: {
+        current.offset = 0
+        break
+      }
+      default: {
+        invariant(false)
+      }
+    }
+
+    for (const connection of current.connections) {
+      const neighbor =
+        context.world.entities[connection.entityId]
+      invariant(neighbor)
+      if (!seen.has(neighbor)) {
+        stack.push(neighbor)
+      }
     }
   }
 }
