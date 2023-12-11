@@ -24,11 +24,12 @@ import {
   Gear,
   HandType,
   SimpleVec2,
+  World,
 } from '../types.js'
 import {
   clamp,
-  getAdjacentConnections,
   getIntersectingEntities,
+  iterateAdjacentGears,
 } from '../util.js'
 import { Vec2 } from '../vec2.js'
 import styles from './build-gear.module.scss'
@@ -378,4 +379,24 @@ function useChainFrom(): [
     [setSearchParams],
   )
   return [chainFrom, setChainFrom]
+}
+
+function getAdjacentConnections(
+  center: SimpleVec2,
+  radius: number,
+  world: World,
+): Connection[] {
+  const connections: Connection[] = []
+  for (const gear of iterateAdjacentGears(
+    center,
+    radius,
+    world,
+  )) {
+    connections.push({
+      type: ConnectionType.enum.Adjacent,
+      entityId: gear.id,
+      multiplier: -1,
+    })
+  }
+  return connections
 }

@@ -188,7 +188,7 @@ const DELTAS = [
   [0, 1],
 ]
 
-function* iterateAdjacentGears(
+export function* iterateAdjacentGears(
   center: SimpleVec2,
   radius: number,
   world: World,
@@ -216,27 +216,6 @@ function* iterateAdjacentGears(
       yield gear
     }
   }
-}
-
-export function getAdjacentConnections(
-  center: SimpleVec2,
-  radius: number,
-  world: World,
-): Connection[] {
-  const connections: Connection[] = []
-  for (const gear of iterateAdjacentGears(
-    center,
-    radius,
-    world,
-  )) {
-    connections.push({
-      type: ConnectionType.enum.Adjacent,
-      entityId: gear.id,
-      //multiplier: -1 * (radius / gear.radius),
-      multiplier: -1,
-    })
-  }
-  return connections
 }
 
 export function clamp(
