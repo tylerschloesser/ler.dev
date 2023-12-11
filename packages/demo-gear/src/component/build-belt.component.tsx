@@ -28,8 +28,12 @@ import {
   HandType,
   IAppContext,
   SimpleVec2,
+  World,
 } from '../types.js'
-import { getEntity } from '../util.js'
+import {
+  getEntity,
+  getFirstExternalConnection,
+} from '../util.js'
 import styles from './build-belt.module.scss'
 import { AppContext } from './context.js'
 import { Overlay } from './overlay.component.js'
@@ -142,7 +146,7 @@ function getBeltConnections(
           connections.push({
             type: ConnectionType.enum.Adjacent,
             entityId: entity.id,
-            multiplier: -1 * entity.radius,
+            multiplier: -1,
           })
 
           break
@@ -180,7 +184,7 @@ function getBeltConnections(
           connections.push({
             type: ConnectionType.enum.Adjacent,
             entityId: entity.id,
-            multiplier: 1 * entity.radius,
+            multiplier: 1,
           })
 
           break
@@ -221,7 +225,7 @@ function getBeltConnections(
           connections.push({
             type: ConnectionType.enum.Adjacent,
             entityId: entity.id,
-            multiplier: -1 * entity.radius,
+            multiplier: -1,
           })
 
           break
@@ -259,7 +263,7 @@ function getBeltConnections(
           connections.push({
             type: ConnectionType.enum.Adjacent,
             entityId: entity.id,
-            multiplier: 1 * entity.radius,
+            multiplier: 1,
           })
 
           break
@@ -562,11 +566,20 @@ function isValid(
     }
   }
 
-  const adjacent = getFirstAdjacentConnection(
-    context,
-    belts,
-  )
-  if (!adjacent) {
+  const first = getFirstExternalConnection(context, {
+    type: HandType.Build,
+    // TODO need to refactor this because we don't have hand here yet..
+    entities: Object.values(belts).reduce(
+      (acc, belt) => ({
+        ...acc,
+        [belt.id]: belt,
+      }),
+      {},
+    ),
+    valid: true,
+  })
+
+  if (!first) {
     // no adjacent gears, belt is not moving
     return true
   }
@@ -577,10 +590,12 @@ function isValid(
   }
 
   const accelerationMap = getAccelerationMap(
-    adjacent.belt,
-    adjacent.connection.multiplier,
+    first.root,
+    1,
     entities,
   )
+
+  console.log(accelerationMap)
 
   if (!accelerationMap) {
     return false

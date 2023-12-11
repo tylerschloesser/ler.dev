@@ -1,10 +1,5 @@
 import invariant from 'tiny-invariant'
-import {
-  Entity,
-  EntityType,
-  GearEntity,
-  World,
-} from './types.js'
+import { Entity, GearEntity, World } from './types.js'
 import { getTotalMass } from './util.js'
 
 export function getAccelerationMap(
