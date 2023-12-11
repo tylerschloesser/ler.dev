@@ -8,7 +8,6 @@ import {
   Entity,
   EntityType,
   IAppContext,
-  World,
 } from './types.js'
 import {
   getExternalNetworks,
@@ -221,42 +220,5 @@ function addReverseConnections(
       multiplier: 1 / connection.multiplier,
       type: connection.type,
     })
-  }
-}
-
-function conserveEnergy(
-  root: Entity,
-  world: World,
-  totalMassBefore: number,
-  totalMassAfter: number,
-): void {
-  invariant(totalMassAfter >= totalMassBefore)
-
-  if (totalMassAfter === totalMassBefore) {
-    // optimization
-    return
-  }
-
-  root.velocity =
-    root.velocity * (totalMassBefore / totalMassAfter)
-
-  const seen = new Set<Entity>()
-  const stack = new Array<Entity>(root)
-
-  while (stack.length) {
-    const tail = stack.pop()
-    invariant(tail)
-
-    if (seen.has(tail)) {
-      continue
-    }
-    seen.add(tail)
-
-    for (const c of tail.connections) {
-      const neighbor = world.entities[c.entityId]
-      invariant(neighbor)
-      neighbor.velocity = tail.velocity * c.multiplier
-      stack.push(neighbor)
-    }
   }
 }
