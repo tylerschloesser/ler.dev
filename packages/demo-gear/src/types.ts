@@ -176,10 +176,21 @@ export const Entity = z.discriminatedUnion('type', [
 ])
 export type Entity = z.infer<typeof Entity>
 
+export const NetworkId = z.string()
+export type NetworkId = z.infer<typeof NetworkId>
+
+export const Network = z.strictObject({
+  id: NetworkId,
+  rootId: EntityId,
+  entityIds: z.record(EntityId, z.literal(true)),
+  mass: z.number(),
+})
+
 export const World = z.strictObject({
   version: z.number(),
   entities: z.record(EntityId, Entity),
   tiles: z.record(TileId, Tile),
+  networks: z.record(NetworkId, Network),
 })
 export type World = z.infer<typeof World>
 

@@ -26,6 +26,7 @@ export async function getDefaultWorld(): Promise<World> {
     version: 1,
     entities: {},
     tiles: {},
+    networks: {},
   }
   return world
 }
