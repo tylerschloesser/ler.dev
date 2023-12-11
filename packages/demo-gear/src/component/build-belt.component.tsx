@@ -508,31 +508,28 @@ function useHand(
 ): BuildHand {
   const context = use(AppContext)
 
-  const entities: Record<EntityId, Entity> = {}
-  for (const belt of belts) {
-    entities[belt.id] = belt
-  }
+  const hand = useMemo<BuildHand>(() => {
+    const entities: Record<EntityId, Entity> = {}
+    for (const belt of belts) {
+      entities[belt.id] = belt
+    }
 
-  const hand = useRef<BuildHand>({
-    type: HandType.Build,
-    entities,
-    networks: { [network.id]: network },
-    valid,
-  })
+    return {
+      type: HandType.Build,
+      entities,
+      networks: { [network.id]: network },
+      valid,
+    }
+  }, [belts, network, valid])
 
   useEffect(() => {
-    context.hand = hand.current
+    context.hand = hand
     return () => {
       context.hand = null
     }
   }, [])
 
-  useEffect(() => {
-    hand.current.entities = entities
-    hand.current.valid = valid
-  }, [belts, valid])
-
-  return hand.current
+  return hand
 }
 
 function useSavedStart(): [
