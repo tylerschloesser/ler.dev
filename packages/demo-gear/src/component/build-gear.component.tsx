@@ -15,19 +15,24 @@ import { getAccelerationMap } from '../apply-torque.js'
 import { addChainConnection } from '../build-gear.js'
 import { build } from '../build.js'
 import { MAX_RADIUS, MIN_RADIUS } from '../const.js'
+import { getEnergy } from '../energy.js'
 import {
   BuildHand,
   CameraListenerFn,
   Connection,
   ConnectionType,
+  Entity,
   EntityType,
   Gear,
   HandType,
+  IAppContext,
   SimpleVec2,
+  TileId,
   World,
 } from '../types.js'
 import {
   clamp,
+  getEntity,
   getIntersectingEntities,
   iterateAdjacentGears,
 } from '../util.js'
@@ -291,10 +296,11 @@ function useGear(
 
     if (valid) {
       connections.push(
-        ...getAdjacentConnections(
+        ...getConnections(
+          context,
+          position,
           center,
           radius,
-          context.world,
         ),
       )
       if (chainFrom) {
@@ -381,22 +387,91 @@ function useChainFrom(): [
   return [chainFrom, setChainFrom]
 }
 
-function getAdjacentConnections(
+enum Direction {
+  N = 'north',
+  S = 'south',
+  E = 'east',
+  W = 'west',
+}
+
+function getConnections(
+  context: IAppContext,
+  position: SimpleVec2,
   center: SimpleVec2,
   radius: number,
-  world: World,
 ): Connection[] {
   const connections: Connection[] = []
-  for (const gear of iterateAdjacentGears(
-    center,
-    radius,
-    world,
-  )) {
-    connections.push({
-      type: ConnectionType.enum.Adjacent,
-      entityId: gear.id,
-      multiplier: -1,
-    })
+  const seen = new Set<Entity>()
+
+  for (const direction of Object.values(Direction)) {
+    for (let i = 0; i < 2; i++) {
+      let dx: number, dy: number
+      switch (direction) {
+        case Direction.N: {
+          dx = i
+          dy = -1
+          break
+        }
+        case Direction.S: {
+          dx = i
+          dy = radius * 2
+          break
+        }
+        case Direction.E: {
+          dx = radius * 2
+          dy = i
+          break
+        }
+        case Direction.W: {
+          dx = -1
+          dy = i
+          break
+        }
+      }
+
+      const tileId = `${position.x + dx}.${position.y + dy}`
+      const tile = context.world.tiles[tileId]
+      if (!tile?.entityId) continue
+      const entity = getEntity(context, tile.entityId)
+
+      if (seen.has(entity)) continue
+      seen.add(entity)
+
+      switch (entity.type) {
+        case EntityType.enum.Gear: {
+          let connected: boolean = false
+          switch (direction) {
+            case Direction.N: {
+              connected =
+                center.x === entity.center.x &&
+                center.y - (radius + entity.radius) ===
+                  entity.center.y
+              break
+            }
+          }
+          if (connected) {
+            connections.push({
+              type: ConnectionType.enum.Adjacent,
+              entityId: entity.id,
+              multiplier: -1,
+            })
+          }
+          break
+        }
+      }
+    }
   }
+
+  // for (const gear of iterateAdjacentGears(
+  //   center,
+  //   radius,
+  //   world,
+  // )) {
+  //   connections.push({
+  //     type: ConnectionType.enum.Adjacent,
+  //     entityId: gear.id,
+  //     multiplier: -1,
+  //   })
+  // }
   return connections
 }
