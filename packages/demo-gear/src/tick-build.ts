@@ -22,17 +22,15 @@ export function tickBuild(
 
   let incomingVelocity: number | undefined
   for (const value of Object.values(externalNetworks)) {
-    if (value.incomingVelocity !== 0) {
-      if (incomingVelocity === undefined) {
-        incomingVelocity = value.incomingVelocity
-      } else if (
-        incomingVelocity !== value.incomingVelocity
-      ) {
-        // the networks have differing non-zero velocities
-        // in this case don't animate the build
-        incomingVelocity = undefined
-        break
-      }
+    if (incomingVelocity === undefined) {
+      incomingVelocity = value.incomingVelocity
+    } else if (
+      incomingVelocity !== value.incomingVelocity
+    ) {
+      // the networks have differing non-zero velocities
+      // in this case don't animate the build
+      incomingVelocity = undefined
+      break
     }
   }
 

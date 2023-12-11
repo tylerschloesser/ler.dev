@@ -26,6 +26,7 @@ import {
   IAppContext,
   Network,
   SimpleVec2,
+  World,
 } from '../types.js'
 import {
   clamp,
@@ -66,13 +67,13 @@ export function BuildGear() {
   const [radius, setRadius] = useRadius()
   const center = useCenter()
   const [chainFrom, setChainFrom] = useChainFrom()
-  const { gear, network, valid, action } = useGear(
+  const { entities, networks, valid, action } = useEntities(
     center,
     radius,
     chainFrom,
   )
 
-  const hand = useHand(gear, network, valid)
+  const hand = useHand(entities, networks, valid)
 
   const navigate = useNavigate()
 
@@ -166,8 +167,8 @@ export function BuildGear() {
 }
 
 function useHand(
-  gear: Gear,
-  network: Network,
+  entities: World['entities'],
+  networks: World['networks'],
   valid: boolean,
 ): BuildHand {
   const context = use(AppContext)
@@ -175,11 +176,11 @@ function useHand(
   const hand = useMemo<BuildHand>(
     () => ({
       type: HandType.Build,
-      entities: { [gear.id]: gear },
-      networks: { [network.id]: network },
+      entities,
+      networks,
       valid,
     }),
-    [gear, network, valid],
+    [entities, networks, valid],
   )
 
   useEffect(() => {
@@ -242,15 +243,15 @@ function useCenter(): SimpleVec2 {
   return center
 }
 
-function useGear(
+function useEntities(
   center: SimpleVec2,
   radius: number,
   chainFrom: Gear | null,
 ): {
-  gear: Gear
+  entities: World['entities']
+  networks: World['networks']
   valid: boolean
   action: Action
-  network: Network
 } {
   const context = use(AppContext)
   const buildVersion = useWorldBuildVersion()
@@ -368,7 +369,15 @@ function useGear(
         ) !== null
     }
 
-    return { gear, valid, action, network }
+    const entities = {
+      [gear.id]: gear,
+    }
+
+    const networks = {
+      [network.id]: network,
+    }
+
+    return { entities, networks, valid, action }
   }, [context, center, radius, chainFrom, buildVersion])
 }
 

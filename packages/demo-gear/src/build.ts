@@ -103,8 +103,20 @@ export function build(
     }
   }
 
+  resetGearAngles(context)
+
   hand.entities = {}
   incrementBuildVersion(context)
+}
+
+function resetGearAngles(context: IAppContext): void {
+  for (const entity of Object.values(
+    context.world.entities,
+  )) {
+    if (entity.type === EntityType.enum.Gear) {
+      entity.angle = 0
+    }
+  }
 }
 
 export function addConnection(
@@ -134,8 +146,54 @@ export function addConnection(
     multiplier: 1 / connection.multiplier,
   })
 
-  // TODO conserve energy instead of lazily destroying it here
-  resetEntities(context.world.entities)
+  if (source.networkId !== target.networkId) {
+    const sourceNetwork =
+      context.world.networks[source.networkId]
+    invariant(sourceNetwork)
+    const targetNetwork =
+      context.world.networks[target.networkId]
+    invariant(targetNetwork)
+
+    sourceNetwork.mass += targetNetwork.mass
+
+    source.velocity +=
+      target.velocity *
+      (targetNetwork.mass / sourceNetwork.mass)
+
+    for (const entityId of Object.keys(
+      targetNetwork.entityIds,
+    )) {
+      const entity = context.world.entities[entityId]
+      invariant(entity?.networkId === targetNetwork.id)
+      entity.networkId = sourceNetwork.id
+      invariant(!sourceNetwork.entityIds[entity.id])
+      sourceNetwork.entityIds[entity.id] = true
+    }
+
+    delete context.world.networks[targetNetwork.id]
+
+    // propogate the root velocity outward
+    const seen = new Set<Entity>()
+    const stack = new Array<Entity>(source)
+    while (stack.length) {
+      const current = stack.pop()
+      invariant(current)
+      if (seen.has(current)) continue
+      seen.add(current)
+      for (const connection of current.connections) {
+        const entity =
+          context.world.entities[connection.entityId]
+        invariant(entity?.networkId === source.networkId)
+        if (!seen.has(entity)) {
+          entity.velocity =
+            current.velocity * connection.multiplier
+          stack.push(entity)
+        }
+      }
+    }
+  }
+
+  resetGearAngles(context)
 
   incrementBuildVersion(context)
 }
