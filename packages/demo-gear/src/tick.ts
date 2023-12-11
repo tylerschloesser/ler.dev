@@ -110,7 +110,8 @@ export function tick(
     switch (entity.type) {
       case EntityType.enum.Gear: {
         entity.angle = mod(
-          entity.angle + entity.velocity * elapsed,
+          entity.angle +
+            (entity.velocity / entity.radius) * elapsed,
           TWO_PI,
         )
         break

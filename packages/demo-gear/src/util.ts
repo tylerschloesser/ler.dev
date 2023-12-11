@@ -15,6 +15,7 @@ import {
   EntityType,
   Entity,
   IAppContext,
+  BuildHand,
 } from './types.js'
 
 function getConnectionId(a: EntityId, b: EntityId) {
@@ -348,4 +349,45 @@ export function getEntity(
   const entity = context.world.entities[id]
   invariant(entity)
   return entity
+}
+
+export function getFirstExternalConnection(
+  context: IAppContext,
+  hand: BuildHand,
+): {
+  external: Entity
+  root: Entity
+  connection: Connection
+} | null {
+  invariant(hand.valid)
+
+  const root = Object.values(hand.entities).at(0)
+  invariant(root)
+
+  const seen = new Set<Entity>()
+  const stack = new Array<Entity>(root)
+
+  while (stack.length) {
+    const current = stack.pop()
+    invariant(current)
+
+    invariant(!seen.has(current))
+    seen.add(current)
+
+    for (const connection of current.connections) {
+      let entity =
+        context.world.entities[connection.entityId]
+      if (entity) {
+        invariant(!hand.entities[entity.id])
+        return { root, external: entity, connection }
+      }
+      entity = hand.entities[connection.entityId]
+      invariant(entity)
+      if (!seen.has(entity)) {
+        stack.push(entity)
+      }
+    }
+  }
+
+  return null
 }

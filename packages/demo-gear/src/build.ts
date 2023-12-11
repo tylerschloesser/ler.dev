@@ -9,6 +9,7 @@ import {
   World,
 } from './types.js'
 import {
+  getFirstExternalConnection,
   getTotalMass,
   incrementBuildVersion,
 } from './util.js'
@@ -20,6 +21,8 @@ export function build(
   validateBuild(context, hand)
 
   // assumption: all entities are connected (i.e. within the same network)
+
+  const first = getFirstExternalConnection(context, hand)
 
   let totalMassBefore: number = 0
   for (const entity of Object.values(hand.entities)) {
@@ -46,16 +49,21 @@ export function build(
     }
   }
 
-  const root = Object.values(hand.entities).at(0)
-  invariant(root)
-  const totalMassAfter = getTotalMass(root, context.world)
+  if (first) {
+    const totalMassAfter = getTotalMass(
+      first.external,
+      context.world,
+    )
 
-  conserveEnergy(
-    root,
-    context.world,
-    totalMassBefore,
-    totalMassAfter,
-  )
+    conserveEnergy(
+      // TODO this needs to be the first external gear that
+      // is moving (if any)
+      first.external,
+      context.world,
+      totalMassBefore,
+      totalMassAfter,
+    )
+  }
 
   hand.entities = {}
   incrementBuildVersion(context)

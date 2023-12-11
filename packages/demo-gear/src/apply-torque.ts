@@ -1,5 +1,10 @@
 import invariant from 'tiny-invariant'
-import { Entity, GearEntity, World } from './types.js'
+import {
+  Entity,
+  EntityType,
+  GearEntity,
+  World,
+} from './types.js'
 import { getTotalMass } from './util.js'
 
 export function getAccelerationMap(
@@ -64,7 +69,17 @@ export function applyForce(
     acceleration,
   ] of accelerationMap.entries()) {
     const dv = acceleration * elapsed
-    entity.velocity += dv
+    switch (entity.type) {
+      case EntityType.enum.Gear: {
+        entity.velocity += dv / entity.radius
+        break
+      }
+      case EntityType.enum.Belt:
+      case EntityType.enum.BeltIntersection: {
+        entity.velocity += dv
+        break
+      }
+    }
   }
 }
 
