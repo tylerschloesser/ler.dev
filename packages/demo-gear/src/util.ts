@@ -6,6 +6,7 @@ import {
   MIN_ZOOM,
 } from './const.js'
 import {
+  BuildHand,
   Connection,
   ConnectionType,
   Entity,
@@ -13,6 +14,8 @@ import {
   EntityType,
   GearEntity,
   IAppContext,
+  Network,
+  NetworkId,
   SimpleVec2,
   World,
 } from './types.js'
@@ -380,4 +383,60 @@ export function resetNetwork(
       }
     }
   }
+}
+
+export function getExternalNetworks(
+  context: IAppContext,
+  hand: BuildHand,
+): Record<
+  NetworkId,
+  {
+    externalEntity: Entity
+    internalEntity: Entity
+    outgoingConnection: Connection
+  }
+> {
+  invariant(Object.keys(hand.networks).length === 1)
+
+  const result: ReturnType<typeof getExternalNetworks> = {}
+
+  const worldEntities = context.world.entities
+  const buildEntities = hand.entities
+
+  const root = Object.values(buildEntities).at(0)
+  invariant(root)
+
+  const seen = new Set<Entity>()
+  const stack = new Array<Entity>(root)
+
+  while (stack.length) {
+    const current = stack.pop()
+    invariant(current)
+
+    invariant(!seen.has(current))
+    seen.add(current)
+
+    for (const connection of current.connections) {
+      let entity = worldEntities[connection.entityId]
+      if (entity) {
+        let entry = result[entity.networkId]
+        if (!entry) {
+          result[entity.networkId] = {
+            externalEntity: entity,
+            internalEntity: current,
+            outgoingConnection: connection,
+          }
+        }
+        continue
+      }
+
+      entity = buildEntities[connection.entityId]
+      invariant(entity)
+      if (!seen.has(entity)) {
+        stack.push(entity)
+      }
+    }
+  }
+
+  return result
 }

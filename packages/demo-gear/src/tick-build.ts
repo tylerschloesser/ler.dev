@@ -2,6 +2,7 @@ import invariant from 'tiny-invariant'
 import { BuildHand, Entity, IAppContext } from './types.js'
 import {
   getExternalConnections,
+  getExternalNetworks,
   resetNetwork,
 } from './util.js'
 
@@ -11,6 +12,12 @@ export function tickBuild(
   elapsed: number,
 ): void {
   if (!hand.valid) return
+
+  const externalNetworks = getExternalNetworks(
+    context,
+    hand,
+  )
+  console.log(externalNetworks)
 
   const root = Object.values(hand.entities).at(0)
   invariant(root)
