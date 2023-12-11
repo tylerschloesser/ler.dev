@@ -142,7 +142,7 @@ function getBeltConnections(
           connections.push({
             type: ConnectionType.enum.Adjacent,
             entityId: entity.id,
-            multiplier: -1,
+            multiplier: -1 * entity.radius,
           })
 
           break
@@ -180,7 +180,7 @@ function getBeltConnections(
           connections.push({
             type: ConnectionType.enum.Adjacent,
             entityId: entity.id,
-            multiplier: 1,
+            multiplier: 1 * entity.radius,
           })
 
           break
@@ -221,7 +221,7 @@ function getBeltConnections(
           connections.push({
             type: ConnectionType.enum.Adjacent,
             entityId: entity.id,
-            multiplier: -1,
+            multiplier: -1 * entity.radius,
           })
 
           break
@@ -259,7 +259,7 @@ function getBeltConnections(
           connections.push({
             type: ConnectionType.enum.Adjacent,
             entityId: entity.id,
-            multiplier: 1,
+            multiplier: 1 * entity.radius,
           })
 
           break
