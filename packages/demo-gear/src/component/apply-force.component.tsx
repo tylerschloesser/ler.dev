@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import invariant from 'tiny-invariant'
 import {
   CenterTileIdListener,
+  EntityId,
   EntityType,
   HandType,
 } from '../types.js'
@@ -22,7 +23,10 @@ export function ApplyForce() {
   const [magnitude, setMagnitude] = useState(
     INITIAL_MAGNITUDE,
   )
-  const [disabled, setDisabled] = useState<boolean>(true)
+  const [gearId, setGearId] = useState<EntityId | null>(
+    null,
+  )
+  const disabled = gearId === null
 
   useEffect(() => {
     context.hand = {
@@ -47,10 +51,10 @@ export function ApplyForce() {
         )
         if (entity?.type === EntityType.enum.Gear) {
           context.hand.gear = entity
-          setDisabled(false)
+          setGearId(entity.id)
         } else {
           context.hand.gear = null
-          setDisabled(true)
+          setGearId(null)
         }
       }
     context.centerTileIdListeners.add(centerTileIdListener)
@@ -68,12 +72,6 @@ export function ApplyForce() {
     invariant(context.hand?.type === HandType.ApplyForce)
     context.hand.magnitude = magnitude
   }, [context, magnitude])
-
-  let gearId
-  if (context.hand) {
-    invariant(context.hand.type === HandType.ApplyForce)
-    gearId = context.hand.gear?.id ?? null
-  }
 
   return (
     <>

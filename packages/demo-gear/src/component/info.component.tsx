@@ -23,8 +23,7 @@ function getEnergy(
 
     switch (entity.type) {
       case EntityType.enum.Gear: {
-        energy +=
-          0.5 * 0.5 * entity.mass * entity.velocity ** 2
+        energy += 0.5 * entity.mass * entity.velocity ** 2
         break
       }
       case EntityType.enum.Belt:
