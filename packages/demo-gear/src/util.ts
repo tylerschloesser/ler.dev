@@ -446,6 +446,7 @@ export function getExternalNetworks(
 export function deleteEntity(
   context: IAppContext,
   entityId: EntityId,
+  destroyEnergy: boolean = true,
 ): void {
   const entity = context.world.entities[entityId]
   invariant(entity)
@@ -556,10 +557,15 @@ export function deleteEntity(
         }
       }
 
-      root.velocity *= Math.sqrt(
-        network.mass / newNetwork.mass,
-      )
-      propogateVelocity(root, context.world.entities)
+      if (destroyEnergy) {
+        // TODO doubt this is right
+        invariant(false, 'TODO')
+
+        // root.velocity *= Math.sqrt(
+        //   network.mass / newNetwork.mass,
+        // )
+        // propogateVelocity(root, context.world.entities)
+      }
     }
   }
 }
@@ -598,7 +604,12 @@ export function mergeBuildEntities(
   const root = Object.values(hand.entities).at(0)
   invariant(root)
 
-  root.velocity = 0
+  for (const entity of Object.values(hand.entities)) {
+    entity.velocity = 0
+  }
+
+  const network = Object.values(hand.networks).at(0)
+  invariant(network)
 
   const seen = new Set<Entity>()
   const stack = new Array<{
@@ -615,13 +626,17 @@ export function mergeBuildEntities(
     if (seen.has(current.entity)) continue
     seen.add(current.entity)
 
+    current.entity.velocity
+
     const existing =
       context.world.entities[current.entity.id]
     if (existing) {
       // TODO validate existing (e.g. size and connections)
       root.velocity +=
-        existing.velocity * (1 / current.multiplier)
-      deleteEntity(context, existing.id)
+        (1 / current.multiplier) *
+        existing.velocity *
+        Math.sqrt(existing.mass / network.mass)
+      deleteEntity(context, existing.id, false)
     }
 
     for (const connection of current.entity.connections) {

@@ -53,7 +53,8 @@ export function build(
     newNetwork.mass += network.mass
 
     numerator += network.mass * value.incomingVelocity ** 2
-    denominator += network.mass * value.multiplier ** 2
+    denominator +=
+      network.mass * (1 / value.multiplier) ** 2
 
     for (const entityId of Object.keys(network.entityIds)) {
       const entity = context.world.entities[entityId]
