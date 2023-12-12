@@ -14,6 +14,7 @@ import {
   getExternalNetworks,
   incrementBuildVersion,
   mergeBuildEntities,
+  propogateVelocity,
 } from './util.js'
 
 export function build(
@@ -86,25 +87,7 @@ export function build(
     }
   }
 
-  // propogate the root velocity outward
-  const seen = new Set<Entity>()
-  const stack = new Array<Entity>(root)
-  while (stack.length) {
-    const current = stack.pop()
-    invariant(current)
-    if (seen.has(current)) continue
-    seen.add(current)
-    for (const connection of current.connections) {
-      const entity =
-        context.world.entities[connection.entityId]
-      invariant(entity?.networkId === root.networkId)
-      if (!seen.has(entity)) {
-        entity.velocity =
-          current.velocity * connection.multiplier
-        stack.push(entity)
-      }
-    }
-  }
+  propogateVelocity(root, context.world.entities)
 
   resetGearAngles(context)
 
@@ -175,25 +158,7 @@ export function addConnection(
 
     delete context.world.networks[targetNetwork.id]
 
-    // propogate the root velocity outward
-    const seen = new Set<Entity>()
-    const stack = new Array<Entity>(source)
-    while (stack.length) {
-      const current = stack.pop()
-      invariant(current)
-      if (seen.has(current)) continue
-      seen.add(current)
-      for (const connection of current.connections) {
-        const entity =
-          context.world.entities[connection.entityId]
-        invariant(entity?.networkId === source.networkId)
-        if (!seen.has(entity)) {
-          entity.velocity =
-            current.velocity * connection.multiplier
-          stack.push(entity)
-        }
-      }
-    }
+    propogateVelocity(source, context.world.entities)
   }
 
   resetGearAngles(context)
