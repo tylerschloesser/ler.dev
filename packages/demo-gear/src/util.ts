@@ -381,6 +381,7 @@ export function getExternalNetworks(
     externalEntity: Entity
     internalEntity: Entity
     incomingVelocity: number
+    multiplier: number
   }
 > {
   invariant(Object.keys(hand.networks).length === 1)
@@ -417,14 +418,14 @@ export function getExternalNetworks(
           result[entity.networkId] = {
             externalEntity: entity,
             internalEntity: current.entity,
-            incomingVelocity:
-              entity.velocity * (1 / multiplier),
+            incomingVelocity: entity.velocity,
+            multiplier: 1 / multiplier,
           }
         } else {
           // incoming velocities should be the same for all
           // entities on the same network
           invariant(
-            entry.incomingVelocity ===
+            entry.incomingVelocity * entry.multiplier ===
               entity.velocity * (1 / multiplier),
           )
         }

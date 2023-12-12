@@ -39,21 +39,21 @@ export function build(
     root,
   )
 
-  for (const networkId of Object.keys(externalNetworks)) {
-    const network = context.world.networks[networkId]
-    invariant(network)
-    newNetwork.mass += network.mass
-  }
+  // docs/new-network-energy-velocity.jpg
 
-  root.velocity = 0
+  let numerator = newNetwork.mass * root.velocity ** 2
+  let denominator = newNetwork.mass
+
   for (const [networkId, value] of Object.entries(
     externalNetworks,
   )) {
     const network = context.world.networks[networkId]
     invariant(network)
-    root.velocity +=
-      value.incomingVelocity *
-      Math.sqrt(network.mass / newNetwork.mass)
+
+    newNetwork.mass += network.mass
+
+    numerator += network.mass * value.incomingVelocity ** 2
+    denominator += network.mass * value.multiplier ** 2
 
     for (const entityId of Object.keys(network.entityIds)) {
       const entity = context.world.entities[entityId]
@@ -65,6 +65,8 @@ export function build(
 
     delete context.world.networks[networkId]
   }
+
+  root.velocity = Math.sqrt(numerator / denominator)
 
   context.world.networks[newNetwork.id] = newNetwork
 
