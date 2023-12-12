@@ -71,7 +71,7 @@ export function Info() {
           <tbody>
             {Object.values(state.networks).map(
               ({ mass, entities, energy }, i) => (
-                <tr>
+                <tr key={i}>
                   <td>{i}</td>
                   <td>{mass.toFixed(2)}</td>
                   <td>{entities}</td>

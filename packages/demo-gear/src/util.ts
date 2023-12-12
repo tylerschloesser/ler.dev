@@ -456,14 +456,9 @@ export function deleteEntity(
     case EntityType.enum.Gear:
       size = { x: entity.radius * 2, y: entity.radius * 2 }
       // TODO fix this hack
-      // if there is an attach connection, and this gear is larger
-      // than radius 1, we know there is an attached gear that
-      // is taking up tiles, so ignore those when updating tiles
-      if (entity.radius > 1) {
-        attachedGearId = entity.connections.find(
-          (c) => c.type === ConnectionType.enum.Attach,
-        )?.entityId
-      }
+      attachedGearId = entity.connections.find(
+        (c) => c.type === ConnectionType.enum.Attach,
+      )?.entityId
       break
     case EntityType.enum.Belt:
     case EntityType.enum.BeltIntersection: {
@@ -477,13 +472,18 @@ export function deleteEntity(
       // prettier-ignore
       const tileId = `${entity.position.x + x}.${entity.position.y + y}`
       const tile = context.world.tiles[tileId]
+      invariant(tile)
 
-      if (tile?.entityId === attachedGearId) {
-        // TODO fix this hack
+      if (attachedGearId) {
+        if (tile.entityId !== attachedGearId) {
+          // removing the smaller gear, so
+          // restore the tile entity id to the larger gear.
+          tile.entityId = attachedGearId
+        }
         continue
       }
 
-      invariant(tile?.entityId === entity.id)
+      invariant(tile.entityId === entity.id)
       if (!tile.resourceType) {
         delete context.world.tiles[tileId]
       } else {
