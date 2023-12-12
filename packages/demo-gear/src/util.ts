@@ -539,9 +539,12 @@ export function deleteEntity(
         if (seen.has(current)) continue
         seen.add(current)
 
-        invariant(!newNetwork.entityIds[entityId])
-        newNetwork.entityIds[entityId] = true
+        invariant(!newNetwork.entityIds[current.id])
+        newNetwork.entityIds[current.id] = true
         newNetwork.mass += current.mass
+
+        invariant(current.networkId === network.id)
+        current.networkId = newNetwork.id
 
         for (const connection of current.connections) {
           const neighbor =
