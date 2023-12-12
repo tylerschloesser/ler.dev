@@ -9,6 +9,7 @@ import { BuildGear } from './component/build-gear.component.js'
 import { Configure } from './component/configure.component.js'
 import { Delete } from './component/delete.component.js'
 import { Index } from './component/index.component.js'
+import { Info } from './component/info.component.js'
 import { Toolbar } from './component/toolbar.component.js'
 
 export const routes: RouteObject[] = [
@@ -59,6 +60,10 @@ export const routes: RouteObject[] = [
           {
             path: 'delete',
             Component: Delete,
+          },
+          {
+            path: 'info',
+            Component: Info,
           },
         ],
       },

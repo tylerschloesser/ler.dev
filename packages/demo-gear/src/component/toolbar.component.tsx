@@ -39,6 +39,14 @@ export function Toolbar() {
       <button
         className={styles.button}
         onPointerUp={() => {
+          navigate('info')
+        }}
+      >
+        Info
+      </button>
+      <button
+        className={styles.button}
+        onPointerUp={() => {
           navigate('delete')
         }}
       >
