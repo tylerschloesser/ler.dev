@@ -14,6 +14,8 @@ export function renderChain(
   gl: WebGL2RenderingContext,
   gpu: GpuState,
   zoom: number,
+  // TODO hack so that we can render build chain
+  requireSameAngle: boolean = true,
 ): void {
   const { chain } = gpu.programs
   gl.useProgram(chain.program)
@@ -42,7 +44,9 @@ export function renderChain(
   gl.enableVertexAttribArray(chain.attributes.vertex)
 
   invariant(gear1.radius === gear2.radius)
-  invariant(gear1.angle === gear2.angle)
+  if (requireSameAngle) {
+    invariant(gear1.angle === gear2.angle)
+  }
 
   const teeth = gear1.radius * TEETH
   invariant(teeth % 2 === 0)

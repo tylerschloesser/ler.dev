@@ -49,6 +49,7 @@ export function renderBuild(
             gl,
             gpu,
             context.camera.zoom,
+            false,
           )
         }
 
