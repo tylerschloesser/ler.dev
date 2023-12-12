@@ -25,6 +25,7 @@ import {
   HandType,
   IAppContext,
   Network,
+  NetworkId,
   SimpleVec2,
   World,
 } from '../types.js'
@@ -345,10 +346,12 @@ function useEntities(
     }
 
     const id: EntityId = `${position.x}.${position.y}`
+    const networkId: NetworkId = id
 
     let gear: Gear
     if (chain) {
       gear = cloneGear(chain)
+      gear.networkId = networkId
       if (chainFrom) {
         gear.connections.push({
           type: ConnectionType.enum.Chain,
@@ -360,7 +363,7 @@ function useEntities(
       gear = {
         id,
         type: EntityType.enum.Gear,
-        networkId: id,
+        networkId,
         position,
         center,
         angle: chainFrom?.angle ?? 0,
@@ -371,19 +374,13 @@ function useEntities(
       }
     }
 
-    const network: Network = {
-      id,
-      entityIds: { [id]: true },
-      rootId: id,
-      mass: gear.mass,
-    }
-
     const entities = {
       [gear.id]: gear,
     }
 
     if (chainFrom) {
       const chainFromClone = cloneGear(chainFrom)
+      chainFromClone.networkId = networkId
       chainFromClone.connections.push({
         type: ConnectionType.enum.Chain,
         entityId: gear.id,
@@ -400,6 +397,17 @@ function useEntities(
         }) !== null
     }
 
+    const network: Network = {
+      id: networkId,
+      entityIds: {},
+      rootId: gear.id,
+      mass: 0,
+    }
+    for (const entity of Object.values(entities)) {
+      network.entityIds[entity.id] = true
+      network.mass += entity.mass
+    }
+    invariant(network.entityIds[network.rootId])
     const networks = {
       [network.id]: network,
     }

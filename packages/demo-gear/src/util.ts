@@ -1,4 +1,5 @@
 import invariant from 'tiny-invariant'
+import { GeneratedIdentifierFlags } from 'typescript'
 import {
   MAX_TILE_SIZE_FACTOR,
   MAX_ZOOM,
@@ -14,6 +15,7 @@ import {
   EntityType,
   GearEntity,
   IAppContext,
+  Network,
   NetworkId,
   SimpleVec2,
   World,
@@ -446,30 +448,115 @@ export function deleteEntity(
 ): void {
   const entity = context.world.entities[entityId]
   invariant(entity)
+  delete context.world.entities[entityId]
+
+  let size: SimpleVec2
+  let attachedGearId: EntityId | undefined
+  switch (entity.type) {
+    case EntityType.enum.Gear:
+      size = { x: entity.radius * 2, y: entity.radius * 2 }
+      // TODO fix this hack
+      // if there is an attach connection, and this gear is larger
+      // than radius 1, we know there is an attached gear that
+      // is taking up tiles, so ignore those when updating tiles
+      if (entity.radius > 1) {
+        attachedGearId = entity.connections.find(
+          (c) => c.type === ConnectionType.enum.Attach,
+        )?.entityId
+      }
+      break
+    case EntityType.enum.Belt:
+    case EntityType.enum.BeltIntersection: {
+      size = { x: 1, y: 1 }
+      break
+    }
+  }
+
+  for (let x = 0; x < size.x; x++) {
+    for (let y = 0; y < size.y; y++) {
+      // prettier-ignore
+      const tileId = `${entity.position.x + x}.${entity.position.y + y}`
+      const tile = context.world.tiles[tileId]
+
+      if (tile?.entityId === attachedGearId) {
+        // TODO fix this hack
+        continue
+      }
+
+      invariant(tile?.entityId === entity.id)
+      if (!tile.resourceType) {
+        delete context.world.tiles[tileId]
+      } else {
+        delete tile.entityId
+      }
+    }
+  }
+
+  // delete connections
+  for (const connection of entity.connections) {
+    const target =
+      context.world.entities[connection.entityId]
+    invariant(target)
+    const index = target.connections.findIndex(
+      (c) =>
+        // TODO assert multiplier?
+        c.entityId === entity.id &&
+        c.type === connection.type,
+    )
+    invariant(index !== -1)
+    target.connections.splice(index, 1)
+  }
 
   const network = context.world.networks[entity.networkId]
   invariant(network?.entityIds[entityId])
 
   delete network.entityIds[entityId]
-  if (Object.keys(network.entityIds).length === 0) {
-    invariant(network.mass === 0)
-    delete context.world.networks[network.id]
-  } else if (network.rootId === entityId) {
-    const rootId = Object.keys(network.entityIds).at(0)
-    invariant(rootId !== undefined)
-    network.rootId = rootId
+  delete context.world.networks[network.id]
 
-    const root = context.world.entities[rootId]
-    invariant(root)
+  if (Object.keys(network.entityIds).length > 0) {
+    const seen = new Set<Entity>()
 
-    const prevMass = network.mass
-    network.mass -= entity.mass
+    for (const rootId of Object.keys(network.entityIds)) {
+      const root = context.world.entities[rootId]
+      invariant(root)
+      if (seen.has(root)) {
+        continue
+      }
 
-    invariant(network.mass !== 0)
+      const newNetwork: Network = {
+        entityIds: {},
+        id: rootId,
+        mass: 0,
+        rootId,
+      }
+      context.world.networks[newNetwork.id] = newNetwork
 
-    root.velocity =
-      root.velocity * (prevMass / network.mass)
-    propogateVelocity(root, context.world.entities)
+      const stack = new Array<Entity>(root)
+      while (stack.length) {
+        const current = stack.pop()
+        invariant(current)
+
+        if (seen.has(current)) continue
+        seen.add(current)
+
+        invariant(!newNetwork.entityIds[entityId])
+        newNetwork.entityIds[entityId] = true
+        newNetwork.mass += current.mass
+
+        for (const connection of current.connections) {
+          const neighbor =
+            context.world.entities[connection.entityId]
+          invariant(neighbor)
+
+          stack.push(neighbor)
+        }
+      }
+
+      root.velocity *= Math.sqrt(
+        network.mass / newNetwork.mass,
+      )
+      propogateVelocity(root, context.world.entities)
+    }
   }
 }
 

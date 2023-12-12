@@ -10,7 +10,6 @@ import {
   IAppContext,
 } from './types.js'
 import {
-  deleteEntity,
   getExternalNetworks,
   incrementBuildVersion,
   mergeBuildEntities,
@@ -54,7 +53,7 @@ export function build(
     invariant(network)
     root.velocity +=
       value.incomingVelocity *
-      (network.mass / newNetwork.mass)
+      Math.sqrt(network.mass / newNetwork.mass)
 
     for (const entityId of Object.keys(network.entityIds)) {
       const entity = context.world.entities[entityId]
@@ -66,6 +65,8 @@ export function build(
 
     delete context.world.networks[networkId]
   }
+
+  context.world.networks[newNetwork.id] = newNetwork
 
   for (const entity of Object.values(hand.entities)) {
     // must happen first because of gear logic atm
@@ -144,7 +145,7 @@ export function addConnection(
 
     source.velocity +=
       target.velocity *
-      (targetNetwork.mass / sourceNetwork.mass)
+      Math.sqrt(targetNetwork.mass / sourceNetwork.mass)
 
     for (const entityId of Object.keys(
       targetNetwork.entityIds,
