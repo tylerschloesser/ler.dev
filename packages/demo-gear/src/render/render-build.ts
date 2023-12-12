@@ -5,6 +5,7 @@ import {
   EntityType,
   IAppContext,
 } from '../types.js'
+import { iterateConnections } from '../util.js'
 import {
   ADD_BELT_INVALID,
   ADD_BELT_VALID,
@@ -34,25 +35,6 @@ export function renderBuild(
             ? BUILD_GEAR_VALID
             : BUILD_GEAR_INVALID,
         )
-
-        const chainId = entity.connections.find(
-          (c) => c.type === ConnectionType.enum.Chain,
-        )?.entityId
-
-        if (build.valid && chainId) {
-          const chain = context.world.entities[chainId]
-          invariant(chain?.type === EntityType.enum.Gear)
-
-          renderChain(
-            entity,
-            chain,
-            gl,
-            gpu,
-            context.camera.zoom,
-            false,
-          )
-        }
-
         break
       }
       case EntityType.enum.Belt:
@@ -65,6 +47,27 @@ export function renderBuild(
       }
       default: {
         invariant(false, 'TODO')
+      }
+    }
+  }
+
+  if (build.valid) {
+    for (const {
+      entity1,
+      entity2,
+      type,
+    } of iterateConnections(build.entities, false)) {
+      if (type === ConnectionType.enum.Chain) {
+        invariant(entity1.type === EntityType.enum.Gear)
+        invariant(entity2.type === EntityType.enum.Gear)
+        renderChain(
+          entity1,
+          entity2,
+          gl,
+          gpu,
+          context.camera.zoom,
+          false,
+        )
       }
     }
   }

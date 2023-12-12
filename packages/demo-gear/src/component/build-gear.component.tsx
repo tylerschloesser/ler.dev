@@ -305,7 +305,11 @@ function useEntities(
         Math.abs(dx + dy) > radius + chainFrom.radius
     }
 
-    if (valid) {
+    if (valid && !chain) {
+      // TODO clean this up
+      // don't add connections for chain
+      // chain connections are copied, then we manually add the chain
+      // connection if needed
       connections.push(
         ...getConnections(
           context,
@@ -341,18 +345,32 @@ function useEntities(
     }
 
     const id: EntityId = `${position.x}.${position.y}`
-    const gear: Gear = {
-      id,
-      type: EntityType.enum.Gear,
-      networkId: id,
-      position,
-      center,
-      angle: chainFrom?.angle ?? 0,
-      connections,
-      mass: Math.PI * radius ** 2,
-      radius,
-      velocity: 0,
+
+    let gear: Gear
+    if (chain) {
+      gear = cloneGear(chain)
+      if (chainFrom) {
+        gear.connections.push({
+          type: ConnectionType.enum.Chain,
+          entityId: chainFrom.id,
+          multiplier: 1,
+        })
+      }
+    } else {
+      gear = {
+        id,
+        type: EntityType.enum.Gear,
+        networkId: id,
+        position,
+        center,
+        angle: chainFrom?.angle ?? 0,
+        connections,
+        mass: Math.PI * radius ** 2,
+        radius,
+        velocity: 0,
+      }
     }
+
     const network: Network = {
       id,
       entityIds: { [id]: true },
@@ -360,17 +378,26 @@ function useEntities(
       mass: gear.mass,
     }
 
-    if (valid) {
-      valid =
-        getAccelerationMap(
-          gear,
-          1,
-          context.world.entities,
-        ) !== null
-    }
-
     const entities = {
       [gear.id]: gear,
+    }
+
+    if (chainFrom) {
+      const chainFromClone = cloneGear(chainFrom)
+      chainFromClone.connections.push({
+        type: ConnectionType.enum.Chain,
+        entityId: gear.id,
+        multiplier: 1,
+      })
+      entities[chainFrom.id] = chainFromClone
+    }
+
+    if (valid) {
+      valid =
+        getAccelerationMap(gear, 1, {
+          ...context.world.entities,
+          ...entities,
+        }) !== null
     }
 
     const networks = {
@@ -543,4 +570,14 @@ function getConnections(
     }
   }
   return connections
+}
+
+function cloneGear(gear: Gear): Gear {
+  return {
+    ...gear,
+    connections: [...gear.connections],
+    behavior: gear.behavior && {
+      ...gear.behavior,
+    },
+  }
 }

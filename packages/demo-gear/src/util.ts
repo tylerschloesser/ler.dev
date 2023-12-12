@@ -35,6 +35,8 @@ const CONNECTION_ITERATOR: {
 
 export function* iterateConnections(
   entities: Record<EntityId, Entity>,
+  // TODO this is a hack so we can use for build
+  requirePeer: boolean = true,
 ) {
   const seen = new Map<string, ConnectionType>()
   for (const entity of Object.values(entities)) {
@@ -51,7 +53,11 @@ export function* iterateConnections(
       seen.set(id, connection.type)
 
       const peer = entities[connection.entityId]
-      invariant(peer)
+      if (requirePeer) {
+        invariant(peer)
+      } else {
+        if (!peer) continue
+      }
 
       CONNECTION_ITERATOR.entity1 = entity
       CONNECTION_ITERATOR.entity2 = peer
@@ -432,4 +438,112 @@ export function getExternalNetworks(
   }
 
   return result
+}
+
+export function deleteEntity(
+  context: IAppContext,
+  entityId: EntityId,
+): void {
+  const entity = context.world.entities[entityId]
+  invariant(entity)
+
+  const network = context.world.networks[entity.networkId]
+  invariant(network?.entityIds[entityId])
+
+  delete network.entityIds[entityId]
+  if (Object.keys(network.entityIds).length === 0) {
+    invariant(network.mass === 0)
+    delete context.world.networks[network.id]
+  } else if (network.rootId === entityId) {
+    const rootId = Object.keys(network.entityIds).at(0)
+    invariant(rootId !== undefined)
+    network.rootId = rootId
+
+    const root = context.world.entities[rootId]
+    invariant(root)
+
+    const prevMass = network.mass
+    network.mass -= entity.mass
+
+    invariant(network.mass !== 0)
+
+    root.velocity =
+      root.velocity * (prevMass / network.mass)
+    propogateVelocity(root, context.world.entities)
+  }
+}
+
+export function propogateVelocity(
+  root: Entity,
+  entities: World['entities'],
+): void {
+  const seen = new Set<Entity>()
+  const stack = new Array<Entity>(root)
+  while (stack.length) {
+    const current = stack.pop()
+    invariant(current)
+    if (seen.has(current)) continue
+    seen.add(current)
+    for (const connection of current.connections) {
+      const entity = entities[connection.entityId]
+
+      // TODO be smarter about this
+      if (!entity) continue
+
+      invariant(entity.networkId === root.networkId)
+      if (!seen.has(entity)) {
+        entity.velocity =
+          current.velocity * connection.multiplier
+        stack.push(entity)
+      }
+    }
+  }
+}
+
+export function mergeBuildEntities(
+  context: IAppContext,
+  hand: BuildHand,
+): void {
+  const root = Object.values(hand.entities).at(0)
+  invariant(root)
+
+  root.velocity = 0
+
+  const seen = new Set<Entity>()
+  const stack = new Array<{
+    entity: Entity
+    multiplier: number
+  }>({
+    entity: root,
+    multiplier: 1,
+  })
+
+  while (stack.length) {
+    const current = stack.pop()
+    invariant(current)
+    if (seen.has(current.entity)) continue
+    seen.add(current.entity)
+
+    const existing =
+      context.world.entities[current.entity.id]
+    if (existing) {
+      // TODO validate existing (e.g. size and connections)
+      root.velocity +=
+        existing.velocity * (1 / current.multiplier)
+      deleteEntity(context, existing.id)
+    }
+
+    for (const connection of current.entity.connections) {
+      const peer = hand.entities[connection.entityId]
+      // will be undefined for connections to existing entities
+      if (!peer) continue
+      stack.push({
+        entity: peer,
+        multiplier:
+          current.multiplier * connection.multiplier,
+      })
+    }
+  }
+
+  propogateVelocity(root, hand.entities)
 }

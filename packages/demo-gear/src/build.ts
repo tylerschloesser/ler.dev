@@ -10,9 +10,10 @@ import {
   IAppContext,
 } from './types.js'
 import {
+  deleteEntity,
   getExternalNetworks,
   incrementBuildVersion,
-  resetEntities,
+  mergeBuildEntities,
 } from './util.js'
 
 export function build(
@@ -22,6 +23,8 @@ export function build(
   validateBuild(context, hand)
 
   // assumption: all entities are connected (i.e. within the same network)
+
+  mergeBuildEntities(context, hand)
 
   const root = Object.values(hand.entities).at(0)
   invariant(root)
@@ -228,19 +231,16 @@ export function validateBuild(
     seen.add(current)
 
     for (const connection of current.connections) {
-      if (context.world.entities[connection.entityId]) {
-        // this is a connection to an already built entity
-        invariant(!hand.entities[connection.entityId])
-        invariant(!network.entityIds[connection.entityId])
-        continue
-      }
-
-      const entity = hand.entities[connection.entityId]
-      invariant(entity)
-      invariant(network.entityIds[connection.entityId])
-
-      if (!seen.has(entity)) {
-        stack.push(entity)
+      let entity = hand.entities[connection.entityId]
+      if (entity) {
+        invariant(network.entityIds[entity.id])
+        if (!seen.has(entity)) {
+          stack.push(entity)
+        }
+      } else {
+        entity = context.world.entities[connection.entityId]
+        invariant(entity)
+        invariant(!network.entityIds[entity.id])
       }
     }
   }
