@@ -2,6 +2,7 @@ import { use, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import invariant from 'tiny-invariant'
 import {
+  EntityType,
   IAppContext,
   Network,
   TickListenerFn,
@@ -20,7 +21,21 @@ function getEnergy(
     const entity = context.world.entities[entityId]
     invariant(entity)
 
-    energy += 0.5 * entity.mass * entity.velocity ** 2
+    switch (entity.type) {
+      case EntityType.enum.Gear: {
+        energy +=
+          0.5 * 0.5 * entity.mass * entity.velocity ** 2
+        break
+      }
+      case EntityType.enum.Belt:
+      case EntityType.enum.BeltIntersection: {
+        energy += 0.5 * entity.mass * entity.velocity ** 2
+        break
+      }
+      default: {
+        invariant(false)
+      }
+    }
   }
   return energy
 }
