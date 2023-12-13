@@ -28,7 +28,7 @@ export function getAccelerationMap(
       const existingMultiplier = map.get(neighbor)
       if (existingMultiplier !== undefined) {
         const diff = existingMultiplier - neighborMultiplier
-        if (Math.abs(diff) < Number.EPSILON) {
+        if (Math.abs(diff) > Number.EPSILON) {
           return null
         }
         continue
