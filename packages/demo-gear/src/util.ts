@@ -445,7 +445,6 @@ export function getExternalNetworks(
 export function deleteEntity(
   context: IAppContext,
   entityId: EntityId,
-  destroyEnergy: boolean = true,
 ): void {
   const entity = context.world.entities[entityId]
   invariant(entity)
@@ -556,16 +555,6 @@ export function deleteEntity(
           stack.push(neighbor)
         }
       }
-
-      if (destroyEnergy) {
-        // TODO doubt this is right
-        invariant(false, 'TODO')
-
-        // root.velocity *= Math.sqrt(
-        //   network.mass / newNetwork.mass,
-        // )
-        // propogateVelocity(root, context.world.entities)
-      }
     }
   }
 }
@@ -636,7 +625,7 @@ export function mergeBuildEntities(
         (1 / current.multiplier) *
         existing.velocity *
         Math.sqrt(existing.mass / network.mass)
-      deleteEntity(context, existing.id, false)
+      deleteEntity(context, existing.id)
     }
 
     for (const connection of current.entity.connections) {

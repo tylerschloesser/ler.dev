@@ -10,7 +10,6 @@ import {
   useSearchParams,
 } from 'react-router-dom'
 import invariant from 'tiny-invariant'
-import { executeDelete } from '../delete.js'
 import {
   CameraListenerFn,
   DeleteHand,
@@ -19,7 +18,11 @@ import {
   SimpleVec2,
   TileId,
 } from '../types.js'
-import { iterateTiles } from '../util.js'
+import {
+  deleteEntity,
+  incrementBuildVersion,
+  iterateTiles,
+} from '../util.js'
 import { AppContext } from './context.js'
 import styles from './delete.module.scss'
 import { Overlay } from './overlay.component.js'
@@ -79,7 +82,18 @@ function useDeleteButton(hand: DeleteHand) {
 
   let onPointerUp = useCallback(() => {
     if (disabled) return
-    console.log('TODO')
+
+    for (const entityId of hand.entityIds) {
+      deleteEntity(context, entityId)
+    }
+    for (const tileId of hand.tileIds) {
+      const tile = context.world.tiles[tileId]
+      invariant(tile?.resourceType)
+      invariant(!tile.entityId)
+      delete context.world.tiles[tileId]
+    }
+
+    incrementBuildVersion(context)
   }, [disabled, hand, context])
 
   return { disabled, onPointerUp }
