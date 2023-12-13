@@ -132,20 +132,19 @@ export function render(
         lineWidth,
       )
 
-      // TODO
-      // for (const gearId of hand.gearIds) {
-      //   const gear = context.world.gears[gearId]
-      //   invariant(gear)
-      //   renderRect(
-      //     gl,
-      //     gpu,
-      //     gear.center.x - gear.radius,
-      //     gear.center.y - gear.radius,
-      //     gear.radius * 2,
-      //     gear.radius * 2,
-      //     DELETE,
-      //   )
-      // }
+      for (const entityId of hand.entityIds) {
+        const entity = context.world.entities[entityId]
+        invariant(entity)
+        renderRect(
+          gl,
+          gpu,
+          entity.position.x,
+          entity.position.y,
+          entity.size.x,
+          entity.size.y,
+          DELETE,
+        )
+      }
       for (const tileId of hand.tileIds) {
         const [x, y] = tileId
           .split('.')
