@@ -220,6 +220,54 @@ function getBeltConnections(
         }
       }
     }
+
+    const east =
+      context.world.tiles[`${position.x + 1}.${position.y}`]
+    if (east?.entityId) {
+      const entity = getEntity(context, east.entityId)
+      switch (entity.type) {
+        case EntityType.enum.Belt: {
+          if (entity.direction === 'x') {
+            connections.push({
+              type: ConnectionType.enum.Adjacent,
+              entityId: entity.id,
+              multiplier: 1,
+            })
+          } else {
+            // TODO
+          }
+          break
+        }
+        case EntityType.enum.BeltIntersection: {
+          // TODO
+          break
+        }
+      }
+    }
+
+    const west =
+      context.world.tiles[`${position.x - 1}.${position.y}`]
+    if (west?.entityId) {
+      const entity = getEntity(context, west.entityId)
+      switch (entity.type) {
+        case EntityType.enum.Belt: {
+          if (entity.direction === 'x') {
+            connections.push({
+              type: ConnectionType.enum.Adjacent,
+              entityId: entity.id,
+              multiplier: 1,
+            })
+          } else {
+            // TODO
+          }
+          break
+        }
+        case EntityType.enum.BeltIntersection: {
+          // TODO
+          break
+        }
+      }
+    }
   } else {
     invariant(direction === 'y')
 
