@@ -150,7 +150,18 @@ function getBeltConnections(
 
           break
         }
-        case EntityType.enum.Belt:
+        case EntityType.enum.Belt: {
+          if (entity.direction === 'x') {
+            connections.push({
+              type: ConnectionType.enum.Adjacent,
+              entityId: entity.id,
+              multiplier: 1,
+            })
+          } else {
+            // TODO
+          }
+          break
+        }
         case EntityType.enum.BeltIntersection: {
           // TODO
           break
@@ -188,7 +199,18 @@ function getBeltConnections(
 
           break
         }
-        case EntityType.enum.Belt:
+        case EntityType.enum.Belt: {
+          if (entity.direction === 'x') {
+            connections.push({
+              type: ConnectionType.enum.Adjacent,
+              entityId: entity.id,
+              multiplier: 1,
+            })
+          } else {
+            // TODO
+          }
+          break
+        }
         case EntityType.enum.BeltIntersection: {
           // TODO
           break
@@ -229,7 +251,18 @@ function getBeltConnections(
 
           break
         }
-        case EntityType.enum.Belt:
+        case EntityType.enum.Belt: {
+          if (entity.direction === 'y') {
+            connections.push({
+              type: ConnectionType.enum.Adjacent,
+              entityId: entity.id,
+              multiplier: 1,
+            })
+          } else {
+            // TODO
+          }
+          break
+        }
         case EntityType.enum.BeltIntersection: {
           // TODO
           break
@@ -267,7 +300,18 @@ function getBeltConnections(
 
           break
         }
-        case EntityType.enum.Belt:
+        case EntityType.enum.Belt: {
+          if (entity.direction === 'y') {
+            connections.push({
+              type: ConnectionType.enum.Adjacent,
+              entityId: entity.id,
+              multiplier: 1,
+            })
+          } else {
+            // TODO
+          }
+          break
+        }
         case EntityType.enum.BeltIntersection: {
           // TODO
           break
