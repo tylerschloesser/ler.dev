@@ -271,6 +271,54 @@ function getBeltConnections(
   } else {
     invariant(direction === 'y')
 
+    const north =
+      context.world.tiles[`${position.x}.${position.y + 1}`]
+    if (north?.entityId) {
+      const entity = getEntity(context, north.entityId)
+      switch (entity.type) {
+        case EntityType.enum.Belt: {
+          if (entity.direction === 'y') {
+            connections.push({
+              type: ConnectionType.enum.Adjacent,
+              entityId: entity.id,
+              multiplier: 1,
+            })
+          } else {
+            // TODO
+          }
+          break
+        }
+        case EntityType.enum.BeltIntersection: {
+          // TODO
+          break
+        }
+      }
+    }
+
+    const south =
+      context.world.tiles[`${position.x}.${position.y - 1}`]
+    if (south?.entityId) {
+      const entity = getEntity(context, south.entityId)
+      switch (entity.type) {
+        case EntityType.enum.Belt: {
+          if (entity.direction === 'y') {
+            connections.push({
+              type: ConnectionType.enum.Adjacent,
+              entityId: entity.id,
+              multiplier: 1,
+            })
+          } else {
+            // TODO
+          }
+          break
+        }
+        case EntityType.enum.BeltIntersection: {
+          // TODO
+          break
+        }
+      }
+    }
+
     // prettier-ignore
     const east = context.world.tiles[`${position.x + 1}.${position.y}`]
     if (east?.entityId) {
