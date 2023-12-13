@@ -12,7 +12,11 @@ import {
 import invariant from 'tiny-invariant'
 import { getAccelerationMap } from '../apply-torque.js'
 import { addConnection, build } from '../build.js'
-import { MAX_RADIUS, MIN_RADIUS } from '../const.js'
+import {
+  GEAR_RADIUSES,
+  MAX_RADIUS,
+  MIN_RADIUS,
+} from '../const.js'
 import {
   BuildHand,
   CameraListenerFn,
@@ -41,6 +45,16 @@ import { Overlay } from './overlay.component.js'
 import { useWorldBuildVersion } from './use-world-build-version.js'
 
 const DEFAULT_RADIUS = MIN_RADIUS
+
+const RADIUS_TO_SIZE = GEAR_RADIUSES.reduce<
+  Record<number, SimpleVec2>
+>(
+  (acc, r) => ({
+    ...acc,
+    [r]: { x: r * 2, y: r * 2 },
+  }),
+  {},
+)
 
 enum ActionType {
   Chain = 'chain',
@@ -360,11 +374,14 @@ function useEntities(
         })
       }
     } else {
+      const size = RADIUS_TO_SIZE[radius]
+      invariant(size)
       gear = {
         id,
         type: EntityType.enum.Gear,
         networkId,
         position,
+        size,
         center,
         angle: chainFrom?.angle ?? 0,
         connections,

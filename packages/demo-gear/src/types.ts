@@ -127,6 +127,7 @@ const EntityBase = z.strictObject({
   id: EntityId,
   networkId: NetworkId,
   position: SimpleVec2,
+  size: SimpleVec2,
   connections: z.array(Connection),
   velocity: z.number(),
   mass: z.number(),

@@ -30,6 +30,11 @@ import { Overlay } from './overlay.component.js'
 import { useCameraTilePosition } from './use-camera-tile-position.js'
 import { useWorldBuildVersion } from './use-world-build-version.js'
 
+const BELT_SIZE: SimpleVec2 = {
+  x: 1,
+  y: 1,
+}
+
 export function BuildBelt() {
   const context = use(AppContext)
   const navigate = useNavigate()
@@ -319,6 +324,7 @@ function addBelt(
     id,
     networkId: network.id,
     position,
+    size: BELT_SIZE,
     connections,
     direction,
     offset: 0,
@@ -367,6 +373,7 @@ function addBeltIntersection(
     networkId: network.id,
     type: EntityType.enum.BeltIntersection,
     position,
+    size: BELT_SIZE,
     connections,
     offset: 0,
     velocity: 0,

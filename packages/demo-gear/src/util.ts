@@ -1,5 +1,4 @@
 import invariant from 'tiny-invariant'
-import { GeneratedIdentifierFlags } from 'typescript'
 import {
   MAX_TILE_SIZE_FACTOR,
   MAX_ZOOM,
@@ -452,6 +451,7 @@ export function deleteEntity(
   invariant(entity)
   delete context.world.entities[entityId]
 
+  // TODO switch to size in entity
   let size: SimpleVec2
   let attachedGearId: EntityId | undefined
   switch (entity.type) {
