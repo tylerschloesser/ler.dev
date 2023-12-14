@@ -16,6 +16,9 @@ export type TileId = z.infer<typeof TileId>
 export const ResourceType = z.enum(['Fuel'])
 export type ResourceType = z.infer<typeof ResourceType>
 
+export const ItemType = z.enum(['Fuel'])
+export type ItemType = z.infer<typeof ItemType>
+
 export const Tile = z.strictObject({
   entityId: EntityId.optional(),
   resourceType: ResourceType.optional(),
