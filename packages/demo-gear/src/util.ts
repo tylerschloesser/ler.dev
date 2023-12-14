@@ -424,8 +424,10 @@ export function getExternalNetworks(
           // incoming velocities should be the same for all
           // entities on the same network
           invariant(
-            entry.incomingVelocity * entry.multiplier ===
-              entity.velocity * (1 / multiplier),
+            Math.abs(
+              entry.incomingVelocity * entry.multiplier -
+                entity.velocity * (1 / multiplier),
+            ) < Number.EPSILON,
           )
         }
         continue
@@ -476,12 +478,29 @@ export function deleteEntity(
       invariant(tile)
 
       if (attachedGearId) {
-        if (tile.entityId !== attachedGearId) {
-          // removing the smaller gear, so
-          // restore the tile entity id to the larger gear.
+        // when removing the larger gear, tiles will be either entityId or attachedGearId
+        //
+        // when removing the smaller gear, all tiles will be entityId
+
+        invariant(entity.type === EntityType.enum.Gear)
+        if (entity.radius === 1) {
+          // this is the smaller gear
+
+          invariant(tile.entityId === entityId)
           tile.entityId = attachedGearId
+          continue
         }
-        continue
+        {
+          // this is the larger gear
+
+          if (tile.entityId === entityId) {
+            // handle this like normal
+          } else {
+            invariant(tile.entityId === attachedGearId)
+            // do nothing, this will remain the smaller gear
+            continue
+          }
+        }
       }
 
       invariant(tile.entityId === entity.id)
