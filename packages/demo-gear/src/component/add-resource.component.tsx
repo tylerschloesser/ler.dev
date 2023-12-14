@@ -1,14 +1,21 @@
 import { use, useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import invariant from 'tiny-invariant'
+import { getEnergy } from '../energy.js'
 import {
   AddResourceHand,
   CameraListenerFn,
+  Entity,
+  EntityType,
   HandType,
+  ItemType,
   ResourceType,
   SimpleVec2,
 } from '../types.js'
-import { incrementBuildVersion } from '../util.js'
+import {
+  getEntity,
+  incrementBuildVersion,
+} from '../util.js'
 import styles from './add-resource.module.scss'
 import { AppContext } from './context.js'
 import { Overlay } from './overlay.component.js'
@@ -114,7 +121,7 @@ function useHand(position: SimpleVec2): AddResourceHand {
 
 function useAddResourceButton(hand: AddResourceHand): {
   disabled: boolean
-  onPointerUp(): void
+  onPointerUp: (() => void) | undefined
   actionType: ActionType
 } {
   const context = use(AppContext)
@@ -124,18 +131,37 @@ function useAddResourceButton(hand: AddResourceHand): {
 
     let actionType = ActionType.AddResource
 
-    const onPointerUp = () => {
-      if (disabled) return
+    let onPointerUp: (() => void) | undefined = undefined
 
+    if (!disabled) {
       const tileId = `${hand.position.x}.${hand.position.y}`
       let tile = context.world.tiles[tileId]
-      if (!tile) {
-        tile = context.world.tiles[tileId] = {}
+      let entity: Entity | undefined = undefined
+      if (tile?.entityId) {
+        entity = getEntity(context, tile.entityId)
       }
-      invariant(!tile.resourceType)
-      tile.resourceType = ResourceType.enum.Fuel
+      if (entity?.type === EntityType.enum.Belt) {
+        actionType = ActionType.AddResourceToBelt
+        onPointerUp = () => {
+          invariant(entity?.type === EntityType.enum.Belt)
+          entity.items = [
+            {
+              type: ItemType.enum.Fuel,
+              position: 0,
+            },
+          ]
+        }
+      } else {
+        onPointerUp = () => {
+          if (!tile) {
+            tile = context.world.tiles[tileId] = {}
+          }
+          invariant(!tile.resourceType)
+          tile.resourceType = ResourceType.enum.Fuel
 
-      incrementBuildVersion(context)
+          incrementBuildVersion(context)
+        }
+      }
     }
 
     return { disabled, onPointerUp, actionType }
