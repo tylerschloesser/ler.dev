@@ -92,6 +92,7 @@ export function build(
 
   propogateVelocity(root, context.world.entities)
 
+  // TODO be smarter about this
   resetGearAngles(context)
 
   hand.entities = {}

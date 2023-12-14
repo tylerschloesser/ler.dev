@@ -1,5 +1,5 @@
 import invariant from 'tiny-invariant'
-import { Belt, BuildHand, IAppContext } from './types.js'
+import { Belt, IAppContext } from './types.js'
 
 export function buildBelt(
   context: IAppContext,
