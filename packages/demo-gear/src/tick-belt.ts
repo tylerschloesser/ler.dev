@@ -7,10 +7,9 @@ export function tickBelt(
   elapsed: number,
 ): void {
   for (const item of belt.items) {
-    item.position = clamp(
-      item.position + belt.velocity * elapsed,
-      0,
-      1,
-    )
+    const nextPosition =
+      item.position + belt.velocity * elapsed
+
+    item.position = clamp(nextPosition, 0, 1)
   }
 }
