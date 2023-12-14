@@ -143,12 +143,10 @@ function useAddResourceButton(hand: AddResourceHand): {
         actionType = ActionType.AddResourceToBelt
         onPointerUp = () => {
           invariant(entity?.type === EntityType.enum.Belt)
-          entity.items = [
-            {
-              type: ItemType.enum.Fuel,
-              position: 0,
-            },
-          ]
+          entity.items.unshift({
+            type: ItemType.enum.Fuel,
+            position: 0,
+          })
         }
       } else {
         onPointerUp = () => {
