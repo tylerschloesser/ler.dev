@@ -1,6 +1,7 @@
 import invariant from 'tiny-invariant'
 import {
   BeltEntity,
+  BeltItem,
   Entity,
   EntityType,
   World,
@@ -33,20 +34,12 @@ export function tickBeltItems(
         const right = getBeltRight(world, current)
         if (right && !seen.has(right)) {
           stack.push(right)
-          if (right.velocity >= 0) {
-            path.push(right)
-          } else {
-            path.unshift(right)
-          }
+          path.push(right)
         }
         const left = getBeltLeft(world, current)
         if (left && !seen.has(left)) {
           stack.push(left)
-          if (left.velocity >= 0) {
-            path.unshift(left)
-          } else {
-            path.push(left)
-          }
+          path.unshift(left)
         }
       } else {
         invariant(current.direction === 'y')
@@ -57,43 +50,33 @@ export function tickBeltItems(
   }
 
   for (const path of paths) {
-    for (let i = path.length - 1; i >= 0; i--) {
-      const belt = path.at(i)
-      invariant(belt)
-
-      const remove = new Array<number>()
-      for (let j = 0; j < belt.items.length; j++) {
-        const item = belt.items[j]
-        invariant(item)
-
-        const nextPosition =
-          item.position + belt.velocity * elapsed
-        if (nextPosition > 1) {
-          const next = path[i + 1]
-          if (next) {
-            item.position = nextPosition - 1
-            next.items.unshift(item)
-            remove.push(j)
-          } else {
-            item.position = 1
-          }
-        } else if (nextPosition < 0) {
-          const prev = path[i - 1]
-          if (prev) {
-            item.position = nextPosition + 1
-            prev.items.push(item)
-            remove.push(j)
-          } else {
-            item.position = 0
-          }
+    for (const {
+      belt,
+      prev,
+      next,
+      item,
+      remove,
+    } of iterateBeltItems(path)) {
+      const nextPosition =
+        item.position + belt.velocity * elapsed
+      if (nextPosition > 1) {
+        if (next) {
+          item.position = nextPosition - 1
+          next.items.unshift(item)
+          remove.add(item)
         } else {
-          item.position = nextPosition
+          item.position = 1
         }
-      }
-
-      for (const j of remove) {
-        invariant(j < belt.items.length)
-        belt.items.splice(j, 1)
+      } else if (nextPosition < 0) {
+        if (prev) {
+          item.position = nextPosition + 1
+          prev.items.push(item)
+          remove.add(item)
+        } else {
+          item.position = 0
+        }
+      } else {
+        item.position = nextPosition
       }
     }
   }
@@ -145,4 +128,67 @@ function getBeltLeft(
     return left
   }
   return null
+}
+
+const BELT_ITEM_ITERATOR: {
+  belt: BeltEntity
+  item: BeltItem
+  next: BeltEntity | null
+  prev: BeltEntity | null
+  remove: Set<BeltItem>
+} = {
+  belt: null!,
+  item: null!,
+  next: null,
+  prev: null,
+  remove: new Set<BeltItem>(),
+}
+
+function* iterateBeltItems(path: BeltEntity[]) {
+  const first = path.at(0)
+  if (!first) return
+
+  if (first.velocity > 0) {
+    for (let i = path.length - 1; i >= 0; i--) {
+      const belt = path[i]
+      invariant(belt)
+      BELT_ITEM_ITERATOR.belt = belt
+      BELT_ITEM_ITERATOR.prev = path[i - 1] ?? null
+      BELT_ITEM_ITERATOR.next = path[i + 1] ?? null
+      BELT_ITEM_ITERATOR.remove.clear()
+      for (let j = belt.items.length - 1; j >= 0; j--) {
+        const item = belt.items[j]
+        invariant(item)
+        BELT_ITEM_ITERATOR.item = item
+
+        yield BELT_ITEM_ITERATOR
+      }
+      if (BELT_ITEM_ITERATOR.remove.size) {
+        belt.items = belt.items.filter(
+          (v) => !BELT_ITEM_ITERATOR.remove.has(v),
+        )
+      }
+    }
+  } else if (first.velocity < 0) {
+    for (let i = 0; i < path.length; i++) {
+      const belt = path[i]
+      invariant(belt)
+      BELT_ITEM_ITERATOR.belt = belt
+      BELT_ITEM_ITERATOR.prev = path[i - 1] ?? null
+      BELT_ITEM_ITERATOR.next = path[i + 1] ?? null
+      BELT_ITEM_ITERATOR.remove.clear()
+      for (let j = 0; j < belt.items.length; j++) {
+        const item = belt.items[j]
+        invariant(item)
+        BELT_ITEM_ITERATOR.item = item
+
+        yield BELT_ITEM_ITERATOR
+      }
+      if (BELT_ITEM_ITERATOR.remove.size) {
+        belt.items = belt.items.filter(
+          (v) => !BELT_ITEM_ITERATOR.remove.has(v),
+        )
+      }
+    }
+  }
 }
