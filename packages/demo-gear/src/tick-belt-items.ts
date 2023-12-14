@@ -65,7 +65,10 @@ export function tickBeltItems(
       //
       const dp =
         Math.sign(belt.velocity) *
-        Math.min(belt.velocity * elapsed, available)
+        Math.min(
+          Math.abs(belt.velocity * elapsed),
+          available,
+        )
 
       const nextPosition = item.position + dp
       if (nextPosition > 1) {
@@ -190,6 +193,8 @@ function* iterateBeltItems(path: BeltEntity[]) {
       }
     }
   } else if (first.velocity < 0) {
+    let prevAbsolutePosition = 0
+
     for (let i = 0; i < path.length; i++) {
       const belt = path[i]
       invariant(belt)
@@ -201,6 +206,14 @@ function* iterateBeltItems(path: BeltEntity[]) {
         const item = belt.items[j]
         invariant(item)
         BELT_ITEM_ITERATOR.item = item
+
+        const absolutePosition = i + item.position
+        BELT_ITEM_ITERATOR.available = Math.abs(
+          prevAbsolutePosition +
+            BELT_ITEM_GAP -
+            absolutePosition,
+        )
+        prevAbsolutePosition = absolutePosition
 
         yield BELT_ITEM_ITERATOR
       }
