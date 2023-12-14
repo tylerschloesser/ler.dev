@@ -1,10 +1,4 @@
-import {
-  use,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
+import { use, useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import invariant from 'tiny-invariant'
 import {
@@ -20,12 +14,18 @@ import { AppContext } from './context.js'
 import { Overlay } from './overlay.component.js'
 import { useWorldBuildVersion } from './use-world-build-version.js'
 
+enum ActionType {
+  AddResource = 'add-resource',
+  AddResourceToBelt = 'add-resource-to-belt',
+}
+
 export function AddResource() {
   const navigate = useNavigate()
 
   const position = useHandPosition()
   const hand = useHand(position)
   const addResourceButton = useAddResourceButton(hand)
+  const { actionType } = addResourceButton
 
   return (
     <Overlay>
@@ -42,7 +42,10 @@ export function AddResource() {
         className={styles.button}
         onPointerUp={addResourceButton.onPointerUp}
       >
-        Add Resource
+        {actionType === ActionType.AddResource &&
+          'Add Resource'}
+        {actionType === ActionType.AddResourceToBelt &&
+          'Add Resource to Belt'}
       </button>
     </Overlay>
   )
@@ -109,11 +112,17 @@ function useHand(position: SimpleVec2): AddResourceHand {
   return hand
 }
 
-function useAddResourceButton(hand: AddResourceHand) {
+function useAddResourceButton(hand: AddResourceHand): {
+  disabled: boolean
+  onPointerUp(): void
+  actionType: ActionType
+} {
   const context = use(AppContext)
 
   return useMemo(() => {
     const disabled = !hand.valid
+
+    let actionType = ActionType.AddResource
 
     const onPointerUp = () => {
       if (disabled) return
@@ -129,6 +138,6 @@ function useAddResourceButton(hand: AddResourceHand) {
       incrementBuildVersion(context)
     }
 
-    return { disabled, onPointerUp }
+    return { disabled, onPointerUp, actionType }
   }, [hand, context])
 }
