@@ -14,55 +14,7 @@ export function tickBeltItems(
   world: World,
   elapsed: number,
 ): void {
-  const belts = Object.values(world.entities).filter(isBelt)
-
-  const paths = new Array<Array<Belt>>()
-  const seen = new Set<Belt>()
-
-  for (const root of belts) {
-    if (seen.has(root)) continue
-
-    const path = new Array<Belt>(root)
-    const stack = new Array<Belt>(root)
-    while (stack.length) {
-      const current = stack.pop()
-      invariant(current)
-      seen.add(current)
-
-      if (
-        current.type === EntityType.enum.BeltIntersection
-      ) {
-        // TODO
-        continue
-      }
-
-      if (current.direction === 'x') {
-        const east = getBeltEast(world, current)
-        if (east && !seen.has(east)) {
-          stack.push(east)
-          path.push(east)
-        }
-        const west = getBeltWest(world, current)
-        if (west && !seen.has(west)) {
-          stack.push(west)
-          path.unshift(west)
-        }
-      } else {
-        invariant(current.direction === 'y')
-        const north = getBeltNorth(world, current)
-        if (north && !seen.has(north)) {
-          stack.push(north)
-          path.unshift(north)
-        }
-        const south = getBeltSouth(world, current)
-        if (south && !seen.has(south)) {
-          stack.push(south)
-          path.push(south)
-        }
-      }
-    }
-    paths.push(path)
-  }
+  const paths = getPaths(world)
 
   for (const path of paths) {
     for (const {
@@ -286,4 +238,58 @@ function* iterateBeltItems(path: Belt[]) {
       }
     }
   }
+}
+
+function getPaths(world: World): Array<Array<Belt>> {
+  const belts = Object.values(world.entities).filter(isBelt)
+
+  const paths = new Array<Array<Belt>>()
+  const seen = new Set<Belt>()
+
+  for (const root of belts) {
+    if (seen.has(root)) continue
+
+    const path = new Array<Belt>(root)
+    const stack = new Array<Belt>(root)
+    while (stack.length) {
+      const current = stack.pop()
+      invariant(current)
+      seen.add(current)
+
+      if (
+        current.type === EntityType.enum.BeltIntersection
+      ) {
+        // TODO
+        continue
+      }
+
+      if (current.direction === 'x') {
+        const east = getBeltEast(world, current)
+        if (east && !seen.has(east)) {
+          stack.push(east)
+          path.push(east)
+        }
+        const west = getBeltWest(world, current)
+        if (west && !seen.has(west)) {
+          stack.push(west)
+          path.unshift(west)
+        }
+      } else {
+        invariant(current.direction === 'y')
+        const north = getBeltNorth(world, current)
+        if (north && !seen.has(north)) {
+          stack.push(north)
+          path.unshift(north)
+        }
+        const south = getBeltSouth(world, current)
+        if (south && !seen.has(south)) {
+          stack.push(south)
+          path.push(south)
+        }
+      }
+    }
+    paths.push(path)
+  }
+
+  return paths
 }
