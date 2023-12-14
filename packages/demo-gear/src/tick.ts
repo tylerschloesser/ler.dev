@@ -3,6 +3,7 @@ import {
   applyFriction,
 } from './apply-torque.js'
 import { TWO_PI } from './const.js'
+import { tickBeltItems } from './tick-belt-items.js'
 import { tickBelt } from './tick-belt.js'
 import { tickBuild } from './tick-build.js'
 import { tickGear } from './tick-gear.js'
@@ -56,6 +57,8 @@ export function tick(
       }
     }
   }
+
+  tickBeltItems(world, elapsed)
 
   const entities = [...Object.values(world.entities)]
   if (context.hand?.type === HandType.Build) {
