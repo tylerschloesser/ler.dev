@@ -111,21 +111,24 @@ function useHand(position: SimpleVec2): AddResourceHand {
 
 function useAddResourceButton(hand: AddResourceHand) {
   const context = use(AppContext)
-  const disabled = !hand.valid
 
-  const onPointerUp = useCallback(() => {
-    if (disabled) return
+  return useMemo(() => {
+    const disabled = !hand.valid
 
-    const tileId = `${hand.position.x}.${hand.position.y}`
-    let tile = context.world.tiles[tileId]
-    if (!tile) {
-      tile = context.world.tiles[tileId] = {}
+    const onPointerUp = () => {
+      if (disabled) return
+
+      const tileId = `${hand.position.x}.${hand.position.y}`
+      let tile = context.world.tiles[tileId]
+      if (!tile) {
+        tile = context.world.tiles[tileId] = {}
+      }
+      invariant(!tile.resourceType)
+      tile.resourceType = ResourceType.enum.Fuel
+
+      incrementBuildVersion(context)
     }
-    invariant(!tile.resourceType)
-    tile.resourceType = ResourceType.enum.Fuel
 
-    incrementBuildVersion(context)
+    return { disabled, onPointerUp }
   }, [hand, context])
-
-  return { disabled, onPointerUp }
 }
