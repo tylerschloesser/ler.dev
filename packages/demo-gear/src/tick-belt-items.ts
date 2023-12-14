@@ -1,35 +1,40 @@
 import invariant from 'tiny-invariant'
 import { BELT_ITEM_GAP } from './const.js'
 import {
+  Belt,
   BeltEntity,
   BeltItem,
   Entity,
   EntityType,
   World,
 } from './types.js'
+import { isBelt } from './util.js'
 
 export function tickBeltItems(
   world: World,
   elapsed: number,
 ): void {
-  const belts = Object.values(world.entities).filter(
-    (entity): entity is BeltEntity =>
-      entity.type === EntityType.enum.Belt,
-  )
+  const belts = Object.values(world.entities).filter(isBelt)
 
-  const paths = new Array<Array<BeltEntity>>()
-
-  const seen = new Set<BeltEntity>()
+  const paths = new Array<Array<Belt>>()
+  const seen = new Set<Belt>()
 
   for (const root of belts) {
     if (seen.has(root)) continue
 
-    const path = new Array<BeltEntity>(root)
-    const stack = new Array<BeltEntity>(root)
+    const path = new Array<Belt>(root)
+    const stack = new Array<Belt>(root)
     while (stack.length) {
       const current = stack.pop()
       invariant(current)
       seen.add(current)
+
+      if (
+        current.type === EntityType.enum.BeltIntersection
+      ) {
+        // TODO
+        continue
+      }
 
       if (current.direction === 'x') {
         const east = getBeltEast(world, current)
@@ -200,10 +205,10 @@ function getBeltSouth(
 }
 
 const BELT_ITEM_ITERATOR: {
-  belt: BeltEntity
+  belt: Belt
   item: BeltItem
-  next: BeltEntity | null
-  prev: BeltEntity | null
+  next: Belt | null
+  prev: Belt | null
   available: number
   remove: Set<BeltItem>
 } = {
@@ -215,7 +220,7 @@ const BELT_ITEM_ITERATOR: {
   remove: new Set<BeltItem>(),
 }
 
-function* iterateBeltItems(path: BeltEntity[]) {
+function* iterateBeltItems(path: Belt[]) {
   const first = path.at(0)
   if (!first) return
 
