@@ -1,5 +1,13 @@
-import { use, useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import {
+  use,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react'
+import {
+  useNavigate,
+  useSearchParams,
+} from 'react-router-dom'
 import invariant from 'tiny-invariant'
 import {
   CenterTileIdListener,
@@ -20,9 +28,7 @@ export function ApplyForce() {
   const navigate = useNavigate()
   const context = use(AppContext)
 
-  const [magnitude, setMagnitude] = useState(
-    INITIAL_MAGNITUDE,
-  )
+  const [magnitude, setMagnitude] = useMagnitude()
   const [gearId, setGearId] = useState<EntityId | null>(
     null,
   )
@@ -158,4 +164,31 @@ export function ApplyForce() {
       </Overlay>
     </>
   )
+}
+
+function useMagnitude(): [
+  number,
+  (magnitude: number) => void,
+] {
+  const [searchParams, setSearchParams] = useSearchParams()
+
+  const magnitude = parseInt(
+    searchParams.get('magnitude') ?? `${INITIAL_MAGNITUDE}`,
+  )
+
+  invariant(magnitude >= MIN_MAGNITUDE)
+  invariant(magnitude <= MAX_MAGNITUDE)
+  invariant(magnitude === Math.min(magnitude))
+
+  const setMagnitude = useCallback(
+    (next: number) => {
+      setSearchParams((prev) => {
+        prev.set('magnitude', `${next}`)
+        return prev
+      })
+    },
+    [setSearchParams],
+  )
+
+  return [magnitude, setMagnitude]
 }
