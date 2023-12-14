@@ -1,4 +1,5 @@
 import invariant from 'tiny-invariant'
+import { BELT_ITEM_GAP } from './const.js'
 import {
   BeltEntity,
   BeltItem,
@@ -55,10 +56,18 @@ export function tickBeltItems(
       prev,
       next,
       item,
+      available,
       remove,
     } of iterateBeltItems(path)) {
-      const nextPosition =
-        item.position + belt.velocity * elapsed
+      // note that due to Math.min, this might actually
+      // "teleport" backwards if, e.g. a new item
+      // is manually added with an invalid gap
+      //
+      const dp =
+        Math.sign(belt.velocity) *
+        Math.min(belt.velocity * elapsed, available)
+
+      const nextPosition = item.position + dp
       if (nextPosition > 1) {
         if (next) {
           item.position = nextPosition - 1
@@ -135,12 +144,14 @@ const BELT_ITEM_ITERATOR: {
   item: BeltItem
   next: BeltEntity | null
   prev: BeltEntity | null
+  available: number
   remove: Set<BeltItem>
 } = {
   belt: null!,
   item: null!,
   next: null,
   prev: null,
+  available: null!,
   remove: new Set<BeltItem>(),
 }
 
@@ -149,6 +160,8 @@ function* iterateBeltItems(path: BeltEntity[]) {
   if (!first) return
 
   if (first.velocity > 0) {
+    let prevAbsolutePosition = path.length
+
     for (let i = path.length - 1; i >= 0; i--) {
       const belt = path[i]
       invariant(belt)
@@ -160,6 +173,13 @@ function* iterateBeltItems(path: BeltEntity[]) {
         const item = belt.items[j]
         invariant(item)
         BELT_ITEM_ITERATOR.item = item
+
+        const absolutePosition = i + item.position
+        BELT_ITEM_ITERATOR.available =
+          prevAbsolutePosition -
+          absolutePosition -
+          BELT_ITEM_GAP
+        prevAbsolutePosition = absolutePosition
 
         yield BELT_ITEM_ITERATOR
       }
