@@ -2,16 +2,20 @@ import invariant from 'tiny-invariant'
 import { buildBelt } from './build-belt.js'
 import { buildGear } from './build-gear.js'
 import {
+  Belt,
+  BeltEntity,
   BuildHand,
   Connection,
   ConnectionType,
   Entity,
   EntityType,
   IAppContext,
+  World,
 } from './types.js'
 import {
   getExternalNetworks,
   incrementBuildVersion,
+  isBelt,
   mergeBuildEntities,
   propogateVelocity,
 } from './util.js'
@@ -95,8 +99,47 @@ export function build(
   // TODO be smarter about this
   resetGearAngles(context)
 
+  resetBeltOffsets(context.world, hand)
+
   hand.entities = {}
   incrementBuildVersion(context)
+}
+
+function resetBeltOffsets(world: World, hand: BuildHand) {
+  const seen = new Set<Belt>()
+
+  for (const root of Object.values(hand.entities)) {
+    invariant(world.entities[root.id] === root)
+
+    if (
+      (root.type !== EntityType.enum.Belt &&
+        root.type !== EntityType.enum.BeltIntersection) ||
+      seen.has(root)
+    ) {
+      continue
+    }
+
+    const stack = new Array<Belt>(root)
+
+    while (stack.length) {
+      const current = stack.pop()
+      invariant(current)
+
+      if (seen.has(current)) continue
+      seen.add(current)
+
+      current.offset = 0
+
+      for (const connection of current.connections) {
+        if (connection.type === ConnectionType.enum.Belt) {
+          const neighbor =
+            world.entities[connection.entityId]
+          invariant(neighbor && isBelt(neighbor))
+          stack.push(neighbor)
+        }
+      }
+    }
+  }
 }
 
 function resetGearAngles(context: IAppContext): void {

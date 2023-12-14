@@ -6,6 +6,7 @@ import {
   MIN_ZOOM,
 } from './const.js'
 import {
+  Belt,
   BuildHand,
   Connection,
   ConnectionType,
@@ -660,4 +661,11 @@ export function mergeBuildEntities(
   }
 
   propogateVelocity(root, hand.entities)
+}
+
+export function isBelt(entity: Entity): entity is Belt {
+  return (
+    entity.type === EntityType.enum.Belt ||
+    entity.type === EntityType.enum.BeltIntersection
+  )
 }

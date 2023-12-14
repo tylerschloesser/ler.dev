@@ -153,7 +153,7 @@ function getBeltConnections(
         case EntityType.enum.Belt: {
           if (entity.direction === 'x') {
             connections.push({
-              type: ConnectionType.enum.Adjacent,
+              type: ConnectionType.enum.Belt,
               entityId: entity.id,
               multiplier: 1,
             })
@@ -202,7 +202,7 @@ function getBeltConnections(
         case EntityType.enum.Belt: {
           if (entity.direction === 'x') {
             connections.push({
-              type: ConnectionType.enum.Adjacent,
+              type: ConnectionType.enum.Belt,
               entityId: entity.id,
               multiplier: 1,
             })
@@ -229,7 +229,7 @@ function getBeltConnections(
         case EntityType.enum.Belt: {
           if (entity.direction === 'x') {
             connections.push({
-              type: ConnectionType.enum.Adjacent,
+              type: ConnectionType.enum.Belt,
               entityId: entity.id,
               multiplier: 1,
             })
@@ -253,7 +253,7 @@ function getBeltConnections(
         case EntityType.enum.Belt: {
           if (entity.direction === 'x') {
             connections.push({
-              type: ConnectionType.enum.Adjacent,
+              type: ConnectionType.enum.Belt,
               entityId: entity.id,
               multiplier: 1,
             })
@@ -279,7 +279,7 @@ function getBeltConnections(
         case EntityType.enum.Belt: {
           if (entity.direction === 'y') {
             connections.push({
-              type: ConnectionType.enum.Adjacent,
+              type: ConnectionType.enum.Belt,
               entityId: entity.id,
               multiplier: 1,
             })
@@ -303,7 +303,7 @@ function getBeltConnections(
         case EntityType.enum.Belt: {
           if (entity.direction === 'y') {
             connections.push({
-              type: ConnectionType.enum.Adjacent,
+              type: ConnectionType.enum.Belt,
               entityId: entity.id,
               multiplier: 1,
             })
@@ -350,7 +350,7 @@ function getBeltConnections(
         case EntityType.enum.Belt: {
           if (entity.direction === 'y') {
             connections.push({
-              type: ConnectionType.enum.Adjacent,
+              type: ConnectionType.enum.Belt,
               entityId: entity.id,
               multiplier: 1,
             })
@@ -399,7 +399,7 @@ function getBeltConnections(
         case EntityType.enum.Belt: {
           if (entity.direction === 'y') {
             connections.push({
-              type: ConnectionType.enum.Adjacent,
+              type: ConnectionType.enum.Belt,
               entityId: entity.id,
               multiplier: 1,
             })
