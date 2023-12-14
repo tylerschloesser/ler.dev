@@ -39,8 +39,6 @@ export function build(
     root,
   )
 
-  // docs/new-network-energy-velocity.jpg
-
   let momentum = [root.velocity * newNetwork.mass]
 
   for (const [networkId, value] of Object.entries(
