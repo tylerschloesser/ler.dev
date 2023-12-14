@@ -470,6 +470,7 @@ function addBelt(
     offset: 0,
     velocity: 0,
     mass,
+    items: [],
   })
 
   invariant(!network.entityIds[id])
@@ -518,6 +519,7 @@ function addBeltIntersection(
     offset: 0,
     velocity: 0,
     mass,
+    items: [],
   })
 
   invariant(!network.entityIds[id])

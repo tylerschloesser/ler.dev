@@ -154,16 +154,24 @@ export type BeltDirection = z.infer<typeof BeltDirection>
 export const BeltPath = z.array(SimpleVec2)
 export type BeltPath = z.infer<typeof BeltPath>
 
+export const BeltItem = z.strictObject({
+  type: ItemType,
+  position: z.number(),
+})
+export type BeltItem = z.infer<typeof BeltItem>
+
 export const BeltEntity = EntityBase.extend({
   type: z.literal(EntityType.enum.Belt),
   direction: BeltDirection,
   offset: z.number(),
+  items: z.array(BeltItem),
 })
 export type BeltEntity = z.infer<typeof BeltEntity>
 
 export const BeltIntersectionEntity = EntityBase.extend({
   type: z.literal(EntityType.enum.BeltIntersection),
   offset: z.number(),
+  items: z.array(BeltItem),
 })
 export type BeltIntersectionEntity = z.infer<
   typeof BeltIntersectionEntity
