@@ -186,7 +186,7 @@ export function updateView(
 
   v3[0] = context.tileSize
   v3[1] = context.tileSize
-  v3[2] = 0
+  v3[2] = 1
   mat4.scale(view, view, v3)
 
   v3[0] = -context.camera.position.x
@@ -205,7 +205,10 @@ export function updateProjection(
 
   v3[0] = 1
   v3[1] = -1 // flip the y axis so it matches canvas/dom
-  v3[2] = 0
+
+  v3[2] = -1 // fip the z axis so positive z is "out",
+  // away from the screen
+
   mat4.scale(projection, projection, v3)
 
   v3[0] = -1
@@ -215,12 +218,12 @@ export function updateProjection(
 
   v3[0] = 2
   v3[1] = 2
-  v3[2] = 0
+  v3[2] = 1
   mat4.scale(projection, projection, v3)
 
   v3[0] = 1 / context.viewport.size.x
   v3[1] = 1 / context.viewport.size.y
-  v3[2] = 0
+  v3[2] = 1
   mat4.scale(projection, projection, v3)
 }
 

@@ -37,7 +37,7 @@ export function render(
   gpu: GpuState,
 ) {
   gl.clearColor(CLEAR.r, CLEAR.g, CLEAR.b, CLEAR.a)
-  gl.clear(gl.COLOR_BUFFER_BIT)
+  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
   updateView(gpu.matrices, context)
   updateProjection(gpu.matrices, context)

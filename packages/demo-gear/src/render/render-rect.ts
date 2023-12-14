@@ -26,6 +26,7 @@ export function batchRenderRect(
     w: number,
     h: number,
     color: Color,
+    z: number = 0,
   ) => {
     gl.uniform4f(
       fillRect.uniforms.color,
@@ -39,12 +40,12 @@ export function batchRenderRect(
 
     v[0] = x
     v[1] = y
-    v[2] = 0
+    v[2] = z
     mat4.translate(model, model, v)
 
     v[0] = w
     v[1] = h
-    v[2] = 0
+    v[2] = 1
     mat4.scale(model, model, v)
 
     gl.uniformMatrix4fv(

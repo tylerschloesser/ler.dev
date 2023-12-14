@@ -27,6 +27,9 @@ export async function initGpuState(
   gl.enable(gl.BLEND)
   gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
 
+  gl.enable(gl.DEPTH_TEST)
+  gl.depthFunc(gl.LEQUAL)
+
   return {
     programs: {
       gearBody: initGearBodyProgram(gl),

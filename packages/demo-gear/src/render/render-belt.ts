@@ -79,6 +79,7 @@ function renderBeltItem(
     1 - padding * 2,
     1 - padding * 2,
     FUEL_COLOR,
+    0.1,
   )
 }
 
