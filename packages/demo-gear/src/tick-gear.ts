@@ -1,0 +1,64 @@
+import {
+  applyForce,
+  applyFriction,
+} from './apply-torque.js'
+import {
+  GearBehaviorType,
+  GearEntity,
+  World,
+} from './types.js'
+
+export function tickGear(
+  world: World,
+  gear: GearEntity,
+  elapsed: number,
+): void {
+  switch (gear.behavior?.type) {
+    case GearBehaviorType.enum.Force: {
+      const { behavior } = gear
+
+      const sign = behavior.direction === 'ccw' ? -1 : 1
+      const governer = behavior.governer * sign
+      let stop: boolean
+      if (sign === 1) {
+        stop = gear.velocity > governer
+      } else {
+        stop = gear.velocity < governer
+      }
+
+      const diff = Math.abs(
+        Math.abs(gear.velocity) - Math.abs(governer),
+      )
+
+      // TODO better define this magic number
+      if (diff < 0.01) {
+        break
+      }
+
+      if (stop) {
+        // TODO chosen arbitrarily
+        applyFriction(gear, 0.1, 1, elapsed, world)
+      } else {
+        applyForce(
+          gear,
+          sign * behavior.magnitude,
+          elapsed,
+          world,
+        )
+      }
+
+      break
+    }
+    case GearBehaviorType.enum.Friction: {
+      const { behavior } = gear
+      applyFriction(
+        gear,
+        behavior.coeffecient,
+        behavior.magnitude,
+        elapsed,
+        world,
+      )
+      break
+    }
+  }
+}
