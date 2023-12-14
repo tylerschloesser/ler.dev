@@ -7,8 +7,6 @@ import { tickBuild } from './tick-build.js'
 import { tickGear } from './tick-gear.js'
 import {
   EntityType,
-  GearBehaviorType,
-  GearEntity,
   HandType,
   IAppContext,
 } from './types.js'
