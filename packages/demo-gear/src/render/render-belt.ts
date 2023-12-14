@@ -74,8 +74,8 @@ function renderBeltItem(
   invariant(itemType === ItemType.enum.Fuel)
 
   render(
-    x + padding + (position - 0.5),
-    y + padding,
+    x + padding + (direction === 'x' ? position - 0.5 : 0),
+    y + padding + (direction === 'y' ? position - 0.5 : 0),
     1 - padding * 2,
     1 - padding * 2,
     FUEL_COLOR,
