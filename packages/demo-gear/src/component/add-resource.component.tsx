@@ -1,7 +1,6 @@
 import { use, useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import invariant from 'tiny-invariant'
-import { getEnergy } from '../energy.js'
 import {
   AddResourceHand,
   CameraListenerFn,
