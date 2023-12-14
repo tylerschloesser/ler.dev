@@ -663,7 +663,10 @@ export function mergeBuildEntities(
   propogateVelocity(root, hand.entities)
 }
 
-export function isBelt(entity: Entity): entity is Belt {
+export function isBelt(entity?: Entity): entity is Belt {
+  if (!entity) {
+    return false
+  }
   return (
     entity.type === EntityType.enum.Belt ||
     entity.type === EntityType.enum.BeltIntersection

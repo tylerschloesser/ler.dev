@@ -2,8 +2,11 @@ import invariant from 'tiny-invariant'
 import { BELT_ITEM_GAP } from './const.js'
 import {
   Belt,
+  BeltConnection,
   BeltEntity,
   BeltItem,
+  Connection,
+  ConnectionType,
   Entity,
   EntityType,
   World,
@@ -160,14 +163,18 @@ const BELT_ITEM_ITERATOR: {
   belt: Belt
   item: BeltItem
   next: Belt | null
+  nextConnection: BeltConnection | null
   prev: Belt | null
+  prevConnection: BeltConnection | null
   available: number
   remove: Set<BeltItem>
 } = {
   belt: null!,
   item: null!,
   next: null,
+  nextConnection: null,
   prev: null,
+  prevConnection: null,
   available: null!,
   remove: new Set<BeltItem>(),
 }
@@ -183,8 +190,40 @@ function* iterateBeltItems(path: Belt[]) {
       const belt = path[i]
       invariant(belt)
       BELT_ITEM_ITERATOR.belt = belt
-      BELT_ITEM_ITERATOR.prev = path[i - 1] ?? null
-      BELT_ITEM_ITERATOR.next = path[i + 1] ?? null
+      const prev = path[i - 1] ?? null
+      let prevConnection: Connection | null = null
+      if (prev) {
+        prevConnection =
+          belt.connections.find(
+            (connection) => connection.entityId === prev.id,
+          ) ?? null
+        invariant(prevConnection)
+      }
+      BELT_ITEM_ITERATOR.prev = prev
+      if (prevConnection) {
+        invariant(
+          prevConnection.type === ConnectionType.enum.Belt,
+        )
+      }
+      BELT_ITEM_ITERATOR.prevConnection = prevConnection
+
+      const next = path[i + 1] ?? null
+      let nextConnection: Connection | null = null
+      if (next) {
+        nextConnection =
+          belt.connections.find(
+            (connection) => connection.entityId === next.id,
+          ) ?? null
+        invariant(nextConnection)
+      }
+      BELT_ITEM_ITERATOR.next = next
+      if (nextConnection) {
+        invariant(
+          nextConnection.type === ConnectionType.enum.Belt,
+        )
+      }
+      BELT_ITEM_ITERATOR.nextConnection = nextConnection
+
       BELT_ITEM_ITERATOR.remove.clear()
       for (let j = belt.items.length - 1; j >= 0; j--) {
         const item = belt.items[j]
@@ -256,35 +295,43 @@ function getPaths(world: World): Array<Array<Belt>> {
       invariant(current)
       seen.add(current)
 
-      if (
-        current.type === EntityType.enum.BeltIntersection
-      ) {
-        // TODO
-        continue
-      }
+      for (const connection of current.connections) {
+        if (connection.type !== ConnectionType.enum.Belt)
+          continue
+        const neighbor = world.entities[connection.entityId]
+        invariant(isBelt(neighbor))
+        if (seen.has(neighbor)) continue
+        stack.push(neighbor)
 
-      if (current.direction === 'x') {
-        const east = getBeltEast(world, current)
-        if (east && !seen.has(east)) {
-          stack.push(east)
-          path.push(east)
-        }
-        const west = getBeltWest(world, current)
-        if (west && !seen.has(west)) {
-          stack.push(west)
-          path.unshift(west)
-        }
-      } else {
-        invariant(current.direction === 'y')
-        const north = getBeltNorth(world, current)
-        if (north && !seen.has(north)) {
-          stack.push(north)
-          path.unshift(north)
-        }
-        const south = getBeltSouth(world, current)
-        if (south && !seen.has(south)) {
-          stack.push(south)
-          path.push(south)
+        if (neighbor.position.y === current.position.y) {
+          if (
+            neighbor.position.x ===
+            current.position.x + 1
+          ) {
+            path.push(neighbor)
+          } else {
+            invariant(
+              neighbor.position.x ===
+                current.position.x - 1,
+            )
+            path.unshift(neighbor)
+          }
+        } else {
+          invariant(
+            neighbor.position.x === current.position.x,
+          )
+          if (
+            neighbor.position.y ===
+            current.position.y + 1
+          ) {
+            path.push(neighbor)
+          } else {
+            invariant(
+              neighbor.position.y ===
+                current.position.y - 1,
+            )
+            path.unshift(neighbor)
+          }
         }
       }
     }
