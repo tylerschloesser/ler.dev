@@ -32,19 +32,28 @@ export function tickBeltItems(
       seen.add(current)
 
       if (current.direction === 'x') {
-        const right = getBeltRight(world, current)
-        if (right && !seen.has(right)) {
-          stack.push(right)
-          path.push(right)
+        const east = getBeltEast(world, current)
+        if (east && !seen.has(east)) {
+          stack.push(east)
+          path.push(east)
         }
-        const left = getBeltLeft(world, current)
-        if (left && !seen.has(left)) {
-          stack.push(left)
-          path.unshift(left)
+        const west = getBeltWest(world, current)
+        if (west && !seen.has(west)) {
+          stack.push(west)
+          path.unshift(west)
         }
       } else {
         invariant(current.direction === 'y')
-        // TODO
+        const north = getBeltNorth(world, current)
+        if (north && !seen.has(north)) {
+          stack.push(north)
+          path.unshift(north)
+        }
+        const south = getBeltSouth(world, current)
+        if (south && !seen.has(south)) {
+          stack.push(south)
+          path.push(south)
+        }
       }
     }
     paths.push(path)
@@ -94,50 +103,98 @@ export function tickBeltItems(
   }
 }
 
-function getBeltRight(
+function getBeltEast(
   world: World,
   current: BeltEntity,
 ): BeltEntity | null {
   // prettier-ignore
   const tileId = `${current.position.x + 1}.${current.position.y}`
   const tile = world.tiles[tileId]
-  let right: Entity | undefined = undefined
+  let east: Entity | undefined = undefined
   if (tile?.entityId) {
-    right = world.entities[tile.entityId]
-    invariant(right)
+    east = world.entities[tile.entityId]
+    invariant(east)
   }
   if (
-    right?.type === EntityType.enum.Belt &&
-    right.direction === 'x'
+    east?.type === EntityType.enum.Belt &&
+    east.direction === 'x'
   ) {
     // TODO validate connection
-    invariant(right.velocity === current.velocity)
+    invariant(east.velocity === current.velocity)
 
-    return right
+    return east
   }
   return null
 }
 
-function getBeltLeft(
+function getBeltWest(
   world: World,
   current: BeltEntity,
 ): BeltEntity | null {
   // prettier-ignore
   const tileId = `${current.position.x - 1}.${current.position.y}`
   const tile = world.tiles[tileId]
-  let left: Entity | undefined = undefined
+  let west: Entity | undefined = undefined
   if (tile?.entityId) {
-    left = world.entities[tile.entityId]
-    invariant(left)
+    west = world.entities[tile.entityId]
+    invariant(west)
   }
   if (
-    left?.type === EntityType.enum.Belt &&
-    left.direction === 'x'
+    west?.type === EntityType.enum.Belt &&
+    west.direction === 'x'
   ) {
     // TODO validate connection
-    invariant(left.velocity === current.velocity)
+    invariant(west.velocity === current.velocity)
 
-    return left
+    return west
+  }
+  return null
+}
+
+function getBeltNorth(
+  world: World,
+  current: BeltEntity,
+): BeltEntity | null {
+  // prettier-ignore
+  const tileId = `${current.position.x}.${current.position.y - 1}`
+  const tile = world.tiles[tileId]
+  let north: Entity | undefined = undefined
+  if (tile?.entityId) {
+    north = world.entities[tile.entityId]
+    invariant(north)
+  }
+  if (
+    north?.type === EntityType.enum.Belt &&
+    north.direction === 'y'
+  ) {
+    // TODO validate connection
+    invariant(north.velocity === current.velocity)
+
+    return north
+  }
+  return null
+}
+
+function getBeltSouth(
+  world: World,
+  current: BeltEntity,
+): BeltEntity | null {
+  // prettier-ignore
+  const tileId = `${current.position.x}.${current.position.y + 1}`
+  const tile = world.tiles[tileId]
+  let south: Entity | undefined = undefined
+  if (tile?.entityId) {
+    south = world.entities[tile.entityId]
+    invariant(south)
+  }
+  if (
+    south?.type === EntityType.enum.Belt &&
+    south.direction === 'y'
+  ) {
+    // TODO validate connection
+    invariant(south.velocity === current.velocity)
+
+    return south
   }
   return null
 }
