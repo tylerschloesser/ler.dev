@@ -4,11 +4,14 @@ import {
   EntityType,
   IAppContext,
   BeltIntersectionEntity,
+  ItemType,
+  BeltDirection,
 } from '../types.js'
 import {
   BELT_COLOR,
   BELT_LINE_COLOR,
   Color,
+  FUEL_COLOR,
   INTERSECTION_BELT_COLOR,
 } from './color.js'
 import { batchRenderRect } from './render-rect.js'
@@ -58,6 +61,27 @@ function renderLineY(
   )
 }
 
+function renderBeltItem(
+  render: RenderFn,
+  direction: BeltDirection,
+  x: number,
+  y: number,
+  itemType: ItemType,
+  position: number,
+): void {
+  const padding = 0.2
+
+  invariant(itemType === ItemType.enum.Fuel)
+
+  render(
+    x + padding,
+    y + padding,
+    1 - padding * 2,
+    1 - padding * 2,
+    FUEL_COLOR,
+  )
+}
+
 export function renderBelt(
   context: IAppContext,
   gl: WebGL2RenderingContext,
@@ -82,6 +106,18 @@ export function renderBelt(
       renderLineY(render, lineWidth, x, y, belt.offset)
       renderLineY(render, lineWidth, x, y, -1 + belt.offset)
     }
+
+    for (const item of belt.items) {
+      renderBeltItem(
+        render,
+        belt.direction,
+        x,
+        y,
+        item.type,
+        item.position,
+      )
+    }
+
     if (tint) {
       render(x, y, 1, 1, tint)
     }
@@ -94,5 +130,7 @@ export function renderBelt(
     if (tint) {
       render(x, y, 1, 1, tint)
     }
+
+    invariant(belt.items.length === 0)
   }
 }
