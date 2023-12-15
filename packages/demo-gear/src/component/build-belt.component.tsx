@@ -168,10 +168,6 @@ function getBeltConnections(
           }
           break
         }
-        case EntityType.enum.BeltIntersection: {
-          // TODO
-          break
-        }
         default: {
           invariant(false, 'TODO')
         }
@@ -217,10 +213,6 @@ function getBeltConnections(
           }
           break
         }
-        case EntityType.enum.BeltIntersection: {
-          // TODO
-          break
-        }
         default: {
           invariant(false, 'TODO')
         }
@@ -244,10 +236,6 @@ function getBeltConnections(
           }
           break
         }
-        case EntityType.enum.BeltIntersection: {
-          // TODO
-          break
-        }
       }
     }
 
@@ -266,10 +254,6 @@ function getBeltConnections(
           } else {
             // TODO
           }
-          break
-        }
-        case EntityType.enum.BeltIntersection: {
-          // TODO
           break
         }
       }
@@ -294,10 +278,6 @@ function getBeltConnections(
           }
           break
         }
-        case EntityType.enum.BeltIntersection: {
-          // TODO
-          break
-        }
       }
     }
 
@@ -316,10 +296,6 @@ function getBeltConnections(
           } else {
             // TODO
           }
-          break
-        }
-        case EntityType.enum.BeltIntersection: {
-          // TODO
           break
         }
       }
@@ -363,10 +339,6 @@ function getBeltConnections(
           } else {
             // TODO
           }
-          break
-        }
-        case EntityType.enum.BeltIntersection: {
-          // TODO
           break
         }
         default: {
@@ -414,10 +386,6 @@ function getBeltConnections(
           }
           break
         }
-        case EntityType.enum.BeltIntersection: {
-          // TODO
-          break
-        }
         default: {
           invariant(false, 'TODO')
         }
@@ -446,13 +414,6 @@ function addBelt(
   const prev = belts.at(-1)
   if (prev) {
     let multiplier = 1
-    if (
-      prev.type === EntityType.enum.BeltIntersection &&
-      (prev.position.x > position.x ||
-        prev.position.y > position.y)
-    ) {
-      multiplier = -1
-    }
 
     prev.connections.push({
       entityId: id,

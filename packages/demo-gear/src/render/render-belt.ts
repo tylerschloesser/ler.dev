@@ -1,8 +1,8 @@
 import invariant from 'tiny-invariant'
 import {
+  Belt,
   BeltDirection,
   BeltEntity,
-  BeltIntersectionEntity,
   EntityType,
   IAppContext,
   ItemType,
@@ -120,72 +120,41 @@ export function renderBelt(
   context: IAppContext,
   gl: WebGL2RenderingContext,
   gpu: GpuState,
-  belt: BeltEntity | BeltIntersectionEntity,
+  belt: Belt,
   tint?: Color,
 ) {
   const render = batchRenderRect(gl, gpu)
 
   const lineWidth = 0.1 + (1 - context.camera.zoom) * 0.1
 
-  if (belt.type === EntityType.enum.Belt) {
-    invariant(belt.offset >= 0)
-    invariant(belt.offset < 1)
+  invariant(belt.offset >= 0)
+  invariant(belt.offset < 1)
 
-    const { rotation } = belt
-    const { x, y } = belt.position
-    render(x, y, 1, 1, BELT_COLOR)
-    renderLine(
+  const { rotation } = belt
+  const { x, y } = belt.position
+  render(x, y, 1, 1, BELT_COLOR)
+  renderLine(render, lineWidth, x, y, belt.offset, rotation)
+  renderLine(
+    render,
+    lineWidth,
+    x,
+    y,
+    -1 + belt.offset,
+    rotation,
+  )
+
+  for (const item of belt.items) {
+    renderBeltItem(
       render,
-      lineWidth,
+      belt.direction,
       x,
       y,
-      belt.offset,
-      rotation,
+      item.type,
+      item.position,
     )
-    renderLine(
-      render,
-      lineWidth,
-      x,
-      y,
-      -1 + belt.offset,
-      rotation,
-    )
+  }
 
-    for (const item of belt.items) {
-      renderBeltItem(
-        render,
-        belt.direction,
-        x,
-        y,
-        item.type,
-        item.position,
-      )
-    }
-
-    if (tint) {
-      render(x, y, 1, 1, tint)
-    }
-  } else {
-    invariant(
-      belt.type === EntityType.enum.BeltIntersection,
-    )
-    const { x, y } = belt.position
-    render(x, y, 1, 1, INTERSECTION_BELT_COLOR)
-    if (tint) {
-      render(x, y, 1, 1, tint)
-    }
-
-    // TODO do this correctly
-    // for now just render in the x direction
-    for (const item of belt.items) {
-      renderBeltItem(
-        render,
-        'x',
-        x,
-        y,
-        item.type,
-        item.position,
-      )
-    }
+  if (tint) {
+    render(x, y, 1, 1, tint)
   }
 }

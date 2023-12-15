@@ -37,8 +37,7 @@ export function renderBuild(
         )
         break
       }
-      case EntityType.enum.Belt:
-      case EntityType.enum.BeltIntersection: {
+      case EntityType.enum.Belt: {
         const color = build.valid
           ? ADD_BELT_VALID
           : ADD_BELT_INVALID

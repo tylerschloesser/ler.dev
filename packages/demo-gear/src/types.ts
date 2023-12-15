@@ -119,11 +119,7 @@ export const GearBehavior = z.discriminatedUnion('type', [
 ])
 export type GearBehavior = z.infer<typeof GearBehavior>
 
-export const EntityType = z.enum([
-  'Gear',
-  'Belt',
-  'BeltIntersection',
-])
+export const EntityType = z.enum(['Gear', 'Belt'])
 export type EntityType = z.infer<typeof EntityType>
 
 const EntityBase = z.strictObject({
@@ -190,19 +186,7 @@ export const BeltEntity = EntityBase.extend({
 })
 export type BeltEntity = z.infer<typeof BeltEntity>
 
-export const BeltIntersectionEntity = EntityBase.extend({
-  type: z.literal(EntityType.enum.BeltIntersection),
-  offset: z.number(),
-  items: z.array(BeltItem),
-})
-export type BeltIntersectionEntity = z.infer<
-  typeof BeltIntersectionEntity
->
-
-export const Belt = z.union([
-  BeltEntity,
-  BeltIntersectionEntity,
-])
+export const Belt = BeltEntity
 export type Belt = z.infer<typeof Belt>
 
 export const Gear = GearEntity
@@ -211,7 +195,6 @@ export type Gear = z.infer<typeof Gear>
 export const Entity = z.discriminatedUnion('type', [
   GearEntity,
   BeltEntity,
-  BeltIntersectionEntity,
 ])
 export type Entity = z.infer<typeof Entity>
 

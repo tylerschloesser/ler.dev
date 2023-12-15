@@ -361,8 +361,7 @@ export function resetEntities(
         entity.angle = 0
         break
       }
-      case EntityType.enum.Belt:
-      case EntityType.enum.BeltIntersection: {
+      case EntityType.enum.Belt: {
         entity.offset = 0
         break
       }
@@ -466,8 +465,7 @@ export function deleteEntity(
         (c) => c.type === ConnectionType.enum.Attach,
       )?.entityId
       break
-    case EntityType.enum.Belt:
-    case EntityType.enum.BeltIntersection: {
+    case EntityType.enum.Belt: {
       size = { x: 1, y: 1 }
       break
     }
@@ -669,10 +667,7 @@ export function isBelt(entity?: Entity): entity is Belt {
   if (!entity) {
     return false
   }
-  return (
-    entity.type === EntityType.enum.Belt ||
-    entity.type === EntityType.enum.BeltIntersection
-  )
+  return entity.type === EntityType.enum.Belt
 }
 
 export function toRadians(rotation: Rotation): number {

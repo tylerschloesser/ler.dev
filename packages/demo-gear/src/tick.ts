@@ -50,8 +50,7 @@ export function tick(
         tickGear(world, entity, elapsed)
         break
       }
-      case EntityType.enum.Belt:
-      case EntityType.enum.BeltIntersection: {
+      case EntityType.enum.Belt: {
         tickBelt(world, entity, elapsed)
         break
       }
@@ -79,8 +78,7 @@ export function tick(
         )
         break
       }
-      case EntityType.enum.Belt:
-      case EntityType.enum.BeltIntersection: {
+      case EntityType.enum.Belt: {
         entity.offset = mod(
           entity.offset + entity.velocity * elapsed,
           1,

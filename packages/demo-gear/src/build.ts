@@ -3,7 +3,6 @@ import { buildBelt } from './build-belt.js'
 import { buildGear } from './build-gear.js'
 import {
   Belt,
-  BeltEntity,
   BuildHand,
   Connection,
   ConnectionType,
@@ -83,8 +82,7 @@ export function build(
         buildGear(context, entity)
         break
       }
-      case EntityType.enum.Belt:
-      case EntityType.enum.BeltIntersection: {
+      case EntityType.enum.Belt: {
         buildBelt(context, entity)
         break
       }
@@ -112,8 +110,7 @@ function resetBeltOffsets(world: World, hand: BuildHand) {
     invariant(world.entities[root.id] === root)
 
     if (
-      (root.type !== EntityType.enum.Belt &&
-        root.type !== EntityType.enum.BeltIntersection) ||
+      root.type !== EntityType.enum.Belt ||
       seen.has(root)
     ) {
       continue

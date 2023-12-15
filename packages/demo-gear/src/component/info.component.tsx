@@ -26,8 +26,7 @@ function getEnergy(
         energy += 0.5 * entity.mass * entity.velocity ** 2
         break
       }
-      case EntityType.enum.Belt:
-      case EntityType.enum.BeltIntersection: {
+      case EntityType.enum.Belt: {
         energy += 0.5 * entity.mass * entity.velocity ** 2
         break
       }

@@ -1,13 +1,11 @@
 import invariant from 'tiny-invariant'
 import {
-  BeltEntity,
-  BeltIntersectionEntity,
   ConnectionType,
   EntityType,
   HandType,
   IAppContext,
 } from '../types.js'
-import { iterateConnections } from '../util.js'
+import { isBelt, iterateConnections } from '../util.js'
 import {
   ADD_RESOURCE_INVALID,
   ADD_RESOURCE_VALID,
@@ -67,11 +65,7 @@ export function render(
 
   for (const belt of Object.values(
     context.world.entities,
-  ).filter(
-    (e): e is BeltEntity | BeltIntersectionEntity =>
-      e.type === EntityType.enum.Belt ||
-      e.type === EntityType.enum.BeltIntersection,
-  )) {
+  ).filter(isBelt)) {
     renderBelt(context, gl, gpu, belt)
   }
 
