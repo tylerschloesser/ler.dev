@@ -687,12 +687,6 @@ function* iterateBeltPositions(
     }
   }
 
-  // if (dy === 0) {
-  //   dx += 1
-  // } else if (dx === 0) {
-  //   dy += 1
-  // }
-
   const sx = Math.sign(dx)
   const sy = Math.sign(dy)
 
@@ -745,5 +739,42 @@ function* iterateBeltPositions(
     }
   } else {
     invariant(startingAxis === 'y')
+
+    iter.rotation = sy === 1 ? 90 : 270
+    iter.turn = BeltTurn.enum.None
+    for (let y = 0; y < Math.abs(dy); y++) {
+      iter.position = {
+        x: start.x,
+        y: start.y + y * sy,
+      }
+      yield iter
+    }
+
+    if (dx === 0) return
+
+    let x = 0
+    if (dy !== 0) {
+      iter.turn =
+        sy * sx === 1
+          ? BeltTurn.enum.Right
+          : BeltTurn.enum.Left
+      iter.position = {
+        x: start.x,
+        y: start.y + dy,
+      }
+      yield iter
+      x += 1
+    }
+
+    iter.turn = BeltTurn.enum.None
+    iter.rotation = sx === 1 ? 0 : 180
+
+    for (; x <= Math.abs(dx); x++) {
+      iter.position = {
+        x: start.x + x * sx,
+        y: start.y + dy,
+      }
+      yield iter
+    }
   }
 }
