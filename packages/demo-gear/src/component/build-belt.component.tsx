@@ -13,7 +13,6 @@ import {
   BuildHand,
   Connection,
   ConnectionType,
-  Direction,
   Entity,
   EntityId,
   EntityType,
@@ -413,16 +412,14 @@ function addBelt(
   )
   const prev = belts.at(-1)
   if (prev) {
-    let multiplier = 1
-
     prev.connections.push({
       entityId: id,
-      multiplier,
+      multiplier: 1,
       type: ConnectionType.enum.Belt,
     })
     connections.push({
       entityId: prev.id,
-      multiplier,
+      multiplier: 1,
       type: ConnectionType.enum.Belt,
     })
   }
@@ -440,7 +437,6 @@ function addBelt(
     velocity: 0,
     mass,
     items: [],
-    directions: [Direction.enum.West, Direction.enum.East],
     rotation,
     turn,
   })
