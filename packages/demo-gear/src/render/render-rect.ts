@@ -1,7 +1,7 @@
 import { mat4, vec3 } from 'gl-matrix'
 import invariant from 'tiny-invariant'
 import { Rotation } from '../types.js'
-import { mod, toRadians } from '../util.js'
+import { toRadians } from '../util.js'
 import { Color } from './color.js'
 import { GpuState } from './types.js'
 
