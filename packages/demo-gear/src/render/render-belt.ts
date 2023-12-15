@@ -52,8 +52,7 @@ function renderBeltItem(
   item: BeltItem,
 ): void {
   const border = 0.1
-  const padding = 0.2
-  const size = 0.6
+  const size = 0.8
 
   invariant(item.type === ItemType.enum.Fuel)
 
