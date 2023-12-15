@@ -3,7 +3,6 @@ import {
   BeltDirection,
   BeltEntity,
   BeltIntersectionEntity,
-  BeltTurn,
   EntityType,
   IAppContext,
   ItemType,
