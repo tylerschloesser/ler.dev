@@ -9,7 +9,6 @@ import { getAccelerationMap } from '../apply-torque.js'
 import { build } from '../build.js'
 import {
   Belt,
-  BeltEntity,
   BeltTurn,
   BuildHand,
   Connection,
@@ -435,7 +434,8 @@ function addBelt(
   belts: Belt[],
   position: SimpleVec2,
   startingAxis: Axis,
-  directions: BeltEntity['directions'],
+  rotation: Rotation,
+  turn: BeltTurn,
 ): void {
   const id = getBeltId(position)
   const connections = getBeltConnections(
@@ -479,9 +479,9 @@ function addBelt(
     velocity: 0,
     mass,
     items: [],
-    directions,
-    rotation: 0,
-    turn: BeltTurn.enum.None,
+    directions: [Direction.enum.West, Direction.enum.East],
+    rotation,
+    turn,
   })
 
   invariant(!network.entityIds[id])
@@ -513,7 +513,8 @@ function useBelts(
 
     for (const {
       position,
-      directions,
+      rotation,
+      turn,
     } of iterateBeltPositions(start, end, startingAxis)) {
       addBelt(
         context,
@@ -521,7 +522,8 @@ function useBelts(
         belts,
         position,
         startingAxis,
-        directions,
+        rotation,
+        turn,
       )
     }
 
@@ -685,23 +687,21 @@ function* iterateBeltPositions(
     }
   }
 
-  if (dy === 0) {
-    dx += 1
-  } else if (dx === 0) {
-    dy += 1
-  }
+  // if (dy === 0) {
+  //   dx += 1
+  // } else if (dx === 0) {
+  //   dy += 1
+  // }
 
   const sx = Math.sign(dx)
   const sy = Math.sign(dy)
 
   const iter: {
     position: SimpleVec2
-    directions: BeltEntity['directions']
     rotation: Rotation
     turn: BeltTurn
   } = {
     position: null!,
-    directions: null!,
     rotation: null!,
     turn: null!,
   }
@@ -726,7 +726,7 @@ function* iterateBeltPositions(
           ? BeltTurn.enum.Right
           : BeltTurn.enum.Left
       iter.position = {
-        x: start.x + dx + sx,
+        x: start.x + dx,
         y: start.y,
       }
       yield iter
@@ -738,7 +738,7 @@ function* iterateBeltPositions(
 
     for (; y <= Math.abs(dy); y++) {
       iter.position = {
-        x: start.x + dx + sx,
+        x: start.x + dx,
         y: start.y + y * sy,
       }
       yield iter

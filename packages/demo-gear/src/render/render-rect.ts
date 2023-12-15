@@ -1,4 +1,6 @@
 import { mat4, vec3 } from 'gl-matrix'
+import { Rotation } from '../types.js'
+import { toRadians } from '../util.js'
 import { Color } from './color.js'
 import { GpuState } from './types.js'
 
@@ -27,6 +29,7 @@ export function batchRenderRect(
     h: number,
     color: Color,
     z: number = 0,
+    rotation: Rotation = 0,
   ) => {
     gl.uniform4f(
       fillRect.uniforms.color,
@@ -42,6 +45,19 @@ export function batchRenderRect(
     v[1] = y
     v[2] = z
     mat4.translate(model, model, v)
+
+    // TODO this assumes that the "container" square is 1x1
+    {
+      v[0] = 0.5
+      v[1] = 0.5
+      v[2] = 0
+      mat4.translate(model, model, v)
+      mat4.rotateZ(model, model, toRadians(rotation))
+      v[0] = -0.5
+      v[1] = -0.5
+      v[2] = 0
+      mat4.translate(model, model, v)
+    }
 
     v[0] = w
     v[1] = h

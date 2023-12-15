@@ -4,6 +4,7 @@ import {
   MAX_ZOOM,
   MIN_TILE_SIZE_FACTOR,
   MIN_ZOOM,
+  PI,
 } from './const.js'
 import {
   Belt,
@@ -17,6 +18,7 @@ import {
   IAppContext,
   Network,
   NetworkId,
+  Rotation,
   SimpleVec2,
   World,
 } from './types.js'
@@ -671,4 +673,8 @@ export function isBelt(entity?: Entity): entity is Belt {
     entity.type === EntityType.enum.Belt ||
     entity.type === EntityType.enum.BeltIntersection
   )
+}
+
+export function toRadians(rotation: Rotation): number {
+  return (rotation * PI) / 180
 }

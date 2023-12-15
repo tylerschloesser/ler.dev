@@ -1,4 +1,5 @@
 import invariant from 'tiny-invariant'
+import { routes } from '../routes.js'
 import {
   BeltEntity,
   EntityType,
@@ -6,6 +7,8 @@ import {
   BeltIntersectionEntity,
   ItemType,
   BeltDirection,
+  Rotation,
+  BeltTurn,
 } from '../types.js'
 import {
   BELT_COLOR,
@@ -26,6 +29,7 @@ function renderLineX(
   x: number,
   y: number,
   offset: number,
+  rotation: Rotation,
 ): void {
   if (offset + lineWidth < 0 || offset > 1) {
     return
@@ -38,6 +42,8 @@ function renderLineX(
       Math.min(1 - (offset + lineWidth), 0),
     1,
     BELT_LINE_COLOR,
+    0,
+    rotation,
   )
 }
 
@@ -147,16 +153,34 @@ export function renderBelt(
   if (belt.type === EntityType.enum.Belt) {
     invariant(belt.offset >= 0)
     invariant(belt.offset < 1)
+
+    const { rotation } = belt
     const { x, y } = belt.position
     render(x, y, 1, 1, BELT_COLOR)
-    if (belt.direction === 'x') {
-      renderLineX(render, lineWidth, x, y, belt.offset)
-      renderLineX(render, lineWidth, x, y, -1 + belt.offset)
-    } else {
-      invariant(belt.direction === 'y')
-      renderLineY(render, lineWidth, x, y, belt.offset)
-      renderLineY(render, lineWidth, x, y, -1 + belt.offset)
+    // if (belt.direction === 'x') {
+    if (belt.turn === BeltTurn.enum.None) {
+      renderLineX(
+        render,
+        lineWidth,
+        x,
+        y,
+        belt.offset,
+        rotation,
+      )
+      renderLineX(
+        render,
+        lineWidth,
+        x,
+        y,
+        -1 + belt.offset,
+        rotation,
+      )
     }
+    // } else {
+    //   invariant(belt.direction === 'y')
+    //   renderLineY(render, lineWidth, x, y, belt.offset)
+    //   renderLineY(render, lineWidth, x, y, -1 + belt.offset)
+    // }
 
     for (const item of belt.items) {
       renderBeltItem(
