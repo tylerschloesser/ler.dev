@@ -56,6 +56,8 @@ function renderBeltItem(
 
   invariant(item.type === ItemType.enum.Fuel)
 
+  let { rotation } = belt
+
   const x = item.position - size / 2
   const y = 0.5 - size / 2
 
@@ -81,7 +83,7 @@ function renderBeltItem(
     border,
     ITEM_BORDER,
     0.1,
-    belt.rotation,
+    rotation,
     belt.position.x,
     belt.position.y,
     1,
@@ -96,7 +98,7 @@ function renderBeltItem(
     border,
     ITEM_BORDER,
     0.1,
-    belt.rotation,
+    rotation,
     belt.position.x,
     belt.position.y,
     1,
@@ -111,7 +113,7 @@ function renderBeltItem(
     size,
     ITEM_BORDER,
     0.1,
-    belt.rotation,
+    rotation,
     belt.position.x,
     belt.position.y,
     1,
@@ -126,7 +128,7 @@ function renderBeltItem(
     size,
     ITEM_BORDER,
     0.1,
-    belt.rotation,
+    rotation,
     belt.position.x,
     belt.position.y,
     1,
