@@ -4,11 +4,11 @@ import {
   useSearchParams,
 } from 'react-router-dom'
 import invariant from 'tiny-invariant'
+import * as z from 'zod'
 import { getAccelerationMap } from '../apply-torque.js'
 import { build } from '../build.js'
 import {
   Belt,
-  BeltDirection,
   BuildHand,
   Connection,
   ConnectionType,
@@ -36,10 +36,13 @@ const BELT_SIZE: SimpleVec2 = {
   y: 1,
 }
 
+const Axis = z.union([z.literal('x'), z.literal('y')])
+type Axis = z.infer<typeof Axis>
+
 export function BuildBelt() {
   const context = use(AppContext)
   const navigate = useNavigate()
-  const [direction, setDirection] = useDirection()
+  const [startingAxis, setStartingAxis] = useStartingAxis()
 
   const cameraTilePosition = useCameraTilePosition()
   const [savedStart, setSavedStart] = useSavedStart()
@@ -49,7 +52,7 @@ export function BuildBelt() {
     context,
     start,
     end,
-    direction,
+    startingAxis,
   )
   const valid = isValid(context, belts)
   const hand = useHand(belts, network, valid)
@@ -77,7 +80,7 @@ export function BuildBelt() {
       <button
         className={styles.button}
         onPointerUp={() => {
-          setDirection(direction === 'x' ? 'y' : 'x')
+          setStartingAxis(startingAxis === 'x' ? 'y' : 'x')
         }}
       >
         Rotate
@@ -118,11 +121,11 @@ function getBeltId(position: SimpleVec2): EntityId {
 function getBeltConnections(
   context: IAppContext,
   position: SimpleVec2,
-  direction: BeltDirection,
+  startingAxis: Axis,
 ): Connection[] {
   const connections: Connection[] = []
 
-  if (direction === 'x') {
+  if (startingAxis === 'x') {
     // prettier-ignore
     const north = context.world.tiles[`${position.x}.${position.y - 1}`]
     if (north?.entityId) {
@@ -270,7 +273,7 @@ function getBeltConnections(
       }
     }
   } else {
-    invariant(direction === 'y')
+    invariant(startingAxis === 'y')
 
     const north =
       context.world.tiles[`${position.x}.${position.y + 1}`]
@@ -428,13 +431,13 @@ function addBelt(
   network: Network,
   belts: Belt[],
   position: SimpleVec2,
-  direction: BeltDirection,
+  startingAxis: Axis,
 ): void {
   const id = getBeltId(position)
   const connections = getBeltConnections(
     context,
     position,
-    direction,
+    startingAxis,
   )
   const prev = belts.at(-1)
   if (prev) {
@@ -467,7 +470,7 @@ function addBelt(
     position,
     size: BELT_SIZE,
     connections,
-    direction,
+    direction: startingAxis,
     offset: 0,
     velocity: 0,
     mass,
@@ -533,7 +536,7 @@ function useBelts(
   context: IAppContext,
   start: SimpleVec2,
   end: SimpleVec2 | null,
-  direction: BeltDirection,
+  startingAxis: Axis,
 ): {
   belts: Belt[]
   network: Network
@@ -554,7 +557,7 @@ function useBelts(
       rootId,
     }
 
-    if (direction === 'x') {
+    if (startingAxis === 'x') {
       for (
         let x = 0;
         x < Math.abs(dx) + (dy === 0 ? 1 : 0);
@@ -568,7 +571,7 @@ function useBelts(
             x: start.x + x * Math.sign(dx),
             y: start.y,
           },
-          direction,
+          startingAxis,
         )
       }
 
@@ -611,7 +614,7 @@ function useBelts(
             x: start.x,
             y: start.y + y * Math.sign(dy),
           },
-          direction,
+          startingAxis,
         )
       }
 
@@ -643,7 +646,7 @@ function useBelts(
     }
 
     return { belts, network }
-  }, [context, start, end, direction, buildVersion])
+  }, [context, start, end, startingAxis, buildVersion])
 }
 
 function useHand(
@@ -759,21 +762,21 @@ function isValid(
   return true
 }
 
-function useDirection(): [
-  BeltDirection,
-  (direction: BeltDirection) => void,
+function useStartingAxis(): [
+  Axis,
+  (startingAxis: Axis) => void,
 ] {
   const [searchParams, setSearchParams] = useSearchParams()
 
-  const direction = BeltDirection.parse(
-    searchParams.get('direction') ?? 'x',
+  const startingAxis = Axis.parse(
+    searchParams.get('startingAxis') ?? 'x',
   )
 
-  const setDirection = useCallback(
-    (next: BeltDirection) => {
+  const setStartingAxis = useCallback(
+    (next: Axis) => {
       setSearchParams(
         (prev) => {
-          prev.set('direction', next)
+          prev.set('startingAxis', next)
           return prev
         },
         { replace: true },
@@ -782,5 +785,5 @@ function useDirection(): [
     [setSearchParams],
   )
 
-  return [direction, setDirection]
+  return [startingAxis, setStartingAxis]
 }
