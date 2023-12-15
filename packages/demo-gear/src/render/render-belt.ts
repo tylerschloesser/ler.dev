@@ -29,8 +29,8 @@ function renderLine(
     return
   }
   render(
-    x + Math.max(offset, 0),
-    y,
+    Math.max(offset, 0),
+    0,
     lineWidth +
       Math.min(offset, 0) +
       Math.min(1 - (offset + lineWidth), 0),
@@ -38,6 +38,10 @@ function renderLine(
     BELT_LINE_COLOR,
     0,
     rotation,
+    x,
+    y,
+    1,
+    1,
   )
 }
 
@@ -55,57 +59,77 @@ function renderBeltItem(
   invariant(itemType === ItemType.enum.Fuel)
 
   render(
-    x + padding + (position - 0.5),
-    y + padding + 0,
+    padding + (position - 0.5),
+    padding + 0,
     1 - padding * 2,
     1 - padding * 2,
     FUEL_COLOR,
     0.1,
     rotation,
+    x,
+    y,
+    1,
+    1,
   )
 
   // top border
   render(
-    x + padding + (position - 0.5),
-    y + padding + 0,
+    padding + (position - 0.5),
+    padding + 0,
     1 - padding * 2,
     border,
     ITEM_BORDER,
     0.1,
     rotation,
+    x,
+    y,
+    1,
+    1,
   )
 
   // bottom border
   render(
-    x + padding + (position - 0.5),
-    y + 1 - padding + 0 - border,
+    padding + (position - 0.5),
+    1 - padding + 0 - border,
     1 - padding * 2,
     border,
     ITEM_BORDER,
     0.1,
     rotation,
+    x,
+    y,
+    1,
+    1,
   )
 
   // left border
   render(
-    x + padding + (position - 0.5),
-    y + padding + 0,
+    padding + (position - 0.5),
+    padding + 0,
     border,
     1 - padding * 2,
     ITEM_BORDER,
     0.1,
     rotation,
+    x,
+    y,
+    1,
+    1,
   )
 
   // right border
   render(
-    x + 1 - padding + (position - 0.5) - border,
-    y + padding + 0,
+    1 - padding + (position - 0.5) - border,
+    padding + 0,
     border,
     1 - padding * 2,
     ITEM_BORDER,
     0.1,
     rotation,
+    x,
+    y,
+    1,
+    1,
   )
 }
 
