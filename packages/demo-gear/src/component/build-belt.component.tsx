@@ -166,7 +166,7 @@ function getBeltConnections(
         case EntityType.enum.Belt: {
           if (isHorizontal(entity)) {
             connections.push({
-              type: ConnectionType.enum.Belt,
+              type: ConnectionType.enum.Adjacent,
               entityId: entity.id,
               multiplier:
                 rotation === entity.rotation ? 1 : -1,
@@ -212,7 +212,7 @@ function getBeltConnections(
         case EntityType.enum.Belt: {
           if (isHorizontal(entity)) {
             connections.push({
-              type: ConnectionType.enum.Belt,
+              type: ConnectionType.enum.Adjacent,
               entityId: entity.id,
               multiplier:
                 rotation === entity.rotation ? 1 : -1,
@@ -305,7 +305,7 @@ function getBeltConnections(
         case EntityType.enum.Belt: {
           if (isVertical(entity)) {
             connections.push({
-              type: ConnectionType.enum.Belt,
+              type: ConnectionType.enum.Adjacent,
               entityId: entity.id,
               multiplier:
                 rotation === entity.rotation ? 1 : -1,
@@ -351,7 +351,7 @@ function getBeltConnections(
         case EntityType.enum.Belt: {
           if (isVertical(entity)) {
             connections.push({
-              type: ConnectionType.enum.Belt,
+              type: ConnectionType.enum.Adjacent,
               entityId: entity.id,
               multiplier:
                 rotation === entity.rotation ? 1 : -1,
