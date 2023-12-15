@@ -9,6 +9,7 @@ import { getAccelerationMap } from '../apply-torque.js'
 import { build } from '../build.js'
 import {
   Belt,
+  BeltEntity,
   BuildHand,
   Connection,
   ConnectionType,
@@ -432,6 +433,7 @@ function addBelt(
   belts: Belt[],
   position: SimpleVec2,
   startingAxis: Axis,
+  directions: BeltEntity['directions'],
 ): void {
   const id = getBeltId(position)
   const connections = getBeltConnections(
@@ -475,56 +477,8 @@ function addBelt(
     velocity: 0,
     mass,
     items: [],
-    directions: [Direction.enum.East, Direction.enum.West],
-  })
-
-  invariant(!network.entityIds[id])
-  network.entityIds[id] = true
-  network.mass += mass
-}
-
-function addBeltIntersection(
-  _context: IAppContext,
-  network: Network,
-  belts: Belt[],
-  position: SimpleVec2,
-): void {
-  const id = getBeltId(position)
-  const connections: Connection[] = []
-  const prev = belts.at(-1)
-  if (prev) {
-    let multiplier = -1
-    if (
-      prev.position.x < position.x ||
-      prev.position.y < position.y
-    ) {
-      multiplier = 1
-    }
-
-    prev.connections.push({
-      entityId: id,
-      multiplier,
-      type: ConnectionType.enum.Belt,
-    })
-    connections.push({
-      entityId: prev.id,
-      multiplier,
-      type: ConnectionType.enum.Belt,
-    })
-  }
-
-  const mass = 1
-  belts.push({
-    id: getBeltId(position),
-    networkId: network.id,
-    type: EntityType.enum.BeltIntersection,
-    position,
-    size: BELT_SIZE,
-    connections,
-    offset: 0,
-    velocity: 0,
-    mass,
-    items: [],
+    directions,
+    rotation: 0,
   })
 
   invariant(!network.entityIds[id])
@@ -543,9 +497,6 @@ function useBelts(
 } {
   const buildVersion = useWorldBuildVersion()
   return useMemo(() => {
-    const dx = end ? end.x - start.x : 0
-    const dy = end ? end.y - start.y : 0
-
     const belts = new Array<Belt>()
 
     // TODO this doesn't seem super safe assumption
@@ -557,92 +508,18 @@ function useBelts(
       rootId,
     }
 
-    if (startingAxis === 'x') {
-      for (
-        let x = 0;
-        x < Math.abs(dx) + (dy === 0 ? 1 : 0);
-        x += 1
-      ) {
-        addBelt(
-          context,
-          network,
-          belts,
-          {
-            x: start.x + x * Math.sign(dx),
-            y: start.y,
-          },
-          startingAxis,
-        )
-      }
-
-      if (dy !== 0) {
-        if (belts.length) {
-          addBeltIntersection(context, network, belts, {
-            x: start.x + dx,
-            y: start.y,
-          })
-        }
-
-        for (
-          let y = belts.length ? 1 : 0;
-          y < Math.abs(dy) + 1;
-          y += 1
-        ) {
-          addBelt(
-            context,
-            network,
-            belts,
-            {
-              x: start.x + dx,
-              y: start.y + y * Math.sign(dy),
-            },
-            'y',
-          )
-        }
-      }
-    } else {
-      for (
-        let y = 0;
-        y < Math.abs(dy) + (dx === 0 ? 1 : 0);
-        y += 1
-      ) {
-        addBelt(
-          context,
-          network,
-          belts,
-          {
-            x: start.x,
-            y: start.y + y * Math.sign(dy),
-          },
-          startingAxis,
-        )
-      }
-
-      if (dx !== 0) {
-        if (belts.length) {
-          addBeltIntersection(context, network, belts, {
-            x: start.x,
-            y: start.y + dy,
-          })
-        }
-
-        for (
-          let x = belts.length ? 1 : 0;
-          x < Math.abs(dx) + 1;
-          x += 1
-        ) {
-          addBelt(
-            context,
-            network,
-            belts,
-            {
-              x: start.x + x * Math.sign(dx),
-              y: start.y + dy,
-            },
-            'x',
-          )
-        }
-      }
+    for (const {
+      position,
+      directions,
+    } of iterateBeltPositions(start, end, startingAxis)) {
+      addBelt(
+        context,
+        network,
+        belts,
+        position,
+        startingAxis,
+        directions,
+      )
     }
 
     return { belts, network }
@@ -786,4 +663,87 @@ function useStartingAxis(): [
   )
 
   return [startingAxis, setStartingAxis]
+}
+
+function* iterateBeltPositions(
+  start: SimpleVec2,
+  end: SimpleVec2 | null,
+  startingAxis: Axis,
+) {
+  let dx = end ? end.x - start.x : 0
+  let dy = end ? end.y - start.y : 0
+
+  if (dx === 0 && dy === 0) {
+    if (startingAxis === 'x') {
+      dx = 1
+    } else {
+      invariant(startingAxis === 'y')
+      dy = 1
+    }
+  }
+
+  if (dy === 0) {
+    dx += 1
+  } else if (dx === 0) {
+    dy += 1
+  }
+
+  const sx = Math.sign(dx)
+  const sy = Math.sign(dy)
+
+  const iter: {
+    position: SimpleVec2
+    directions: BeltEntity['directions']
+  } = {
+    position: null!,
+    directions: null!,
+  }
+
+  if (startingAxis === 'x') {
+    iter.directions =
+      sx === 1
+        ? [Direction.enum.West, Direction.enum.East]
+        : [Direction.enum.East, Direction.enum.West]
+
+    for (let x = 0; x < Math.abs(dx); x++) {
+      iter.position = {
+        x: start.x + x * sx,
+        y: start.y,
+      }
+      yield iter
+    }
+
+    if (dy === 0) return
+
+    let y = 0
+    if (dx !== 0) {
+      iter.directions = [
+        iter.directions[1],
+        sy === 1
+          ? Direction.enum.South
+          : Direction.enum.North,
+      ]
+      iter.position = {
+        x: start.x + dx + sx,
+        y: start.y,
+      }
+      yield iter
+      y += 1
+    }
+
+    iter.directions =
+      sy === 1
+        ? [Direction.enum.North, Direction.enum.South]
+        : [Direction.enum.South, Direction.enum.North]
+
+    for (; y <= Math.abs(dy); y++) {
+      iter.position = {
+        x: start.x + dx + sx,
+        y: start.y + y * sy,
+      }
+      yield iter
+    }
+  } else {
+    invariant(startingAxis === 'y')
+  }
 }
