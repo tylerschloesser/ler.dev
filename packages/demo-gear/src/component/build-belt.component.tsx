@@ -731,8 +731,8 @@ function* iterateBeltPositions(
     if (dy !== 0) {
       iter.turn =
         sy * sx === 1
-          ? BeltTurn.enum.Right
-          : BeltTurn.enum.Left
+          ? BeltTurn.enum.Left
+          : BeltTurn.enum.Right
       iter.position = {
         x: start.x,
         y: start.y + dy,

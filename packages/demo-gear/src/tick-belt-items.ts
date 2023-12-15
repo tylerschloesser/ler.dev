@@ -190,6 +190,7 @@ function getRelationship(
           nextX -= 1
           break
       }
+      break
     }
     case BeltTurn.enum.Right: {
       switch (a.rotation) {
