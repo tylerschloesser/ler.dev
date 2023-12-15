@@ -53,14 +53,18 @@ function renderBeltItem(
 ): void {
   const border = 0.1
   const padding = 0.2
+  const size = 0.6
 
   invariant(item.type === ItemType.enum.Fuel)
 
+  const x = item.position - size / 2
+  const y = 0.5 - size / 2
+
   render(
-    padding + (item.position - 0.5),
-    padding + 0,
-    1 - padding * 2,
-    1 - padding * 2,
+    x,
+    y,
+    size,
+    size,
     FUEL_COLOR,
     0.1,
     belt.rotation,
@@ -72,9 +76,9 @@ function renderBeltItem(
 
   // top border
   render(
-    padding + (item.position - 0.5),
-    padding + 0,
-    1 - padding * 2,
+    x,
+    y,
+    size,
     border,
     ITEM_BORDER,
     0.1,
@@ -87,9 +91,9 @@ function renderBeltItem(
 
   // bottom border
   render(
-    padding + (item.position - 0.5),
-    1 - padding + 0 - border,
-    1 - padding * 2,
+    x,
+    y + size - border,
+    size,
     border,
     ITEM_BORDER,
     0.1,
@@ -102,10 +106,10 @@ function renderBeltItem(
 
   // left border
   render(
-    padding + (item.position - 0.5),
-    padding + 0,
+    x,
+    y,
     border,
-    1 - padding * 2,
+    size,
     ITEM_BORDER,
     0.1,
     belt.rotation,
@@ -117,10 +121,10 @@ function renderBeltItem(
 
   // right border
   render(
-    1 - padding + (item.position - 0.5) - border,
-    padding + 0,
+    x + size - border,
+    y,
     border,
-    1 - padding * 2,
+    size,
     ITEM_BORDER,
     0.1,
     belt.rotation,
