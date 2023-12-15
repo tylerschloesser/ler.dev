@@ -10,6 +10,7 @@ import { build } from '../build.js'
 import {
   Belt,
   BeltEntity,
+  BeltTurn,
   BuildHand,
   Connection,
   ConnectionType,
@@ -20,6 +21,7 @@ import {
   HandType,
   IAppContext,
   Network,
+  Rotation,
   SimpleVec2,
 } from '../types.js'
 import {
@@ -479,6 +481,7 @@ function addBelt(
     items: [],
     directions,
     rotation: 0,
+    turn: BeltTurn.enum.None,
   })
 
   invariant(!network.entityIds[id])
@@ -694,17 +697,18 @@ function* iterateBeltPositions(
   const iter: {
     position: SimpleVec2
     directions: BeltEntity['directions']
+    rotation: Rotation
+    turn: BeltTurn
   } = {
     position: null!,
     directions: null!,
+    rotation: null!,
+    turn: null!,
   }
 
   if (startingAxis === 'x') {
-    iter.directions =
-      sx === 1
-        ? [Direction.enum.West, Direction.enum.East]
-        : [Direction.enum.East, Direction.enum.West]
-
+    iter.rotation = sx === 1 ? 0 : 180
+    iter.turn = BeltTurn.enum.None
     for (let x = 0; x < Math.abs(dx); x++) {
       iter.position = {
         x: start.x + x * sx,
@@ -717,12 +721,10 @@ function* iterateBeltPositions(
 
     let y = 0
     if (dx !== 0) {
-      iter.directions = [
-        iter.directions[1],
-        sy === 1
-          ? Direction.enum.South
-          : Direction.enum.North,
-      ]
+      iter.turn =
+        sx * sy === 1
+          ? BeltTurn.enum.Right
+          : BeltTurn.enum.Left
       iter.position = {
         x: start.x + dx + sx,
         y: start.y,
@@ -731,10 +733,8 @@ function* iterateBeltPositions(
       y += 1
     }
 
-    iter.directions =
-      sy === 1
-        ? [Direction.enum.North, Direction.enum.South]
-        : [Direction.enum.South, Direction.enum.North]
+    iter.turn = BeltTurn.enum.None
+    iter.rotation = sy === 1 ? 90 : 270
 
     for (; y <= Math.abs(dy); y++) {
       iter.position = {
