@@ -12,6 +12,7 @@ import {
   BuildHand,
   Connection,
   ConnectionType,
+  Direction,
   Entity,
   EntityId,
   EntityType,
@@ -471,6 +472,7 @@ function addBelt(
     velocity: 0,
     mass,
     items: [],
+    directions: [Direction.enum.East, Direction.enum.West],
   })
 
   invariant(!network.entityIds[id])

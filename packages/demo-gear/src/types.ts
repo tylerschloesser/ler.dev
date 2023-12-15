@@ -151,6 +151,14 @@ export const BeltDirection = z.union([
 ])
 export type BeltDirection = z.infer<typeof BeltDirection>
 
+export const Direction = z.enum([
+  'North',
+  'South',
+  'East',
+  'West',
+])
+export type Direction = z.infer<typeof Direction>
+
 export const BeltPath = z.array(SimpleVec2)
 export type BeltPath = z.infer<typeof BeltPath>
 
@@ -163,6 +171,7 @@ export type BeltItem = z.infer<typeof BeltItem>
 export const BeltEntity = EntityBase.extend({
   type: z.literal(EntityType.enum.Belt),
   direction: BeltDirection,
+  directions: z.tuple([Direction, Direction]),
   offset: z.number(),
   items: z.array(BeltItem),
 })
