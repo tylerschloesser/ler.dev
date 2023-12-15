@@ -7,6 +7,9 @@ export const initKeyboard: InitFn = async (context) => {
       if (e.key === 'q') {
         context.navigate('/gears')
       }
+      if (e.key === ' ') {
+        debugger
+      }
     },
     { signal: context.signal },
   )

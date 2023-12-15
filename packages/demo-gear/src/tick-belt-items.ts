@@ -46,7 +46,7 @@ export function tickBeltItems(
         }
       } else if (nextPosition < 0) {
         if (prev) {
-          item.position = 1 - (nextPosition + 1)
+          item.position = nextPosition + 1
           prev.items.push(item)
           remove.add(item)
         } else {
