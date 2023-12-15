@@ -100,6 +100,9 @@ function* iterateBeltItems(path: Belt[]) {
           prevAbsolutePosition -
           absolutePosition -
           BELT_ITEM_GAP
+
+        // TODO this doesn't account for change in position
+        // during this tick!
         prevAbsolutePosition = absolutePosition
 
         yield BELT_ITEM_ITERATOR
@@ -131,6 +134,8 @@ function* iterateBeltItems(path: Belt[]) {
             BELT_ITEM_GAP -
             absolutePosition,
         )
+        // TODO this doesn't account for change in position
+        // during this tick!
         prevAbsolutePosition = absolutePosition
 
         yield BELT_ITEM_ITERATOR
