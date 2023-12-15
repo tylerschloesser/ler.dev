@@ -182,6 +182,17 @@ export function renderBelt(
       render(x, y, 1, 1, tint)
     }
 
-    invariant(belt.items.length === 0)
+    // TODO do this correctly
+    // for now just render in the x direction
+    for (const item of belt.items) {
+      renderBeltItem(
+        render,
+        'x',
+        x,
+        y,
+        item.type,
+        item.position,
+      )
+    }
   }
 }

@@ -2,13 +2,8 @@ import invariant from 'tiny-invariant'
 import { BELT_ITEM_GAP } from './const.js'
 import {
   Belt,
-  BeltConnection,
-  BeltEntity,
   BeltItem,
-  Connection,
   ConnectionType,
-  Entity,
-  EntityType,
   World,
 } from './types.js'
 import { isBelt } from './util.js'
@@ -42,16 +37,25 @@ export function tickBeltItems(
       const nextPosition = item.position + dp
       if (nextPosition > 1) {
         if (next) {
-          item.position = nextPosition - 1
-          next.items.unshift(item)
+          if (next.multiplier === 1) {
+            item.position = nextPosition - 1
+          } else {
+            invariant(next.multiplier === -1)
+            item.position = 1 - (nextPosition - 1)
+          }
+          next.belt.items.unshift(item)
           remove.add(item)
         } else {
           item.position = 1
         }
       } else if (nextPosition < 0) {
         if (prev) {
-          item.position = nextPosition + 1
-          prev.items.push(item)
+          if (prev.multiplier === 1) {
+            item.position = nextPosition + 1
+          } else {
+            item.position = 1 - (nextPosition + 1)
+          }
+          prev.belt.items.push(item)
           remove.add(item)
         } else {
           item.position = 0
@@ -63,166 +67,35 @@ export function tickBeltItems(
   }
 }
 
-function getBeltEast(
-  world: World,
-  current: BeltEntity,
-): BeltEntity | null {
-  // prettier-ignore
-  const tileId = `${current.position.x + 1}.${current.position.y}`
-  const tile = world.tiles[tileId]
-  let east: Entity | undefined = undefined
-  if (tile?.entityId) {
-    east = world.entities[tile.entityId]
-    invariant(east)
-  }
-  if (
-    east?.type === EntityType.enum.Belt &&
-    east.direction === 'x'
-  ) {
-    // TODO validate connection
-    invariant(east.velocity === current.velocity)
-
-    return east
-  }
-  return null
-}
-
-function getBeltWest(
-  world: World,
-  current: BeltEntity,
-): BeltEntity | null {
-  // prettier-ignore
-  const tileId = `${current.position.x - 1}.${current.position.y}`
-  const tile = world.tiles[tileId]
-  let west: Entity | undefined = undefined
-  if (tile?.entityId) {
-    west = world.entities[tile.entityId]
-    invariant(west)
-  }
-  if (
-    west?.type === EntityType.enum.Belt &&
-    west.direction === 'x'
-  ) {
-    // TODO validate connection
-    invariant(west.velocity === current.velocity)
-
-    return west
-  }
-  return null
-}
-
-function getBeltNorth(
-  world: World,
-  current: BeltEntity,
-): BeltEntity | null {
-  // prettier-ignore
-  const tileId = `${current.position.x}.${current.position.y - 1}`
-  const tile = world.tiles[tileId]
-  let north: Entity | undefined = undefined
-  if (tile?.entityId) {
-    north = world.entities[tile.entityId]
-    invariant(north)
-  }
-  if (
-    north?.type === EntityType.enum.Belt &&
-    north.direction === 'y'
-  ) {
-    // TODO validate connection
-    invariant(north.velocity === current.velocity)
-
-    return north
-  }
-  return null
-}
-
-function getBeltSouth(
-  world: World,
-  current: BeltEntity,
-): BeltEntity | null {
-  // prettier-ignore
-  const tileId = `${current.position.x}.${current.position.y + 1}`
-  const tile = world.tiles[tileId]
-  let south: Entity | undefined = undefined
-  if (tile?.entityId) {
-    south = world.entities[tile.entityId]
-    invariant(south)
-  }
-  if (
-    south?.type === EntityType.enum.Belt &&
-    south.direction === 'y'
-  ) {
-    // TODO validate connection
-    invariant(south.velocity === current.velocity)
-
-    return south
-  }
-  return null
-}
-
 const BELT_ITEM_ITERATOR: {
   belt: Belt
   item: BeltItem
-  next: Belt | null
-  nextConnection: BeltConnection | null
-  prev: Belt | null
-  prevConnection: BeltConnection | null
+  next: { belt: Belt; multiplier: number } | null
+  prev: { belt: Belt; multiplier: number } | null
   available: number
   remove: Set<BeltItem>
 } = {
   belt: null!,
   item: null!,
   next: null,
-  nextConnection: null,
   prev: null,
-  prevConnection: null,
   available: null!,
   remove: new Set<BeltItem>(),
 }
 
-function* iterateBeltItems(path: Belt[]) {
+function* iterateBeltItems(path: BeltPath) {
   const first = path.at(0)
   if (!first) return
 
-  if (first.velocity > 0) {
+  if (first.belt.velocity > 0) {
     let prevAbsolutePosition = path.length
 
     for (let i = path.length - 1; i >= 0; i--) {
-      const belt = path[i]
+      const belt = path[i]?.belt
       invariant(belt)
       BELT_ITEM_ITERATOR.belt = belt
-      const prev = path[i - 1] ?? null
-      let prevConnection: Connection | null = null
-      if (prev) {
-        prevConnection =
-          belt.connections.find(
-            (connection) => connection.entityId === prev.id,
-          ) ?? null
-        invariant(prevConnection)
-      }
-      BELT_ITEM_ITERATOR.prev = prev
-      if (prevConnection) {
-        invariant(
-          prevConnection.type === ConnectionType.enum.Belt,
-        )
-      }
-      BELT_ITEM_ITERATOR.prevConnection = prevConnection
-
-      const next = path[i + 1] ?? null
-      let nextConnection: Connection | null = null
-      if (next) {
-        nextConnection =
-          belt.connections.find(
-            (connection) => connection.entityId === next.id,
-          ) ?? null
-        invariant(nextConnection)
-      }
-      BELT_ITEM_ITERATOR.next = next
-      if (nextConnection) {
-        invariant(
-          nextConnection.type === ConnectionType.enum.Belt,
-        )
-      }
-      BELT_ITEM_ITERATOR.nextConnection = nextConnection
+      BELT_ITEM_ITERATOR.prev = path[i - 1] ?? null
+      BELT_ITEM_ITERATOR.next = path[i + 1] ?? null
 
       BELT_ITEM_ITERATOR.remove.clear()
       for (let j = belt.items.length - 1; j >= 0; j--) {
@@ -245,11 +118,11 @@ function* iterateBeltItems(path: Belt[]) {
         )
       }
     }
-  } else if (first.velocity < 0) {
+  } else if (first.belt.velocity < 0) {
     let prevAbsolutePosition = 0
 
     for (let i = 0; i < path.length; i++) {
-      const belt = path[i]
+      const belt = path[i]?.belt
       invariant(belt)
       BELT_ITEM_ITERATOR.belt = belt
       BELT_ITEM_ITERATOR.prev = path[i - 1] ?? null
@@ -279,60 +152,107 @@ function* iterateBeltItems(path: Belt[]) {
   }
 }
 
-function getPaths(world: World): Array<Array<Belt>> {
+type BeltPath = Array<{
+  belt: Belt
+  multiplier: number
+}>
+
+function getPaths(world: World): Array<BeltPath> {
   const belts = Object.values(world.entities).filter(isBelt)
 
-  const paths = new Array<Array<Belt>>()
+  const paths = new Array<BeltPath>()
   const seen = new Set<Belt>()
 
   for (const root of belts) {
     if (seen.has(root)) continue
 
-    const path = new Array<Belt>(root)
-    const stack = new Array<Belt>(root)
+    const path = new Array<{
+      belt: Belt
+      multiplier: number
+    }>({ belt: root, multiplier: 1 })
+
+    const stack = new Array<{
+      belt: Belt
+      multiplier: number
+    }>({
+      belt: root,
+      multiplier: 1,
+    })
+
     while (stack.length) {
       const current = stack.pop()
       invariant(current)
-      seen.add(current)
+      seen.add(current.belt)
 
-      for (const connection of current.connections) {
+      for (const connection of current.belt.connections) {
         if (connection.type !== ConnectionType.enum.Belt)
           continue
         const neighbor = world.entities[connection.entityId]
         invariant(isBelt(neighbor))
         if (seen.has(neighbor)) continue
-        stack.push(neighbor)
+        const multiplier =
+          current.multiplier * connection.multiplier
+        stack.push({
+          belt: neighbor,
+          multiplier,
+        })
 
-        if (neighbor.position.y === current.position.y) {
+        invariant(multiplier === 1 || multiplier === -1)
+
+        let add: typeof path.push | typeof path.unshift
+        if (
+          neighbor.position.y === current.belt.position.y
+        ) {
           if (
             neighbor.position.x ===
-            current.position.x + 1
+            current.belt.position.x + 1
           ) {
-            path.push(neighbor)
+            if (multiplier === 1) {
+              add = path.push.bind(path)
+            } else {
+              add = path.unshift.bind(path)
+            }
           } else {
             invariant(
               neighbor.position.x ===
-                current.position.x - 1,
+                current.belt.position.x - 1,
             )
-            path.unshift(neighbor)
+            if (multiplier === 1) {
+              add = path.unshift.bind(path)
+            } else {
+              add = path.push.bind(path)
+            }
           }
         } else {
           invariant(
-            neighbor.position.x === current.position.x,
+            neighbor.position.x === current.belt.position.x,
           )
           if (
             neighbor.position.y ===
-            current.position.y + 1
+            current.belt.position.y + 1
           ) {
-            path.push(neighbor)
+            if (multiplier === 1) {
+              add = path.push.bind(path)
+            } else {
+              add = path.unshift.bind(path)
+            }
           } else {
             invariant(
               neighbor.position.y ===
-                current.position.y - 1,
+                current.belt.position.y - 1,
             )
-            path.unshift(neighbor)
+            if (multiplier === 1) {
+              add = path.unshift.bind(path)
+            } else {
+              add = path.push.bind(path)
+            }
           }
         }
+
+        add({
+          belt: neighbor,
+          multiplier: connection.multiplier,
+        })
       }
     }
     paths.push(path)
