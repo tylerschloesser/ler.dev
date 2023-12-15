@@ -37,6 +37,8 @@ import {
   clamp,
   getEntity,
   getIntersectingEntities,
+  isHorizontal,
+  isVertical,
 } from '../util.js'
 import { Vec2 } from '../vec2.js'
 import styles from './build-gear.module.scss'
@@ -562,23 +564,23 @@ function getConnections(
           let multiplier: number | null = null
           switch (direction) {
             case Direction.N: {
-              if (entity.direction === 'y') break
-              multiplier = 1
+              if (isVertical(entity)) break
+              multiplier = entity.rotation === 0 ? 1 : -1
               break
             }
             case Direction.S: {
-              if (entity.direction === 'y') break
-              multiplier = -1
+              if (isVertical(entity)) break
+              multiplier = entity.rotation === 0 ? -1 : 1
               break
             }
             case Direction.E: {
-              if (entity.direction === 'x') break
-              multiplier = 1
+              if (isHorizontal(entity)) break
+              multiplier = entity.rotation === 90 ? 1 : -1
               break
             }
             case Direction.W: {
-              if (entity.direction === 'x') break
-              multiplier = -1
+              if (isHorizontal(entity)) break
+              multiplier = entity.rotation === 90 ? -1 : 1
               break
             }
           }

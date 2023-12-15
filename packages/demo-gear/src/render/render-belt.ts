@@ -1,9 +1,6 @@
 import invariant from 'tiny-invariant'
 import {
   Belt,
-  BeltDirection,
-  BeltEntity,
-  EntityType,
   IAppContext,
   ItemType,
   Rotation,
@@ -13,7 +10,6 @@ import {
   BELT_LINE_COLOR,
   Color,
   FUEL_COLOR,
-  INTERSECTION_BELT_COLOR,
   ITEM_BORDER,
 } from './color.js'
 import { batchRenderRect } from './render-rect.js'
@@ -47,7 +43,7 @@ function renderLine(
 
 function renderBeltItem(
   render: RenderFn,
-  direction: BeltDirection,
+  rotation: Rotation,
   x: number,
   y: number,
   itemType: ItemType,
@@ -59,60 +55,57 @@ function renderBeltItem(
   invariant(itemType === ItemType.enum.Fuel)
 
   render(
-    x + padding + (direction === 'x' ? position - 0.5 : 0),
-    y + padding + (direction === 'y' ? position - 0.5 : 0),
+    x + padding + (position - 0.5),
+    y + padding + 0,
     1 - padding * 2,
     1 - padding * 2,
     FUEL_COLOR,
     0.1,
+    rotation,
   )
 
   // top border
   render(
-    x + padding + (direction === 'x' ? position - 0.5 : 0),
-    y + padding + (direction === 'y' ? position - 0.5 : 0),
+    x + padding + (position - 0.5),
+    y + padding + 0,
     1 - padding * 2,
     border,
     ITEM_BORDER,
     0.1,
+    rotation,
   )
 
   // bottom border
   render(
-    x + padding + (direction === 'x' ? position - 0.5 : 0),
-    y +
-      1 -
-      padding +
-      (direction === 'y' ? position - 0.5 : 0) -
-      border,
+    x + padding + (position - 0.5),
+    y + 1 - padding + 0 - border,
     1 - padding * 2,
     border,
     ITEM_BORDER,
     0.1,
+    rotation,
   )
 
   // left border
   render(
-    x + padding + (direction === 'x' ? position - 0.5 : 0),
-    y + padding + (direction === 'y' ? position - 0.5 : 0),
+    x + padding + (position - 0.5),
+    y + padding + 0,
     border,
     1 - padding * 2,
     ITEM_BORDER,
     0.1,
+    rotation,
   )
 
   // right border
   render(
-    x +
-      1 -
-      padding +
-      (direction === 'x' ? position - 0.5 : 0) -
-      border,
-    y + padding + (direction === 'y' ? position - 0.5 : 0),
+    x + 1 - padding + (position - 0.5) - border,
+    y + padding + 0,
     border,
     1 - padding * 2,
     ITEM_BORDER,
     0.1,
+    rotation,
   )
 }
 
@@ -146,7 +139,7 @@ export function renderBelt(
   for (const item of belt.items) {
     renderBeltItem(
       render,
-      belt.direction,
+      belt.rotation,
       x,
       y,
       item.type,

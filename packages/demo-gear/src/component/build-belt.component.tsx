@@ -25,6 +25,8 @@ import {
 import {
   getEntity,
   getExternalConnections,
+  isHorizontal,
+  isVertical,
 } from '../util.js'
 import styles from './build-belt.module.scss'
 import { AppContext } from './context.js'
@@ -122,11 +124,17 @@ function getBeltId(position: SimpleVec2): EntityId {
 function getBeltConnections(
   context: IAppContext,
   position: SimpleVec2,
-  startingAxis: Axis,
+  rotation: Rotation,
+  turn: BeltTurn,
 ): Connection[] {
   const connections: Connection[] = []
 
-  if (startingAxis === 'x') {
+  if (turn !== BeltTurn.enum.None) {
+    // TODO
+    return connections
+  }
+
+  if (isHorizontal(rotation)) {
     // prettier-ignore
     const north = context.world.tiles[`${position.x}.${position.y - 1}`]
     if (north?.entityId) {
@@ -150,17 +158,18 @@ function getBeltConnections(
           connections.push({
             type: ConnectionType.enum.Adjacent,
             entityId: entity.id,
-            multiplier: -1,
+            multiplier: rotation === 0 ? -1 : 1,
           })
 
           break
         }
         case EntityType.enum.Belt: {
-          if (entity.direction === 'x') {
+          if (isHorizontal(entity)) {
             connections.push({
               type: ConnectionType.enum.Belt,
               entityId: entity.id,
-              multiplier: 1,
+              multiplier:
+                rotation === entity.rotation ? 1 : -1,
             })
           } else {
             // TODO
@@ -195,17 +204,18 @@ function getBeltConnections(
           connections.push({
             type: ConnectionType.enum.Adjacent,
             entityId: entity.id,
-            multiplier: 1,
+            multiplier: rotation === 0 ? 1 : -1,
           })
 
           break
         }
         case EntityType.enum.Belt: {
-          if (entity.direction === 'x') {
+          if (isHorizontal(entity)) {
             connections.push({
               type: ConnectionType.enum.Belt,
               entityId: entity.id,
-              multiplier: 1,
+              multiplier:
+                rotation === entity.rotation ? 1 : -1,
             })
           } else {
             // TODO
@@ -224,12 +234,14 @@ function getBeltConnections(
       const entity = getEntity(context, east.entityId)
       switch (entity.type) {
         case EntityType.enum.Belt: {
-          if (entity.direction === 'x') {
-            connections.push({
-              type: ConnectionType.enum.Belt,
-              entityId: entity.id,
-              multiplier: 1,
-            })
+          if (isHorizontal(entity)) {
+            // TODO might need to change rotation of existing belts
+            //
+            // connections.push({
+            //   type: ConnectionType.enum.Belt,
+            //   entityId: entity.id,
+            //   multiplier: 1,
+            // })
           } else {
             // TODO
           }
@@ -244,12 +256,14 @@ function getBeltConnections(
       const entity = getEntity(context, west.entityId)
       switch (entity.type) {
         case EntityType.enum.Belt: {
-          if (entity.direction === 'x') {
-            connections.push({
-              type: ConnectionType.enum.Belt,
-              entityId: entity.id,
-              multiplier: 1,
-            })
+          if (isHorizontal(entity)) {
+            // TODO might need to change rotation of existing belts
+            //
+            // connections.push({
+            //   type: ConnectionType.enum.Belt,
+            //   entityId: entity.id,
+            //   multiplier: 1,
+            // })
           } else {
             // TODO
           }
@@ -258,47 +272,7 @@ function getBeltConnections(
       }
     }
   } else {
-    invariant(startingAxis === 'y')
-
-    const north =
-      context.world.tiles[`${position.x}.${position.y + 1}`]
-    if (north?.entityId) {
-      const entity = getEntity(context, north.entityId)
-      switch (entity.type) {
-        case EntityType.enum.Belt: {
-          if (entity.direction === 'y') {
-            connections.push({
-              type: ConnectionType.enum.Belt,
-              entityId: entity.id,
-              multiplier: 1,
-            })
-          } else {
-            // TODO
-          }
-          break
-        }
-      }
-    }
-
-    const south =
-      context.world.tiles[`${position.x}.${position.y - 1}`]
-    if (south?.entityId) {
-      const entity = getEntity(context, south.entityId)
-      switch (entity.type) {
-        case EntityType.enum.Belt: {
-          if (entity.direction === 'y') {
-            connections.push({
-              type: ConnectionType.enum.Belt,
-              entityId: entity.id,
-              multiplier: 1,
-            })
-          } else {
-            // TODO
-          }
-          break
-        }
-      }
-    }
+    invariant(isVertical(rotation))
 
     // prettier-ignore
     const east = context.world.tiles[`${position.x + 1}.${position.y}`]
@@ -323,17 +297,18 @@ function getBeltConnections(
           connections.push({
             type: ConnectionType.enum.Adjacent,
             entityId: entity.id,
-            multiplier: -1,
+            multiplier: rotation === 90 ? -1 : 1,
           })
 
           break
         }
         case EntityType.enum.Belt: {
-          if (entity.direction === 'y') {
+          if (isVertical(entity)) {
             connections.push({
               type: ConnectionType.enum.Belt,
               entityId: entity.id,
-              multiplier: 1,
+              multiplier:
+                rotation === entity.rotation ? 1 : -1,
             })
           } else {
             // TODO
@@ -368,17 +343,18 @@ function getBeltConnections(
           connections.push({
             type: ConnectionType.enum.Adjacent,
             entityId: entity.id,
-            multiplier: 1,
+            multiplier: rotation === 90 ? 1 : -1,
           })
 
           break
         }
         case EntityType.enum.Belt: {
-          if (entity.direction === 'y') {
+          if (isVertical(entity)) {
             connections.push({
               type: ConnectionType.enum.Belt,
               entityId: entity.id,
-              multiplier: 1,
+              multiplier:
+                rotation === entity.rotation ? 1 : -1,
             })
           } else {
             // TODO
@@ -387,6 +363,50 @@ function getBeltConnections(
         }
         default: {
           invariant(false, 'TODO')
+        }
+      }
+    }
+
+    const north =
+      context.world.tiles[`${position.x}.${position.y + 1}`]
+    if (north?.entityId) {
+      const entity = getEntity(context, north.entityId)
+      switch (entity.type) {
+        case EntityType.enum.Belt: {
+          if (isVertical(entity)) {
+            // TODO might need to change rotation of existing belts
+            //
+            // connections.push({
+            //   type: ConnectionType.enum.Belt,
+            //   entityId: entity.id,
+            //   multiplier: 1,
+            // })
+          } else {
+            // TODO
+          }
+          break
+        }
+      }
+    }
+
+    const south =
+      context.world.tiles[`${position.x}.${position.y - 1}`]
+    if (south?.entityId) {
+      const entity = getEntity(context, south.entityId)
+      switch (entity.type) {
+        case EntityType.enum.Belt: {
+          if (isVertical(entity)) {
+            // TODO might need to change rotation of existing belts
+            //
+            // connections.push({
+            //   type: ConnectionType.enum.Belt,
+            //   entityId: entity.id,
+            //   multiplier: 1,
+            // })
+          } else {
+            // TODO
+          }
+          break
         }
       }
     }
@@ -400,7 +420,6 @@ function addBelt(
   network: Network,
   belts: Belt[],
   position: SimpleVec2,
-  startingAxis: Axis,
   rotation: Rotation,
   turn: BeltTurn,
 ): void {
@@ -408,7 +427,8 @@ function addBelt(
   const connections = getBeltConnections(
     context,
     position,
-    startingAxis,
+    rotation,
+    turn,
   )
   const prev = belts.at(-1)
   if (prev) {
@@ -432,7 +452,6 @@ function addBelt(
     position,
     size: BELT_SIZE,
     connections,
-    direction: startingAxis,
     offset: 0,
     velocity: 0,
     mass,
@@ -478,7 +497,6 @@ function useBelts(
         network,
         belts,
         position,
-        startingAxis,
         rotation,
         turn,
       )

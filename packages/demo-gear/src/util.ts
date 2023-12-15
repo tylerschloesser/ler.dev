@@ -673,3 +673,27 @@ export function isBelt(entity?: Entity): entity is Belt {
 export function toRadians(rotation: Rotation): number {
   return (rotation * PI) / 180
 }
+
+export function isHorizontal(belt: Belt): boolean
+export function isHorizontal(rotation: Rotation): boolean
+export function isHorizontal(v: Belt | Rotation) {
+  let rotation: number
+  if (typeof v === 'number') {
+    rotation = v
+  } else {
+    rotation = v.rotation
+  }
+  return rotation === 0 || rotation === 180
+}
+
+export function isVertical(belt: Belt): boolean
+export function isVertical(rotation: Rotation): boolean
+export function isVertical(v: Belt | Rotation) {
+  let rotation: number
+  if (typeof v === 'number') {
+    rotation = v
+  } else {
+    rotation = v.rotation
+  }
+  return rotation === 90 || rotation === 270
+}

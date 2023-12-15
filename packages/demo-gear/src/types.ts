@@ -169,7 +169,6 @@ export type BeltTurn = z.infer<typeof BeltTurn>
 
 export const BeltEntity = EntityBase.extend({
   type: z.literal(EntityType.enum.Belt),
-  direction: BeltDirection,
   offset: z.number(),
   items: z.array(BeltItem),
   rotation: Rotation,
