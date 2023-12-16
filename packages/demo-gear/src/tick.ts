@@ -4,7 +4,6 @@ import {
 } from './apply-torque.js'
 import { TWO_PI } from './const.js'
 import { tickBeltItems } from './tick-belt-items.js'
-import { tickBelt } from './tick-belt.js'
 import { tickBuild } from './tick-build.js'
 import { tickGear } from './tick-gear.js'
 import {
@@ -48,10 +47,6 @@ export function tick(
     switch (entity.type) {
       case EntityType.enum.Gear: {
         tickGear(world, entity, elapsed)
-        break
-      }
-      case EntityType.enum.Belt: {
-        tickBelt(world, entity, elapsed)
         break
       }
     }

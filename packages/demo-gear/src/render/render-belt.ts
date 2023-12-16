@@ -63,6 +63,7 @@ function getTurnRotation(belt: Belt): Rotation {
         case 270:
           return 180
       }
+      break
     }
     case BeltTurn.enum.Right: {
       switch (belt.rotation) {
@@ -75,6 +76,7 @@ function getTurnRotation(belt: Belt): Rotation {
         case 270:
           return 0
       }
+      break
     }
     default:
       invariant(false)

@@ -42,7 +42,7 @@ export function build(
     root,
   )
 
-  let momentum = [root.velocity * newNetwork.mass]
+  const momentum = [root.velocity * newNetwork.mass]
 
   for (const [networkId, value] of Object.entries(
     externalNetworks,

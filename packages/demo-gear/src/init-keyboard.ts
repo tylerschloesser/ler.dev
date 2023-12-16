@@ -8,6 +8,7 @@ export const initKeyboard: InitFn = async (context) => {
         context.navigate('/gears')
       }
       if (e.key === ' ') {
+        // eslint-disable-next-line no-debugger
         debugger
       }
     },

@@ -37,10 +37,6 @@ export function batchRenderRect(
     cw?: number,
     ch?: number,
   ) => {
-    if (rotation === undefined) {
-    } else {
-    }
-
     gl.uniform4f(
       fillRect.uniforms.color,
       color.r,

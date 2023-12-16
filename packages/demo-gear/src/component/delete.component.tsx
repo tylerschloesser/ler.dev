@@ -80,7 +80,7 @@ function useDeleteButton(hand: DeleteHand) {
   const disabled =
     hand.entityIds.size === 0 && hand.tileIds.size === 0
 
-  let onPointerUp = useCallback(() => {
+  const onPointerUp = useCallback(() => {
     if (disabled) return
 
     for (const entityId of hand.entityIds) {
