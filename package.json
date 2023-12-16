@@ -1,5 +1,6 @@
 {
   "name": "@ler.dev/root",
+  "type": "module",
   "scripts": {
     "test": "npm run test:prettier && npm run test:lint",
     "test:lint": "eslint .",
