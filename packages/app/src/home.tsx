@@ -212,10 +212,10 @@ export function Home() {
       </BlobContainer>
       <Hero>
         <List>
-          {PATHS.map(({ path }) => (
-            <ListItem key={path}>
-              <StyledLink to={path}>
-                {path.toUpperCase()}
+          {PATHS.map(({ path, root }, i) => (
+            <ListItem key={i}>
+              <StyledLink to={root ?? path}>
+                {(root ?? path).toUpperCase()}
               </StyledLink>
             </ListItem>
           ))}

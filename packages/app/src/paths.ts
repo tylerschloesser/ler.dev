@@ -12,6 +12,7 @@ import { Tetris } from './tetris/index.js'
 
 interface PathInfo {
   path: string
+  root?: string
   Component: React.FunctionComponent
 }
 
@@ -65,7 +66,8 @@ export const PATHS: PathInfo[] = [
     Component: TestCanvas,
   },
   {
-    path: 'gears',
+    root: 'gears',
+    path: 'gears/*',
     Component: lazy(() =>
       import('@ler.dev/demo-gear').then(({ DemoGear }) => ({
         default: DemoGear,

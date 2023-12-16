@@ -37,9 +37,9 @@ export const App = () => {
         <Routes>
           <Route element={<Layout />}>
             <Route index element={<Home />} />
-            {PATHS.map(({ path, Component }) => (
+            {PATHS.map(({ path, Component }, i) => (
               <Route
-                key={path}
+                key={i}
                 path={path}
                 element={<Component />}
               />
