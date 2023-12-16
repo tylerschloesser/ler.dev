@@ -597,7 +597,7 @@ function isValid(
   ).at(0)
 
   if (!first) {
-    // no adjacent gears, belt is not moving
+    // no adjacent entity, belt is not moving
     return true
   }
 
