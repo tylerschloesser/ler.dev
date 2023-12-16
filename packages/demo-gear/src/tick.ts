@@ -56,7 +56,7 @@ export function tick(
 
   const entities = [...Object.values(world.entities)]
   if (context.hand?.type === HandType.Build) {
-    tickBuild(context, context.hand, elapsed)
+    tickBuild(context, context.hand)
     if (context.hand.valid) {
       // tick these as well, if valid
       entities.push(...Object.values(context.hand.entities))

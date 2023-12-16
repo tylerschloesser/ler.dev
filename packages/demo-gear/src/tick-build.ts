@@ -8,7 +8,6 @@ import {
 export function tickBuild(
   context: IAppContext,
   hand: BuildHand,
-  elapsed: number,
 ): void {
   if (!hand.valid) return
 

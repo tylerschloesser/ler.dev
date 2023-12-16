@@ -414,7 +414,7 @@ export function getExternalNetworks(
         connection.multiplier * current.multiplier
       invariant(multiplier !== 0)
       if (entity) {
-        let entry = result[entity.networkId]
+        const entry = result[entity.networkId]
         if (!entry) {
           result[entity.networkId] = {
             externalEntity: entity,
