@@ -51,13 +51,12 @@ export function BuildBelt() {
   const [savedStart, setSavedStart] = useSavedStart()
   const end = !savedStart ? null : cameraTilePosition
   const start = savedStart ?? cameraTilePosition
-  const { belts, network } = useBelts(
+  const { belts, network, valid } = useBelts(
     context,
     start,
     end,
     startingAxis,
   )
-  const valid = isValid(context, belts)
   const hand = useHand(belts, network, valid)
 
   return (
@@ -473,6 +472,7 @@ function useBelts(
 ): {
   belts: Belt[]
   network: Network
+  valid: boolean
 } {
   const buildVersion = useWorldBuildVersion()
   return useMemo(() => {
@@ -502,7 +502,9 @@ function useBelts(
       )
     }
 
-    return { belts, network }
+    const valid = isValid(context, belts)
+
+    return { belts, network, valid }
   }, [context, start, end, startingAxis, buildVersion])
 }
 
