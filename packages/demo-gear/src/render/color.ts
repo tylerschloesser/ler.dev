@@ -1,3 +1,5 @@
+import invariant from 'tiny-invariant'
+
 export interface Color {
   r: number
   g: number
@@ -77,12 +79,29 @@ export function rgb(
   return rgba(r, g ?? r, b ?? r, 1)
 }
 
-function rgba(
+export function rgba(
   r: number,
   g: number,
   b: number,
   a: number,
+): Color
+export function rgba(rgb: number, a: number): Color
+export function rgba(
+  r: number,
+  g: number,
+  b?: number,
+  a?: number,
 ): Color {
+  if (b === undefined) {
+    invariant(a === undefined)
+    return {
+      r: r / 255,
+      g: r / 255,
+      b: r / 255,
+      a: g,
+    }
+  }
+  invariant(a !== undefined)
   return {
     r: r / 255,
     g: g / 255,
@@ -94,3 +113,5 @@ function rgba(
 export const BACKGROUND = rgb(255, 0, 0)
 
 export const CLEAR = rgb(0)
+
+export const TRANSPARENT = rgba(0, 0)

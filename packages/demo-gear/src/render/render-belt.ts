@@ -10,11 +10,14 @@ import {
 import {
   BELT_COLOR,
   BELT_LINE_COLOR,
+  CLEAR,
   Color,
   FUEL_COLOR,
   ITEM_BORDER,
+  TRANSPARENT,
   TURN_BELT_LINE_COLOR,
   rgb,
+  rgba,
 } from './color.js'
 import { batchRenderRect } from './render-rect.js'
 import { GpuState } from './types.js'
@@ -199,11 +202,6 @@ export function renderBelt(
     turnRotation = getTurnRotation(belt)
   }
 
-  const lineColor =
-    turnRotation !== undefined
-      ? TURN_BELT_LINE_COLOR
-      : BELT_LINE_COLOR
-
   render(x, y, 1, 1, BELT_COLOR)
   renderLine(
     render,
@@ -212,7 +210,9 @@ export function renderBelt(
     y,
     belt.offset,
     rotation,
-    lineColor,
+    turnRotation !== undefined
+      ? rgba(64, 1 - belt.offset * 1.5)
+      : BELT_LINE_COLOR,
   )
   renderLine(
     render,
@@ -221,7 +221,7 @@ export function renderBelt(
     y,
     -1 + belt.offset,
     rotation,
-    lineColor,
+    BELT_LINE_COLOR,
   )
 
   if (turnRotation !== undefined) {
@@ -232,7 +232,7 @@ export function renderBelt(
       y,
       belt.offset,
       turnRotation,
-      lineColor,
+      rgba(64, belt.offset * 1.5 - 0.5),
     )
     renderLine(
       render,
@@ -241,7 +241,7 @@ export function renderBelt(
       y,
       -1 + belt.offset,
       turnRotation,
-      lineColor,
+      TRANSPARENT,
     )
   }
 
