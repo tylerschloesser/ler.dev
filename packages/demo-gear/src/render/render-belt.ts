@@ -50,37 +50,27 @@ function renderLine(
   )
 }
 
+const TURN_ROTATION_MAP: Record<
+  typeof BeltTurn.enum.Left | typeof BeltTurn.enum.Right,
+  Record<Rotation, Rotation>
+> = {
+  [BeltTurn.enum.Left]: {
+    0: 270,
+    90: 0,
+    180: 90,
+    270: 180,
+  },
+  [BeltTurn.enum.Right]: {
+    0: 90,
+    90: 180,
+    180: 270,
+    270: 0,
+  },
+}
+
 function getTurnRotation(belt: Belt): Rotation {
-  switch (belt.turn) {
-    case BeltTurn.enum.Left: {
-      switch (belt.rotation) {
-        case 0:
-          return 270
-        case 90:
-          return 0
-        case 180:
-          return 90
-        case 270:
-          return 180
-      }
-      break
-    }
-    case BeltTurn.enum.Right: {
-      switch (belt.rotation) {
-        case 0:
-          return 90
-        case 90:
-          return 180
-        case 180:
-          return 270
-        case 270:
-          return 0
-      }
-      break
-    }
-    default:
-      invariant(false)
-  }
+  invariant(belt.turn !== BeltTurn.enum.None)
+  return TURN_ROTATION_MAP[belt.turn][belt.rotation]
 }
 
 function renderBeltItem(
