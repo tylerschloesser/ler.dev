@@ -59,7 +59,10 @@ export const ADD_BELT_INVALID: Color = BUILD_GEAR_INVALID
 export const FUEL_COLOR: Color = rgb(255, 255, 51)
 export const ITEM_BORDER: Color = rgb(0)
 export const BELT_COLOR: Color = rgb(128)
+
 export const BELT_LINE_COLOR: Color = rgb(64)
+export const TURN_BELT_LINE_COLOR: Color = rgb(64 + 32)
+
 export const INTERSECTION_BELT_COLOR = rgb(32)
 
 export const DELETE: Color = rgba(255, 0, 0, 0.5)

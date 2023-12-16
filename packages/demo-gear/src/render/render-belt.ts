@@ -13,6 +13,8 @@ import {
   Color,
   FUEL_COLOR,
   ITEM_BORDER,
+  TURN_BELT_LINE_COLOR,
+  rgb,
 } from './color.js'
 import { batchRenderRect } from './render-rect.js'
 import { GpuState } from './types.js'
@@ -190,9 +192,28 @@ export function renderBelt(
   invariant(belt.offset < 1)
 
   const { rotation } = belt
+  let turnRotation: Rotation | undefined = undefined
   const { x, y } = belt.position
+
+  if (belt.turn !== BeltTurn.enum.None) {
+    turnRotation = getTurnRotation(belt)
+  }
+
+  const lineColor =
+    turnRotation !== undefined
+      ? TURN_BELT_LINE_COLOR
+      : BELT_LINE_COLOR
+
   render(x, y, 1, 1, BELT_COLOR)
-  renderLine(render, lineWidth, x, y, belt.offset, rotation)
+  renderLine(
+    render,
+    lineWidth,
+    x,
+    y,
+    belt.offset,
+    rotation,
+    lineColor,
+  )
   renderLine(
     render,
     lineWidth,
@@ -200,10 +221,10 @@ export function renderBelt(
     y,
     -1 + belt.offset,
     rotation,
+    lineColor,
   )
 
-  if (belt.turn !== BeltTurn.enum.None) {
-    const turnRotation = getTurnRotation(belt)
+  if (turnRotation !== undefined) {
     renderLine(
       render,
       lineWidth,
@@ -211,6 +232,7 @@ export function renderBelt(
       y,
       belt.offset,
       turnRotation,
+      lineColor,
     )
     renderLine(
       render,
@@ -219,6 +241,7 @@ export function renderBelt(
       y,
       -1 + belt.offset,
       turnRotation,
+      lineColor,
     )
   }
 
