@@ -10,13 +10,10 @@ import {
 import {
   BELT_COLOR,
   BELT_LINE_COLOR,
-  CLEAR,
   Color,
   FUEL_COLOR,
   ITEM_BORDER,
   TRANSPARENT,
-  TURN_BELT_LINE_COLOR,
-  rgb,
   rgba,
 } from './color.js'
 import { batchRenderRect } from './render-rect.js'
