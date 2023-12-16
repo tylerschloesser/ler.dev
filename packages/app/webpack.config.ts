@@ -23,7 +23,7 @@ export default (
       filename: '[name].[contenthash].js',
       chunkFilename: '[name].[contenthash].chunk.js',
       clean: true,
-      publicPath: '',
+      publicPath: '/',
     },
     module: {
       rules: [
