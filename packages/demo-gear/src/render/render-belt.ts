@@ -2,6 +2,7 @@ import invariant from 'tiny-invariant'
 import {
   Belt,
   BeltItem,
+  BeltTurn,
   IAppContext,
   ItemType,
   Rotation,
@@ -46,6 +47,37 @@ function renderLine(
   )
 }
 
+function getTurnRotation(belt: Belt): Rotation {
+  switch (belt.turn) {
+    case BeltTurn.enum.Left: {
+      switch (belt.rotation) {
+        case 0:
+          return 270
+        case 90:
+          return 0
+        case 180:
+          return 90
+        case 270:
+          return 180
+      }
+    }
+    case BeltTurn.enum.Right: {
+      switch (belt.rotation) {
+        case 0:
+          return 90
+        case 90:
+          return 180
+        case 180:
+          return 270
+        case 270:
+          return 0
+      }
+    }
+    default:
+      invariant(false)
+  }
+}
+
 function renderBeltItem(
   render: RenderFn,
   belt: Belt,
@@ -57,6 +89,12 @@ function renderBeltItem(
   invariant(item.type === ItemType.enum.Fuel)
 
   let { rotation } = belt
+  if (
+    belt.turn !== BeltTurn.enum.None &&
+    item.position > 0.5
+  ) {
+    rotation = getTurnRotation(belt)
+  }
 
   const x = item.position - size / 2
   const y = 0.5 - size / 2
@@ -68,7 +106,7 @@ function renderBeltItem(
     size,
     FUEL_COLOR,
     0.1,
-    belt.rotation,
+    rotation,
     belt.position.x,
     belt.position.y,
     1,
