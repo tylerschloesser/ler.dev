@@ -26,6 +26,7 @@ function renderLine(
   y: number,
   offset: number,
   rotation: Rotation,
+  color: Color = BELT_LINE_COLOR,
 ): void {
   if (offset + lineWidth < 0 || offset > 1) {
     return
@@ -37,7 +38,7 @@ function renderLine(
       Math.min(offset, 0) +
       Math.min(1 - (offset + lineWidth), 0),
     1,
-    BELT_LINE_COLOR,
+    color,
     0,
     rotation,
     x,
@@ -200,6 +201,26 @@ export function renderBelt(
     -1 + belt.offset,
     rotation,
   )
+
+  if (belt.turn !== BeltTurn.enum.None) {
+    const turnRotation = getTurnRotation(belt)
+    renderLine(
+      render,
+      lineWidth,
+      x,
+      y,
+      belt.offset,
+      turnRotation,
+    )
+    renderLine(
+      render,
+      lineWidth,
+      x,
+      y,
+      -1 + belt.offset,
+      turnRotation,
+    )
+  }
 
   for (const item of belt.items) {
     renderBeltItem(render, belt, item)
