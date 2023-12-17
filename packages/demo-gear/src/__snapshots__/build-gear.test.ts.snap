@@ -1,0 +1,45 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`build-gear getBuildHand base 1`] = `
+{
+  "action": {
+    "type": "build",
+  },
+  "entities": {
+    "-1.-1": {
+      "angle": 0,
+      "center": {
+        "x": 0,
+        "y": 0,
+      },
+      "connections": [],
+      "id": "-1.-1",
+      "mass": 3.141592653589793,
+      "networkId": "-1.-1",
+      "position": {
+        "x": -1,
+        "y": -1,
+      },
+      "radius": 1,
+      "size": {
+        "x": 2,
+        "y": 2,
+      },
+      "type": "Gear",
+      "velocity": 0,
+    },
+  },
+  "networks": {
+    "-1.-1": {
+      "entityIds": {
+        "-1.-1": true,
+      },
+      "id": "-1.-1",
+      "mass": 3.141592653589793,
+      "rootId": "-1.-1",
+    },
+  },
+  "type": "build",
+  "valid": true,
+}
+`;
