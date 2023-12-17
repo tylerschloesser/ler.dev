@@ -84,7 +84,7 @@ function useDeleteButton(hand: DeleteHand) {
     if (disabled) return
 
     for (const entityId of hand.entityIds) {
-      deleteEntity(context, entityId)
+      deleteEntity(context.world, entityId)
     }
     for (const tileId of hand.tileIds) {
       const tile = context.world.tiles[tileId]

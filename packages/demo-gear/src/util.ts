@@ -373,7 +373,7 @@ export function resetEntities(
 }
 
 export function getExternalNetworks(
-  context: IAppContext,
+  world: World,
   hand: BuildHand,
   root: Entity,
 ): Record<
@@ -389,7 +389,7 @@ export function getExternalNetworks(
 
   const result: ReturnType<typeof getExternalNetworks> = {}
 
-  const worldEntities = context.world.entities
+  const worldEntities = world.entities
   const buildEntities = hand.entities
 
   const seen = new Set<Entity>()
@@ -447,12 +447,12 @@ export function getExternalNetworks(
 }
 
 export function deleteEntity(
-  context: IAppContext,
+  world: World,
   entityId: EntityId,
 ): void {
-  const entity = context.world.entities[entityId]
+  const entity = world.entities[entityId]
   invariant(entity)
-  delete context.world.entities[entityId]
+  delete world.entities[entityId]
 
   // TODO switch to size in entity
   let size: SimpleVec2
@@ -475,7 +475,7 @@ export function deleteEntity(
     for (let y = 0; y < size.y; y++) {
       // prettier-ignore
       const tileId = `${entity.position.x + x}.${entity.position.y + y}`
-      const tile = context.world.tiles[tileId]
+      const tile = world.tiles[tileId]
       invariant(tile)
 
       if (attachedGearId) {
@@ -506,7 +506,7 @@ export function deleteEntity(
 
       invariant(tile.entityId === entity.id)
       if (!tile.resourceType) {
-        delete context.world.tiles[tileId]
+        delete world.tiles[tileId]
       } else {
         delete tile.entityId
       }
@@ -515,8 +515,7 @@ export function deleteEntity(
 
   // delete connections
   for (const connection of entity.connections) {
-    const target =
-      context.world.entities[connection.entityId]
+    const target = world.entities[connection.entityId]
     invariant(target)
     const index = target.connections.findIndex(
       (c) =>
@@ -528,17 +527,17 @@ export function deleteEntity(
     target.connections.splice(index, 1)
   }
 
-  const network = context.world.networks[entity.networkId]
+  const network = world.networks[entity.networkId]
   invariant(network?.entityIds[entityId])
 
   delete network.entityIds[entityId]
-  delete context.world.networks[network.id]
+  delete world.networks[network.id]
 
   if (Object.keys(network.entityIds).length > 0) {
     const seen = new Set<Entity>()
 
     for (const rootId of Object.keys(network.entityIds)) {
-      const root = context.world.entities[rootId]
+      const root = world.entities[rootId]
       invariant(root)
       if (seen.has(root)) {
         continue
@@ -550,7 +549,7 @@ export function deleteEntity(
         mass: 0,
         rootId,
       }
-      context.world.networks[newNetwork.id] = newNetwork
+      world.networks[newNetwork.id] = newNetwork
 
       const stack = new Array<Entity>(root)
       while (stack.length) {
@@ -569,7 +568,7 @@ export function deleteEntity(
 
         for (const connection of current.connections) {
           const neighbor =
-            context.world.entities[connection.entityId]
+            world.entities[connection.entityId]
           invariant(neighbor)
 
           stack.push(neighbor)
@@ -607,7 +606,7 @@ export function propogateVelocity(
 }
 
 export function mergeBuildEntities(
-  context: IAppContext,
+  world: World,
   hand: BuildHand,
 ): void {
   const root = Object.values(hand.entities).at(0)
@@ -637,15 +636,14 @@ export function mergeBuildEntities(
 
     current.entity.velocity
 
-    const existing =
-      context.world.entities[current.entity.id]
+    const existing = world.entities[current.entity.id]
     if (existing) {
       // TODO validate existing (e.g. size and connections)
       root.velocity +=
         (1 / current.multiplier) *
         existing.velocity *
         Math.sqrt(existing.mass / network.mass)
-      deleteEntity(context, existing.id)
+      deleteEntity(world, existing.id)
     }
 
     for (const connection of current.entity.connections) {

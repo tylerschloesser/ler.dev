@@ -3,23 +3,18 @@ import {
   ConnectionType,
   EntityType,
   GearEntity,
-  IAppContext,
+  World,
 } from './types.js'
 import { getEntity, iterateGearTileIds } from './util.js'
 
 export function buildGear(
-  context: IAppContext,
+  world: World,
   gear: GearEntity,
 ): void {
-  const { world } = context
-
   let attach: GearEntity | null = null
   for (const connection of gear.connections) {
     if (connection.type === ConnectionType.enum.Attach) {
-      const entity = getEntity(
-        context.world,
-        connection.entityId,
-      )
+      const entity = getEntity(world, connection.entityId)
       invariant(entity.type === EntityType.enum.Gear)
       invariant(attach === null)
       attach = entity

@@ -37,6 +37,7 @@ import {
   clamp,
   getEntity,
   getIntersectingEntities,
+  incrementBuildVersion,
   isHorizontal,
   isVertical,
 } from '../util.js'
@@ -168,7 +169,9 @@ export function BuildGear() {
             }
             case ActionType.Attach:
             case ActionType.Build: {
-              build(context, hand)
+              build(context.world, hand)
+              hand.entities = {}
+              incrementBuildVersion(context)
               setChainFrom(null)
               break
             }

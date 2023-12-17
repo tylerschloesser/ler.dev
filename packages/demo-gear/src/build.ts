@@ -19,25 +19,22 @@ import {
   propogateVelocity,
 } from './util.js'
 
-export function build(
-  context: IAppContext,
-  hand: BuildHand,
-): void {
-  validateBuild(context, hand)
+export function build(world: World, hand: BuildHand): void {
+  validateBuild(world, hand)
 
   // assumption: all entities are connected (i.e. within the same network)
 
-  mergeBuildEntities(context, hand)
+  mergeBuildEntities(world, hand)
 
   const root = Object.values(hand.entities).at(0)
   invariant(root)
 
   const newNetwork = Object.values(hand.networks).at(0)
   invariant(newNetwork)
-  context.world.networks[newNetwork.id] = newNetwork
+  world.networks[newNetwork.id] = newNetwork
 
   const externalNetworks = getExternalNetworks(
-    context,
+    world,
     hand,
     root,
   )
@@ -47,7 +44,7 @@ export function build(
   for (const [networkId, value] of Object.entries(
     externalNetworks,
   )) {
-    const network = context.world.networks[networkId]
+    const network = world.networks[networkId]
     invariant(network)
 
     newNetwork.mass += network.mass
@@ -58,32 +55,32 @@ export function build(
     momentum.push(network.mass * velocity)
 
     for (const entityId of Object.keys(network.entityIds)) {
-      const entity = context.world.entities[entityId]
+      const entity = world.entities[entityId]
       invariant(entity?.networkId === network.id)
       entity.networkId = newNetwork.id
       invariant(!newNetwork.entityIds[entity.id])
       newNetwork.entityIds[entity.id] = true
     }
 
-    delete context.world.networks[networkId]
+    delete world.networks[networkId]
   }
 
   root.velocity =
     momentum.reduce((a, m) => a + m, 0) / newNetwork.mass
 
-  context.world.networks[newNetwork.id] = newNetwork
+  world.networks[newNetwork.id] = newNetwork
 
   for (const entity of Object.values(hand.entities)) {
     // must happen first because of gear logic atm
-    addReverseConnections(context, hand, entity)
+    addReverseConnections(world, hand, entity)
 
     switch (entity.type) {
       case EntityType.enum.Gear: {
-        buildGear(context, entity)
+        buildGear(world, entity)
         break
       }
       case EntityType.enum.Belt: {
-        buildBelt(context, entity)
+        buildBelt(world, entity)
         break
       }
       default: {
@@ -92,15 +89,11 @@ export function build(
     }
   }
 
-  propogateVelocity(root, context.world.entities)
+  propogateVelocity(root, world.entities)
 
   // TODO be smarter about this
-  resetGearAngles(context)
-
-  resetBeltOffsets(context.world, hand)
-
-  hand.entities = {}
-  incrementBuildVersion(context)
+  resetGearAngles(world)
+  resetBeltOffsets(world, hand)
 }
 
 function resetBeltOffsets(world: World, hand: BuildHand) {
@@ -139,10 +132,8 @@ function resetBeltOffsets(world: World, hand: BuildHand) {
   }
 }
 
-function resetGearAngles(context: IAppContext): void {
-  for (const entity of Object.values(
-    context.world.entities,
-  )) {
+function resetGearAngles(world: World): void {
+  for (const entity of Object.values(world.entities)) {
     if (entity.type === EntityType.enum.Gear) {
       entity.angle = 0
     }
@@ -205,13 +196,13 @@ export function addConnection(
     propogateVelocity(source, context.world.entities)
   }
 
-  resetGearAngles(context)
+  resetGearAngles(context.world)
 
   incrementBuildVersion(context)
 }
 
 export function validateBuild(
-  context: IAppContext,
+  world: World,
   hand: BuildHand,
 ): void {
   invariant(hand.valid)
@@ -247,7 +238,7 @@ export function validateBuild(
           stack.push(entity)
         }
       } else {
-        entity = context.world.entities[connection.entityId]
+        entity = world.entities[connection.entityId]
         invariant(entity)
         invariant(!network.entityIds[entity.id])
       }
@@ -256,7 +247,7 @@ export function validateBuild(
 }
 
 function addReverseConnections(
-  context: IAppContext,
+  world: World,
   hand: BuildHand,
   entity: Entity,
 ): void {
@@ -272,7 +263,7 @@ function addReverseConnections(
       )
       continue
     }
-    target = context.world.entities[connection.entityId]
+    target = world.entities[connection.entityId]
     invariant(target)
 
     // verify there is currently no connection

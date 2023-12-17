@@ -12,7 +12,6 @@ import {
   EntityId,
   EntityType,
   HandType,
-  IAppContext,
   Network,
   Rotation,
   SimpleVec2,
@@ -25,11 +24,7 @@ import {
   isVertical,
 } from './util.js'
 
-export function buildBelt(
-  context: IAppContext,
-  belt: Belt,
-): void {
-  const { world } = context
+export function buildBelt(world: World, belt: Belt): void {
   invariant(world.entities[belt.id] === undefined)
   world.entities[belt.id] = belt
 

@@ -6,6 +6,7 @@ import {
 import { getBuildHand } from '../build-belt.js'
 import { build } from '../build.js'
 import { Axis, BuildHand, SimpleVec2 } from '../types.js'
+import { incrementBuildVersion } from '../util.js'
 import styles from './build-belt.module.scss'
 import { AppContext } from './context.js'
 import { Overlay } from './overlay.component.js'
@@ -70,7 +71,9 @@ export function BuildBelt() {
           className={styles.button}
           onPointerUp={() => {
             if (!valid) return
-            build(context, hand)
+            build(context.world, hand)
+            hand.entities = {}
+            incrementBuildVersion(context)
             setSavedStart(null)
           }}
         >

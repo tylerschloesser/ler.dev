@@ -14,7 +14,7 @@ export function tickBuild(
   const root = Object.values(hand.entities).at(0)
   invariant(root)
   const externalNetworks = getExternalNetworks(
-    context,
+    context.world,
     hand,
     root,
   )
