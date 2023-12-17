@@ -1,5 +1,6 @@
 import { describe, expect, test } from '@jest/globals'
 import { getBuildHand } from './build-gear.js'
+import { build } from './build.js'
 import { SimpleVec2, World } from './types.js'
 
 describe('build-gear', () => {
@@ -17,12 +18,18 @@ describe('build-gear', () => {
       }
       const radius = 1
       const chainFrom = null
-      const hand = getBuildHand(
+      let hand = getBuildHand(
         world,
         center,
         radius,
         chainFrom,
       )
+      expect(hand).toMatchSnapshot()
+
+      build(world, hand)
+      expect(world).toMatchSnapshot()
+
+      hand = getBuildHand(world, center, radius, chainFrom)
       expect(hand).toMatchSnapshot()
     })
   })
