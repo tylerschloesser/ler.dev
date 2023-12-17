@@ -513,7 +513,7 @@ function getConnections(
       const tileId = `${position.x + dx}.${position.y + dy}`
       const tile = context.world.tiles[tileId]
       if (!tile?.entityId) continue
-      const entity = getEntity(context, tile.entityId)
+      const entity = getEntity(context.world, tile.entityId)
 
       if (seen.has(entity)) continue
       seen.add(entity)

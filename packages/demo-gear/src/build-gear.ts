@@ -16,7 +16,10 @@ export function buildGear(
   let attach: GearEntity | null = null
   for (const connection of gear.connections) {
     if (connection.type === ConnectionType.enum.Attach) {
-      const entity = getEntity(context, connection.entityId)
+      const entity = getEntity(
+        context.world,
+        connection.entityId,
+      )
       invariant(entity.type === EntityType.enum.Gear)
       invariant(attach === null)
       attach = entity

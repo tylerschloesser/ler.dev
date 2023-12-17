@@ -137,7 +137,7 @@ function useAddResourceButton(hand: AddResourceHand): {
       let tile = context.world.tiles[tileId]
       let entity: Entity | undefined = undefined
       if (tile?.entityId) {
-        entity = getEntity(context, tile.entityId)
+        entity = getEntity(context.world, tile.entityId)
       }
       if (entity?.type === EntityType.enum.Belt) {
         actionType = ActionType.AddResourceToBelt

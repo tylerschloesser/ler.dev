@@ -137,7 +137,10 @@ function getBeltConnections(
     // prettier-ignore
     const north = context.world.tiles[`${position.x}.${position.y - 1}`]
     if (north?.entityId) {
-      const entity = getEntity(context, north.entityId)
+      const entity = getEntity(
+        context.world,
+        north.entityId,
+      )
       switch (entity.type) {
         case EntityType.enum.Gear: {
           if (
@@ -183,7 +186,10 @@ function getBeltConnections(
     // prettier-ignore
     const south = context.world.tiles[`${position.x}.${position.y + 1}`]
     if (south?.entityId) {
-      const entity = getEntity(context, south.entityId)
+      const entity = getEntity(
+        context.world,
+        south.entityId,
+      )
       switch (entity.type) {
         case EntityType.enum.Gear: {
           if (
@@ -230,7 +236,7 @@ function getBeltConnections(
     const east =
       context.world.tiles[`${position.x + 1}.${position.y}`]
     if (east?.entityId) {
-      const entity = getEntity(context, east.entityId)
+      const entity = getEntity(context.world, east.entityId)
       switch (entity.type) {
         case EntityType.enum.Belt: {
           if (isHorizontal(entity)) {
@@ -252,7 +258,7 @@ function getBeltConnections(
     const west =
       context.world.tiles[`${position.x - 1}.${position.y}`]
     if (west?.entityId) {
-      const entity = getEntity(context, west.entityId)
+      const entity = getEntity(context.world, west.entityId)
       switch (entity.type) {
         case EntityType.enum.Belt: {
           if (isHorizontal(entity)) {
@@ -276,7 +282,7 @@ function getBeltConnections(
     // prettier-ignore
     const east = context.world.tiles[`${position.x + 1}.${position.y}`]
     if (east?.entityId) {
-      const entity = getEntity(context, east.entityId)
+      const entity = getEntity(context.world, east.entityId)
       switch (entity.type) {
         case EntityType.enum.Gear: {
           if (
@@ -322,7 +328,7 @@ function getBeltConnections(
     const west =
       context.world.tiles[`${position.x - 1}.${position.y}`]
     if (west?.entityId) {
-      const entity = getEntity(context, west.entityId)
+      const entity = getEntity(context.world, west.entityId)
       switch (entity.type) {
         case EntityType.enum.Gear: {
           if (
@@ -369,7 +375,10 @@ function getBeltConnections(
     const north =
       context.world.tiles[`${position.x}.${position.y + 1}`]
     if (north?.entityId) {
-      const entity = getEntity(context, north.entityId)
+      const entity = getEntity(
+        context.world,
+        north.entityId,
+      )
       switch (entity.type) {
         case EntityType.enum.Belt: {
           if (isVertical(entity)) {
@@ -391,7 +400,10 @@ function getBeltConnections(
     const south =
       context.world.tiles[`${position.x}.${position.y - 1}`]
     if (south?.entityId) {
-      const entity = getEntity(context, south.entityId)
+      const entity = getEntity(
+        context.world,
+        south.entityId,
+      )
       switch (entity.type) {
         case EntityType.enum.Belt: {
           if (isVertical(entity)) {
