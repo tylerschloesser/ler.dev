@@ -2,7 +2,8 @@
   "name": "@ler.dev/root",
   "type": "module",
   "scripts": {
-    "test": "npm run test:prettier && npm run test:lint",
+    "test": "npm run test:prettier && npm run test:lint && npm run test:jest",
+    "test:jest": "NODE_OPTIONS=--experimental-vm-modules jest",
     "test:lint": "eslint .",
     "test:prettier": "prettier --check . --log-level warn",
     "build": "npm run build -w packages/app",
