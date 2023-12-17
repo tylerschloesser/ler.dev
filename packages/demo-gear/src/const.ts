@@ -1,4 +1,5 @@
 import invariant from 'tiny-invariant'
+import { SimpleVec2 } from './types.js'
 
 export const MIN_RADIUS: number = 1
 export const MAX_RADIUS: number = 5
@@ -30,3 +31,8 @@ export const MIN_TILE_SIZE_FACTOR = 1 / 256
 export const MAX_TILE_SIZE_FACTOR = 1 / 8
 
 export const BELT_ITEM_GAP = 0.25
+
+export const BELT_SIZE: SimpleVec2 = {
+  x: 1,
+  y: 1,
+}

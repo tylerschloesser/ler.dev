@@ -306,7 +306,7 @@ export function getEntity(
 }
 
 export function getExternalConnections(
-  context: IAppContext,
+  world: World,
   buildEntities: World['entities'],
   root: Entity,
 ): {
@@ -314,7 +314,7 @@ export function getExternalConnections(
   target: Entity
   connection: Connection
 }[] {
-  const worldEntities = context.world.entities
+  const worldEntities = world.entities
   invariant(buildEntities[root.id] === root)
 
   const result: ReturnType<typeof getExternalConnections> =

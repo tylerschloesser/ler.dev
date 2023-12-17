@@ -314,3 +314,6 @@ export interface IAppContext {
 }
 
 export type InitFn = (context: IAppContext) => Promise<void>
+
+export const Axis = z.union([z.literal('x'), z.literal('y')])
+export type Axis = z.infer<typeof Axis>
