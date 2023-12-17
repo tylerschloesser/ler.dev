@@ -36,3 +36,13 @@ export const BELT_SIZE: SimpleVec2 = {
   x: 1,
   y: 1,
 }
+
+export const GEAR_RADIUS_TO_SIZE = GEAR_RADIUSES.reduce<
+  Record<number, SimpleVec2>
+>(
+  (acc, r) => ({
+    ...acc,
+    [r]: { x: r * 2, y: r * 2 },
+  }),
+  {},
+)

@@ -117,7 +117,7 @@ export function* iterateGearTileIds(
 }
 
 export function getIntersectingEntities(
-  context: IAppContext,
+  world: World,
   x: number,
   y: number,
   w: number,
@@ -127,9 +127,9 @@ export function getIntersectingEntities(
   for (let dx = 0; dx < w; dx++) {
     for (let dy = 0; dy < h; dy++) {
       const tileId = `${x + dx}.${y + dy}`
-      const tile = context.world.tiles[tileId]
+      const tile = world.tiles[tileId]
       if (!tile?.entityId) continue
-      const found = context.world.entities[tile.entityId]
+      const found = world.entities[tile.entityId]
       invariant(found)
       entities.add(found)
     }

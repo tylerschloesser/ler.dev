@@ -206,11 +206,39 @@ export enum HandType {
   Delete = 'delete',
 }
 
+export enum ActionType {
+  Chain = 'chain',
+  Attach = 'attach',
+  Build = 'build',
+}
+
+export interface ChainAction {
+  type: ActionType.Chain
+  target: Gear
+}
+
+export interface AttachAction {
+  type: ActionType.Attach
+}
+
+export interface BuildAction {
+  type: ActionType.Build
+}
+
+export type Action =
+  | ChainAction
+  | AttachAction
+  | BuildAction
+
 export interface BuildHand {
   type: HandType.Build
   valid: boolean
   entities: Record<EntityId, Entity>
   networks: Record<NetworkId, Network>
+
+  // TODO refactor this to not be part of build hand!
+  // only applies to gears
+  action?: Action
 }
 
 export interface ApplyForceHand {
@@ -315,5 +343,15 @@ export interface IAppContext {
 
 export type InitFn = (context: IAppContext) => Promise<void>
 
-export const Axis = z.union([z.literal('x'), z.literal('y')])
+export const Axis = z.union([
+  z.literal('x'),
+  z.literal('y'),
+])
 export type Axis = z.infer<typeof Axis>
+
+export enum Direction {
+  N = 'north',
+  S = 'south',
+  E = 'east',
+  W = 'west',
+}
