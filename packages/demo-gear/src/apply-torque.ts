@@ -43,10 +43,10 @@ export function getAccelerationMap(
 }
 
 export function applyForce(
+  world: World,
   root: GearEntity,
   force: number,
   elapsed: number,
-  world: World,
 ): void {
   const m = getTotalMass(root, world)
 
@@ -70,12 +70,12 @@ export function applyForce(
 }
 
 export function applyFriction(
+  world: World,
   root: GearEntity,
   coeffecient: number,
   magnitude: number,
   elapsed: number,
-  world: World,
 ): void {
   const force = coeffecient * root.velocity * -1 * magnitude
-  return applyForce(root, force, elapsed, world)
+  return applyForce(world, root, force, elapsed)
 }

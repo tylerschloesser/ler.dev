@@ -37,13 +37,13 @@ export function tickGear(
 
       if (stop) {
         // TODO chosen arbitrarily
-        applyFriction(gear, 0.1, 1, elapsed, world)
+        applyFriction(world, gear, 0.1, 1, elapsed)
       } else {
         applyForce(
+          world,
           gear,
           sign * behavior.magnitude,
           elapsed,
-          world,
         )
       }
 
@@ -52,11 +52,11 @@ export function tickGear(
     case GearBehaviorType.enum.Friction: {
       const { behavior } = gear
       applyFriction(
+        world,
         gear,
         behavior.coeffecient,
         behavior.magnitude,
         elapsed,
-        world,
       )
       break
     }
