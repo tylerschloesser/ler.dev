@@ -230,11 +230,9 @@ function isValid(
   world: World,
   build: Pick<BuildHand, 'entities'>,
 ): boolean {
-  const belts = Object.values(build.entities)
-
   // TODO verify that belts only contain two belt connections max
 
-  const root = belts.at(0)
+  const root = Object.values(build.entities).at(0)
   invariant(root)
 
   const first = getExternalConnections(
@@ -248,10 +246,7 @@ function isValid(
     return true
   }
 
-  const entities = { ...world.entities }
-  for (const belt of belts) {
-    entities[belt.id] = belt
-  }
+  const entities = { ...world.entities, ...build.entities }
 
   const accelerationMap = getAccelerationMap(
     first.source,
@@ -260,7 +255,6 @@ function isValid(
   )
 
   if (!accelerationMap) {
-    console.log('invalid acceelrate map')
     return false
   }
 
