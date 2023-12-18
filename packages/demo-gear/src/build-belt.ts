@@ -4,24 +4,23 @@ import { BELT_SIZE } from './const.js'
 import {
   Axis,
   Belt,
+  BeltDirection,
+  BeltEntity,
   BeltTurn,
   BuildHand,
-  Connection,
   ConnectionType,
   Entity,
   EntityId,
   EntityType,
+  Gear,
   HandType,
   Network,
-  Rotation,
   SimpleVec2,
   World,
 } from './types.js'
 import {
   getEntity,
   getExternalConnections,
-  isHorizontal,
-  isVertical,
 } from './util.js'
 
 export function buildBelt(world: World, belt: Belt): void {
@@ -44,8 +43,83 @@ export function getBuildHand(
   end: SimpleVec2 | null,
   startingAxis: Axis,
 ): BuildHand {
-  const belts = new Array<Belt>()
+  const { entities, networks } = getEntities(
+    start,
+    end,
+    startingAxis,
+  )
+  for (const { position } of Object.values(entities)) {
+    const entity = tryGetEntity(
+      world,
+      undefined,
+      position.x,
+      position.y,
+    )
+    if (entity && entity.type !== EntityType.enum.Belt) {
+      return {
+        type: HandType.Build,
+        entities,
+        networks,
+        valid: false,
+      }
+    }
+  }
 
+  const belts = Object.values(entities).filter(
+    (belt): belt is BeltEntity => {
+      invariant(belt.type === EntityType.enum.Belt)
+      return true
+    },
+  )
+  const build: Pick<BuildHand, 'entities'> = { entities }
+  for (const belt of belts) {
+    setConnections(world, build, belt)
+  }
+
+  const valid = isValid(world, build)
+
+  return {
+    type: HandType.Build,
+    entities,
+    networks,
+    valid,
+  }
+}
+
+function addBelt(
+  entities: Record<EntityId, Entity>,
+  network: Network,
+  position: SimpleVec2,
+): void {
+  const id = getBeltId(position)
+  const mass = 1
+  invariant(!entities[id])
+  entities[id] = {
+    type: EntityType.enum.Belt,
+    id,
+    networkId: network.id,
+    position,
+    size: BELT_SIZE,
+    connections: [],
+    offset: 0,
+    velocity: 0,
+    mass,
+    items: [],
+    rotation: 0,
+    turn: BeltTurn.enum.None,
+    direction: BeltDirection.enum.EastWest,
+  }
+
+  invariant(!network.entityIds[id])
+  network.entityIds[id] = true
+  network.mass += mass
+}
+
+function getEntities(
+  start: SimpleVec2,
+  end: SimpleVec2 | null,
+  startingAxis: Axis,
+): Pick<BuildHand, 'entities' | 'networks'> {
   // TODO this doesn't seem super safe assumption
   const rootId = `${start.x}.${start.y}`
   const network: Network = {
@@ -55,84 +129,27 @@ export function getBuildHand(
     rootId,
   }
 
-  for (const {
-    position,
-    rotation,
-    turn,
-  } of iterateBeltPositions(start, end, startingAxis)) {
-    addBelt(world, network, belts, position, rotation, turn)
-  }
-
-  const valid = isValid(world, belts)
-
   const entities: Record<EntityId, Entity> = {}
-  for (const belt of belts) {
-    entities[belt.id] = belt
+
+  // TODO remove id from get path
+  const path = getPath(start, end, startingAxis)
+  for (const position of path) {
+    addBelt(entities, network, position)
   }
 
   return {
-    type: HandType.Build,
     entities,
     networks: { [network.id]: network },
-    valid,
   }
 }
 
-function addBelt(
-  world: World,
-  network: Network,
-  belts: Belt[],
-  position: SimpleVec2,
-  rotation: Rotation,
-  turn: BeltTurn,
-): void {
-  const id = getBeltId(position)
-  const connections = getBeltConnections(
-    world,
-    position,
-    rotation,
-    turn,
-  )
-  const prev = belts.at(-1)
-  if (prev) {
-    prev.connections.push({
-      entityId: id,
-      multiplier: 1,
-      type: ConnectionType.enum.Belt,
-    })
-    connections.push({
-      entityId: prev.id,
-      multiplier: 1,
-      type: ConnectionType.enum.Belt,
-    })
-  }
-
-  const mass = 1
-  belts.push({
-    type: EntityType.enum.Belt,
-    id,
-    networkId: network.id,
-    position,
-    size: BELT_SIZE,
-    connections,
-    offset: 0,
-    velocity: 0,
-    mass,
-    items: [],
-    rotation,
-    turn,
-  })
-
-  invariant(!network.entityIds[id])
-  network.entityIds[id] = true
-  network.mass += mass
-}
-
-function* iterateBeltPositions(
+function getPath(
   start: SimpleVec2,
   end: SimpleVec2 | null,
   startingAxis: Axis,
-) {
+): Array<SimpleVec2> {
+  const path = new Array<SimpleVec2>()
+
   let dx = end ? end.x - start.x : 0
   let dy = end ? end.y - start.y : 0
 
@@ -148,123 +165,81 @@ function* iterateBeltPositions(
   const sx = Math.sign(dx)
   const sy = Math.sign(dy)
 
-  const iter: {
-    position: SimpleVec2
-    rotation: Rotation
-    turn: BeltTurn
-  } = {
-    position: null!,
-    rotation: null!,
-    turn: null!,
-  }
-
   if (startingAxis === 'x') {
-    iter.rotation = sx === 1 ? 0 : 180
-    iter.turn = BeltTurn.enum.None
     for (let x = 0; x < Math.abs(dx); x++) {
-      iter.position = {
+      path.push({
         x: start.x + x * sx,
         y: start.y,
-      }
-      yield iter
+      })
     }
 
-    if (dy === 0) return
+    if (dy === 0) return path
 
     let y = 0
     if (dx !== 0) {
-      iter.turn =
-        sx * sy === 1
-          ? BeltTurn.enum.Right
-          : BeltTurn.enum.Left
-      iter.position = {
+      path.push({
         x: start.x + dx,
         y: start.y,
-      }
-      yield iter
+      })
       y += 1
     }
 
-    iter.turn = BeltTurn.enum.None
-    iter.rotation = sy === 1 ? 90 : 270
-
     for (; y <= Math.abs(dy); y++) {
-      iter.position = {
+      path.push({
         x: start.x + dx,
         y: start.y + y * sy,
-      }
-      yield iter
+      })
     }
   } else {
     invariant(startingAxis === 'y')
 
-    iter.rotation = sy === 1 ? 90 : 270
-    iter.turn = BeltTurn.enum.None
     for (let y = 0; y < Math.abs(dy); y++) {
-      iter.position = {
+      path.push({
         x: start.x,
         y: start.y + y * sy,
-      }
-      yield iter
+      })
     }
 
-    if (dx === 0) return
+    if (dx === 0) return path
 
     let x = 0
     if (dy !== 0) {
-      iter.turn =
-        sy * sx === 1
-          ? BeltTurn.enum.Left
-          : BeltTurn.enum.Right
-      iter.position = {
+      path.push({
         x: start.x,
         y: start.y + dy,
-      }
-      yield iter
+      })
       x += 1
     }
 
-    iter.turn = BeltTurn.enum.None
-    iter.rotation = sx === 1 ? 0 : 180
-
     for (; x <= Math.abs(dx); x++) {
-      iter.position = {
+      path.push({
         x: start.x + x * sx,
         y: start.y + dy,
-      }
-      yield iter
+      })
     }
   }
+
+  return path
 }
 
 function getBeltId(position: SimpleVec2): EntityId {
   return `${position.x}.${position.y}`
 }
 
-function isValid(world: World, belts: Belt[]): boolean {
-  for (const { position } of belts) {
-    const tileId = `${position.x}.${position.y}`
-    const tile = world.tiles[tileId]
-    if (!tile) continue
-    if (tile.entityId) {
-      return false
-    }
-  }
+function isValid(
+  world: World,
+  build: Pick<BuildHand, 'entities'>,
+): boolean {
+  const belts = Object.values(build.entities)
 
-  const buildEntities = Object.values(belts).reduce(
-    (acc, belt) => ({
-      ...acc,
-      [belt.id]: belt,
-    }),
-    {},
-  )
+  // TODO verify that belts only contain two belt connections max
 
-  const root = Object.values(belts).at(0)
+  const root = belts.at(0)
   invariant(root)
 
   const first = getExternalConnections(
     world,
-    buildEntities,
+    build.entities,
     root,
   ).at(0)
 
@@ -285,302 +260,178 @@ function isValid(world: World, belts: Belt[]): boolean {
   )
 
   if (!accelerationMap) {
+    console.log('invalid acceelrate map')
     return false
   }
 
   return true
 }
 
-function getBeltConnections(
+function tryGetEntity(
   world: World,
-  position: SimpleVec2,
-  rotation: Rotation,
-  turn: BeltTurn,
-): Connection[] {
-  const connections: Connection[] = []
-
-  if (turn !== BeltTurn.enum.None) {
-    // TODO
-    return connections
+  build: Pick<BuildHand, 'entities'> | undefined,
+  x: number,
+  y: number,
+): Entity | undefined {
+  const tile = world.tiles[`${x}.${y}`]
+  if (tile?.entityId) {
+    return getEntity(world, tile.entityId)
   }
+  return build?.entities[`${x}.${y}`]
+}
 
-  if (isHorizontal(rotation)) {
-    // prettier-ignore
-    const north = world.tiles[`${position.x}.${position.y - 1}`]
-    if (north?.entityId) {
-      const entity = getEntity(world, north.entityId)
-      switch (entity.type) {
-        case EntityType.enum.Gear: {
-          if (
-            entity.center.x !== position.x &&
-            entity.center.x !== position.x + 1
-          ) {
-            break
-          }
+function getAdjacentEntities(
+  world: World,
+  build: Pick<BuildHand, 'entities'>,
+  belt: BeltEntity,
+): {
+  north?: Entity
+  south?: Entity
+  east?: Entity
+  west?: Entity
+} {
+  const {
+    position: { x, y },
+  } = belt
+  return {
+    north: tryGetEntity(world, build, x, y - 1),
+    south: tryGetEntity(world, build, x, y + 1),
+    east: tryGetEntity(world, build, x + 1, y),
+    west: tryGetEntity(world, build, x - 1, y),
+  }
+}
 
-          if (
-            entity.center.y + entity.radius !==
-            position.y
-          ) {
-            break
-          }
+function isGearEdge(
+  gear: Gear,
+  x: number,
+  y: number,
+): boolean {
+  if (gear.center.x === x) {
+    return (
+      gear.center.y + gear.radius === y ||
+      gear.center.y - gear.radius === y
+    )
+  } else if (gear.center.y === y) {
+    return (
+      gear.center.x + gear.radius === x ||
+      gear.center.x - gear.radius === x
+    )
+  }
+  return false
+}
 
-          connections.push({
-            type: ConnectionType.enum.Adjacent,
-            entityId: entity.id,
-            multiplier: rotation === 0 ? -1 : 1,
-          })
+function setConnections(
+  world: World,
+  build: Pick<BuildHand, 'entities'>,
+  belt: BeltEntity,
+): void {
+  invariant(belt.connections.length === 0)
 
-          break
-        }
-        case EntityType.enum.Belt: {
-          if (isHorizontal(entity)) {
-            connections.push({
-              type: ConnectionType.enum.Adjacent,
-              entityId: entity.id,
-              multiplier:
-                rotation === entity.rotation ? 1 : -1,
-            })
-          } else {
-            // TODO
-          }
-          break
-        }
-        default: {
-          invariant(false, 'TODO')
-        }
+  const {
+    position: { x, y },
+    connections,
+  } = belt
+
+  invariant(connections.length === 0)
+
+  const { north, south, east, west } = getAdjacentEntities(
+    world,
+    build,
+    belt,
+  )
+
+  switch (north?.type) {
+    case EntityType.enum.Gear: {
+      if (
+        isGearEdge(north, x, y) ||
+        isGearEdge(north, x + 1, y)
+      ) {
+        connections.push({
+          type: ConnectionType.enum.Adjacent,
+          entityId: north.id,
+          multiplier: -1,
+        })
       }
+      break
     }
-    // prettier-ignore
-    const south = world.tiles[`${position.x}.${position.y + 1}`]
-    if (south?.entityId) {
-      const entity = getEntity(world, south.entityId)
-      switch (entity.type) {
-        case EntityType.enum.Gear: {
-          if (
-            entity.center.x !== position.x &&
-            entity.center.x !== position.x + 1
-          ) {
-            break
-          }
-
-          if (
-            entity.center.y - entity.radius - 1 !==
-            position.y
-          ) {
-            break
-          }
-
-          connections.push({
-            type: ConnectionType.enum.Adjacent,
-            entityId: entity.id,
-            multiplier: rotation === 0 ? 1 : -1,
-          })
-
-          break
-        }
-        case EntityType.enum.Belt: {
-          if (isHorizontal(entity)) {
-            connections.push({
-              type: ConnectionType.enum.Adjacent,
-              entityId: entity.id,
-              multiplier:
-                rotation === entity.rotation ? 1 : -1,
-            })
-          } else {
-            // TODO
-          }
-          break
-        }
-        default: {
-          invariant(false, 'TODO')
-        }
-      }
-    }
-
-    const east =
-      world.tiles[`${position.x + 1}.${position.y}`]
-    if (east?.entityId) {
-      const entity = getEntity(world, east.entityId)
-      switch (entity.type) {
-        case EntityType.enum.Belt: {
-          if (isHorizontal(entity)) {
-            // TODO might need to change rotation of existing belts
-            //
-            // connections.push({
-            //   type: ConnectionType.enum.Belt,
-            //   entityId: entity.id,
-            //   multiplier: 1,
-            // })
-          } else {
-            // TODO
-          }
-          break
-        }
-      }
-    }
-
-    const west =
-      world.tiles[`${position.x - 1}.${position.y}`]
-    if (west?.entityId) {
-      const entity = getEntity(world, west.entityId)
-      switch (entity.type) {
-        case EntityType.enum.Belt: {
-          if (isHorizontal(entity)) {
-            // TODO might need to change rotation of existing belts
-            //
-            // connections.push({
-            //   type: ConnectionType.enum.Belt,
-            //   entityId: entity.id,
-            //   multiplier: 1,
-            // })
-          } else {
-            // TODO
-          }
-          break
-        }
-      }
-    }
-  } else {
-    invariant(isVertical(rotation))
-
-    // prettier-ignore
-    const east = world.tiles[`${position.x + 1}.${position.y}`]
-    if (east?.entityId) {
-      const entity = getEntity(world, east.entityId)
-      switch (entity.type) {
-        case EntityType.enum.Gear: {
-          if (
-            entity.center.y !== position.y &&
-            entity.center.y !== position.y + 1
-          ) {
-            break
-          }
-
-          if (
-            entity.center.x - entity.radius - 1 !==
-            position.x
-          ) {
-            break
-          }
-
-          connections.push({
-            type: ConnectionType.enum.Adjacent,
-            entityId: entity.id,
-            multiplier: rotation === 90 ? -1 : 1,
-          })
-
-          break
-        }
-        case EntityType.enum.Belt: {
-          if (isVertical(entity)) {
-            connections.push({
-              type: ConnectionType.enum.Adjacent,
-              entityId: entity.id,
-              multiplier:
-                rotation === entity.rotation ? 1 : -1,
-            })
-          } else {
-            // TODO
-          }
-          break
-        }
-        default: {
-          invariant(false, 'TODO')
-        }
-      }
-    }
-    const west =
-      world.tiles[`${position.x - 1}.${position.y}`]
-    if (west?.entityId) {
-      const entity = getEntity(world, west.entityId)
-      switch (entity.type) {
-        case EntityType.enum.Gear: {
-          if (
-            entity.center.y !== position.y &&
-            entity.center.y !== position.y + 1
-          ) {
-            break
-          }
-
-          if (
-            entity.center.x + entity.radius !==
-            position.x
-          ) {
-            break
-          }
-
-          connections.push({
-            type: ConnectionType.enum.Adjacent,
-            entityId: entity.id,
-            multiplier: rotation === 90 ? 1 : -1,
-          })
-
-          break
-        }
-        case EntityType.enum.Belt: {
-          if (isVertical(entity)) {
-            connections.push({
-              type: ConnectionType.enum.Adjacent,
-              entityId: entity.id,
-              multiplier:
-                rotation === entity.rotation ? 1 : -1,
-            })
-          } else {
-            // TODO
-          }
-          break
-        }
-        default: {
-          invariant(false, 'TODO')
-        }
-      }
-    }
-
-    const north =
-      world.tiles[`${position.x}.${position.y + 1}`]
-    if (north?.entityId) {
-      const entity = getEntity(world, north.entityId)
-      switch (entity.type) {
-        case EntityType.enum.Belt: {
-          if (isVertical(entity)) {
-            // TODO might need to change rotation of existing belts
-            //
-            // connections.push({
-            //   type: ConnectionType.enum.Belt,
-            //   entityId: entity.id,
-            //   multiplier: 1,
-            // })
-          } else {
-            // TODO
-          }
-          break
-        }
-      }
-    }
-
-    const south =
-      world.tiles[`${position.x}.${position.y - 1}`]
-    if (south?.entityId) {
-      const entity = getEntity(world, south.entityId)
-      switch (entity.type) {
-        case EntityType.enum.Belt: {
-          if (isVertical(entity)) {
-            // TODO might need to change rotation of existing belts
-            //
-            // connections.push({
-            //   type: ConnectionType.enum.Belt,
-            //   entityId: entity.id,
-            //   multiplier: 1,
-            // })
-          } else {
-            // TODO
-          }
-          break
-        }
-      }
+    case EntityType.enum.Belt: {
+      connections.push({
+        type: ConnectionType.enum.Belt,
+        entityId: north.id,
+        multiplier:
+          west?.type === EntityType.enum.Belt ? -1 : 1,
+      })
+      break
     }
   }
-
-  return connections
+  switch (south?.type) {
+    case EntityType.enum.Gear: {
+      if (
+        isGearEdge(south, x, y + 1) ||
+        isGearEdge(south, x + 1, y + 1)
+      ) {
+        connections.push({
+          type: ConnectionType.enum.Adjacent,
+          entityId: south.id,
+          multiplier: 1,
+        })
+      }
+      break
+    }
+    case EntityType.enum.Belt: {
+      connections.push({
+        type: ConnectionType.enum.Belt,
+        entityId: south.id,
+        multiplier:
+          east?.type === EntityType.enum.Belt ? -1 : 1,
+      })
+      break
+    }
+  }
+  switch (east?.type) {
+    case EntityType.enum.Gear: {
+      if (
+        isGearEdge(east, x + 1, y) ||
+        isGearEdge(east, x + 1, y + 1)
+      ) {
+        connections.push({
+          type: ConnectionType.enum.Adjacent,
+          entityId: east.id,
+          multiplier: -1,
+        })
+      }
+      break
+    }
+    case EntityType.enum.Belt: {
+      connections.push({
+        type: ConnectionType.enum.Belt,
+        entityId: east.id,
+        multiplier: 1,
+      })
+      break
+    }
+  }
+  switch (west?.type) {
+    case EntityType.enum.Gear: {
+      if (
+        isGearEdge(west, x, y) ||
+        isGearEdge(west, x, y + 1)
+      ) {
+        connections.push({
+          type: ConnectionType.enum.Adjacent,
+          entityId: west.id,
+          multiplier: 1,
+        })
+      }
+      break
+    }
+    case EntityType.enum.Belt: {
+      connections.push({
+        type: ConnectionType.enum.Belt,
+        entityId: west.id,
+        multiplier: 1,
+      })
+      break
+    }
+  }
 }

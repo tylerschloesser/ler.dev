@@ -71,10 +71,31 @@ export type AttachConnection = z.infer<
   typeof AttachConnection
 >
 
+export const BeltConnectionDirection = z.enum([
+  'North',
+  'South',
+  'East',
+  'West',
+])
+export type BeltConnectionDirection = z.infer<
+  typeof BeltConnectionDirection
+>
+
+export const BeltDirection = z.enum([
+  'EastWest',
+  'NorthSouth',
+  'NorthWest',
+  'NorthEast',
+  'SouthEast',
+  'SouthWest',
+])
+export type BeltDirection = z.infer<typeof BeltDirection>
+
 export const BeltConnection = z.strictObject({
   type: z.literal(ConnectionType.enum.Belt),
   entityId: EntityId,
   multiplier: z.number(),
+  // direction: BeltConnectionDirection,
 })
 export type BeltConnection = z.infer<typeof BeltConnection>
 
@@ -141,12 +162,6 @@ export const GearEntity = EntityBase.extend({
 })
 export type GearEntity = z.infer<typeof GearEntity>
 
-export const BeltDirection = z.union([
-  z.literal('x'),
-  z.literal('y'),
-])
-export type BeltDirection = z.infer<typeof BeltDirection>
-
 export const Rotation = z.union([
   z.literal(0),
   z.literal(90),
@@ -173,6 +188,7 @@ export const BeltEntity = EntityBase.extend({
   items: z.array(BeltItem),
   rotation: Rotation,
   turn: BeltTurn,
+  direction: BeltDirection,
 })
 export type BeltEntity = z.infer<typeof BeltEntity>
 

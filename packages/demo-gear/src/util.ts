@@ -333,7 +333,8 @@ export function getExternalConnections(
     for (const connection of current.connections) {
       let entity = worldEntities[connection.entityId]
       if (entity) {
-        invariant(!buildEntities[entity.id])
+        // TODO we're now allowing this...
+        // invariant(!buildEntities[entity.id])
         result.push({
           source: current,
           target: entity,
