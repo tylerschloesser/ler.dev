@@ -226,7 +226,6 @@ export function getBuildHand(
     networks,
     valid,
     action,
-    replace: new Set(),
   }
 }
 

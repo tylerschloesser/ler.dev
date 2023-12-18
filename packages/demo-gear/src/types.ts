@@ -235,7 +235,6 @@ export interface BuildHand {
   valid: boolean
   entities: Record<EntityId, Entity>
   networks: Record<NetworkId, Network>
-  replace: Set<EntityId>
 
   // TODO refactor this to not be part of build hand!
   // only applies to gears

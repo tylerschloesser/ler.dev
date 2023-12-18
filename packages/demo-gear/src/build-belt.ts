@@ -75,7 +75,6 @@ export function getBuildHand(
     entities,
     networks: { [network.id]: network },
     valid,
-    replace: new Set(),
   }
 }
 
