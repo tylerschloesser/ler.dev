@@ -85,6 +85,9 @@ export function getBuildHand(
   for (const belt of belts) {
     setConnections(world, build, belt)
   }
+  for (const belt of belts) {
+    setDirection(world, build, belt)
+  }
 
   const valid = isValid(world, build)
 
@@ -296,6 +299,95 @@ function isGearEdge(
   return false
 }
 
+function setDirection(
+  world: World,
+  build: Pick<BuildHand, 'entities'>,
+  belt: BeltEntity,
+): void {
+  const { connections } = belt
+  const { north, south, east, west } = getAdjacentEntities(
+    world,
+    build,
+    belt,
+  )
+
+  let direction: BeltDirection
+  if (
+    north?.type === EntityType.enum.Belt &&
+    south?.type === EntityType.enum.Belt
+  ) {
+    direction = BeltDirection.enum.NorthSouth
+  } else if (
+    east?.type === EntityType.enum.Belt &&
+    west?.type === EntityType.enum.Belt
+  ) {
+    direction = BeltDirection.enum.EastWest
+  } else if (
+    north?.type === EntityType.enum.Belt &&
+    west?.type === EntityType.enum.Belt
+  ) {
+    const northConnection = connections.find(
+      (c) => c.entityId === north.id,
+    )
+    invariant(northConnection)
+    northConnection.multiplier = -1
+
+    const other = north.connections.find(
+      (c) => c.entityId === belt.id,
+    )
+    if (other) {
+      invariant(other.type === ConnectionType.enum.Belt)
+      other.multiplier = -1
+    }
+
+    direction = BeltDirection.enum.NorthWest
+  } else if (
+    north?.type === EntityType.enum.Belt &&
+    east?.type === EntityType.enum.Belt
+  ) {
+    direction = BeltDirection.enum.NorthEast
+  } else if (
+    south?.type == EntityType.enum.Belt &&
+    west?.type === EntityType.enum.Belt
+  ) {
+    direction = BeltDirection.enum.SouthWest
+  } else if (
+    south?.type === EntityType.enum.Belt &&
+    east?.type === EntityType.enum.Belt
+  ) {
+    const southConnection = connections.find(
+      (c) => c.entityId === south.id,
+    )
+    invariant(southConnection)
+    southConnection.multiplier = -1
+    const other = south.connections.find(
+      (c) => c.entityId === belt.id,
+    )
+    if (other) {
+      invariant(other.type === ConnectionType.enum.Belt)
+      other.multiplier = -1
+    }
+    direction = BeltDirection.enum.SouthEast
+  } else if (
+    east?.type === EntityType.enum.Belt ||
+    west?.type === EntityType.enum.Belt
+  ) {
+    // only one belt connection
+    direction = BeltDirection.enum.EastWest
+  } else if (
+    north?.type === EntityType.enum.Belt ||
+    south?.type === EntityType.enum.Belt
+  ) {
+    // only one belt connection
+    direction = BeltDirection.enum.NorthSouth
+  } else {
+    // no connections
+    direction = BeltDirection.enum.EastWest
+  }
+
+  belt.direction = direction
+}
+
 function setConnections(
   world: World,
   build: Pick<BuildHand, 'entities'>,
@@ -410,65 +502,4 @@ function setConnections(
       break
     }
   }
-
-  let direction: BeltDirection
-  if (
-    north?.type === EntityType.enum.Belt &&
-    south?.type === EntityType.enum.Belt
-  ) {
-    direction = BeltDirection.enum.NorthSouth
-  } else if (
-    east?.type === EntityType.enum.Belt &&
-    west?.type === EntityType.enum.Belt
-  ) {
-    direction = BeltDirection.enum.EastWest
-  } else if (
-    north?.type === EntityType.enum.Belt &&
-    west?.type === EntityType.enum.Belt
-  ) {
-    const northConnection = connections.find(
-      (c) => c.entityId === north.id,
-    )
-    invariant(northConnection)
-    northConnection.multiplier = -1
-
-    direction = BeltDirection.enum.NorthEast
-  } else if (
-    north?.type === EntityType.enum.Belt &&
-    east?.type === EntityType.enum.Belt
-  ) {
-    direction = BeltDirection.enum.NorthWest
-  } else if (
-    south?.type == EntityType.enum.Belt &&
-    west?.type === EntityType.enum.Belt
-  ) {
-    direction = BeltDirection.enum.SouthWest
-  } else if (
-    south?.type === EntityType.enum.Belt &&
-    east?.type === EntityType.enum.Belt
-  ) {
-    const southConnection = connections.find(
-      (c) => c.entityId === south.id,
-    )
-    invariant(southConnection)
-    southConnection.multiplier = -1
-    direction = BeltDirection.enum.SouthEast
-  } else if (
-    east?.type === EntityType.enum.Belt ||
-    west?.type === EntityType.enum.Belt
-  ) {
-    // only one belt connection
-    direction = BeltDirection.enum.EastWest
-  } else if (
-    north?.type === EntityType.enum.Belt ||
-    south?.type === EntityType.enum.Belt
-  ) {
-    // only one belt connection
-    direction = BeltDirection.enum.NorthSouth
-  } else {
-    // no connections
-    direction = BeltDirection.enum.EastWest
-  }
-
-  belt.direction = direction
 }

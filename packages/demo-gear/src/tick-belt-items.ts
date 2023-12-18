@@ -13,50 +13,48 @@ export function tickBeltItems(
   world: World,
   elapsed: number,
 ): void {
-  const paths = getPaths(world)
-
-  for (const path of paths) {
-    for (const {
-      belt,
-      prev,
-      next,
-      item,
-      available,
-      remove,
-    } of iterateBeltItems(path)) {
-      // note that due to Math.min, this might actually
-      // "teleport" backwards if, e.g. a new item
-      // is manually added with an invalid gap
-      //
-      const dp =
-        Math.sign(belt.velocity) *
-        Math.min(
-          Math.abs(belt.velocity * elapsed),
-          available,
-        )
-
-      const nextPosition = item.position + dp
-      if (nextPosition > 1) {
-        if (next) {
-          item.position = nextPosition - 1
-          next.items.unshift(item)
-          remove.add(item)
-        } else {
-          item.position = 1
-        }
-      } else if (nextPosition < 0) {
-        if (prev) {
-          item.position = nextPosition + 1
-          prev.items.push(item)
-          remove.add(item)
-        } else {
-          item.position = 0
-        }
-      } else {
-        item.position = nextPosition
-      }
-    }
-  }
+  // const paths = getPaths(world)
+  // for (const path of paths) {
+  //   for (const {
+  //     belt,
+  //     prev,
+  //     next,
+  //     item,
+  //     available,
+  //     remove,
+  //   } of iterateBeltItems(path)) {
+  //     // note that due to Math.min, this might actually
+  //     // "teleport" backwards if, e.g. a new item
+  //     // is manually added with an invalid gap
+  //     //
+  //     const dp =
+  //       Math.sign(belt.velocity) *
+  //       Math.min(
+  //         Math.abs(belt.velocity * elapsed),
+  //         available,
+  //       )
+  //     const nextPosition = item.position + dp
+  //     if (nextPosition > 1) {
+  //       if (next) {
+  //         item.position = nextPosition - 1
+  //         next.items.unshift(item)
+  //         remove.add(item)
+  //       } else {
+  //         item.position = 1
+  //       }
+  //     } else if (nextPosition < 0) {
+  //       if (prev) {
+  //         item.position = nextPosition + 1
+  //         prev.items.push(item)
+  //         remove.add(item)
+  //       } else {
+  //         item.position = 0
+  //       }
+  //     } else {
+  //       item.position = nextPosition
+  //     }
+  //   }
+  // }
 }
 
 const BELT_ITEM_ITERATOR: {
@@ -261,7 +259,8 @@ function getPaths(world: World): Array<Belt[]> {
           continue
         const neighbor = world.entities[connection.entityId]
         invariant(isBelt(neighbor))
-        invariant(connection.multiplier === 1)
+        // TODO this can be negative now...
+        // invariant(connection.multiplier === 1)
         if (seen.has(neighbor)) continue
         stack.push(neighbor)
 

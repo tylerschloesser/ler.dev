@@ -15,6 +15,7 @@ import {
   FUEL_COLOR,
   ITEM_BORDER,
   TRANSPARENT,
+  TURN_BELT_LINE_COLOR,
   rgba,
 } from './color.js'
 import { batchRenderRect } from './render-rect.js'
@@ -188,10 +189,11 @@ export function renderBelt(
 
   render(x, y, 1, 1, BELT_COLOR)
 
-  let rotation: Rotation =
-    belt.direction === BeltDirection.enum.NorthSouth
-      ? 90
-      : 0
+  const lineColor =
+    belt.direction === BeltDirection.enum.NorthSouth ||
+    belt.direction === BeltDirection.enum.EastWest
+      ? BELT_LINE_COLOR
+      : TURN_BELT_LINE_COLOR
 
   if (belt.direction !== BeltDirection.enum.NorthSouth) {
     renderLine(
@@ -201,7 +203,7 @@ export function renderBelt(
       y,
       belt.offset,
       0,
-      BELT_LINE_COLOR,
+      lineColor,
     )
     renderLine(
       render,
@@ -210,27 +212,36 @@ export function renderBelt(
       y,
       -1 + belt.offset,
       0,
-      BELT_LINE_COLOR,
+      lineColor,
     )
   }
   if (belt.direction !== BeltDirection.enum.EastWest) {
+    let offset = belt.offset
+
+    if (
+      belt.direction === BeltDirection.enum.NorthWest ||
+      belt.direction === BeltDirection.enum.SouthEast
+    ) {
+      offset = 1 - offset
+    }
+
     renderLine(
       render,
       lineWidth,
       x,
       y,
-      belt.offset,
+      offset,
       90,
-      BELT_LINE_COLOR,
+      lineColor,
     )
     renderLine(
       render,
       lineWidth,
       x,
       y,
-      -1 + belt.offset,
+      -1 + offset,
       90,
-      BELT_LINE_COLOR,
+      lineColor,
     )
   }
 
