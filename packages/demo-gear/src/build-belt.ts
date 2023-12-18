@@ -43,11 +43,23 @@ export function getBuildHand(
   end: SimpleVec2 | null,
   startingAxis: Axis,
 ): BuildHand {
-  const { entities, networks } = getEntities(
-    start,
-    end,
-    startingAxis,
-  )
+  // TODO this doesn't seem super safe assumption
+  const rootId = `${start.x}.${start.y}`
+  const network: Network = {
+    id: rootId,
+    entityIds: {},
+    mass: 0,
+    rootId,
+  }
+  const networks = { [network.id]: network }
+
+  const entities: Record<EntityId, Entity> = {}
+
+  // TODO remove id from get path
+  const path = getPath(start, end, startingAxis)
+  for (const position of path) {
+    addBelt(entities, network, position)
+  }
   for (const { position } of Object.values(entities)) {
     const entity = tryGetEntity(
       world,
@@ -113,34 +125,6 @@ function addBelt(
   invariant(!network.entityIds[id])
   network.entityIds[id] = true
   network.mass += mass
-}
-
-function getEntities(
-  start: SimpleVec2,
-  end: SimpleVec2 | null,
-  startingAxis: Axis,
-): Pick<BuildHand, 'entities' | 'networks'> {
-  // TODO this doesn't seem super safe assumption
-  const rootId = `${start.x}.${start.y}`
-  const network: Network = {
-    id: rootId,
-    entityIds: {},
-    mass: 0,
-    rootId,
-  }
-
-  const entities: Record<EntityId, Entity> = {}
-
-  // TODO remove id from get path
-  const path = getPath(start, end, startingAxis)
-  for (const position of path) {
-    addBelt(entities, network, position)
-  }
-
-  return {
-    entities,
-    networks: { [network.id]: network },
-  }
 }
 
 function getPath(
