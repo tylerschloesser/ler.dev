@@ -52,10 +52,8 @@ export function getBuildHand(
     rootId,
   }
   const networks = { [network.id]: network }
-
   const entities: Record<EntityId, Entity> = {}
 
-  // TODO remove id from get path
   const path = getPath(start, end, startingAxis)
   for (const position of path) {
     addBelt(entities, network, position)
@@ -412,4 +410,65 @@ function setConnections(
       break
     }
   }
+
+  let direction: BeltDirection
+  if (
+    north?.type === EntityType.enum.Belt &&
+    south?.type === EntityType.enum.Belt
+  ) {
+    direction = BeltDirection.enum.NorthSouth
+  } else if (
+    east?.type === EntityType.enum.Belt &&
+    west?.type === EntityType.enum.Belt
+  ) {
+    direction = BeltDirection.enum.EastWest
+  } else if (
+    north?.type === EntityType.enum.Belt &&
+    west?.type === EntityType.enum.Belt
+  ) {
+    const northConnection = connections.find(
+      (c) => c.entityId === north.id,
+    )
+    invariant(northConnection)
+    northConnection.multiplier = -1
+
+    direction = BeltDirection.enum.NorthEast
+  } else if (
+    north?.type === EntityType.enum.Belt &&
+    east?.type === EntityType.enum.Belt
+  ) {
+    direction = BeltDirection.enum.NorthWest
+  } else if (
+    south?.type == EntityType.enum.Belt &&
+    west?.type === EntityType.enum.Belt
+  ) {
+    direction = BeltDirection.enum.SouthWest
+  } else if (
+    south?.type === EntityType.enum.Belt &&
+    east?.type === EntityType.enum.Belt
+  ) {
+    const southConnection = connections.find(
+      (c) => c.entityId === south.id,
+    )
+    invariant(southConnection)
+    southConnection.multiplier = -1
+    direction = BeltDirection.enum.SouthEast
+  } else if (
+    east?.type === EntityType.enum.Belt ||
+    west?.type === EntityType.enum.Belt
+  ) {
+    // only one belt connection
+    direction = BeltDirection.enum.EastWest
+  } else if (
+    north?.type === EntityType.enum.Belt ||
+    south?.type === EntityType.enum.Belt
+  ) {
+    // only one belt connection
+    direction = BeltDirection.enum.NorthSouth
+  } else {
+    // no connections
+    direction = BeltDirection.enum.EastWest
+  }
+
+  belt.direction = direction
 }

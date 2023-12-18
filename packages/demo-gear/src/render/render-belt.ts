@@ -1,6 +1,7 @@
 import invariant from 'tiny-invariant'
 import {
   Belt,
+  BeltDirection,
   BeltItem,
   BeltTurn,
   IAppContext,
@@ -183,45 +184,24 @@ export function renderBelt(
   invariant(belt.offset >= 0)
   invariant(belt.offset < 1)
 
-  const { rotation } = belt
-  let turnRotation: Rotation | undefined = undefined
   const { x, y } = belt.position
 
-  if (belt.turn !== BeltTurn.enum.None) {
-    turnRotation = getTurnRotation(belt)
-  }
-
   render(x, y, 1, 1, BELT_COLOR)
-  renderLine(
-    render,
-    lineWidth,
-    x,
-    y,
-    belt.offset,
-    rotation,
-    turnRotation !== undefined
-      ? rgba(64, 1 - belt.offset * 1.5)
-      : BELT_LINE_COLOR,
-  )
-  renderLine(
-    render,
-    lineWidth,
-    x,
-    y,
-    -1 + belt.offset,
-    rotation,
-    BELT_LINE_COLOR,
-  )
 
-  if (turnRotation !== undefined) {
+  let rotation: Rotation =
+    belt.direction === BeltDirection.enum.NorthSouth
+      ? 90
+      : 0
+
+  if (belt.direction !== BeltDirection.enum.NorthSouth) {
     renderLine(
       render,
       lineWidth,
       x,
       y,
       belt.offset,
-      turnRotation,
-      rgba(64, belt.offset * 1.5 - 0.5),
+      0,
+      BELT_LINE_COLOR,
     )
     renderLine(
       render,
@@ -229,8 +209,28 @@ export function renderBelt(
       x,
       y,
       -1 + belt.offset,
-      turnRotation,
-      TRANSPARENT,
+      0,
+      BELT_LINE_COLOR,
+    )
+  }
+  if (belt.direction !== BeltDirection.enum.EastWest) {
+    renderLine(
+      render,
+      lineWidth,
+      x,
+      y,
+      belt.offset,
+      90,
+      BELT_LINE_COLOR,
+    )
+    renderLine(
+      render,
+      lineWidth,
+      x,
+      y,
+      -1 + belt.offset,
+      90,
+      BELT_LINE_COLOR,
     )
   }
 
