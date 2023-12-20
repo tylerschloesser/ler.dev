@@ -205,16 +205,6 @@ export const Entity = z.discriminatedUnion('type', [
 ])
 export type Entity = z.infer<typeof Entity>
 
-// export const ItemGroup = z.strictObject({
-//   items: z.array(
-//     z.strictObject({
-//       type: ItemType,
-//       position: z.number(),
-//     }),
-//   ),
-// })
-// export type ItemGroup = z.infer<typeof ItemGroup>
-
 export const BeltPath = z.strictObject({
   id: z.string(),
   beltIds: z.array(EntityId),
