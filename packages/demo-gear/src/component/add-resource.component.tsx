@@ -1,6 +1,7 @@
 import { use, useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import invariant from 'tiny-invariant'
+import { addResourceToBelt } from '../tick-belt-items.js'
 import {
   AddResourceHand,
   CameraListenerFn,
@@ -143,10 +144,11 @@ function useAddResourceButton(hand: AddResourceHand): {
         actionType = ActionType.AddResourceToBelt
         onPointerUp = () => {
           invariant(entity?.type === EntityType.enum.Belt)
-          entity.items.unshift({
-            type: ItemType.enum.Fuel,
-            position: 0,
-          })
+          addResourceToBelt(
+            context.world,
+            entity,
+            ItemType.enum.Fuel,
+          )
         }
       } else {
         onPointerUp = () => {

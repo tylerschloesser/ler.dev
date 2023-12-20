@@ -5,6 +5,7 @@ import {
   BeltEntity,
   BeltItem,
   EntityType,
+  ItemType,
   World,
 } from './types.js'
 import { getEntity, isBelt } from './util.js'
@@ -215,4 +216,12 @@ function getPaths(world: World): Array<BeltPath> {
   }
 
   return paths
+}
+
+export function addResourceToBelt(
+  world: World,
+  belt: BeltEntity,
+  type: ItemType,
+): void {
+  belt.items.unshift({ type, position: 0 })
 }
