@@ -587,7 +587,25 @@ export function deleteEntity(
 function updateBeltPathsAfterDelete(
   world: World,
   entity: BeltEntity,
-): void {}
+): void {
+  const deletedPathId = entity.pathId
+
+  const seen = new Set<Belt>()
+
+  const roots = new Array<Belt>()
+  for (const connection of entity.connections) {
+    if (connection.type !== ConnectionType.enum.Belt)
+      continue
+    const root = world.entities[connection.entityId]
+    invariant(root?.type === EntityType.enum.Belt)
+    roots.push(root)
+  }
+
+  invariant(roots.length <= 2)
+  for (const root of roots) {
+    const beltIds = new Array<EntityId>()
+  }
+}
 
 export function propogateVelocity(
   root: Entity,
@@ -705,4 +723,41 @@ export function isVertical(v: Belt | Rotation) {
     rotation = v.rotation
   }
   return rotation === 90 || rotation === 270
+}
+
+export function* iterateBeltPath(
+  root: Belt,
+  start: Belt,
+  getBelt: (id: EntityId) => Belt,
+) {
+  const seen = new Set<Belt>()
+  seen.add(root)
+
+  const stack = new Array<Belt>(start)
+
+  while (stack.length) {
+    const current = stack.pop()
+    invariant(current)
+
+    if (seen.has(current)) continue
+    seen.add(current)
+    yield current
+
+    const adjacent = new Array<Belt>()
+
+    for (const connection of current.connections) {
+      if (connection.type !== ConnectionType.enum.Belt)
+        continue
+      const neighbor = getBelt(connection.entityId)
+      adjacent.push(neighbor)
+    }
+
+    invariant(adjacent.length <= 2)
+    const [a, b] = adjacent
+    if (a && !seen.has(a)) {
+      stack.push(a)
+    } else if (b && !seen.has(b)) {
+      stack.push(b)
+    }
+  }
 }

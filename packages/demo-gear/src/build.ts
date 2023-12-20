@@ -17,46 +17,10 @@ import {
   getExternalNetworks,
   incrementBuildVersion,
   isBelt,
+  iterateBeltPath,
   mergeBuildEntities,
   propogateVelocity,
 } from './util.js'
-
-function* iterateBeltPath(
-  root: Belt,
-  start: Belt,
-  getBelt: (id: EntityId) => Belt,
-) {
-  const seen = new Set<Belt>()
-  seen.add(root)
-
-  const stack = new Array<Belt>(start)
-
-  while (stack.length) {
-    const current = stack.pop()
-    invariant(current)
-
-    if (seen.has(current)) continue
-    seen.add(current)
-    yield current
-
-    const adjacent = new Array<Belt>()
-
-    for (const connection of current.connections) {
-      if (connection.type !== ConnectionType.enum.Belt)
-        continue
-      const neighbor = getBelt(connection.entityId)
-      adjacent.push(neighbor)
-    }
-
-    invariant(adjacent.length <= 2)
-    const [a, b] = adjacent
-    if (a && !seen.has(a)) {
-      stack.push(a)
-    } else if (b && !seen.has(b)) {
-      stack.push(b)
-    }
-  }
-}
 
 function mergeBeltPaths(
   world: World,
