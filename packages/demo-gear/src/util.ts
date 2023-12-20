@@ -836,11 +836,30 @@ export function updateBeltPathsForRoots(
       getBelt(beltId).pathId = pathId
     }
 
+    let invert = false
+    const [firstId, secondId] = beltIds
+    if (firstId && secondId) {
+      const first = getBelt(firstId)
+      const second = getBelt(secondId)
+
+      const dx = second.position.x - first.position.x
+      const dy = second.position.y - first.position.y
+
+      invariant(dx === 0 || dy === 0)
+      invariant(
+        dx === 1 || dx === -1 || dy === 1 || dy === -1,
+      )
+      if (dx === -1 || dy === -1) {
+        invert = true
+      }
+    }
+
     setPath({
       id: pathId,
       beltIds,
       // TODO preserve items
       items: [],
+      invert,
       loop,
       config,
     })

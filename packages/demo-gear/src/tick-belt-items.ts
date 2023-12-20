@@ -19,7 +19,8 @@ export function tickBeltItems(
     const root = world.entities[rootId]
     invariant(root)
 
-    const dp = root.velocity * elapsed
+    const dp =
+      root.velocity * elapsed * (path.invert ? -1 : 1)
 
     if (dp > 0) {
       for (let i = path.items.length - 1; i >= 0; i--) {

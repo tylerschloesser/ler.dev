@@ -209,6 +209,7 @@ export const BeltPath = z.strictObject({
   id: z.string(),
   beltIds: z.array(EntityId),
   items: z.array(BeltItem),
+  invert: z.boolean(),
   loop: z.boolean(),
   config: z.record(
     EntityId,
