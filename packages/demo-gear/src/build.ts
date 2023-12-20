@@ -79,7 +79,6 @@ function mergeBeltPaths(
     for (const connection of root.connections) {
       if (connection.type !== ConnectionType.enum.Belt)
         continue
-      // TODO first try world, then hand
       let neighbor = hand.entities[connection.entityId]
       if (!neighbor) {
         neighbor = world.entities[connection.entityId]
@@ -90,6 +89,8 @@ function mergeBeltPaths(
 
     const beltIds = new Array<EntityId>(root.id)
 
+    let loop = false
+
     invariant(adjacent.length <= 2)
     const [a, b] = adjacent
     if (a) {
@@ -99,19 +100,25 @@ function mergeBeltPaths(
         root,
         a,
       )) {
-        if (seen.has(belt)) continue
+        if (seen.has(belt)) {
+          loop = true
+          break
+        }
         seen.add(belt)
         beltIds.push(belt.id)
       }
     }
-    if (b) {
+    if (b && !loop) {
       for (const belt of iterateBeltPath(
         world,
         hand,
         root,
         b,
       )) {
-        if (seen.has(belt)) continue
+        if (seen.has(belt)) {
+          loop = true
+          break
+        }
         seen.add(belt)
         beltIds.unshift(belt.id)
       }
@@ -139,6 +146,7 @@ function mergeBeltPaths(
       id: pathId,
       beltIds,
       groups: [],
+      loop,
     }
   }
 }
