@@ -17,85 +17,10 @@ import {
   getExternalNetworks,
   incrementBuildVersion,
   isBelt,
-  iterateBeltPath,
   mergeBuildEntities,
   propogateVelocity,
+  updateBeltPathsForRoots,
 } from './util.js'
-
-export function updateBeltPathsForRoots(
-  roots: Belt[],
-  getBelt: (id: EntityId) => Belt,
-  setPath: (path: BeltPath) => void,
-): void {
-  const seen = new Set<Belt>()
-
-  for (const root of roots) {
-    if (root.type !== EntityType.enum.Belt) continue
-    if (seen.has(root)) continue
-    seen.add(root)
-
-    const adjacent = new Array<Belt>()
-    for (const connection of root.connections) {
-      if (connection.type !== ConnectionType.enum.Belt)
-        continue
-      const neighbor = getBelt(connection.entityId)
-      adjacent.push(neighbor)
-    }
-
-    const beltIds = new Array<EntityId>(root.id)
-
-    let loop = false
-
-    invariant(adjacent.length <= 2)
-    const [a, b] = adjacent
-    if (a) {
-      for (const belt of iterateBeltPath(
-        root,
-        a,
-        getBelt,
-      )) {
-        if (seen.has(belt)) {
-          loop = true
-          break
-        }
-        seen.add(belt)
-        beltIds.push(belt.id)
-      }
-    }
-    if (b && !loop) {
-      for (const belt of iterateBeltPath(
-        root,
-        b,
-        getBelt,
-      )) {
-        if (seen.has(belt)) {
-          loop = true
-          break
-        }
-        seen.add(belt)
-        beltIds.unshift(belt.id)
-      }
-    }
-
-    const pathId = beltIds.at(0)
-    invariant(pathId)
-
-    const config: BeltPath['config'] = {}
-
-    for (const beltId of beltIds) {
-      getBelt(beltId).pathId = pathId
-    }
-
-    setPath({
-      id: pathId,
-      beltIds,
-      // TODO preserve items
-      items: [],
-      loop,
-      config,
-    })
-  }
-}
 
 function mergeBeltPaths(
   world: World,
