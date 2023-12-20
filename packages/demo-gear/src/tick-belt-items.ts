@@ -27,40 +27,60 @@ export function tickBeltItems(
       for (let i = path.items.length - 1; i >= 0; i--) {
         const item = path.items[i]
         invariant(item)
-
-        let available: number
-        const next = path.items[i + 1]
-        if (next) {
-          available = next.position - item.position
+        if (path.loop) {
+          item.position += dp
+          if (item.position > path.beltIds.length) {
+            item.position -= path.beltIds.length
+          }
         } else {
-          available = path.beltIds.length - item.position
-        }
-        invariant(available >= BELT_ITEM_GAP)
-        if (available > BELT_ITEM_GAP) {
+          let available: number
+          const next = path.items[i + 1]
+          if (next) {
+            available = next.position - item.position
+          } else {
+            available = path.beltIds.length - item.position
+          }
+          available -= BELT_ITEM_GAP
+          invariant(available >= 0)
           item.position += Math.min(available, dp)
         }
+        invariant(item.position >= 0)
+        invariant(item.position <= path.beltIds.length)
       }
     } else if (dp < 0) {
       for (let i = 0; i < path.items.length; i++) {
         const item = path.items[i]
         invariant(item)
-
-        let available: number
-        const prev = path.items[i - 1]
-        if (prev) {
-          available = prev.position - item.position
+        if (path.loop) {
+          item.position += dp
+          if (item.position < 0) {
+            item.position += path.beltIds.length
+          }
         } else {
-          available = 0 - item.position
-        }
-        invariant(-available >= BELT_ITEM_GAP)
-        if (-available > BELT_ITEM_GAP) {
+          let available: number
+          const prev = path.items[i - 1]
+          if (prev) {
+            available = prev.position - item.position
+          } else {
+            available = 0 - item.position
+          }
+          available += BELT_ITEM_GAP
+          invariant(available <= 0)
           item.position += Math.max(available, dp)
         }
+        invariant(item.position >= 0)
+        invariant(item.position <= path.beltIds.length)
       }
     }
 
     if (dp !== 0) {
       const seen = new Set<Belt>()
+
+      for (const beltId of path.beltIds) {
+        const belt = world.entities[beltId]
+        invariant(belt?.type === EntityType.enum.Belt)
+        belt.items = []
+      }
 
       for (const item of path.items) {
         const beltIndex = Math.floor(item.position)
@@ -81,43 +101,6 @@ export function tickBeltItems(
       }
     }
   }
-
-  // const paths = getPaths(world)
-  // for (const path of paths) {
-  //   const first = path.at(0)
-  //   invariant(first)
-  //   const loop = Boolean(first.prev)
-  //   if (loop) {
-  //     for (const { belt } of path) {
-  //       for (const item of belt.items) {
-  //         item.position += belt.velocity * elapsed
-  //       }
-  //     }
-  //     const seen = new Set<BeltItem>()
-  //     for (const { belt, next } of path) {
-  //       invariant(next)
-  //       const remove = new Array<number>()
-  //       for (let i = 0; i < belt.items.length; i++) {
-  //         const item = belt.items.at(i)
-  //         invariant(item)
-  //         if (seen.has(item)) continue
-  //         seen.add(item)
-  //         if (item.position < 0) {
-  //           item.position = item.position + 1
-  //           next.items.unshift(item)
-  //           remove.unshift(i)
-  //         } else if (item.position > 1) {
-  //           item.position = item.position - 1
-  //           next.items.unshift(item)
-  //           remove.unshift(i)
-  //         }
-  //       }
-  //       for (const i of remove) {
-  //         belt.items.splice(i, 1)
-  //       }
-  //     }
-  //   }
-  // }
 }
 
 function getBelt(
