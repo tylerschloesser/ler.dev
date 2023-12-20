@@ -3,6 +3,7 @@ import { buildBelt } from './build-belt.js'
 import { buildGear } from './build-gear.js'
 import {
   Belt,
+  BeltPath,
   BuildHand,
   Connection,
   ConnectionType,
@@ -127,18 +128,19 @@ function mergeBeltPaths(
     const pathId = beltIds.at(0)
     invariant(pathId)
 
+    const config: BeltPath['config'] = {}
+
     for (const beltId of beltIds) {
-      const existing = world.entities[beltId]
-      if (existing) {
-        invariant(existing.type === EntityType.enum.Belt)
-        delete world.paths[existing.pathId]
-        existing.pathId = pathId
-      }
-      const belt = hand.entities[beltId]
+      let belt = world.entities[beltId]
       if (belt) {
+        invariant(!hand.entities[beltId])
+        invariant(belt.type === EntityType.enum.Belt)
+        delete world.paths[belt.pathId]
+      } else {
+        belt = hand.entities[beltId]
         invariant(belt?.type === EntityType.enum.Belt)
-        belt.pathId = pathId
       }
+      belt.pathId = pathId
     }
 
     invariant(!world.paths[pathId])
@@ -148,6 +150,7 @@ function mergeBeltPaths(
       // TODO preserve items
       items: [],
       loop,
+      config,
     }
   }
 }

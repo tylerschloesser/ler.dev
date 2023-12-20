@@ -210,6 +210,12 @@ export const BeltPath = z.strictObject({
   beltIds: z.array(EntityId),
   items: z.array(BeltItem),
   loop: z.boolean(),
+  config: z.record(
+    EntityId,
+    z.strictObject({
+      invert: z.boolean(),
+    }),
+  ),
 })
 export type BeltPath = z.infer<typeof BeltPath>
 
