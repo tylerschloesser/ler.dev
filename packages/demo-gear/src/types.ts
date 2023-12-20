@@ -7,6 +7,9 @@ export const SimpleVec2 = z.strictObject({
 })
 export type SimpleVec2 = z.infer<typeof SimpleVec2>
 
+export const BeltPathId = z.string()
+export type BeltPathId = z.infer<typeof BeltPathId>
+
 export const EntityId = z.string()
 export type EntityId = z.infer<typeof EntityId>
 
@@ -186,6 +189,7 @@ export const BeltEntity = EntityBase.extend({
   rotation: Rotation,
   turn: BeltTurn,
   direction: BeltDirection,
+  pathId: BeltPathId,
 })
 export type BeltEntity = z.infer<typeof BeltEntity>
 
@@ -211,9 +215,6 @@ export const ItemGroup = z.strictObject({
   ),
 })
 export type ItemGroup = z.infer<typeof ItemGroup>
-
-export const BeltPathId = z.string()
-export type BeltPathId = z.infer<typeof BeltPathId>
 
 export const BeltPath = z.strictObject({
   id: z.string(),

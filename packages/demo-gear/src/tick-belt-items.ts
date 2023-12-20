@@ -13,45 +13,42 @@ export function tickBeltItems(
   world: World,
   elapsed: number,
 ): void {
-  const paths = getPaths(world)
-  for (const path of paths) {
-    const first = path.at(0)
-    invariant(first)
-    const loop = Boolean(first.prev)
-
-    if (loop) {
-      for (const { belt } of path) {
-        for (const item of belt.items) {
-          item.position += belt.velocity * elapsed
-        }
-      }
-      const seen = new Set<BeltItem>()
-      for (const { belt, next } of path) {
-        invariant(next)
-        const remove = new Array<number>()
-        for (let i = 0; i < belt.items.length; i++) {
-          const item = belt.items.at(i)
-          invariant(item)
-
-          if (seen.has(item)) continue
-          seen.add(item)
-
-          if (item.position < 0) {
-            item.position = item.position + 1
-            next.items.unshift(item)
-            remove.unshift(i)
-          } else if (item.position > 1) {
-            item.position = item.position - 1
-            next.items.unshift(item)
-            remove.unshift(i)
-          }
-        }
-        for (const i of remove) {
-          belt.items.splice(i, 1)
-        }
-      }
-    }
-  }
+  // const paths = getPaths(world)
+  // for (const path of paths) {
+  //   const first = path.at(0)
+  //   invariant(first)
+  //   const loop = Boolean(first.prev)
+  //   if (loop) {
+  //     for (const { belt } of path) {
+  //       for (const item of belt.items) {
+  //         item.position += belt.velocity * elapsed
+  //       }
+  //     }
+  //     const seen = new Set<BeltItem>()
+  //     for (const { belt, next } of path) {
+  //       invariant(next)
+  //       const remove = new Array<number>()
+  //       for (let i = 0; i < belt.items.length; i++) {
+  //         const item = belt.items.at(i)
+  //         invariant(item)
+  //         if (seen.has(item)) continue
+  //         seen.add(item)
+  //         if (item.position < 0) {
+  //           item.position = item.position + 1
+  //           next.items.unshift(item)
+  //           remove.unshift(i)
+  //         } else if (item.position > 1) {
+  //           item.position = item.position - 1
+  //           next.items.unshift(item)
+  //           remove.unshift(i)
+  //         }
+  //       }
+  //       for (const i of remove) {
+  //         belt.items.splice(i, 1)
+  //       }
+  //     }
+  //   }
+  // }
 }
 
 function getBelt(

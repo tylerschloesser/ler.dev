@@ -110,6 +110,7 @@ function addBelt(
   entities[id] = {
     type: EntityType.enum.Belt,
     id,
+    pathId: '',
     networkId: network.id,
     position,
     size: BELT_SIZE,

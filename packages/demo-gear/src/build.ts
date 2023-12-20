@@ -7,6 +7,7 @@ import {
   Connection,
   ConnectionType,
   Entity,
+  EntityId,
   EntityType,
   IAppContext,
   World,
@@ -19,12 +20,137 @@ import {
   propogateVelocity,
 } from './util.js'
 
+function* iterateBeltPath(
+  world: World,
+  hand: BuildHand,
+  root: Belt,
+  start: Belt,
+) {
+  const seen = new Set<Belt>()
+  seen.add(root)
+
+  const stack = new Array<Belt>(start)
+
+  while (stack.length) {
+    const current = stack.pop()
+    invariant(current)
+
+    if (seen.has(current)) continue
+    seen.add(current)
+    yield current
+
+    const adjacent = new Array<Belt>()
+
+    for (const connection of current.connections) {
+      if (connection.type !== ConnectionType.enum.Belt)
+        continue
+
+      let neighbor = world.entities[connection.entityId]
+      if (!neighbor) {
+        neighbor = hand.entities[connection.entityId]
+      }
+
+      invariant(neighbor?.type === EntityType.enum.Belt)
+      adjacent.push(neighbor)
+    }
+
+    invariant(adjacent.length <= 2)
+    const [a, b] = adjacent
+    if (a && !seen.has(a)) {
+      stack.push(a)
+    } else if (b && !seen.has(b)) {
+      stack.push(b)
+    }
+  }
+}
+
+function mergeBeltPaths(
+  world: World,
+  hand: BuildHand,
+): void {
+  const seen = new Set<Belt>()
+
+  for (const root of Object.values(hand.entities)) {
+    if (root.type !== EntityType.enum.Belt) continue
+    if (seen.has(root)) continue
+    seen.add(root)
+
+    const adjacent = new Array<Belt>()
+    for (const connection of root.connections) {
+      if (connection.type !== ConnectionType.enum.Belt)
+        continue
+      // TODO first try world, then hand
+      let neighbor = hand.entities[connection.entityId]
+      if (!neighbor) {
+        neighbor = world.entities[connection.entityId]
+      }
+      invariant(neighbor?.type === EntityType.enum.Belt)
+      adjacent.push(neighbor)
+    }
+
+    const beltIds = new Array<EntityId>(root.id)
+
+    invariant(adjacent.length <= 2)
+    const [a, b] = adjacent
+    if (a) {
+      for (const belt of iterateBeltPath(
+        world,
+        hand,
+        root,
+        a,
+      )) {
+        if (seen.has(belt)) continue
+        seen.add(belt)
+        beltIds.push(belt.id)
+      }
+    }
+    if (b) {
+      for (const belt of iterateBeltPath(
+        world,
+        hand,
+        root,
+        b,
+      )) {
+        if (seen.has(belt)) continue
+        seen.add(belt)
+        beltIds.unshift(belt.id)
+      }
+    }
+
+    const pathId = beltIds.at(0)
+    invariant(pathId)
+
+    for (const beltId of beltIds) {
+      const existing = world.entities[beltId]
+      if (existing) {
+        invariant(existing.type === EntityType.enum.Belt)
+        delete world.paths[existing.pathId]
+        existing.pathId = pathId
+      }
+      const belt = hand.entities[beltId]
+      if (belt) {
+        invariant(belt?.type === EntityType.enum.Belt)
+        belt.pathId = pathId
+      }
+    }
+
+    invariant(!world.paths[pathId])
+    world.paths[pathId] = {
+      id: pathId,
+      beltIds,
+      groups: [],
+    }
+  }
+}
+
 export function build(world: World, hand: BuildHand): void {
   validateBuild(world, hand)
 
   // assumption: all entities are connected (i.e. within the same network)
 
   mergeBuildEntities(world, hand)
+
+  mergeBeltPaths(world, hand)
 
   const root = Object.values(hand.entities).at(0)
   invariant(root)
