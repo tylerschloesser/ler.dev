@@ -3,7 +3,6 @@ import {
   Belt,
   BeltDirection,
   BeltItem,
-  BeltTurn,
   IAppContext,
   ItemType,
   Rotation,
@@ -14,9 +13,7 @@ import {
   Color,
   FUEL_COLOR,
   ITEM_BORDER,
-  TRANSPARENT,
   TURN_BELT_LINE_COLOR,
-  rgba,
 } from './color.js'
 import { batchRenderRect } from './render-rect.js'
 import { GpuState } from './types.js'
@@ -52,29 +49,6 @@ function renderLine(
   )
 }
 
-const TURN_ROTATION_MAP: Record<
-  typeof BeltTurn.enum.Left | typeof BeltTurn.enum.Right,
-  Record<Rotation, Rotation>
-> = {
-  [BeltTurn.enum.Left]: {
-    0: 270,
-    90: 0,
-    180: 90,
-    270: 180,
-  },
-  [BeltTurn.enum.Right]: {
-    0: 90,
-    90: 180,
-    180: 270,
-    270: 0,
-  },
-}
-
-function getTurnRotation(belt: Belt): Rotation {
-  invariant(belt.turn !== BeltTurn.enum.None)
-  return TURN_ROTATION_MAP[belt.turn][belt.rotation]
-}
-
 function renderBeltItem(
   render: RenderFn,
   belt: Belt,
@@ -85,12 +59,9 @@ function renderBeltItem(
 
   invariant(item.type === ItemType.enum.Fuel)
 
-  let { rotation } = belt
-  if (
-    belt.turn !== BeltTurn.enum.None &&
-    item.position > 0.5
-  ) {
-    rotation = getTurnRotation(belt)
+  let rotation: Rotation = 0
+  if (belt.direction === BeltDirection.enum.NorthSouth) {
+    rotation = 90
   }
 
   const x = item.position - size / 2
