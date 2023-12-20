@@ -1,4 +1,5 @@
 import invariant from 'tiny-invariant'
+import { BELT_ITEM_GAP } from './const.js'
 import {
   Belt,
   BeltDirection,
@@ -223,5 +224,13 @@ export function addResourceToBelt(
   belt: BeltEntity,
   type: ItemType,
 ): void {
+  for (const item of belt.items) {
+    const dp = Math.abs(item.position - 0.5)
+    if (dp <= BELT_ITEM_GAP / 2) {
+      console.log('no room for item')
+      return
+    }
+  }
+
   belt.items.unshift({ type, position: 0.5 })
 }
