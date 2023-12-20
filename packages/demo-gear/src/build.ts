@@ -145,7 +145,8 @@ function mergeBeltPaths(
     world.paths[pathId] = {
       id: pathId,
       beltIds,
-      groups: [],
+      // TODO preserve items
+      items: [],
       loop,
     }
   }

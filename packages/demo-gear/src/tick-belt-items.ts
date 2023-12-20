@@ -5,6 +5,7 @@ import {
   BeltDirection,
   BeltEntity,
   BeltItem,
+  BeltPath,
   EntityType,
   ItemType,
   World,
@@ -152,71 +153,25 @@ function getBeltMap(world: World) {
   return belts
 }
 
-type BeltPath = Array<{
-  belt: Belt
-  prev?: Belt
-  next?: Belt
-}>
+function updateBeltPathItems(
+  world: World,
+  path: BeltPath,
+): void {
+  path.items = []
 
-function getPaths(world: World): Array<BeltPath> {
-  const map = getBeltMap(world)
-  const seen = new Set<Belt>()
+  for (let i = 0; i < path.beltIds.length; i++) {
+    const beltId = path.beltIds.at(i)
+    invariant(beltId)
+    const belt = world.entities[beltId]
+    invariant(belt?.type === EntityType.enum.Belt)
 
-  const paths = new Array<BeltPath>()
-
-  for (const root of map.keys()) {
-    if (seen.has(root)) continue
-
-    let loop = false
-    const path: BeltPath = []
-    let stack = new Array<Belt>(root)
-
-    while (stack.length) {
-      const current = stack.pop()
-      invariant(current)
-
-      if (seen.has(current)) {
-        loop = true
-        break
-      }
-      seen.add(current)
-
-      const value = map.get(current)
-      invariant(value)
-      const { next } = value
-      if (next) {
-        path.push(value)
-        stack.push(next)
-      }
+    for (const item of belt.items) {
+      path.items.push({
+        type: item.type,
+        position: i + item.position,
+      })
     }
-
-    if (!loop) {
-      seen.delete(root)
-      stack = new Array<Belt>(root)
-
-      while (stack.length) {
-        const current = stack.pop()
-        invariant(current)
-
-        // should not be possible, because we
-        // would've detected the loop above
-        invariant(!seen.has(current))
-        seen.add(current)
-
-        const value = map.get(current)
-        invariant(value)
-        const { prev } = value
-        if (prev) {
-          path.unshift(value)
-          stack.push(prev)
-        }
-      }
-    }
-
-    paths.push(path)
   }
-
-  return paths
 }
 
 export function addResourceToBelt(
@@ -224,13 +179,24 @@ export function addResourceToBelt(
   belt: BeltEntity,
   type: ItemType,
 ): void {
-  for (const item of belt.items) {
+  let index = 0
+  for (let i = 0; i < belt.items.length; i++) {
+    const item = belt.items[i]
+    invariant(item)
     const dp = Math.abs(item.position - 0.5)
     if (dp <= BELT_ITEM_GAP / 2) {
       console.log('no room for item')
       return
     }
+    if (item.position < 0.5) {
+      index = i
+    }
   }
 
-  belt.items.unshift({ type, position: 0.5 })
+  belt.items.splice(index, 0, { type, position: 0.5 })
+
+  const path = world.paths[belt.pathId]
+  invariant(path)
+
+  updateBeltPathItems(world, path)
 }
