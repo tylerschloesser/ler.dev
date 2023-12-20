@@ -22,28 +22,14 @@ import {
   propogateVelocity,
 } from './util.js'
 
-function mergeBeltPaths(
-  world: World,
-  hand: BuildHand,
+export function updateBeltPathsForRoots(
+  roots: Belt[],
+  getBelt: (id: EntityId) => Belt,
+  setPath: (path: BeltPath) => void,
 ): void {
   const seen = new Set<Belt>()
 
-  // at this point during build, we should have already removed
-  // existing, overlapped belts. so each belt Id should be in
-  // either hand or world, but not both
-  const getBelt = (id: EntityId) => {
-    let entity = world.entities[id]
-    if (entity) {
-      invariant(entity.type === EntityType.enum.Belt)
-      invariant(!hand.entities[id])
-      return entity
-    }
-    entity = hand.entities[id]
-    invariant(entity?.type === EntityType.enum.Belt)
-    return entity
-  }
-
-  for (const root of Object.values(hand.entities)) {
+  for (const root of roots) {
     if (root.type !== EntityType.enum.Belt) continue
     if (seen.has(root)) continue
     seen.add(root)
@@ -52,14 +38,7 @@ function mergeBeltPaths(
     for (const connection of root.connections) {
       if (connection.type !== ConnectionType.enum.Belt)
         continue
-
-      let neighbor = hand.entities[connection.entityId]
-      if (!neighbor) {
-        neighbor = world.entities[connection.entityId]
-      } else {
-        invariant(!world.entities[connection.entityId])
-      }
-      invariant(neighbor?.type === EntityType.enum.Belt)
+      const neighbor = getBelt(connection.entityId)
       adjacent.push(neighbor)
     }
 
@@ -104,28 +83,49 @@ function mergeBeltPaths(
     const config: BeltPath['config'] = {}
 
     for (const beltId of beltIds) {
-      let belt = world.entities[beltId]
-      if (belt) {
-        invariant(!hand.entities[beltId])
-        invariant(belt.type === EntityType.enum.Belt)
-        delete world.paths[belt.pathId]
-      } else {
-        belt = hand.entities[beltId]
-        invariant(belt?.type === EntityType.enum.Belt)
-      }
-      belt.pathId = pathId
+      getBelt(beltId).pathId = pathId
     }
 
-    invariant(!world.paths[pathId])
-    world.paths[pathId] = {
+    setPath({
       id: pathId,
       beltIds,
       // TODO preserve items
       items: [],
       loop,
       config,
-    }
+    })
   }
+}
+
+function mergeBeltPaths(
+  world: World,
+  hand: BuildHand,
+): void {
+  // at this point during build, we should have already removed
+  // existing, overlapped belts. so each belt Id should be in
+  // either hand or world, but not both
+  const getBelt = (id: EntityId) => {
+    let entity = world.entities[id]
+    if (entity) {
+      invariant(entity.type === EntityType.enum.Belt)
+      invariant(!hand.entities[id])
+      return entity
+    }
+    entity = hand.entities[id]
+    invariant(entity?.type === EntityType.enum.Belt)
+    return entity
+  }
+
+  const roots = Object.values(hand.entities).filter(
+    (e): e is Belt => e.type === EntityType.enum.Belt,
+  )
+
+  const setPath = (path: BeltPath) => {
+    invariant(!world.paths[path.id])
+    world.paths[path.id] = path
+  }
+
+  updateBeltPathsForRoots(roots, getBelt, setPath)
 }
 
 export function build(world: World, hand: BuildHand): void {
