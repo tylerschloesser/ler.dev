@@ -589,9 +589,7 @@ function updateBeltPathsAfterDelete(
   world: World,
   entity: BeltEntity,
 ): void {
-  const deletedPathId = entity.pathId
-
-  const seen = new Set<Belt>()
+  delete world.paths[entity.pathId]
 
   const roots = new Array<Belt>()
   for (const connection of entity.connections) {
@@ -603,9 +601,20 @@ function updateBeltPathsAfterDelete(
   }
 
   invariant(roots.length <= 2)
-  for (const root of roots) {
-    const beltIds = new Array<EntityId>()
+
+  const getBelt = (id: EntityId) => {
+    invariant(id !== entity.id)
+    const found = world.entities[id]
+    invariant(found?.type === EntityType.enum.Belt)
+    return found
   }
+
+  const setPath = (path: BeltPath) => {
+    invariant(!world.paths[path.id])
+    world.paths[path.id] = path
+  }
+
+  updateBeltPathsForRoots(roots, getBelt, setPath)
 }
 
 export function propogateVelocity(
