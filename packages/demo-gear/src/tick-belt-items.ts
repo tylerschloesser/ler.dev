@@ -223,5 +223,5 @@ export function addResourceToBelt(
   belt: BeltEntity,
   type: ItemType,
 ): void {
-  belt.items.unshift({ type, position: 0 })
+  belt.items.unshift({ type, position: 0.5 })
 }
