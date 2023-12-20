@@ -170,9 +170,6 @@ export const Rotation = z.union([
 ])
 export type Rotation = z.infer<typeof Rotation>
 
-export const BeltPath = z.array(SimpleVec2)
-export type BeltPath = z.infer<typeof BeltPath>
-
 export const BeltItem = z.strictObject({
   type: ItemType,
   position: z.number(),
@@ -204,11 +201,33 @@ export const Entity = z.discriminatedUnion('type', [
 ])
 export type Entity = z.infer<typeof Entity>
 
+export const ItemGroup = z.strictObject({
+  position: z.number(),
+  items: z.array(
+    z.strictObject({
+      type: ItemType,
+      position: z.number(),
+    }),
+  ),
+})
+export type ItemGroup = z.infer<typeof ItemGroup>
+
+export const BeltPathId = z.string()
+export type BeltPathId = z.infer<typeof BeltPathId>
+
+export const BeltPath = z.strictObject({
+  id: z.string(),
+  beltIds: z.array(EntityId),
+  groups: z.array(ItemGroup),
+})
+export type BeltPath = z.infer<typeof BeltPath>
+
 export const World = z.strictObject({
   version: z.number(),
   entities: z.record(EntityId, Entity),
   tiles: z.record(TileId, Tile),
   networks: z.record(NetworkId, Network),
+  paths: z.record(BeltPathId, BeltPath),
 })
 export type World = z.infer<typeof World>
 
