@@ -4,7 +4,6 @@ import {
   Belt,
   BeltDirection,
   BeltEntity,
-  BeltItem,
   BeltPath,
   EntityType,
   ItemType,
@@ -16,6 +15,73 @@ export function tickBeltItems(
   world: World,
   elapsed: number,
 ): void {
+  for (const path of Object.values(world.paths)) {
+    const rootId = path.beltIds.at(0)
+    invariant(rootId)
+    const root = world.entities[rootId]
+    invariant(root)
+
+    const dp = root.velocity * elapsed
+
+    if (dp > 0) {
+      for (let i = path.items.length - 1; i >= 0; i--) {
+        const item = path.items[i]
+        invariant(item)
+
+        let available: number
+        const next = path.items[i + 1]
+        if (next) {
+          available = next.position - item.position
+        } else {
+          available = path.beltIds.length - item.position
+        }
+        invariant(available >= BELT_ITEM_GAP)
+        if (available > BELT_ITEM_GAP) {
+          item.position += Math.min(available, dp)
+        }
+      }
+    } else if (dp < 0) {
+      for (let i = 0; i < path.items.length; i++) {
+        const item = path.items[i]
+        invariant(item)
+
+        let available: number
+        const prev = path.items[i - 1]
+        if (prev) {
+          available = prev.position - item.position
+        } else {
+          available = 0 - item.position
+        }
+        invariant(-available >= BELT_ITEM_GAP)
+        if (-available > BELT_ITEM_GAP) {
+          item.position += Math.max(available, dp)
+        }
+      }
+    }
+
+    if (dp !== 0) {
+      const seen = new Set<Belt>()
+
+      for (const item of path.items) {
+        const beltIndex = Math.floor(item.position)
+        const beltId = path.beltIds[beltIndex]
+        invariant(beltId)
+        const belt = world.entities[beltId]
+        invariant(belt?.type === EntityType.enum.Belt)
+
+        if (!seen.has(belt)) {
+          belt.items = []
+          seen.add(belt)
+        }
+
+        belt.items.push({
+          type: item.type,
+          position: item.position - beltIndex,
+        })
+      }
+    }
+  }
+
   // const paths = getPaths(world)
   // for (const path of paths) {
   //   const first = path.at(0)
