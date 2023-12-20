@@ -8,6 +8,7 @@ import {
 } from './const.js'
 import {
   Belt,
+  BeltEntity,
   BuildHand,
   Connection,
   ConnectionType,
@@ -577,7 +578,16 @@ export function deleteEntity(
       }
     }
   }
+
+  if (entity.type === EntityType.enum.Belt) {
+    updateBeltPathsAfterDelete(world, entity)
+  }
 }
+
+function updateBeltPathsAfterDelete(
+  world: World,
+  entity: BeltEntity,
+): void {}
 
 export function propogateVelocity(
   root: Entity,

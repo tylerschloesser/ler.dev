@@ -22,10 +22,9 @@ import {
 } from './util.js'
 
 function* iterateBeltPath(
-  world: World,
-  hand: BuildHand,
   root: Belt,
   start: Belt,
+  getBelt: (id: EntityId) => Belt,
 ) {
   const seen = new Set<Belt>()
   seen.add(root)
@@ -45,13 +44,7 @@ function* iterateBeltPath(
     for (const connection of current.connections) {
       if (connection.type !== ConnectionType.enum.Belt)
         continue
-
-      let neighbor = world.entities[connection.entityId]
-      if (!neighbor) {
-        neighbor = hand.entities[connection.entityId]
-      }
-
-      invariant(neighbor?.type === EntityType.enum.Belt)
+      const neighbor = getBelt(connection.entityId)
       adjacent.push(neighbor)
     }
 
@@ -71,6 +64,18 @@ function mergeBeltPaths(
 ): void {
   const seen = new Set<Belt>()
 
+  const getBelt = (id: EntityId) => {
+    let entity = world.entities[id]
+    if (entity) {
+      invariant(entity.type === EntityType.enum.Belt)
+      invariant(!hand.entities[id])
+      return entity
+    }
+    entity = hand.entities[id]
+    invariant(entity?.type === EntityType.enum.Belt)
+    return entity
+  }
+
   for (const root of Object.values(hand.entities)) {
     if (root.type !== EntityType.enum.Belt) continue
     if (seen.has(root)) continue
@@ -80,9 +85,12 @@ function mergeBeltPaths(
     for (const connection of root.connections) {
       if (connection.type !== ConnectionType.enum.Belt)
         continue
+
       let neighbor = hand.entities[connection.entityId]
       if (!neighbor) {
         neighbor = world.entities[connection.entityId]
+      } else {
+        invariant(!world.entities[connection.entityId])
       }
       invariant(neighbor?.type === EntityType.enum.Belt)
       adjacent.push(neighbor)
@@ -96,10 +104,9 @@ function mergeBeltPaths(
     const [a, b] = adjacent
     if (a) {
       for (const belt of iterateBeltPath(
-        world,
-        hand,
         root,
         a,
+        getBelt,
       )) {
         if (seen.has(belt)) {
           loop = true
@@ -111,10 +118,9 @@ function mergeBeltPaths(
     }
     if (b && !loop) {
       for (const belt of iterateBeltPath(
-        world,
-        hand,
         root,
         b,
+        getBelt,
       )) {
         if (seen.has(belt)) {
           loop = true
