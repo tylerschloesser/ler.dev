@@ -64,6 +64,9 @@ function mergeBeltPaths(
 ): void {
   const seen = new Set<Belt>()
 
+  // at this point during build, we should have already removed
+  // existing, overlapped belts. so each belt Id should be in
+  // either hand or world, but not both
   const getBelt = (id: EntityId) => {
     let entity = world.entities[id]
     if (entity) {
