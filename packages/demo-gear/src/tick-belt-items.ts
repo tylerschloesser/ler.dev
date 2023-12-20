@@ -2,14 +2,12 @@ import invariant from 'tiny-invariant'
 import { BELT_ITEM_GAP } from './const.js'
 import {
   Belt,
-  BeltDirection,
   BeltEntity,
   BeltPath,
   EntityType,
   ItemType,
   World,
 } from './types.js'
-import { getEntity, isBelt } from './util.js'
 
 export function tickBeltItems(
   world: World,
@@ -101,105 +99,6 @@ export function tickBeltItems(
       }
     }
   }
-}
-
-function getBelt(
-  world: World,
-  x: number,
-  y: number,
-): BeltEntity | undefined {
-  const tileId = `${x}.${y}`
-  const tile = world.tiles[tileId]
-  if (!tile?.entityId) return undefined
-  const entity = getEntity(world, tile.entityId)
-  if (entity.type === EntityType.enum.Belt) {
-    return entity
-  }
-  return undefined
-}
-
-function getBeltMap(world: World) {
-  const belts = new Map<
-    Belt,
-    {
-      belt: Belt
-      prev?: Belt
-      next?: Belt
-    }
-  >()
-
-  for (const belt of Object.values(world.entities).filter(
-    isBelt,
-  )) {
-    const { x, y } = belt.position
-    let prev: Belt | undefined = undefined
-    let next: Belt | undefined = undefined
-    switch (belt.direction) {
-      case BeltDirection.enum.EastWest: {
-        if (belt.velocity > 0) {
-          prev = getBelt(world, x - 1, y)
-          next = getBelt(world, x + 1, y)
-        } else if (belt.velocity < 0) {
-          prev = getBelt(world, x + 1, y)
-          next = getBelt(world, x - 1, y)
-        }
-        break
-      }
-      case BeltDirection.enum.NorthSouth: {
-        if (belt.velocity > 0) {
-          prev = getBelt(world, x, y - 1)
-          next = getBelt(world, x, y + 1)
-        } else if (belt.velocity < 0) {
-          prev = getBelt(world, x, y + 1)
-          next = getBelt(world, x, y - 1)
-        }
-        break
-      }
-      case BeltDirection.enum.NorthWest: {
-        if (belt.velocity > 0) {
-          prev = getBelt(world, x - 1, y)
-          next = getBelt(world, x, y - 1)
-        } else if (belt.velocity < 0) {
-          prev = getBelt(world, x, y - 1)
-          next = getBelt(world, x - 1, y)
-        }
-        break
-      }
-      case BeltDirection.enum.NorthEast: {
-        if (belt.velocity > 0) {
-          prev = getBelt(world, x, y - 1)
-          next = getBelt(world, x + 1, y)
-        } else if (belt.velocity < 0) {
-          prev = getBelt(world, x + 1, y)
-          next = getBelt(world, x, y - 1)
-        }
-        break
-      }
-      case BeltDirection.enum.SouthWest: {
-        if (belt.velocity > 0) {
-          prev = getBelt(world, x - 1, y)
-          next = getBelt(world, x, y + 1)
-        } else if (belt.velocity < 0) {
-          prev = getBelt(world, x, y + 1)
-          next = getBelt(world, x - 1, y)
-        }
-        break
-      }
-      case BeltDirection.enum.SouthEast: {
-        if (belt.velocity > 0) {
-          prev = getBelt(world, x, y + 1)
-          next = getBelt(world, x + 1, y)
-        } else if (belt.velocity < 0) {
-          prev = getBelt(world, x + 1, y)
-          next = getBelt(world, x, y + 1)
-        }
-        break
-      }
-    }
-
-    belts.set(belt, { belt, prev, next })
-  }
-  return belts
 }
 
 function updateBeltPathItems(
