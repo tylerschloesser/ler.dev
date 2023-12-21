@@ -845,13 +845,53 @@ export function updateBeltPathsForRoots(
 
       const dx = second.position.x - first.position.x
       const dy = second.position.y - first.position.y
-
       invariant(dx === 0 || dy === 0)
-      invariant(
-        dx === 1 || dx === -1 || dy === 1 || dy === -1,
-      )
-      if (dx === -1 || dy === -1) {
-        invert = true
+
+      switch (first.direction) {
+        case BeltDirection.enum.EastWest: {
+          invariant(dx === 1 || dx === -1)
+          if (dx === -1) {
+            invert = true
+          }
+          break
+        }
+        case BeltDirection.enum.NorthSouth: {
+          invariant(dy === 1 || dy === -1)
+          if (dy === -1) {
+            invert = true
+          }
+          break
+        }
+        case BeltDirection.enum.NorthEast: {
+          invariant(dy === -1 || dx === 1)
+          if (dy === -1) {
+            invert = true
+          }
+          break
+        }
+        case BeltDirection.enum.NorthWest: {
+          invariant(dy === -1 || dx === -1)
+          if (dx === -1) {
+            invert = true
+          }
+          break
+        }
+        case BeltDirection.enum.SouthEast: {
+          invariant(dy === -1 || dx === 1)
+          if (dy === -1) {
+            invert = true
+          }
+          break
+        }
+        case BeltDirection.enum.SouthWest: {
+          invariant(dy === -1 || dx === -1)
+          if (dx === -1) {
+            invert = true
+          }
+          break
+        }
+        default:
+          invariant(false)
       }
     }
 

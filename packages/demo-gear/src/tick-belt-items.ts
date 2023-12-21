@@ -88,14 +88,22 @@ export function tickBeltItems(
         const belt = world.entities[beltId]
         invariant(belt?.type === EntityType.enum.Belt)
 
+        const config = path.config[belt.id]
+        invariant(config)
+
         if (!seen.has(belt)) {
           belt.items = []
           seen.add(belt)
         }
 
+        let position = item.position - beltIndex
+        if (config.invert) {
+          position = 1 - position
+        }
+
         belt.items.push({
           type: item.type,
-          position: item.position - beltIndex,
+          position,
         })
       }
     }

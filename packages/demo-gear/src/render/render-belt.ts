@@ -53,7 +53,6 @@ function renderBeltItem(
   render: RenderFn,
   belt: Belt,
   item: BeltItem,
-  invert: boolean,
 ): void {
   const border = 0.1
   const size = 0.8
@@ -65,12 +64,8 @@ function renderBeltItem(
     rotation = 90
   }
 
-  let x = item.position - size / 2
+  const x = item.position - size / 2
   const y = 0.5 - size / 2
-
-  if (invert) {
-    x = 1 - x
-  }
 
   render(
     x,
@@ -221,13 +216,8 @@ export function renderBelt(
     )
   }
 
-  const path = context.world.paths[belt.pathId]
-  invariant(path)
-  const config = path.config[belt.id]
-  invariant(config)
-
   for (const item of belt.items) {
-    renderBeltItem(render, belt, item, config.invert)
+    renderBeltItem(render, belt, item)
   }
 
   if (tint) {
