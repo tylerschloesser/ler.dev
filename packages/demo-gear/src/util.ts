@@ -8,6 +8,7 @@ import {
 } from './const.js'
 import {
   Belt,
+  BeltDirection,
   BeltEntity,
   BeltPath,
   BuildHand,
@@ -852,6 +853,21 @@ export function updateBeltPathsForRoots(
       if (dx === -1 || dy === -1) {
         invert = true
       }
+    }
+
+    for (const beltId of beltIds) {
+      const belt = getBelt(beltId)
+      switch (belt.direction) {
+        case BeltDirection.enum.NorthWest:
+        case BeltDirection.enum.SouthEast:
+          invert = !invert
+          break
+        // case BeltDirection.enum.EastWest:
+        // case BeltDirection.enum.NorthSouth:
+        // case BeltDirection.enum.SouthWest:
+        // case BeltDirection.enum.NorthEast:
+      }
+      config[belt.id] = { invert }
     }
 
     setPath({
