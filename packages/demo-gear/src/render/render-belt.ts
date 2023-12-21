@@ -1,3 +1,4 @@
+import { it } from '@jest/globals'
 import invariant from 'tiny-invariant'
 import {
   Belt,
@@ -59,13 +60,66 @@ function renderBeltItem(
 
   invariant(item.type === ItemType.enum.Fuel)
 
-  let rotation: Rotation = 0
-  if (belt.direction === BeltDirection.enum.NorthSouth) {
-    rotation = 90
-  }
+  const rotation: Rotation = 0
 
-  const x = item.position - size / 2
-  const y = 0.5 - size / 2
+  let x: number
+  let y: number
+
+  switch (belt.direction) {
+    case BeltDirection.enum.EastWest: {
+      x = item.position - size / 2
+      y = 0.5 - size / 2
+      break
+    }
+    case BeltDirection.enum.NorthSouth: {
+      x = 0.5 - size / 2
+      y = item.position - size / 2
+      break
+    }
+    case BeltDirection.enum.NorthEast: {
+      if (item.position < 0.5) {
+        x = 0.5 - size / 2
+        y = item.position - size / 2
+      } else {
+        x = item.position - size / 2
+        y = 0.5 - size / 2
+      }
+      break
+    }
+    case BeltDirection.enum.NorthWest: {
+      if (item.position < 0.5) {
+        x = item.position - size / 2
+        y = 0.5 - size / 2
+      } else {
+        x = 0.5 - size / 2
+        y = 1 - item.position - size / 2
+      }
+      break
+    }
+    case BeltDirection.enum.SouthEast: {
+      if (item.position < 0.5) {
+        x = 0.5 - size / 2
+        y = 1 - item.position - size / 2
+      } else {
+        x = item.position - size / 2
+        y = 0.5 - size / 2
+      }
+      break
+    }
+    case BeltDirection.enum.SouthWest: {
+      if (item.position < 0.5) {
+        x = item.position - size / 2
+        y = 0.5 - size / 2
+      } else {
+        x = 0.5 - size / 2
+        y = item.position - size / 2
+      }
+      break
+    }
+    default: {
+      invariant(false)
+    }
+  }
 
   render(
     x,
