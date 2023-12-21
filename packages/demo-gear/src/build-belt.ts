@@ -6,7 +6,6 @@ import {
   Belt,
   BeltDirection,
   BeltEntity,
-  BeltTurn,
   BuildHand,
   ConnectionType,
   Entity,
@@ -119,8 +118,6 @@ function addBelt(
     velocity: 0,
     mass,
     items: [],
-    rotation: 0,
-    turn: BeltTurn.enum.None,
     direction: BeltDirection.enum.EastWest,
   }
 

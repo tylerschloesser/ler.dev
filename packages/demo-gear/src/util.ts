@@ -712,28 +712,16 @@ export function toRadians(rotation: Rotation): number {
   return (rotation * PI) / 180
 }
 
-export function isHorizontal(belt: Belt): boolean
-export function isHorizontal(rotation: Rotation): boolean
-export function isHorizontal(v: Belt | Rotation) {
-  let rotation: number
-  if (typeof v === 'number') {
-    rotation = v
-  } else {
-    rotation = v.rotation
-  }
-  return rotation === 0 || rotation === 180
+export function isHorizontal(
+  direction: BeltDirection,
+): boolean {
+  return direction === BeltDirection.enum.EastWest
 }
 
-export function isVertical(belt: Belt): boolean
-export function isVertical(rotation: Rotation): boolean
-export function isVertical(v: Belt | Rotation) {
-  let rotation: number
-  if (typeof v === 'number') {
-    rotation = v
-  } else {
-    rotation = v.rotation
-  }
-  return rotation === 90 || rotation === 270
+export function isVertical(
+  direction: BeltDirection,
+): boolean {
+  return direction === BeltDirection.enum.NorthSouth
 }
 
 export function* iterateBeltPath(
@@ -837,7 +825,7 @@ export function updateBeltPathsForRoots(
       getBelt(beltId).pathId = pathId
     }
 
-    let invert = false
+    let initialInvert = false
     const [firstId, secondId] = beltIds
     if (firstId && secondId) {
       const first = getBelt(firstId)
@@ -851,42 +839,42 @@ export function updateBeltPathsForRoots(
         case BeltDirection.enum.EastWest: {
           invariant(dx === 1 || dx === -1)
           if (dx === -1) {
-            invert = true
+            initialInvert = true
           }
           break
         }
         case BeltDirection.enum.NorthSouth: {
           invariant(dy === 1 || dy === -1)
           if (dy === -1) {
-            invert = true
+            initialInvert = true
           }
           break
         }
         case BeltDirection.enum.NorthEast: {
           invariant(dy === -1 || dx === 1)
           if (dy === -1) {
-            invert = true
+            initialInvert = true
           }
           break
         }
         case BeltDirection.enum.NorthWest: {
           invariant(dy === -1 || dx === -1)
           if (dx === -1) {
-            invert = true
+            initialInvert = true
           }
           break
         }
         case BeltDirection.enum.SouthEast: {
-          invariant(dy === -1 || dx === 1)
-          if (dy === -1) {
-            invert = true
+          invariant(dy === 1 || dx === 1)
+          if (dy === 1) {
+            initialInvert = true
           }
           break
         }
         case BeltDirection.enum.SouthWest: {
-          invariant(dy === -1 || dx === -1)
+          invariant(dy === 1 || dx === -1)
           if (dx === -1) {
-            invert = true
+            initialInvert = true
           }
           break
         }
@@ -895,6 +883,7 @@ export function updateBeltPathsForRoots(
       }
     }
 
+    let invert = initialInvert
     for (const beltId of beltIds) {
       const belt = getBelt(beltId)
       switch (belt.direction) {
@@ -915,7 +904,7 @@ export function updateBeltPathsForRoots(
       beltIds,
       // TODO preserve items
       items: [],
-      invert,
+      invert: initialInvert,
       loop,
       config,
     })

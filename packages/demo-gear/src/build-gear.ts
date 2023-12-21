@@ -318,23 +318,23 @@ function getConnections(
           let multiplier: number | null = null
           switch (direction) {
             case Direction.N: {
-              if (isVertical(entity)) break
-              multiplier = entity.rotation === 0 ? 1 : -1
+              if (!isHorizontal(entity.direction)) break
+              multiplier = 1
               break
             }
             case Direction.S: {
-              if (isVertical(entity)) break
-              multiplier = entity.rotation === 0 ? -1 : 1
+              if (!isHorizontal(entity.direction)) break
+              multiplier = -1
               break
             }
             case Direction.E: {
-              if (isHorizontal(entity)) break
-              multiplier = entity.rotation === 90 ? 1 : -1
+              if (!isVertical(entity.direction)) break
+              multiplier = 1
               break
             }
             case Direction.W: {
-              if (isHorizontal(entity)) break
-              multiplier = entity.rotation === 90 ? -1 : 1
+              if (!isVertical(entity.direction)) break
+              multiplier = -1
               break
             }
           }

@@ -186,8 +186,6 @@ export const BeltEntity = EntityBase.extend({
   type: z.literal(EntityType.enum.Belt),
   offset: z.number(),
   items: z.array(BeltItem),
-  rotation: Rotation,
-  turn: BeltTurn,
   direction: BeltDirection,
   pathId: BeltPathId,
 })
