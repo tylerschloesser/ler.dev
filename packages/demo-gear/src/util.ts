@@ -6,6 +6,7 @@ import {
   MIN_ZOOM,
   PI,
 } from './const.js'
+import { updateBeltPathItems } from './tick-belt-items.js'
 import {
   Belt,
   BeltDirection,
@@ -940,14 +941,17 @@ export function updateBeltPathsForRoots(
       }
     }
 
-    setPath({
+    const path: BeltPath = {
       id: pathId,
       beltIds,
-      // TODO preserve items
       items: [],
       invert: initialInvert,
       loop,
       config,
-    })
+    }
+
+    updateBeltPathItems(getBelt, path)
+
+    setPath(path)
   }
 }

@@ -4,6 +4,7 @@ import {
   Belt,
   BeltEntity,
   BeltPath,
+  EntityId,
   EntityType,
   ItemType,
   World,
@@ -110,8 +111,8 @@ export function tickBeltItems(
   }
 }
 
-function updateBeltPathItems(
-  world: World,
+export function updateBeltPathItems(
+  getBelt: (id: EntityId) => Belt,
   path: BeltPath,
 ): void {
   path.items = []
@@ -119,8 +120,7 @@ function updateBeltPathItems(
   for (let i = 0; i < path.beltIds.length; i++) {
     const beltId = path.beltIds.at(i)
     invariant(beltId)
-    const belt = world.entities[beltId]
-    invariant(belt?.type === EntityType.enum.Belt)
+    const belt = getBelt(beltId)
 
     for (const item of belt.items) {
       path.items.push({
@@ -155,5 +155,11 @@ export function addResourceToBelt(
   const path = world.paths[belt.pathId]
   invariant(path)
 
-  updateBeltPathItems(world, path)
+  const getBelt = (id: EntityId) => {
+    const belt = world.entities[id]
+    invariant(belt?.type === EntityType.enum.Belt)
+    return belt
+  }
+
+  updateBeltPathItems(getBelt, path)
 }
