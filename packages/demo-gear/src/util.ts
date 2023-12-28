@@ -769,7 +769,6 @@ export function updateBeltPathsForRoots(
   const seen = new Set<Belt>()
 
   for (const root of roots) {
-    if (root.type !== EntityType.enum.Belt) continue
     if (seen.has(root)) continue
     seen.add(root)
 
