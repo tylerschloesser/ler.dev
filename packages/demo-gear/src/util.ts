@@ -414,36 +414,43 @@ export function getExternalNetworks(
     seen.add(current.entity)
 
     for (const connection of current.entity.connections) {
-      let entity = worldEntities[connection.entityId]
       const multiplier =
         connection.multiplier * current.multiplier
       invariant(multiplier !== 0)
+
+      // first check build entities, in case we're replacing an
+      // existing entity, the existing entity should be ignored.
+      // note this wouldn't make sense if we replaced all entities...
+      //
+      let entity = buildEntities[connection.entityId]
       if (entity) {
-        const entry = result[entity.networkId]
-        if (!entry) {
-          result[entity.networkId] = {
-            externalEntity: entity,
-            internalEntity: current.entity,
-            incomingVelocity: entity.velocity,
-            multiplier: 1 / multiplier,
-          }
+        if (!seen.has(entity)) {
+          stack.push({ entity, multiplier })
         } else {
-          // incoming velocities should be the same for all
-          // entities on the same network
-          invariant(
-            Math.abs(
-              entry.incomingVelocity * entry.multiplier -
-                entity.velocity * (1 / multiplier),
-            ) < Number.EPSILON,
-          )
+          // do nothing
         }
         continue
       }
 
-      entity = buildEntities[connection.entityId]
+      entity = worldEntities[connection.entityId]
       invariant(entity)
-      if (!seen.has(entity)) {
-        stack.push({ entity, multiplier })
+      const entry = result[entity.networkId]
+      if (!entry) {
+        result[entity.networkId] = {
+          externalEntity: entity,
+          internalEntity: current.entity,
+          incomingVelocity: entity.velocity,
+          multiplier: 1 / multiplier,
+        }
+      } else {
+        // incoming velocities should be the same for all
+        // entities on the same network
+        invariant(
+          Math.abs(
+            entry.incomingVelocity * entry.multiplier -
+              entity.velocity * (1 / multiplier),
+          ) < Number.EPSILON,
+        )
       }
     }
   }
