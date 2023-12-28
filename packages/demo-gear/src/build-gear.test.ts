@@ -10,6 +10,7 @@ describe('build-gear', () => {
         entities: {},
         networks: {},
         tiles: {},
+        paths: {},
         version: 1,
       }
       const center: SimpleVec2 = {

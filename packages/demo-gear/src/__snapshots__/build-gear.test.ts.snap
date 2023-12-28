@@ -80,6 +80,7 @@ exports[`build-gear getBuildHand base 2`] = `
       "rootId": "-1.-1",
     },
   },
+  "paths": {},
   "tiles": {
     "-1.-1": {
       "entityId": "-1.-1",
