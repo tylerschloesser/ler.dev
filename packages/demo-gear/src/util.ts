@@ -884,19 +884,61 @@ export function updateBeltPathsForRoots(
     }
 
     let invert = initialInvert
-    for (const beltId of beltIds) {
+
+    for (let i = 0; i < beltIds.length; i++) {
+      const beltId = beltIds.at(i)
+      invariant(beltId)
       const belt = getBelt(beltId)
       switch (belt.direction) {
-        case BeltDirection.enum.NorthWest:
-        case BeltDirection.enum.SouthEast:
-          invert = !invert
+        case BeltDirection.enum.NorthWest: {
+          invariant(i !== 0)
+          const prevId = beltIds.at(i - 1)
+          invariant(prevId)
+          const prev = getBelt(prevId)
+
+          const dx = belt.position.x - prev.position.x
+          const dy = belt.position.y - prev.position.y
+          invariant(
+            (dx === 1 && dy === 0) ||
+              (dx === 0 && dy === 1),
+          )
+
+          if (dx === 1) {
+            config[belt.id] = { invert }
+            invert = !invert
+          } else {
+            invert = !invert
+            config[belt.id] = { invert }
+          }
           break
-        // case BeltDirection.enum.EastWest:
-        // case BeltDirection.enum.NorthSouth:
-        // case BeltDirection.enum.SouthWest:
-        // case BeltDirection.enum.NorthEast:
+        }
+        case BeltDirection.enum.SouthEast: {
+          invariant(i !== 0)
+          const prevId = beltIds.at(i - 1)
+          invariant(prevId)
+          const prev = getBelt(prevId)
+
+          const dx = belt.position.x - prev.position.x
+          const dy = belt.position.y - prev.position.y
+          invariant(
+            (dx === -1 && dy === 0) ||
+              (dx === 0 && dy === -1),
+          )
+
+          if (dx === -1) {
+            config[belt.id] = { invert }
+            invert = !invert
+          } else {
+            invert = !invert
+            config[belt.id] = { invert }
+          }
+          break
+        }
+        default: {
+          config[belt.id] = { invert }
+          break
+        }
       }
-      config[belt.id] = { invert }
     }
 
     setPath({
