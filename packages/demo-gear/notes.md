@@ -1,6 +1,6 @@
 ## TODO
 
-- Add belt connections while building gears
+- Don't delete items when adding belts
 
 ### High
 
