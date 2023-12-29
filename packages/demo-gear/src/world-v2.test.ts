@@ -100,6 +100,16 @@ describe('world-v2', () => {
       expect(world).toMatchSnapshot()
     })
 
+    test('add two connected vertical belts', () => {
+      const world = initWorld()
+      const entities = newBelts([
+        [0, 0],
+        [0, 1],
+      ])
+      expect(tryAddEntities(world, entities)).toBeNull()
+      expect(world).toMatchSnapshot()
+    })
+
     test('more than two adjacent belts error', () => {
       const world = initWorld()
       const entities = newBelts([
