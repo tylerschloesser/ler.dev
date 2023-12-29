@@ -133,7 +133,7 @@ function* iterateBeltPath(
       yield {
         left: {
           type: AddEntityErrorType.BeltHasMoreThanTwoAdjacentBelts,
-          entityId: next.id,
+          position: next.position,
         },
         right: null,
       }

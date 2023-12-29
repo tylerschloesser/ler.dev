@@ -1,5 +1,4 @@
 import * as z from 'zod'
-import { EntityId } from './types-entity.js'
 
 export const vec2 = z.tuple([z.number(), z.number()])
 export type Vec2 = z.infer<typeof vec2>
@@ -10,12 +9,19 @@ export type Either<L, R> =
 
 export enum AddEntityErrorType {
   BeltHasMoreThanTwoAdjacentBelts = 'belt-has-more-than-two-adjacent-belts',
+  BeltOverlapsNonBelt = 'belt-overlaps-non-belt',
 }
 
 export interface BeltHasMoreThanTwoAdjacentBeltsAddEntityError {
   type: AddEntityErrorType.BeltHasMoreThanTwoAdjacentBelts
-  entityId: EntityId
+  position: Vec2
+}
+
+export interface BeltOverlapsNonBeltAddEntityError {
+  type: AddEntityErrorType.BeltOverlapsNonBelt
+  position: Vec2
 }
 
 export type AddEntityError =
-  BeltHasMoreThanTwoAdjacentBeltsAddEntityError
+  | BeltHasMoreThanTwoAdjacentBeltsAddEntityError
+  | BeltOverlapsNonBeltAddEntityError
