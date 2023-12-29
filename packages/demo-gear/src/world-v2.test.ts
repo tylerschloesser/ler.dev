@@ -90,7 +90,7 @@ describe('world-v2', () => {
       expect(world).toMatchSnapshot()
     })
 
-    test('add two connected belts', () => {
+    test('add two connected horizontal belts', () => {
       const world = initWorld()
       const entities = newBelts([
         [0, 0],

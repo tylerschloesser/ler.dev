@@ -59,7 +59,7 @@ exports[`world-v2 tryAddEntities add belt 1`] = `
 }
 `;
 
-exports[`world-v2 tryAddEntities add two connected belts 1`] = `
+exports[`world-v2 tryAddEntities add two connected horizontal belts 1`] = `
 {
   "derived": {
     "beltPaths": [
