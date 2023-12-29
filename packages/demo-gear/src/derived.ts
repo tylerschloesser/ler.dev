@@ -3,6 +3,7 @@ import {
   BeltPath,
   BeltPathEntity,
   Derived,
+  beltDirection,
 } from './types-derived.js'
 import {
   BeltEntity,
@@ -60,12 +61,42 @@ export function initBeltPaths(
   return beltPaths
 }
 
+function getAdjacentBelt(
+  origin: Origin,
+  tiles: Tiles,
+  root: BeltEntity,
+  dx: number,
+  dy: number,
+): BeltEntity | null {
+  const [x, y] = root.position
+  const tileId = `${x + dx}.${y + dy}`
+  const tile = tiles[tileId]
+  if (!tile?.entityIds) return null
+  invariant(tile.entityIds.length > 0)
+
+  let belt: BeltEntity | null = null
+  for (const entityId of tile.entityIds) {
+    const entity = origin.entities[entityId]
+    invariant(entity)
+    if (entity.type !== entityType.enum.Belt) continue
+    // there should be only one belt on a tile
+    invariant(belt === null)
+    belt = entity
+  }
+  return belt
+}
+
 function getAdjacentBelts(
   origin: Origin,
   tiles: Tiles,
   root: BeltEntity,
 ): BeltEntity[] {
-  return []
+  return [
+    getAdjacentBelt(origin, tiles, root, 1, 0),
+    getAdjacentBelt(origin, tiles, root, -1, 0),
+    getAdjacentBelt(origin, tiles, root, 0, 1),
+    getAdjacentBelt(origin, tiles, root, 0, -1),
+  ].filter((b): b is BeltEntity => b !== null)
 }
 
 function* iterateBeltPath(
@@ -138,6 +169,25 @@ function getBeltPath(
   }
 
   const entities = new Array<BeltPathEntity>()
+
+  for (let i = 0; i < belts.length; i++) {
+    const belt = belts[i]
+    invariant(belt)
+    const prev =
+      i === 0
+        ? loop
+          ? belts.at(-1)
+          : null
+        : belts.at(i - 1)
+    const next = belts.at(i + 1)
+
+    entities.push({
+      id: belt.id,
+      direction: beltDirection.enum.WestEast,
+      invert: false,
+    })
+  }
+
   return { entities, loop }
 }
 
