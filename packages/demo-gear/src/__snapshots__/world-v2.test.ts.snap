@@ -1332,7 +1332,10 @@ exports[`world-v2 tryAddEntities add west-north belt 1`] = `
 exports[`world-v2 tryAddEntities more than two adjacent belts error 1`] = `
 {
   "left": {
-    "entityId": "1",
+    "position": [
+      1,
+      0,
+    ],
     "type": "belt-has-more-than-two-adjacent-belts",
   },
   "right": null,

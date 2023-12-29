@@ -43,7 +43,7 @@ export function initTiles(origin: Origin): Tiles {
 export function initBeltPaths(
   origin: Origin,
   tiles: Tiles,
-): Either<AddEntityError, BeltPath[]> {
+): Either<AddEntityError[], BeltPath[]> {
   const beltPaths: BeltPath[] = []
 
   const seen = new Set<EntityId>()
@@ -116,7 +116,7 @@ function* iterateBeltPath(
   seen: Set<BeltEntity>,
   root: BeltEntity,
   next: BeltEntity | undefined,
-): Generator<Either<AddEntityError, BeltEntity>> {
+): Generator<Either<AddEntityError[], BeltEntity>> {
   let prev = root
   while (next) {
     yield { left: null, right: next }
@@ -131,10 +131,12 @@ function* iterateBeltPath(
     const adjacent = getAdjacentBelts(origin, tiles, next)
     if (adjacent.length > 2) {
       yield {
-        left: {
-          type: AddEntityErrorType.BeltHasMoreThanTwoAdjacentBelts,
-          position: next.position,
-        },
+        left: [
+          {
+            type: AddEntityErrorType.BeltHasMoreThanTwoAdjacentBelts,
+            position: next.position,
+          },
+        ],
         right: null,
       }
     }
@@ -156,7 +158,7 @@ function getBeltPath(
   origin: Origin,
   tiles: Tiles,
   root: BeltEntity,
-): Either<AddEntityError, BeltPath> {
+): Either<AddEntityError[], BeltPath> {
   let loop = false
   const belts = new Array<BeltEntity>(root)
   const seen = new Set<BeltEntity>([root])

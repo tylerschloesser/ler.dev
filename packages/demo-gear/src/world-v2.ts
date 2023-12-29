@@ -24,7 +24,7 @@ export function initWorld(): World {
 export function tryAddEntities(
   world: World,
   entities: Entity[],
-): Either<AddEntityError, World> {
+): Either<AddEntityError[], World> {
   if (entities.length === 0) {
     return { left: null, right: world }
   }
@@ -88,7 +88,7 @@ function initOrigin(): Origin {
 
 function initDerived(
   origin: Origin,
-): Either<AddEntityError, Derived> {
+): Either<AddEntityError[], Derived> {
   const tiles = initTiles(origin)
   const beltPaths = initBeltPaths(origin, tiles)
   if (beltPaths.left) {
