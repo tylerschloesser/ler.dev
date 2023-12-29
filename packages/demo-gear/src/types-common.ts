@@ -4,7 +4,7 @@ import { TileId } from './types.js'
 export const vec2 = z.tuple([z.number(), z.number()])
 export type Vec2 = z.infer<typeof vec2>
 
-export const layerId = z.enum(['Layer1', 'Layer2'])
+export const layerId = z.enum(['Layer1', 'Layer2', 'Both'])
 export type LayerId = z.infer<typeof layerId>
 
 export type Either<L, R> =

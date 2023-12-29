@@ -4,12 +4,14 @@ import {
   AddEntityErrorType,
   E,
   Either,
+  layerId,
 } from './types-common.js'
 import {
   BeltDirection,
   BeltPath,
   BeltPathEntity,
   Derived,
+  Layer,
   beltDirection,
 } from './types-derived.js'
 import {
@@ -20,24 +22,43 @@ import {
 } from './types-entity.js'
 import { Origin } from './types-origin.js'
 
-type Tiles = Derived['tiles']
+type Layers = Derived['layers']
 
-export function initTiles(
+function getLayerIds(
+  belt: Entity,
+): (
+  | typeof layerId.enum.Layer1
+  | typeof layerId.enum.Layer2
+)[] {
+  if (belt.layerId === layerId.enum.Both) {
+    return [layerId.enum.Layer1, layerId.enum.Layer2]
+  } else {
+    return [belt.layerId]
+  }
+}
+
+export function initLayers(
   origin: Origin,
-): Either<AddEntityError[], Tiles> {
+): Either<AddEntityError[], Layers> {
   const errors: AddEntityError[] = []
-  const tiles: Tiles = {}
+  const layers: Layers = {
+    [layerId.enum.Layer1]: {},
+    [layerId.enum.Layer2]: {},
+  }
 
   for (const entity of Object.values(origin.entities)) {
+    const layerIds = getLayerIds(entity)
     for (const tileId of iterateTilesIds(entity)) {
-      const tile = tiles[tileId]
-      if (tile) {
-        errors.push({
-          type: AddEntityErrorType.OccupiedTile,
-          tileId,
-        })
-      } else {
-        tiles[tileId] = { entityId: entity.id }
+      for (const layerId of layerIds) {
+        const tile = layers[layerId][tileId]
+        if (tile) {
+          errors.push({
+            type: AddEntityErrorType.OccupiedTile,
+            tileId,
+          })
+        } else {
+          layers[layerId][tileId] = { entityId: entity.id }
+        }
       }
     }
   }
@@ -45,12 +66,12 @@ export function initTiles(
   if (errors.length) {
     return E.left(errors)
   }
-  return E.right(tiles)
+  return E.right(layers)
 }
 
 export function initBeltPaths(
   origin: Origin,
-  tiles: Tiles,
+  layers: Layers,
 ): Either<AddEntityError[], BeltPath[]> {
   const beltPaths: BeltPath[] = []
 
@@ -63,7 +84,7 @@ export function initBeltPaths(
       continue
     }
 
-    const beltPath = getBeltPath(origin, tiles, root)
+    const beltPath = getBeltPath(origin, layers, root)
     if (beltPath.left) {
       return beltPath
     }
@@ -82,14 +103,14 @@ export function initBeltPaths(
 
 function getAdjacentBelt(
   origin: Origin,
-  tiles: Tiles,
+  layer: Layer,
   root: BeltEntity,
   dx: number,
   dy: number,
 ): BeltEntity | null {
   const [x, y] = root.position
   const tileId = `${x + dx}.${y + dy}`
-  const tile = tiles[tileId]
+  const tile = layer[tileId]
   if (!tile?.entityId) return null
   const belt = origin.entities[tile.entityId]
   if (belt?.type === entityType.enum.Belt) {
@@ -100,20 +121,26 @@ function getAdjacentBelt(
 
 function getAdjacentBelts(
   origin: Origin,
-  tiles: Tiles,
+  layers: Layers,
   root: BeltEntity,
 ): BeltEntity[] {
-  return [
-    getAdjacentBelt(origin, tiles, root, 1, 0),
-    getAdjacentBelt(origin, tiles, root, 0, 1),
-    getAdjacentBelt(origin, tiles, root, -1, 0),
-    getAdjacentBelt(origin, tiles, root, 0, -1),
-  ].filter((b): b is BeltEntity => b !== null)
+  const adjacent: (BeltEntity | null)[] = []
+  for (const layerId of getLayerIds(root)) {
+    const layer = layers[layerId]
+    adjacent.push(
+      getAdjacentBelt(origin, layer, root, 1, 0),
+      getAdjacentBelt(origin, layer, root, 0, 1),
+      getAdjacentBelt(origin, layer, root, -1, 0),
+      getAdjacentBelt(origin, layer, root, 0, -1),
+    )
+  }
+
+  return adjacent.filter((b): b is BeltEntity => b !== null)
 }
 
 function* iterateBeltPath(
   origin: Origin,
-  tiles: Tiles,
+  layers: Layers,
   seen: Set<BeltEntity>,
   root: BeltEntity,
   next: BeltEntity | undefined,
@@ -129,7 +156,7 @@ function* iterateBeltPath(
     }
     seen.add(next)
 
-    const adjacent = getAdjacentBelts(origin, tiles, next)
+    const adjacent = getAdjacentBelts(origin, layers, next)
     if (adjacent.length > 2) {
       yield E.left([
         {
@@ -154,19 +181,19 @@ function* iterateBeltPath(
 
 function getBeltPath(
   origin: Origin,
-  tiles: Tiles,
+  layers: Layers,
   root: BeltEntity,
 ): Either<AddEntityError[], BeltPath> {
   let loop = false
   const belts = new Array<BeltEntity>(root)
   const seen = new Set<BeltEntity>([root])
 
-  const adjacent = getAdjacentBelts(origin, tiles, root)
+  const adjacent = getAdjacentBelts(origin, layers, root)
   invariant(adjacent.length <= 2)
 
   for (const next of iterateBeltPath(
     origin,
-    tiles,
+    layers,
     seen,
     root,
     adjacent[0],
@@ -184,7 +211,7 @@ function getBeltPath(
   if (!loop) {
     for (const prev of iterateBeltPath(
       origin,
-      tiles,
+      layers,
       seen,
       root,
       adjacent[1],

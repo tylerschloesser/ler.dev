@@ -1,16 +1,18 @@
 import { cloneDeep } from 'lodash-es'
 import invariant from 'tiny-invariant'
-import { initBeltPaths, initTiles } from './derived.js'
+import { initBeltPaths, initLayers } from './derived.js'
 import {
   AddEntityError,
   E,
   Either,
   Vec2,
+  layerId,
 } from './types-common.js'
 import { Derived } from './types-derived.js'
 import {
   BuildEntity,
   Entity,
+  EntityId,
   entityType,
 } from './types-entity.js'
 import { Origin } from './types-origin.js'
@@ -82,15 +84,32 @@ function getExistingEntity(
   world: World,
   entity: BuildEntity,
 ): Entity | null {
+  const { layers } = world.derived
   switch (entity.type) {
     case entityType.enum.Belt: {
       const [x, y] = entity.position
       const tileId = `${x}.${y}`
-      const tile = world.derived.tiles[tileId]
-      if (!tile?.entityId) {
+      let entityId: EntityId | undefined
+      switch (entity.layerId) {
+        case layerId.enum.Layer1:
+        case layerId.enum.Layer2:
+          entityId =
+            layers[entity.layerId][tileId]?.entityId
+          break
+        case layerId.enum.Both: {
+          entityId =
+            layers[layerId.enum.Layer1][tileId]?.entityId
+          invariant(
+            entityId ===
+              layers[layerId.enum.Layer2][tileId]?.entityId,
+          )
+          break
+        }
+      }
+      if (!entityId) {
         return null
       }
-      const existing = world.origin.entities[tile.entityId]
+      const existing = world.origin.entities[entityId]
       invariant(existing)
       if (existing.type === entityType.enum.Belt) {
         return existing
@@ -117,7 +136,7 @@ function initOrigin(): Origin {
 function initDerived(
   origin: Origin,
 ): Either<AddEntityError[], Derived> {
-  const tiles = initTiles(origin)
+  const tiles = initLayers(origin)
   if (tiles.left) {
     return tiles
   }
@@ -128,7 +147,7 @@ function initDerived(
   invariant(beltPaths.right)
   return E.right({
     beltPaths: beltPaths.right,
-    tiles: tiles.right,
+    layers: tiles.right,
   })
 }
 

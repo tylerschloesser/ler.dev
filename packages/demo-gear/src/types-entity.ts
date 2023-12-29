@@ -1,7 +1,11 @@
 import * as z from 'zod'
 import { layerId, vec2 } from './types-common.js'
 
-export const entityType = z.enum(['Gear', 'Belt'])
+export const entityType = z.enum([
+  'Gear',
+  'Belt',
+  'InterLayerBelt',
+])
 export type EntityType = z.infer<typeof entityType>
 
 export const entityId = z.string()
@@ -9,7 +13,6 @@ export type EntityId = z.infer<typeof entityId>
 
 export const baseEntity = z.strictObject({
   id: entityId,
-  layerId,
   position: vec2,
   size: vec2,
 })
@@ -20,6 +23,7 @@ export const baseEntity = z.strictObject({
 
 export const gearEntity = baseEntity.extend({
   type: z.literal(entityType.enum.Gear),
+  layerId,
 
   chains: z.array(entityId),
   velocity: z.number(),
@@ -43,6 +47,7 @@ export type BeltItem = z.infer<typeof beltItem>
 
 export const beltEntity = baseEntity.extend({
   type: z.literal(entityType.enum.Belt),
+  layerId,
 
   items: z.array(beltItem),
   velocity: z.number(),

@@ -1,4 +1,5 @@
 import * as z from 'zod'
+import { layerId } from './types-common.js'
 import { entityId } from './types-entity.js'
 
 //
@@ -41,8 +42,14 @@ export const beltPath = z.strictObject({
 })
 export type BeltPath = z.infer<typeof beltPath>
 
+export const layer = z.record(tileId, tile)
+export type Layer = z.infer<typeof layer>
+
 export const derived = z.strictObject({
-  tiles: z.record(tileId, tile),
+  layers: z.strictObject({
+    [layerId.enum.Layer1]: layer,
+    [layerId.enum.Layer2]: layer,
+  }),
   beltPaths: z.array(beltPath),
 })
 export type Derived = z.infer<typeof derived>
