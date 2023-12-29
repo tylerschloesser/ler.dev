@@ -1,5 +1,5 @@
 import * as z from 'zod'
-import { entityId } from './types-world.js'
+import { entityId } from './types-entity.js'
 
 //
 // Tile
@@ -45,3 +45,4 @@ export const derived = z.strictObject({
   beltPaths: z.array(beltPath),
   nextEntityId: z.number(),
 })
+export type Derived = z.infer<typeof derived>
