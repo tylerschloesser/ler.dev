@@ -1,15 +1,12 @@
 import { describe, expect, test } from '@jest/globals'
 import { vec2 } from 'gl-matrix'
+import { cloneDeep } from 'lodash-es'
 import invariant from 'tiny-invariant'
+import { Vec2 } from './types-common.js'
 import {
-  DerivedError,
-  DerivedErrorType,
-  Vec2,
-} from './types-common.js'
-import {
+  BeltEntity,
   Entity,
   entityType,
-  BeltEntity,
 } from './types-entity.js'
 import { initWorld, tryAddEntities } from './world-v2.js'
 
@@ -55,29 +52,30 @@ describe('world-v2', () => {
   describe('tryAddEntities', () => {
     test('empty', () => {
       const world = initWorld()
-      const { origin, derived } = world
+      const expected = cloneDeep(world)
       const entities: Entity[] = []
-      expect(tryAddEntities(world, entities)).toBeNull()
-
-      expect(origin).toBe(world.origin)
-      expect(derived).not.toBe(world.derived)
-
-      expect(world).toMatchSnapshot()
+      const actual = tryAddEntities(world, entities)
+      expect(actual.right).toBe(world)
+      expect(actual.right).toEqual(expected)
     })
 
     test('add belt', () => {
       const world = initWorld()
       const entities: Entity[] = [newBelt()]
-      expect(tryAddEntities(world, entities)).toBeNull()
-      expect(world).toMatchSnapshot()
+      expect(
+        tryAddEntities(world, entities),
+      ).toMatchSnapshot()
     })
 
     test('replace belt', () => {
       const world = initWorld()
       const entities: Entity[] = [newBelt()]
-      expect(tryAddEntities(world, entities)).toBeNull()
-      expect(tryAddEntities(world, entities)).toBeNull()
-      expect(world).toMatchSnapshot()
+      expect(
+        tryAddEntities(world, entities),
+      ).toMatchSnapshot()
+      expect(
+        tryAddEntities(world, entities),
+      ).toMatchSnapshot()
     })
 
     test('add two disconnected belts', () => {
@@ -86,8 +84,9 @@ describe('world-v2', () => {
         [0, 0],
         [2, 0],
       ])
-      expect(tryAddEntities(world, entities)).toBeNull()
-      expect(world).toMatchSnapshot()
+      expect(
+        tryAddEntities(world, entities),
+      ).toMatchSnapshot()
     })
 
     // prettier-ignore
@@ -110,8 +109,9 @@ describe('world-v2', () => {
       test(`add ${testCase[0]} belt`, () => {
         const world = initWorld()
         const entities = newBelts(testCase[1])
-        expect(tryAddEntities(world, entities)).toBeNull()
-        expect(world).toMatchSnapshot()
+        expect(
+          tryAddEntities(world, entities),
+        ).toMatchSnapshot()
       })
     }
 
@@ -123,14 +123,9 @@ describe('world-v2', () => {
         [2, 0],
         [1, 1],
       ])
-      const expected: DerivedError = {
-        type: DerivedErrorType.BeltHasMoreThanTwoAdjacentBelts,
-        entityId: '1',
-      }
-      expect(tryAddEntities(world, entities)).toEqual(
-        expected,
-      )
-      expect(world).toMatchSnapshot()
+      expect(
+        tryAddEntities(world, entities),
+      ).toMatchSnapshot()
     })
   })
 })

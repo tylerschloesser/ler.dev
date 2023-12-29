@@ -1,3 +1,4 @@
+import { cloneDeep } from 'lodash-es'
 import invariant from 'tiny-invariant'
 import { initBeltPaths, initTiles } from './derived.js'
 import {
@@ -23,10 +24,14 @@ export function initWorld(): World {
 export function tryAddEntities(
   world: World,
   entities: Entity[],
-): DerivedError | null {
+): Either<DerivedError, World> {
+  if (entities.length === 0) {
+    return { left: null, right: world }
+  }
+
   validateEntitiesToAdd(entities)
 
-  const { origin } = world
+  const origin = cloneDeep(world.origin)
 
   for (const entity of entities) {
     if (origin.entities[entity.id]) {
@@ -38,12 +43,17 @@ export function tryAddEntities(
 
   const derived = initDerived(origin)
   if (derived.left) {
-    return derived.left
+    return derived
   }
   invariant(derived.right)
-  world.derived = derived.right
 
-  return null
+  return {
+    left: null,
+    right: {
+      origin,
+      derived: derived.right,
+    },
+  }
 }
 
 function validateEntitiesToAdd(entities: Entity[]): void {
