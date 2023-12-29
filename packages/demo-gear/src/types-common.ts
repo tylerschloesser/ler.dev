@@ -8,14 +8,14 @@ export type Either<L, R> =
   | { left: L; right: null }
   | { left: null; right: R }
 
-export enum DerivedErrorType {
+export enum AddEntityErrorType {
   BeltHasMoreThanTwoAdjacentBelts = 'belt-has-more-than-two-adjacent-belts',
 }
 
-export interface BeltHasMoreThanTwoAdjacentBeltsDerivedError {
-  type: DerivedErrorType.BeltHasMoreThanTwoAdjacentBelts
+export interface BeltHasMoreThanTwoAdjacentBeltsAddEntityError {
+  type: AddEntityErrorType.BeltHasMoreThanTwoAdjacentBelts
   entityId: EntityId
 }
 
-export type DerivedError =
-  BeltHasMoreThanTwoAdjacentBeltsDerivedError
+export type AddEntityError =
+  BeltHasMoreThanTwoAdjacentBeltsAddEntityError

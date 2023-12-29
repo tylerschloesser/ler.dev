@@ -1329,19 +1329,6 @@ exports[`world-v2 tryAddEntities add west-north belt 1`] = `
 }
 `;
 
-exports[`world-v2 tryAddEntities empty 1`] = `
-{
-  "derived": {
-    "beltPaths": [],
-    "nextEntityId": 0,
-    "tiles": {},
-  },
-  "origin": {
-    "entities": {},
-  },
-}
-`;
-
 exports[`world-v2 tryAddEntities more than two adjacent belts error 1`] = `
 {
   "left": {

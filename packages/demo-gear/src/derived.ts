@@ -1,8 +1,7 @@
-import { invert } from 'lodash-es'
 import invariant from 'tiny-invariant'
 import {
-  DerivedError,
-  DerivedErrorType,
+  AddEntityError,
+  AddEntityErrorType,
   Either,
 } from './types-common.js'
 import {
@@ -44,7 +43,7 @@ export function initTiles(origin: Origin): Tiles {
 export function initBeltPaths(
   origin: Origin,
   tiles: Tiles,
-): Either<DerivedError, BeltPath[]> {
+): Either<AddEntityError, BeltPath[]> {
   const beltPaths: BeltPath[] = []
 
   const seen = new Set<EntityId>()
@@ -117,7 +116,7 @@ function* iterateBeltPath(
   seen: Set<BeltEntity>,
   root: BeltEntity,
   next: BeltEntity | undefined,
-): Generator<Either<DerivedError, BeltEntity>> {
+): Generator<Either<AddEntityError, BeltEntity>> {
   let prev = root
   while (next) {
     yield { left: null, right: next }
@@ -133,7 +132,7 @@ function* iterateBeltPath(
     if (adjacent.length > 2) {
       yield {
         left: {
-          type: DerivedErrorType.BeltHasMoreThanTwoAdjacentBelts,
+          type: AddEntityErrorType.BeltHasMoreThanTwoAdjacentBelts,
           entityId: next.id,
         },
         right: null,
@@ -157,7 +156,7 @@ function getBeltPath(
   origin: Origin,
   tiles: Tiles,
   root: BeltEntity,
-): Either<DerivedError, BeltPath> {
+): Either<AddEntityError, BeltPath> {
   let loop = false
   const belts = new Array<BeltEntity>(root)
   const seen = new Set<BeltEntity>([root])

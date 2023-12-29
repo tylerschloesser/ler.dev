@@ -2,7 +2,7 @@ import { cloneDeep } from 'lodash-es'
 import invariant from 'tiny-invariant'
 import { initBeltPaths, initTiles } from './derived.js'
 import {
-  DerivedError,
+  AddEntityError,
   Either,
   Vec2,
 } from './types-common.js'
@@ -24,7 +24,7 @@ export function initWorld(): World {
 export function tryAddEntities(
   world: World,
   entities: Entity[],
-): Either<DerivedError, World> {
+): Either<AddEntityError, World> {
   if (entities.length === 0) {
     return { left: null, right: world }
   }
@@ -88,7 +88,7 @@ function initOrigin(): Origin {
 
 function initDerived(
   origin: Origin,
-): Either<DerivedError, Derived> {
+): Either<AddEntityError, Derived> {
   const tiles = initTiles(origin)
   const beltPaths = initBeltPaths(origin, tiles)
   if (beltPaths.left) {
