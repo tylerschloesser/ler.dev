@@ -222,6 +222,7 @@ describe('world-v2', () => {
       expect(base).toMatchSnapshot()
       invariant(base.right)
 
+      // adding the same gear twice is a noop
       expect(tryAddEntities(base.right, entities)).toEqual(
         base,
       )
