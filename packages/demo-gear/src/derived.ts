@@ -2,7 +2,9 @@ import invariant from 'tiny-invariant'
 import {
   AddEntityError,
   AddEntityErrorType,
+  E,
   Either,
+  OccupiedTileAddEntityError,
 } from './types-common.js'
 import {
   BeltDirection,
@@ -21,23 +23,30 @@ import { Origin } from './types-origin.js'
 
 type Tiles = Derived['tiles']
 
-export function initTiles(origin: Origin): Tiles {
+export function initTiles(
+  origin: Origin,
+): Either<AddEntityError[], Tiles> {
+  const errors: AddEntityError[] = []
   const tiles: Tiles = {}
 
   for (const entity of Object.values(origin.entities)) {
     for (const tileId of iterateTilesIds(entity)) {
-      let tile = tiles[tileId]
-      if (!tile) {
-        tile = tiles[tileId] = {
-          entityIds: [],
-        }
+      const tile = tiles[tileId]
+      if (tile) {
+        errors.push({
+          type: AddEntityErrorType.OccupiedTile,
+          tileId,
+        })
+      } else {
+        tiles[tileId] = { entityId: entity.id }
       }
-      invariant(!tile.entityIds.includes(entity.id))
-      tile.entityIds.push(entity.id)
     }
   }
 
-  return tiles
+  if (errors.length) {
+    return E.left(errors)
+  }
+  return E.right(tiles)
 }
 
 export function initBeltPaths(
@@ -82,19 +91,12 @@ function getAdjacentBelt(
   const [x, y] = root.position
   const tileId = `${x + dx}.${y + dy}`
   const tile = tiles[tileId]
-  if (!tile?.entityIds) return null
-  invariant(tile.entityIds.length > 0)
-
-  let belt: BeltEntity | null = null
-  for (const entityId of tile.entityIds) {
-    const entity = origin.entities[entityId]
-    invariant(entity)
-    if (entity.type !== entityType.enum.Belt) continue
-    // there should be only one belt on a tile
-    invariant(belt === null)
-    belt = entity
+  if (!tile?.entityId) return null
+  const belt = origin.entities[tile.entityId]
+  if (belt?.type === entityType.enum.Belt) {
+    return belt
   }
-  return belt
+  return null
 }
 
 function getAdjacentBelts(

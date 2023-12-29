@@ -32,9 +32,7 @@ exports[`world-v2 tryAddEntities add belt 1`] = `
       ],
       "tiles": {
         "0.0": {
-          "entityIds": [
-            "0",
-          ],
+          "entityId": "0",
         },
       },
     },
@@ -101,29 +99,19 @@ exports[`world-v2 tryAddEntities add belt loop 1`] = `
       ],
       "tiles": {
         "0.0": {
-          "entityIds": [
-            "0",
-          ],
+          "entityId": "0",
         },
         "1.0": {
-          "entityIds": [
-            "1",
-          ],
+          "entityId": "1",
         },
         "2.0": {
-          "entityIds": [
-            "2",
-          ],
+          "entityId": "2",
         },
         "2.1": {
-          "entityIds": [
-            "3",
-          ],
+          "entityId": "3",
         },
         "2.2": {
-          "entityIds": [
-            "4",
-          ],
+          "entityId": "4",
         },
       },
     },
@@ -265,44 +253,28 @@ exports[`world-v2 tryAddEntities add belt loop 2`] = `
       ],
       "tiles": {
         "0.0": {
-          "entityIds": [
-            "0",
-          ],
+          "entityId": "0",
         },
         "0.1": {
-          "entityIds": [
-            "7",
-          ],
+          "entityId": "7",
         },
         "0.2": {
-          "entityIds": [
-            "6",
-          ],
+          "entityId": "6",
         },
         "1.0": {
-          "entityIds": [
-            "1",
-          ],
+          "entityId": "1",
         },
         "1.2": {
-          "entityIds": [
-            "5",
-          ],
+          "entityId": "5",
         },
         "2.0": {
-          "entityIds": [
-            "2",
-          ],
+          "entityId": "2",
         },
         "2.1": {
-          "entityIds": [
-            "3",
-          ],
+          "entityId": "3",
         },
         "2.2": {
-          "entityIds": [
-            "4",
-          ],
+          "entityId": "4",
         },
       },
     },
@@ -464,19 +436,13 @@ exports[`world-v2 tryAddEntities add east-south belt 1`] = `
       ],
       "tiles": {
         "-1.0": {
-          "entityIds": [
-            "1",
-          ],
+          "entityId": "1",
         },
         "-1.1": {
-          "entityIds": [
-            "2",
-          ],
+          "entityId": "2",
         },
         "0.0": {
-          "entityIds": [
-            "0",
-          ],
+          "entityId": "0",
         },
       },
     },
@@ -563,19 +529,13 @@ exports[`world-v2 tryAddEntities add inverted east-south belt 1`] = `
       ],
       "tiles": {
         "0.-1": {
-          "entityIds": [
-            "1",
-          ],
+          "entityId": "1",
         },
         "0.0": {
-          "entityIds": [
-            "0",
-          ],
+          "entityId": "0",
         },
         "1.-1": {
-          "entityIds": [
-            "2",
-          ],
+          "entityId": "2",
         },
       },
     },
@@ -662,19 +622,13 @@ exports[`world-v2 tryAddEntities add inverted north-east belt 1`] = `
       ],
       "tiles": {
         "-1.-1": {
-          "entityIds": [
-            "2",
-          ],
+          "entityId": "2",
         },
         "-1.0": {
-          "entityIds": [
-            "1",
-          ],
+          "entityId": "1",
         },
         "0.0": {
-          "entityIds": [
-            "0",
-          ],
+          "entityId": "0",
         },
       },
     },
@@ -761,19 +715,13 @@ exports[`world-v2 tryAddEntities add inverted north-south belt 1`] = `
       ],
       "tiles": {
         "0.0": {
-          "entityIds": [
-            "2",
-          ],
+          "entityId": "2",
         },
         "0.1": {
-          "entityIds": [
-            "1",
-          ],
+          "entityId": "1",
         },
         "0.2": {
-          "entityIds": [
-            "0",
-          ],
+          "entityId": "0",
         },
       },
     },
@@ -860,19 +808,13 @@ exports[`world-v2 tryAddEntities add inverted south-west belt 1`] = `
       ],
       "tiles": {
         "-1.-1": {
-          "entityIds": [
-            "2",
-          ],
+          "entityId": "2",
         },
         "0.-1": {
-          "entityIds": [
-            "1",
-          ],
+          "entityId": "1",
         },
         "0.0": {
-          "entityIds": [
-            "0",
-          ],
+          "entityId": "0",
         },
       },
     },
@@ -959,19 +901,13 @@ exports[`world-v2 tryAddEntities add inverted west-east belt 1`] = `
       ],
       "tiles": {
         "0.0": {
-          "entityIds": [
-            "2",
-          ],
+          "entityId": "2",
         },
         "1.0": {
-          "entityIds": [
-            "1",
-          ],
+          "entityId": "1",
         },
         "2.0": {
-          "entityIds": [
-            "0",
-          ],
+          "entityId": "0",
         },
       },
     },
@@ -1058,19 +994,13 @@ exports[`world-v2 tryAddEntities add inverted west-north belt 1`] = `
       ],
       "tiles": {
         "0.0": {
-          "entityIds": [
-            "2",
-          ],
+          "entityId": "2",
         },
         "1.-1": {
-          "entityIds": [
-            "0",
-          ],
+          "entityId": "0",
         },
         "1.0": {
-          "entityIds": [
-            "1",
-          ],
+          "entityId": "1",
         },
       },
     },
@@ -1157,19 +1087,13 @@ exports[`world-v2 tryAddEntities add north-east belt 1`] = `
       ],
       "tiles": {
         "0.0": {
-          "entityIds": [
-            "0",
-          ],
+          "entityId": "0",
         },
         "0.1": {
-          "entityIds": [
-            "1",
-          ],
+          "entityId": "1",
         },
         "1.1": {
-          "entityIds": [
-            "2",
-          ],
+          "entityId": "2",
         },
       },
     },
@@ -1256,19 +1180,13 @@ exports[`world-v2 tryAddEntities add north-south belt 1`] = `
       ],
       "tiles": {
         "0.0": {
-          "entityIds": [
-            "0",
-          ],
+          "entityId": "0",
         },
         "0.1": {
-          "entityIds": [
-            "1",
-          ],
+          "entityId": "1",
         },
         "0.2": {
-          "entityIds": [
-            "2",
-          ],
+          "entityId": "2",
         },
       },
     },
@@ -1355,19 +1273,13 @@ exports[`world-v2 tryAddEntities add south-west belt 1`] = `
       ],
       "tiles": {
         "0.0": {
-          "entityIds": [
-            "0",
-          ],
+          "entityId": "0",
         },
         "1.0": {
-          "entityIds": [
-            "1",
-          ],
+          "entityId": "1",
         },
         "1.1": {
-          "entityIds": [
-            "2",
-          ],
+          "entityId": "2",
         },
       },
     },
@@ -1454,14 +1366,10 @@ exports[`world-v2 tryAddEntities add two disconnected belts 1`] = `
       ],
       "tiles": {
         "0.0": {
-          "entityIds": [
-            "0",
-          ],
+          "entityId": "0",
         },
         "2.0": {
-          "entityIds": [
-            "1",
-          ],
+          "entityId": "1",
         },
       },
     },
@@ -1533,19 +1441,13 @@ exports[`world-v2 tryAddEntities add west-east belt 1`] = `
       ],
       "tiles": {
         "0.0": {
-          "entityIds": [
-            "0",
-          ],
+          "entityId": "0",
         },
         "1.0": {
-          "entityIds": [
-            "1",
-          ],
+          "entityId": "1",
         },
         "2.0": {
-          "entityIds": [
-            "2",
-          ],
+          "entityId": "2",
         },
       },
     },
@@ -1632,19 +1534,13 @@ exports[`world-v2 tryAddEntities add west-north belt 1`] = `
       ],
       "tiles": {
         "0.0": {
-          "entityIds": [
-            "0",
-          ],
+          "entityId": "0",
         },
         "1.-1": {
-          "entityIds": [
-            "2",
-          ],
+          "entityId": "2",
         },
         "1.0": {
-          "entityIds": [
-            "1",
-          ],
+          "entityId": "1",
         },
       },
     },
@@ -1736,9 +1632,7 @@ exports[`world-v2 tryAddEntities replace belt 1`] = `
       ],
       "tiles": {
         "0.0": {
-          "entityIds": [
-            "0",
-          ],
+          "entityId": "0",
         },
       },
     },
@@ -1785,9 +1679,7 @@ exports[`world-v2 tryAddEntities replace belt 2`] = `
       ],
       "tiles": {
         "0.0": {
-          "entityIds": [
-            "0",
-          ],
+          "entityId": "0",
         },
       },
     },

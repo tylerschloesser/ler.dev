@@ -8,7 +8,6 @@ import {
 } from './types-common.js'
 import { Derived } from './types-derived.js'
 import {
-  BeltEntity,
   BuildEntity,
   Entity,
   entityType,
@@ -90,19 +89,15 @@ function getExistingEntity(
       const [x, y] = entity.position
       const tileId = `${x}.${y}`
       const tile = world.derived.tiles[tileId]
-      const belts =
-        tile?.entityIds
-          .map((entityId) => {
-            const existing = world.origin.entities[entityId]
-            invariant(existing)
-            return existing
-          })
-          .filter(
-            (e): e is BeltEntity =>
-              e.type === entityType.enum.Belt,
-          ) ?? []
-      invariant(belts.length <= 1)
-      return belts.at(0) ?? null
+      if (!tile?.entityId) {
+        return null
+      }
+      const existing = world.origin.entities[tile.entityId]
+      invariant(existing)
+      if (existing.type === entityType.enum.Belt) {
+        return existing
+      }
+      return null
     }
     default: {
       invariant(false)
@@ -125,7 +120,10 @@ function initDerived(
   origin: Origin,
 ): Either<AddEntityError[], Derived> {
   const tiles = initTiles(origin)
-  const beltPaths = initBeltPaths(origin, tiles)
+  if (tiles.left) {
+    return tiles
+  }
+  const beltPaths = initBeltPaths(origin, tiles.right)
   if (beltPaths.left) {
     return beltPaths
   }
@@ -134,7 +132,7 @@ function initDerived(
     left: null,
     right: {
       beltPaths: beltPaths.right,
-      tiles,
+      tiles: tiles.right,
     },
   }
 }

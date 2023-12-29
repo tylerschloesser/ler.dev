@@ -9,7 +9,7 @@ export const tileId = z.string()
 export type TileId = z.infer<typeof tileId>
 
 export const tile = z.strictObject({
-  entityIds: z.array(entityId),
+  entityId,
 })
 export type Tile = z.infer<typeof tile>
 
