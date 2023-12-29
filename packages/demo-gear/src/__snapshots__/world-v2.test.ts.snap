@@ -878,6 +878,54 @@ exports[`world-v2 tryAddEntities add east-south belt 1`] = `
 }
 `;
 
+exports[`world-v2 tryAddEntities add gear 1`] = `
+{
+  "left": null,
+  "right": {
+    "derived": {
+      "beltPaths": [],
+      "layers": {
+        "Layer1": {
+          "0.0": {
+            "entityId": "0",
+          },
+          "0.1": {
+            "entityId": "0",
+          },
+          "1.0": {
+            "entityId": "0",
+          },
+          "1.1": {
+            "entityId": "0",
+          },
+        },
+        "Layer2": {},
+      },
+    },
+    "nextEntityId": 1,
+    "origin": {
+      "entities": {
+        "0": {
+          "angle": 0,
+          "id": "0",
+          "layerId": "Layer1",
+          "position": [
+            0,
+            0,
+          ],
+          "size": [
+            2,
+            2,
+          ],
+          "type": "Gear",
+          "velocity": 0,
+        },
+      },
+    },
+  },
+}
+`;
+
 exports[`world-v2 tryAddEntities add inverted east-south belt 1`] = `
 {
   "left": null,

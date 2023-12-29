@@ -205,5 +205,22 @@ describe('world-v2', () => {
         tryAddEntities(base.right, belts),
       ).toMatchSnapshot()
     })
+
+    test('add gear', () => {
+      const world = initWorld()
+      const entities: BuildEntity[] = [
+        {
+          type: entityType.enum.Gear,
+          angle: 0,
+          layerId: layerId.enum.Layer1,
+          position: [0, 0],
+          size: [2, 2],
+          velocity: 0,
+        },
+      ]
+      expect(
+        tryAddEntities(world, entities),
+      ).toMatchSnapshot()
+    })
   })
 })

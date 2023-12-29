@@ -116,6 +116,29 @@ function getExistingEntity(
       }
       return null
     }
+    case entityType.enum.Gear: {
+      // only need to check the first tile
+      const [x, y] = entity.position
+      const tileId = `${x}.${y}`
+      let entityId: EntityId | undefined
+      switch (entity.layerId) {
+        case layerId.enum.Layer1:
+        case layerId.enum.Layer2:
+          entityId =
+            layers[entity.layerId][tileId]?.entityId
+          break
+        case layerId.enum.Both:
+          invariant(false, 'TODO')
+      }
+      if (!entityId) return null
+      const existing = world.origin.entities[entityId]
+      invariant(existing)
+      if (existing.type !== entityType.enum.Gear)
+        return null
+      return isVec2Equal(existing.position, entity.position)
+        ? existing
+        : null
+    }
     default: {
       invariant(false)
     }

@@ -1,11 +1,7 @@
 import * as z from 'zod'
 import { layerId, vec2 } from './types-common.js'
 
-export const entityType = z.enum([
-  'Gear',
-  'Belt',
-  'InterLayerBelt',
-])
+export const entityType = z.enum(['Gear', 'Chain', 'Belt'])
 export type EntityType = z.infer<typeof entityType>
 
 export const entityId = z.string()
@@ -25,7 +21,6 @@ export const gearEntity = baseEntity.extend({
   type: z.literal(entityType.enum.Gear),
   layerId,
 
-  chains: z.array(entityId),
   velocity: z.number(),
   angle: z.number(),
 })
@@ -34,6 +29,16 @@ export const buildGearEntity = gearEntity.omit({ id: true })
 export type BuildGearEntity = z.infer<
   typeof buildGearEntity
 >
+
+//
+// Chain
+//
+export const chainEntity = baseEntity.extend({
+  type: z.literal(entityType.enum.Chain),
+
+  velocity: z.number(),
+  offset: z.number(),
+})
 
 //
 // Belt
