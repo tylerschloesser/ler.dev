@@ -1,4 +1,5 @@
 import invariant from 'tiny-invariant'
+import { initBeltPaths } from './init-belt-paths.js'
 import { Vec2 } from './types-common.js'
 import { Derived, BeltPath } from './types-derived.js'
 import { Entity, EntityId } from './types-entity.js'
@@ -64,10 +65,8 @@ function initOrigin(): Origin {
 }
 
 function initDerived(origin: Origin): Derived {
-  const beltPaths: BeltPath[] = []
-
   return {
-    beltPaths,
+    beltPaths: initBeltPaths(origin),
     tiles: {},
     nextEntityId: 0,
   }
