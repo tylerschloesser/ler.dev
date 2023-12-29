@@ -1,4 +1,5 @@
 import { Derived } from './types-derived.js'
+import { Entity } from './types-entity.js'
 import { Origin } from './types-origin.js'
 import { World } from './types-world.js'
 
@@ -9,6 +10,13 @@ export function initWorld(): World {
     origin,
     derived,
   }
+}
+
+export function tryAddEntities(
+  world: World,
+  entities: Entity[],
+): boolean {
+  return true
 }
 
 function initOrigin(): Origin {
