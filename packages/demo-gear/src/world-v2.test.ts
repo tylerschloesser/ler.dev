@@ -110,6 +110,28 @@ describe('world-v2', () => {
       expect(world).toMatchSnapshot()
     })
 
+    test('add west-north belt', () => {
+      const world = initWorld()
+      const entities = newBelts([
+        [0, 0],
+        [1, 0],
+        [1, -1],
+      ])
+      expect(tryAddEntities(world, entities)).toBeNull()
+      expect(world).toMatchSnapshot()
+    })
+
+    test('add north-west belt', () => {
+      const world = initWorld()
+      const entities = newBelts([
+        [0, 0],
+        [0, 1],
+        [-1, 1],
+      ])
+      expect(tryAddEntities(world, entities)).toBeNull()
+      expect(world).toMatchSnapshot()
+    })
+
     test('more than two adjacent belts error', () => {
       const world = initWorld()
       const entities = newBelts([

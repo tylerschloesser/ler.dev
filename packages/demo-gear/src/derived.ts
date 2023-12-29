@@ -211,8 +211,8 @@ function getBeltPath(
     let direction: BeltDirection | undefined = undefined
 
     if (prev && next) {
-      const prevDx = belt.position[0] - prev.position[0]
-      const prevDy = belt.position[1] - prev.position[1]
+      const prevDx = prev.position[0] - belt.position[0]
+      const prevDy = prev.position[1] - belt.position[1]
       invariant(prevDx === 0 || prevDy === 0)
       // prettier-ignore
       invariant(prevDx === 1 || prevDx === -1 || prevDy === 1 || prevDy === -1)
@@ -228,6 +228,14 @@ function getBeltPath(
         direction = beltDirection.enum.WestEast
       } else if ((nextDy === 1 || nextDy === -1) && (prevDy === 1 || prevDy === -1)) {
         direction = beltDirection.enum.NorthSouth
+      } else {
+
+        if (prevDx === -1 && nextDy === -1) {
+          direction = beltDirection.enum.WestNorth
+        } else if (prevDy === -1 && nextDx === -1) {
+          direction = beltDirection.enum.WestNorth
+        }
+
       }
     } else if (prev) {
       const prevDx = belt.position[0] - prev.position[0]
