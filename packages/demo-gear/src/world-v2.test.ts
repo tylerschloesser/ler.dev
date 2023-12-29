@@ -4,7 +4,7 @@ import {
   entityType,
   BeltEntity,
 } from './types-entity.js'
-import { initWorld, addEntities } from './world-v2.js'
+import { initWorld, tryAddEntities } from './world-v2.js'
 
 function newBelt(
   args: Partial<BeltEntity> = {},
@@ -29,12 +29,12 @@ describe('world-v2', () => {
     })
   })
 
-  describe('addEntities', () => {
+  describe('tryAddEntities', () => {
     test('empty', () => {
       const world = initWorld()
       const { origin, derived } = world
       const entities: Entity[] = []
-      addEntities(world, entities)
+      expect(tryAddEntities(world, entities)).toBeNull()
 
       expect(origin).toBe(world.origin)
       expect(derived).not.toBe(world.derived)
@@ -45,15 +45,15 @@ describe('world-v2', () => {
     test('add belt', () => {
       const world = initWorld()
       const entities: Entity[] = [newBelt()]
-      addEntities(world, entities)
+      expect(tryAddEntities(world, entities)).toBeNull()
       expect(world).toMatchSnapshot()
     })
 
     test('replace belt', () => {
       const world = initWorld()
       const entities: Entity[] = [newBelt()]
-      addEntities(world, entities)
-      addEntities(world, entities)
+      expect(tryAddEntities(world, entities)).toBeNull()
+      expect(tryAddEntities(world, entities)).toBeNull()
       expect(world).toMatchSnapshot()
     })
 
@@ -69,7 +69,7 @@ describe('world-v2', () => {
           position: [2, 0],
         }),
       ]
-      addEntities(world, entities)
+      expect(tryAddEntities(world, entities)).toBeNull()
       expect(world).toMatchSnapshot()
     })
 
@@ -85,7 +85,7 @@ describe('world-v2', () => {
           position: [1, 0],
         }),
       ]
-      addEntities(world, entities)
+      expect(tryAddEntities(world, entities)).toBeNull()
       expect(world).toMatchSnapshot()
     })
   })

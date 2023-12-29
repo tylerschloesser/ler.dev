@@ -1,5 +1,9 @@
 import invariant from 'tiny-invariant'
-import { DerivedError, Either } from './types-common.js'
+import {
+  DerivedError,
+  DerivedErrorType,
+  Either,
+} from './types-common.js'
 import {
   BeltPath,
   BeltPathEntity,
@@ -111,10 +115,10 @@ function* iterateBeltPath(
   seen: Set<BeltEntity>,
   root: BeltEntity,
   next: BeltEntity | undefined,
-): Generator<BeltEntity> {
+): Generator<Either<DerivedError, BeltEntity>> {
   let prev = root
   while (next) {
-    yield next
+    yield { left: null, right: next }
 
     if (seen.has(next)) {
       // the only reason this belt should be seen is if there is a loop
@@ -124,6 +128,15 @@ function* iterateBeltPath(
     seen.add(next)
 
     const adjacent = getAdjacentBelts(origin, tiles, next)
+    if (adjacent.length > 2) {
+      return {
+        left: {
+          type: DerivedErrorType.BeltHasMoreThanTwoAdjacentBelts,
+          entityId: next.id,
+        },
+        right: null,
+      }
+    }
     invariant(adjacent.length <= 2)
     const [a, b] = adjacent
     if (a === prev) {
@@ -157,11 +170,15 @@ function getBeltPath(
     root,
     adjacent[0],
   )) {
-    if (left === root) {
+    if (left.left) {
+      return left
+    }
+    invariant(left.right)
+    if (left.right === root) {
       loop = true
       break
     }
-    belts.unshift(left)
+    belts.unshift(left.right)
   }
   for (const right of iterateBeltPath(
     origin,
@@ -170,8 +187,11 @@ function getBeltPath(
     root,
     adjacent[1],
   )) {
-    invariant(right !== root)
-    belts.push(right)
+    if (right.left) {
+      return right
+    }
+    invariant(right.right !== root)
+    belts.push(right.right)
   }
 
   const entities = new Array<BeltPathEntity>()

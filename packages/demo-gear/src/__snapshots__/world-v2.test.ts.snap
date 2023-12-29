@@ -1,6 +1,19 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`world-v2 addEntities add belt 1`] = `
+exports[`world-v2 initWorld new world 1`] = `
+{
+  "derived": {
+    "beltPaths": [],
+    "nextEntityId": 0,
+    "tiles": {},
+  },
+  "origin": {
+    "entities": {},
+  },
+}
+`;
+
+exports[`world-v2 tryAddEntities add belt 1`] = `
 {
   "derived": {
     "beltPaths": [
@@ -46,7 +59,7 @@ exports[`world-v2 addEntities add belt 1`] = `
 }
 `;
 
-exports[`world-v2 addEntities add two connected belts 1`] = `
+exports[`world-v2 tryAddEntities add two connected belts 1`] = `
 {
   "derived": {
     "beltPaths": [
@@ -117,7 +130,7 @@ exports[`world-v2 addEntities add two connected belts 1`] = `
 }
 `;
 
-exports[`world-v2 addEntities add two disconnected belts 1`] = `
+exports[`world-v2 tryAddEntities add two disconnected belts 1`] = `
 {
   "derived": {
     "beltPaths": [
@@ -193,7 +206,7 @@ exports[`world-v2 addEntities add two disconnected belts 1`] = `
 }
 `;
 
-exports[`world-v2 addEntities empty 1`] = `
+exports[`world-v2 tryAddEntities empty 1`] = `
 {
   "derived": {
     "beltPaths": [],
@@ -206,7 +219,7 @@ exports[`world-v2 addEntities empty 1`] = `
 }
 `;
 
-exports[`world-v2 addEntities replace belt 1`] = `
+exports[`world-v2 tryAddEntities replace belt 1`] = `
 {
   "derived": {
     "beltPaths": [
@@ -248,19 +261,6 @@ exports[`world-v2 addEntities replace belt 1`] = `
         "velocity": 0,
       },
     },
-  },
-}
-`;
-
-exports[`world-v2 initWorld new world 1`] = `
-{
-  "derived": {
-    "beltPaths": [],
-    "nextEntityId": 0,
-    "tiles": {},
-  },
-  "origin": {
-    "entities": {},
   },
 }
 `;

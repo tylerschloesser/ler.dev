@@ -20,10 +20,10 @@ export function initWorld(): World {
   }
 }
 
-export function addEntities(
+export function tryAddEntities(
   world: World,
   entities: Entity[],
-): void {
+): DerivedError | null {
   validateEntitiesToAdd(entities)
 
   const { origin } = world
@@ -37,8 +37,13 @@ export function addEntities(
   }
 
   const derived = initDerived(origin)
+  if (derived.left) {
+    return derived.left
+  }
   invariant(derived.right)
   world.derived = derived.right
+
+  return null
 }
 
 function validateEntitiesToAdd(entities: Entity[]): void {
