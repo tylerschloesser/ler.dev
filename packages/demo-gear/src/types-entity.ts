@@ -54,3 +54,9 @@ export const entity = z.discriminatedUnion('type', [
   beltEntity,
 ])
 export type Entity = z.infer<typeof entity>
+
+export const buildEntity = z.discriminatedUnion('type', [
+  gearEntity.omit({ id: true }),
+  beltEntity.omit({ id: true }),
+])
+export type BuildEntity = z.infer<typeof buildEntity>

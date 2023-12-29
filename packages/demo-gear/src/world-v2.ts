@@ -7,7 +7,7 @@ import {
   Vec2,
 } from './types-common.js'
 import { Derived } from './types-derived.js'
-import { Entity, EntityId } from './types-entity.js'
+import { BuildEntity, Entity } from './types-entity.js'
 import { Origin } from './types-origin.js'
 import { World } from './types-world.js'
 
@@ -18,12 +18,13 @@ export function initWorld(): World {
   return {
     origin,
     derived: derived.right,
+    nextEntityId: 0,
   }
 }
 
 export function tryAddEntities(
   world: World,
-  entities: Entity[],
+  entities: BuildEntity[],
 ): Either<AddEntityError[], World> {
   if (entities.length === 0) {
     return { left: null, right: world }
@@ -31,14 +32,14 @@ export function tryAddEntities(
 
   validateEntitiesToAdd(entities)
 
+  let { nextEntityId } = world
   const origin = cloneDeep(world.origin)
 
   for (const entity of entities) {
-    if (origin.entities[entity.id]) {
-      replaceEntity(origin, entity)
-    } else {
-      addEntity(origin, entity)
-    }
+    addEntity(origin, {
+      id: `${nextEntityId++}`,
+      ...entity,
+    })
   }
 
   const derived = initDerived(origin)
@@ -52,32 +53,18 @@ export function tryAddEntities(
     right: {
       origin,
       derived: derived.right,
+      nextEntityId,
     },
   }
 }
 
-function validateEntitiesToAdd(entities: Entity[]): void {
-  const entityIds = new Set<EntityId>()
-  for (const entity of entities) {
-    invariant(!entityIds.has(entity.id))
-    entityIds.add(entity.id)
-  }
-}
+function validateEntitiesToAdd(
+  entities: BuildEntity[],
+): void {}
 
 function addEntity(origin: Origin, entity: Entity): void {
   invariant(!origin.entities[entity.id])
   origin.entities[entity.id] = entity
-}
-
-function replaceEntity(
-  origin: Origin,
-  entity: Entity,
-): void {
-  const existing = origin.entities[entity.id]
-  invariant(existing?.id === entity.id)
-  invariant(existing.type === entity.type)
-  invariant(isVec2Equal(existing.position, entity.position))
-  invariant(isVec2Equal(existing.size, entity.size))
 }
 
 function initOrigin(): Origin {
@@ -100,7 +87,6 @@ function initDerived(
     right: {
       beltPaths: beltPaths.right,
       tiles,
-      nextEntityId: 0,
     },
   }
 }

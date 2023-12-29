@@ -44,6 +44,5 @@ export type BeltPath = z.infer<typeof beltPath>
 export const derived = z.strictObject({
   tiles: z.record(tileId, tile),
   beltPaths: z.array(beltPath),
-  nextEntityId: z.number(),
 })
 export type Derived = z.infer<typeof derived>
