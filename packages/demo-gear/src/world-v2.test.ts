@@ -90,71 +90,24 @@ describe('world-v2', () => {
       expect(world).toMatchSnapshot()
     })
 
-    test('add west-east belt', () => {
-      const world = initWorld()
-      const entities = newBelts([
-        [0, 0],
-        [1, 0],
-        [2, 0],
-      ])
-      expect(tryAddEntities(world, entities)).toBeNull()
-      expect(world).toMatchSnapshot()
-    })
+    // prettier-ignore
+    const testCases: [string, vec2[]][] = [
+      ['west-east', [[0, 0], [1, 0], [2, 0]]],
+      ['inverted west-east', [[2, 0], [1, 0], [0, 0]]],
+      ['north-south', [[0, 0], [0, 1], [0, 2]]],
+      ['inverted north-south', [[0, 2], [0, 1], [0, 0]]],
+      ['west-north', [[0, 0], [1, 0], [1, -1]]],
+      ['inverted west-north', [[1, -1], [1, 0], [0, 0]]],
+    ]
 
-    test('add inverted west-east belt', () => {
-      const world = initWorld()
-      const entities = newBelts([
-        [2, 0],
-        [1, 0],
-        [0, 0],
-      ])
-      expect(tryAddEntities(world, entities)).toBeNull()
-      expect(world).toMatchSnapshot()
-    })
-
-    test('add north-south belt', () => {
-      const world = initWorld()
-      const entities = newBelts([
-        [0, 0],
-        [0, 1],
-        [0, 2],
-      ])
-      expect(tryAddEntities(world, entities)).toBeNull()
-      expect(world).toMatchSnapshot()
-    })
-
-    test('add inverted north-south belt', () => {
-      const world = initWorld()
-      const entities = newBelts([
-        [0, 2],
-        [0, 1],
-        [0, 0],
-      ])
-      expect(tryAddEntities(world, entities)).toBeNull()
-      expect(world).toMatchSnapshot()
-    })
-
-    test('add west-north belt', () => {
-      const world = initWorld()
-      const entities = newBelts([
-        [0, 0],
-        [1, 0],
-        [1, -1],
-      ])
-      expect(tryAddEntities(world, entities)).toBeNull()
-      expect(world).toMatchSnapshot()
-    })
-
-    test('add north-west belt', () => {
-      const world = initWorld()
-      const entities = newBelts([
-        [0, 0],
-        [0, 1],
-        [-1, 1],
-      ])
-      expect(tryAddEntities(world, entities)).toBeNull()
-      expect(world).toMatchSnapshot()
-    })
+    for (const testCase of testCases) {
+      test(`add ${testCase[0]} belt`, () => {
+        const world = initWorld()
+        const entities = newBelts(testCase[1])
+        expect(tryAddEntities(world, entities)).toBeNull()
+        expect(world).toMatchSnapshot()
+      })
+    }
 
     test('more than two adjacent belts error', () => {
       const world = initWorld()

@@ -247,9 +247,9 @@ function getDirection(
   } else if (dx === -1) {
     return Direction.West
   } else if (dy === 1) {
-    return Direction.North
-  } else if (dy === -1) {
     return Direction.South
+  } else if (dy === -1) {
+    return Direction.North
   }
   invariant(false)
 }
@@ -301,6 +301,8 @@ function getBeltDirection(
       switch (nextDirection) {
         case Direction.East:
           return result(beltDirection.enum.WestEast, false)
+        case Direction.North:
+          return result(beltDirection.enum.WestNorth, false)
       }
       break
     }
@@ -308,6 +310,8 @@ function getBeltDirection(
       switch (nextDirection) {
         case Direction.South:
           return result(beltDirection.enum.NorthSouth, false)
+        case Direction.West:
+          return result(beltDirection.enum.WestNorth, true)
       }
       break
     }
@@ -323,89 +327,6 @@ function getBeltDirection(
         case Direction.North:
           return result(beltDirection.enum.NorthSouth, true)
       }
-    }
-  }
-
-  if (prev && next) {
-    const prevDx = prev.position[0] - belt.position[0]
-    const prevDy = prev.position[1] - belt.position[1]
-    invariant(prevDx === 0 || prevDy === 0)
-    // prettier-ignore
-    invariant(prevDx === 1 || prevDx === -1 || prevDy === 1 || prevDy === -1)
-
-    const nextDx = next.position[0] - belt.position[0]
-    const nextDy = next.position[1] - belt.position[1]
-    invariant(nextDx === 0 || nextDy === 0)
-    // prettier-ignore
-    invariant(nextDx === 1 || nextDx === -1 || nextDy === 1 || nextDy === -1)
-
-    // prettier-ignore
-    if ((nextDx === 1 || nextDx === -1) && (prevDx === 1 || prevDx === -1)) {
-        return {
-          direction: beltDirection.enum.WestEast,
-          invert: false,
-        }
-      } else if ((nextDy === 1 || nextDy === -1) && (prevDy === 1 || prevDy === -1)) {
-        return {
-          direction: beltDirection.enum.NorthSouth,
-          invert: false,
-        }
-      } else {
-
-        if (prevDx === -1 && nextDy === -1) {
-        return {
-          direction: beltDirection.enum.WestNorth,
-          invert: false,
-        }
-        } else if (prevDy === -1 && nextDx === -1) {
-        return {
-          direction: beltDirection.enum.WestNorth,
-          invert: false,
-        }
-        }
-
-      }
-  } else if (prev) {
-    const prevDx = belt.position[0] - prev.position[0]
-    const prevDy = belt.position[1] - prev.position[1]
-    invariant(prevDx === 0 || prevDy === 0)
-    // prettier-ignore
-    invariant(prevDx === 1 || prevDx === -1 || prevDy === 1 || prevDy === -1)
-
-    if (prevDx === 1 || prevDx === -1) {
-      return {
-        direction: beltDirection.enum.WestEast,
-        invert: false,
-      }
-    } else {
-      return {
-        direction: beltDirection.enum.NorthSouth,
-        invert: false,
-      }
-    }
-  } else if (next) {
-    const nextDx = next.position[0] - belt.position[0]
-    const nextDy = next.position[1] - belt.position[1]
-    invariant(nextDx === 0 || nextDy === 0)
-    // prettier-ignore
-    invariant(nextDx === 1 || nextDx === -1 || nextDy === 1 || nextDy === -1)
-
-    if (nextDx === 1 || nextDx === -1) {
-      return {
-        direction: beltDirection.enum.WestEast,
-        invert: false,
-      }
-    } else {
-      return {
-        direction: beltDirection.enum.NorthSouth,
-        invert: false,
-      }
-    }
-  } else {
-    // lone belts are horizontal by default
-    return {
-      direction: beltDirection.enum.WestEast,
-      invert: false,
     }
   }
 
