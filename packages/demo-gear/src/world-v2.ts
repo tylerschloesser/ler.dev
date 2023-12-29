@@ -30,7 +30,10 @@ export function tryAddEntities(
     return { left: null, right: world }
   }
 
-  validateEntitiesToAdd(entities)
+  const errors = validateEntitiesToAdd(entities)
+  if (errors.length) {
+    return { left: errors, right: null }
+  }
 
   let { nextEntityId } = world
   const origin = cloneDeep(world.origin)
@@ -58,9 +61,18 @@ export function tryAddEntities(
   }
 }
 
+function getExistingEntity(
+  origin: Origin,
+  entity: BuildEntity,
+): Entity | null {
+  return null
+}
+
 function validateEntitiesToAdd(
   entities: BuildEntity[],
-): void {}
+): AddEntityError[] {
+  return []
+}
 
 function addEntity(origin: Origin, entity: Entity): void {
   invariant(!origin.entities[entity.id])
