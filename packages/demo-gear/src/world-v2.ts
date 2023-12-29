@@ -66,7 +66,7 @@ function initOrigin(): Origin {
 
 function initDerived(origin: Origin): Derived {
   const tiles = initTiles(origin)
-  const beltPaths = initBeltPaths(origin)
+  const beltPaths = initBeltPaths(origin, tiles)
   return {
     beltPaths,
     tiles,
