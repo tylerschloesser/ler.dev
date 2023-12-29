@@ -154,5 +154,56 @@ describe('world-v2', () => {
       )
       expect(actual).toMatchSnapshot()
     })
+
+    test('add cross layer belt', () => {
+      let belts = [
+        newBelt({
+          position: [0, 0],
+          layerId: layerId.enum.Layer1,
+        }),
+        newBelt({
+          position: [1, 0],
+          layerId: layerId.enum.Layer1,
+        }),
+        newBelt({
+          position: [2, 0],
+          layerId: layerId.enum.Both,
+        }),
+        newBelt({
+          position: [3, 0],
+          layerId: layerId.enum.Layer2,
+        }),
+        newBelt({
+          position: [3, 1],
+          layerId: layerId.enum.Layer2,
+        }),
+      ]
+      const world = initWorld()
+      const base = tryAddEntities(world, belts)
+      invariant(base.right)
+      expect(base).toMatchSnapshot()
+
+      // not allowed to add in layer 2 because we'd have more than 2 adjacent belts
+      belts = [
+        newBelt({
+          position: [4, 0],
+          layerId: layerId.enum.Layer2,
+        }),
+      ]
+      expect(
+        tryAddEntities(base.right, belts),
+      ).toMatchSnapshot()
+
+      // we are allowed to add in layer 1
+      belts = [
+        newBelt({
+          position: [4, 0],
+          layerId: layerId.enum.Layer1,
+        }),
+      ]
+      expect(
+        tryAddEntities(base.right, belts),
+      ).toMatchSnapshot()
+    })
   })
 })
