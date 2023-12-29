@@ -220,63 +220,93 @@ exports[`world-v2 tryAddEntities add belt loop 2`] = `
         {
           "entities": [
             {
-              "direction": "WestEast",
+              "direction": "EastSouth",
               "id": "0",
               "invert": true,
             },
             {
               "direction": "WestEast",
               "id": "1",
-              "invert": true,
+              "invert": false,
             },
             {
-              "direction": "NorthEast",
+              "direction": "SouthWest",
               "id": "2",
               "invert": true,
             },
             {
               "direction": "NorthSouth",
               "id": "3",
+              "invert": false,
+            },
+            {
+              "direction": "WestNorth",
+              "id": "4",
+              "invert": true,
+            },
+            {
+              "direction": "WestEast",
+              "id": "5",
+              "invert": true,
+            },
+            {
+              "direction": "NorthEast",
+              "id": "6",
               "invert": true,
             },
             {
               "direction": "NorthSouth",
-              "id": "4",
+              "id": "7",
               "invert": true,
             },
           ],
-          "loop": false,
+          "loop": true,
         },
       ],
       "tiles": {
         "0.0": {
           "entityIds": [
-            "4",
+            "0",
           ],
         },
         "0.1": {
           "entityIds": [
-            "3",
+            "7",
           ],
         },
         "0.2": {
           "entityIds": [
-            "2",
+            "6",
           ],
         },
-        "1.2": {
+        "1.0": {
           "entityIds": [
             "1",
           ],
         },
+        "1.2": {
+          "entityIds": [
+            "5",
+          ],
+        },
+        "2.0": {
+          "entityIds": [
+            "2",
+          ],
+        },
+        "2.1": {
+          "entityIds": [
+            "3",
+          ],
+        },
         "2.2": {
           "entityIds": [
-            "0",
+            "4",
           ],
         },
       },
     },
-    "nextEntityId": 5,
+    "nextEntityId": 8,
     "origin": {
       "entities": {
         "0": {
@@ -284,8 +314,8 @@ exports[`world-v2 tryAddEntities add belt loop 2`] = `
           "items": [],
           "offset": 0,
           "position": [
-            2,
-            2,
+            0,
+            0,
           ],
           "size": [
             1,
@@ -300,7 +330,7 @@ exports[`world-v2 tryAddEntities add belt loop 2`] = `
           "offset": 0,
           "position": [
             1,
-            2,
+            0,
           ],
           "size": [
             1,
@@ -314,8 +344,8 @@ exports[`world-v2 tryAddEntities add belt loop 2`] = `
           "items": [],
           "offset": 0,
           "position": [
-            0,
             2,
+            0,
           ],
           "size": [
             1,
@@ -329,7 +359,7 @@ exports[`world-v2 tryAddEntities add belt loop 2`] = `
           "items": [],
           "offset": 0,
           "position": [
-            0,
+            2,
             1,
           ],
           "size": [
@@ -344,8 +374,53 @@ exports[`world-v2 tryAddEntities add belt loop 2`] = `
           "items": [],
           "offset": 0,
           "position": [
+            2,
+            2,
+          ],
+          "size": [
+            1,
+            1,
+          ],
+          "type": "Belt",
+          "velocity": 0,
+        },
+        "5": {
+          "id": "5",
+          "items": [],
+          "offset": 0,
+          "position": [
+            1,
+            2,
+          ],
+          "size": [
+            1,
+            1,
+          ],
+          "type": "Belt",
+          "velocity": 0,
+        },
+        "6": {
+          "id": "6",
+          "items": [],
+          "offset": 0,
+          "position": [
             0,
+            2,
+          ],
+          "size": [
+            1,
+            1,
+          ],
+          "type": "Belt",
+          "velocity": 0,
+        },
+        "7": {
+          "id": "7",
+          "items": [],
+          "offset": 0,
+          "position": [
             0,
+            1,
           ],
           "size": [
             1,

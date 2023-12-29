@@ -183,18 +183,20 @@ function getBeltPath(
     }
     belts.push(next.right)
   }
-  for (const prev of iterateBeltPath(
-    origin,
-    tiles,
-    seen,
-    root,
-    adjacent[1],
-  )) {
-    if (prev.left) {
-      return prev
+  if (!loop) {
+    for (const prev of iterateBeltPath(
+      origin,
+      tiles,
+      seen,
+      root,
+      adjacent[1],
+    )) {
+      if (prev.left) {
+        return prev
+      }
+      invariant(prev.right !== root)
+      belts.unshift(prev.right)
     }
-    invariant(prev.right !== root)
-    belts.unshift(prev.right)
   }
 
   const entities = new Array<BeltPathEntity>()
