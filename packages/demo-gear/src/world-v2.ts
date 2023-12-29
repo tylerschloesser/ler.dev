@@ -3,6 +3,7 @@ import invariant from 'tiny-invariant'
 import { initBeltPaths, initTiles } from './derived.js'
 import {
   AddEntityError,
+  E,
   Either,
   Vec2,
 } from './types-common.js'
@@ -31,7 +32,7 @@ export function tryAddEntities(
   entities: BuildEntity[],
 ): Either<AddEntityError[], World> {
   if (entities.length === 0) {
-    return { left: null, right: world }
+    return E.right(world)
   }
 
   let { nextEntityId } = world
@@ -55,14 +56,11 @@ export function tryAddEntities(
   }
   invariant(derived.right)
 
-  return {
-    left: null,
-    right: {
-      origin,
-      derived: derived.right,
-      nextEntityId,
-    },
-  }
+  return E.right({
+    origin,
+    derived: derived.right,
+    nextEntityId,
+  })
 }
 
 function updateEntity(
@@ -128,13 +126,10 @@ function initDerived(
     return beltPaths
   }
   invariant(beltPaths.right)
-  return {
-    left: null,
-    right: {
-      beltPaths: beltPaths.right,
-      tiles: tiles.right,
-    },
-  }
+  return E.right({
+    beltPaths: beltPaths.right,
+    tiles: tiles.right,
+  })
 }
 
 function isVec2Equal(a: Vec2, b: Vec2): boolean {

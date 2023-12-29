@@ -4,7 +4,6 @@ import {
   AddEntityErrorType,
   E,
   Either,
-  OccupiedTileAddEntityError,
 } from './types-common.js'
 import {
   BeltDirection,
@@ -78,7 +77,7 @@ export function initBeltPaths(
     beltPaths.push(beltPath.right)
   }
 
-  return { left: null, right: beltPaths }
+  return E.right(beltPaths)
 }
 
 function getAdjacentBelt(
@@ -121,7 +120,7 @@ function* iterateBeltPath(
 ): Generator<Either<AddEntityError[], BeltEntity>> {
   let prev = root
   while (next) {
-    yield { left: null, right: next }
+    yield E.right(next)
 
     if (seen.has(next)) {
       // the only reason this belt should be seen is if there is a loop
@@ -132,15 +131,12 @@ function* iterateBeltPath(
 
     const adjacent = getAdjacentBelts(origin, tiles, next)
     if (adjacent.length > 2) {
-      yield {
-        left: [
-          {
-            type: AddEntityErrorType.BeltHasMoreThanTwoAdjacentBelts,
-            position: next.position,
-          },
-        ],
-        right: null,
-      }
+      yield E.left([
+        {
+          type: AddEntityErrorType.BeltHasMoreThanTwoAdjacentBelts,
+          position: next.position,
+        },
+      ])
     }
     invariant(adjacent.length <= 2)
     const [a, b] = adjacent
@@ -227,10 +223,7 @@ function getBeltPath(
     })
   }
 
-  return {
-    left: null,
-    right: { entities, loop },
-  }
+  return E.right({ entities, loop })
 }
 
 enum Direction {
