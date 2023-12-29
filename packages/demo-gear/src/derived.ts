@@ -129,7 +129,7 @@ function* iterateBeltPath(
 
     const adjacent = getAdjacentBelts(origin, tiles, next)
     if (adjacent.length > 2) {
-      return {
+      yield {
         left: {
           type: DerivedErrorType.BeltHasMoreThanTwoAdjacentBelts,
           entityId: next.id,
