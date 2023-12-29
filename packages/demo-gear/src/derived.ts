@@ -164,35 +164,35 @@ function getBeltPath(
   const adjacent = getAdjacentBelts(origin, tiles, root)
   invariant(adjacent.length <= 2)
 
-  for (const left of iterateBeltPath(
+  for (const prev of iterateBeltPath(
     origin,
     tiles,
     seen,
     root,
     adjacent[0],
   )) {
-    if (left.left) {
-      return left
+    if (prev.left) {
+      return prev
     }
-    invariant(left.right)
-    if (left.right === root) {
+    invariant(prev.right)
+    if (prev.right === root) {
       loop = true
       break
     }
-    belts.unshift(left.right)
+    belts.unshift(prev.right)
   }
-  for (const right of iterateBeltPath(
+  for (const next of iterateBeltPath(
     origin,
     tiles,
     seen,
     root,
     adjacent[1],
   )) {
-    if (right.left) {
-      return right
+    if (next.left) {
+      return next
     }
-    invariant(right.right !== root)
-    belts.push(right.right)
+    invariant(next.right !== root)
+    belts.push(next.right)
   }
 
   const entities = new Array<BeltPathEntity>()
@@ -227,6 +227,45 @@ function getBeltPath(
   }
 }
 
+enum Direction {
+  North = 'north',
+  South = 'south',
+  East = 'east',
+  West = 'west',
+}
+
+function getDirection(
+  from: BeltEntity,
+  to: BeltEntity,
+): Direction {
+  const dx = to.position[0] - from.position[0]
+  const dy = to.position[1] - from.position[1]
+  invariant(dx === 0 || dy === 0)
+  if (dx === 1) {
+    return Direction.East
+  } else if (dx === -1) {
+    return Direction.West
+  } else if (dy === 1) {
+    return Direction.North
+  } else if (dy === -1) {
+    return Direction.South
+  }
+  invariant(false)
+}
+
+function getOpposite(direction: Direction): Direction {
+  switch (direction) {
+    case Direction.East:
+      return Direction.West
+    case Direction.West:
+      return Direction.East
+    case Direction.North:
+      return Direction.South
+    case Direction.South:
+      return Direction.North
+  }
+}
+
 function getBeltDirection(
   belt: BeltEntity,
   prev: BeltEntity | undefined,
@@ -235,6 +274,52 @@ function getBeltDirection(
   direction: BeltDirection
   invert: boolean
 } {
+  let prevDirection = prev ? getDirection(prev, belt) : null
+  let nextDirection = next ? getDirection(belt, next) : null
+
+  if (!prevDirection && !nextDirection) {
+    return {
+      // lone belts are horizontal by default
+      direction: beltDirection.enum.WestEast,
+      invert: false,
+    }
+  }
+
+  if (!prevDirection) {
+    invariant(nextDirection)
+    prevDirection = getOpposite(nextDirection)
+  } else if (!nextDirection) {
+    invariant(prevDirection)
+    nextDirection = getOpposite(prevDirection)
+  }
+
+  invariant(prevDirection !== nextDirection)
+
+  switch (prevDirection) {
+    case Direction.East: {
+      switch (nextDirection) {
+        case Direction.West: {
+          return {
+            direction: beltDirection.enum.WestEast,
+            invert: true,
+          }
+        }
+      }
+      break
+    }
+    case Direction.West: {
+      switch (nextDirection) {
+        case Direction.East: {
+          return {
+            direction: beltDirection.enum.WestEast,
+            invert: false,
+          }
+        }
+      }
+      break
+    }
+  }
+
   if (prev && next) {
     const prevDx = prev.position[0] - belt.position[0]
     const prevDy = prev.position[1] - belt.position[1]

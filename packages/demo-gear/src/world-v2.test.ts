@@ -90,7 +90,7 @@ describe('world-v2', () => {
       expect(world).toMatchSnapshot()
     })
 
-    test('add two connected horizontal belts', () => {
+    test('add west-east belt', () => {
       const world = initWorld()
       const entities = newBelts([
         [0, 0],
@@ -100,7 +100,17 @@ describe('world-v2', () => {
       expect(world).toMatchSnapshot()
     })
 
-    test('add two connected vertical belts', () => {
+    test('add inverted west-east belt', () => {
+      const world = initWorld()
+      const entities = newBelts([
+        [1, 0],
+        [0, 0],
+      ])
+      expect(tryAddEntities(world, entities)).toBeNull()
+      expect(world).toMatchSnapshot()
+    })
+
+    test('add north-south belt', () => {
       const world = initWorld()
       const entities = newBelts([
         [0, 0],
