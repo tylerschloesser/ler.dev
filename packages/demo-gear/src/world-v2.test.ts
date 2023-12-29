@@ -39,9 +39,17 @@ describe('world-v2', () => {
       expect(world).toMatchSnapshot()
     })
 
-    test('one belt', () => {
+    test('add belt', () => {
       const world = initWorld()
       const entities: Entity[] = [newBelt()]
+      addEntities(world, entities)
+      expect(world).toMatchSnapshot()
+    })
+
+    test('replace belt', () => {
+      const world = initWorld()
+      const entities: Entity[] = [newBelt()]
+      addEntities(world, entities)
       addEntities(world, entities)
       expect(world).toMatchSnapshot()
     })
