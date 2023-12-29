@@ -7,7 +7,12 @@ import {
   Vec2,
 } from './types-common.js'
 import { Derived } from './types-derived.js'
-import { BuildEntity, Entity } from './types-entity.js'
+import {
+  BeltEntity,
+  BuildEntity,
+  Entity,
+  entityType,
+} from './types-entity.js'
 import { Origin } from './types-origin.js'
 import { World } from './types-world.js'
 
@@ -30,19 +35,19 @@ export function tryAddEntities(
     return { left: null, right: world }
   }
 
-  const errors = validateEntitiesToAdd(entities)
-  if (errors.length) {
-    return { left: errors, right: null }
-  }
-
   let { nextEntityId } = world
   const origin = cloneDeep(world.origin)
 
   for (const entity of entities) {
-    addEntity(origin, {
-      id: `${nextEntityId++}`,
-      ...entity,
-    })
+    const existing = getExistingEntity(world, entity)
+    if (existing) {
+      updateEntity(entity, existing)
+    } else {
+      addEntity(origin, {
+        id: `${nextEntityId++}`,
+        ...entity,
+      })
+    }
   }
 
   const derived = initDerived(origin)
@@ -61,17 +66,48 @@ export function tryAddEntities(
   }
 }
 
-function getExistingEntity(
-  origin: Origin,
+function updateEntity(
   entity: BuildEntity,
-): Entity | null {
-  return null
+  existing: Entity,
+): void {
+  switch (entity.type) {
+    case entityType.enum.Belt: {
+      invariant(existing.type === entityType.enum.Belt)
+      break
+    }
+    default: {
+      invariant(false)
+    }
+  }
 }
 
-function validateEntitiesToAdd(
-  entities: BuildEntity[],
-): AddEntityError[] {
-  return []
+function getExistingEntity(
+  world: World,
+  entity: BuildEntity,
+): Entity | null {
+  switch (entity.type) {
+    case entityType.enum.Belt: {
+      const [x, y] = entity.position
+      const tileId = `${x}.${y}`
+      const tile = world.derived.tiles[tileId]
+      const belts =
+        tile?.entityIds
+          .map((entityId) => {
+            const existing = world.origin.entities[entityId]
+            invariant(existing)
+            return existing
+          })
+          .filter(
+            (e): e is BeltEntity =>
+              e.type === entityType.enum.Belt,
+          ) ?? []
+      invariant(belts.length <= 1)
+      return belts.at(0) ?? null
+    }
+    default: {
+      invariant(false)
+    }
+  }
 }
 
 function addEntity(origin: Origin, entity: Entity): void {

@@ -62,6 +62,304 @@ exports[`world-v2 tryAddEntities add belt 1`] = `
 }
 `;
 
+exports[`world-v2 tryAddEntities add belt loop 1`] = `
+{
+  "left": null,
+  "right": {
+    "derived": {
+      "beltPaths": [
+        {
+          "entities": [
+            {
+              "direction": "WestEast",
+              "id": "0",
+              "invert": false,
+            },
+            {
+              "direction": "WestEast",
+              "id": "1",
+              "invert": false,
+            },
+            {
+              "direction": "SouthWest",
+              "id": "2",
+              "invert": true,
+            },
+            {
+              "direction": "NorthSouth",
+              "id": "3",
+              "invert": false,
+            },
+            {
+              "direction": "NorthSouth",
+              "id": "4",
+              "invert": false,
+            },
+          ],
+          "loop": false,
+        },
+      ],
+      "tiles": {
+        "0.0": {
+          "entityIds": [
+            "0",
+          ],
+        },
+        "1.0": {
+          "entityIds": [
+            "1",
+          ],
+        },
+        "2.0": {
+          "entityIds": [
+            "2",
+          ],
+        },
+        "2.1": {
+          "entityIds": [
+            "3",
+          ],
+        },
+        "2.2": {
+          "entityIds": [
+            "4",
+          ],
+        },
+      },
+    },
+    "nextEntityId": 5,
+    "origin": {
+      "entities": {
+        "0": {
+          "id": "0",
+          "items": [],
+          "offset": 0,
+          "position": [
+            0,
+            0,
+          ],
+          "size": [
+            1,
+            1,
+          ],
+          "type": "Belt",
+          "velocity": 0,
+        },
+        "1": {
+          "id": "1",
+          "items": [],
+          "offset": 0,
+          "position": [
+            1,
+            0,
+          ],
+          "size": [
+            1,
+            1,
+          ],
+          "type": "Belt",
+          "velocity": 0,
+        },
+        "2": {
+          "id": "2",
+          "items": [],
+          "offset": 0,
+          "position": [
+            2,
+            0,
+          ],
+          "size": [
+            1,
+            1,
+          ],
+          "type": "Belt",
+          "velocity": 0,
+        },
+        "3": {
+          "id": "3",
+          "items": [],
+          "offset": 0,
+          "position": [
+            2,
+            1,
+          ],
+          "size": [
+            1,
+            1,
+          ],
+          "type": "Belt",
+          "velocity": 0,
+        },
+        "4": {
+          "id": "4",
+          "items": [],
+          "offset": 0,
+          "position": [
+            2,
+            2,
+          ],
+          "size": [
+            1,
+            1,
+          ],
+          "type": "Belt",
+          "velocity": 0,
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`world-v2 tryAddEntities add belt loop 2`] = `
+{
+  "left": null,
+  "right": {
+    "derived": {
+      "beltPaths": [
+        {
+          "entities": [
+            {
+              "direction": "WestEast",
+              "id": "0",
+              "invert": true,
+            },
+            {
+              "direction": "WestEast",
+              "id": "1",
+              "invert": true,
+            },
+            {
+              "direction": "NorthEast",
+              "id": "2",
+              "invert": true,
+            },
+            {
+              "direction": "NorthSouth",
+              "id": "3",
+              "invert": true,
+            },
+            {
+              "direction": "NorthSouth",
+              "id": "4",
+              "invert": true,
+            },
+          ],
+          "loop": false,
+        },
+      ],
+      "tiles": {
+        "0.0": {
+          "entityIds": [
+            "4",
+          ],
+        },
+        "0.1": {
+          "entityIds": [
+            "3",
+          ],
+        },
+        "0.2": {
+          "entityIds": [
+            "2",
+          ],
+        },
+        "1.2": {
+          "entityIds": [
+            "1",
+          ],
+        },
+        "2.2": {
+          "entityIds": [
+            "0",
+          ],
+        },
+      },
+    },
+    "nextEntityId": 5,
+    "origin": {
+      "entities": {
+        "0": {
+          "id": "0",
+          "items": [],
+          "offset": 0,
+          "position": [
+            2,
+            2,
+          ],
+          "size": [
+            1,
+            1,
+          ],
+          "type": "Belt",
+          "velocity": 0,
+        },
+        "1": {
+          "id": "1",
+          "items": [],
+          "offset": 0,
+          "position": [
+            1,
+            2,
+          ],
+          "size": [
+            1,
+            1,
+          ],
+          "type": "Belt",
+          "velocity": 0,
+        },
+        "2": {
+          "id": "2",
+          "items": [],
+          "offset": 0,
+          "position": [
+            0,
+            2,
+          ],
+          "size": [
+            1,
+            1,
+          ],
+          "type": "Belt",
+          "velocity": 0,
+        },
+        "3": {
+          "id": "3",
+          "items": [],
+          "offset": 0,
+          "position": [
+            0,
+            1,
+          ],
+          "size": [
+            1,
+            1,
+          ],
+          "type": "Belt",
+          "velocity": 0,
+        },
+        "4": {
+          "id": "4",
+          "items": [],
+          "offset": 0,
+          "position": [
+            0,
+            0,
+          ],
+          "size": [
+            1,
+            1,
+          ],
+          "type": "Belt",
+          "velocity": 0,
+        },
+      },
+    },
+  },
+}
+`;
+
 exports[`world-v2 tryAddEntities add east-south belt 1`] = `
 {
   "left": null,

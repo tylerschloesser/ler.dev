@@ -4,17 +4,16 @@ import { cloneDeep } from 'lodash-es'
 import invariant from 'tiny-invariant'
 import { Vec2 } from './types-common.js'
 import {
-  BeltEntity,
-  Entity,
+  BuildBeltEntity,
+  BuildEntity,
   entityType,
 } from './types-entity.js'
 import { initWorld, tryAddEntities } from './world-v2.js'
 
 function newBelt(
-  args: Partial<BeltEntity> = {},
-): BeltEntity {
+  args: Partial<BuildBeltEntity> = {},
+): BuildBeltEntity {
   return {
-    id: '0',
     type: entityType.enum.Belt,
     items: [],
     position: [0, 0],
@@ -25,14 +24,13 @@ function newBelt(
   }
 }
 
-function newBelts(positions: vec2[]): Entity[] {
-  const entities: Entity[] = []
+function newBelts(positions: vec2[]): BuildBeltEntity[] {
+  const entities: BuildBeltEntity[] = []
   for (let i = 0; i < positions.length; i++) {
     const position = positions.at(i)
     invariant(position !== undefined)
     entities.push(
       newBelt({
-        id: `${i}`,
         // TODO why is this cast needed?
         position: position as Vec2,
       }),
@@ -53,7 +51,7 @@ describe('world-v2', () => {
     test('empty', () => {
       const world = initWorld()
       const expected = cloneDeep(world)
-      const entities: Entity[] = []
+      const entities: BuildEntity[] = []
       const actual = tryAddEntities(world, entities)
       expect(actual.right).toBe(world)
       expect(actual.right).toEqual(expected)
@@ -61,7 +59,7 @@ describe('world-v2', () => {
 
     test('add belt', () => {
       const world = initWorld()
-      const entities: Entity[] = [newBelt()]
+      const entities: BuildEntity[] = [newBelt()]
       expect(
         tryAddEntities(world, entities),
       ).toMatchSnapshot()
@@ -69,7 +67,7 @@ describe('world-v2', () => {
 
     test('replace belt', () => {
       const world = initWorld()
-      const entities: Entity[] = [newBelt()]
+      const entities: BuildEntity[] = [newBelt()]
       expect(
         tryAddEntities(world, entities),
       ).toMatchSnapshot()
@@ -126,6 +124,34 @@ describe('world-v2', () => {
       expect(
         tryAddEntities(world, entities),
       ).toMatchSnapshot()
+    })
+
+    test('add belt loop', () => {
+      const world = initWorld()
+      let actual = tryAddEntities(
+        world,
+        newBelts([
+          [0, 0],
+          [1, 0],
+          [2, 0],
+          [2, 1],
+          [2, 2],
+        ]),
+      )
+      expect(actual).toMatchSnapshot()
+
+      invariant(actual.right)
+      actual = tryAddEntities(
+        actual.right,
+        newBelts([
+          [2, 2],
+          [1, 2],
+          [0, 2],
+          [0, 1],
+          [0, 0],
+        ]),
+      )
+      expect(actual).toMatchSnapshot()
     })
   })
 })

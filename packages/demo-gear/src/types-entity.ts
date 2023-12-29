@@ -25,6 +25,10 @@ export const gearEntity = baseEntity.extend({
   angle: z.number(),
 })
 export type GearEntity = z.infer<typeof gearEntity>
+export const buildGearEntity = gearEntity.omit({ id: true })
+export type BuildGearEntity = z.infer<
+  typeof buildGearEntity
+>
 
 //
 // Belt
@@ -44,6 +48,10 @@ export const beltEntity = baseEntity.extend({
   offset: z.number(),
 })
 export type BeltEntity = z.infer<typeof beltEntity>
+export const buildBeltEntity = beltEntity.omit({ id: true })
+export type BuildBeltEntity = z.infer<
+  typeof buildBeltEntity
+>
 
 //
 // World
@@ -56,7 +64,7 @@ export const entity = z.discriminatedUnion('type', [
 export type Entity = z.infer<typeof entity>
 
 export const buildEntity = z.discriminatedUnion('type', [
-  gearEntity.omit({ id: true }),
-  beltEntity.omit({ id: true }),
+  buildGearEntity,
+  buildBeltEntity,
 ])
 export type BuildEntity = z.infer<typeof buildEntity>
