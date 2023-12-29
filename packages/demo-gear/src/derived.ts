@@ -343,7 +343,7 @@ function getBeltDirection(
     }
   }
 
-  invariant(false, 'TODO')
+  invariant(false)
 }
 
 function* iterateTilesIds(entity: Entity) {
