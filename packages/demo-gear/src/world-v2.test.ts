@@ -117,6 +117,18 @@ describe('world-v2', () => {
       const entities = newBelts([
         [0, 0],
         [0, 1],
+        [0, 2],
+      ])
+      expect(tryAddEntities(world, entities)).toBeNull()
+      expect(world).toMatchSnapshot()
+    })
+
+    test('add inverted north-south belt', () => {
+      const world = initWorld()
+      const entities = newBelts([
+        [0, 2],
+        [0, 1],
+        [0, 0],
       ])
       expect(tryAddEntities(world, entities)).toBeNull()
       expect(world).toMatchSnapshot()

@@ -295,11 +295,19 @@ function getBeltDirection(
   invariant(nextDirection)
   invariant(prevDirection !== nextDirection)
 
+  // prettier-ignore
   switch (prevDirection) {
     case Direction.West: {
       switch (nextDirection) {
         case Direction.East:
           return result(beltDirection.enum.WestEast, false)
+      }
+      break
+    }
+    case Direction.North: {
+      switch (nextDirection) {
+        case Direction.South:
+          return result(beltDirection.enum.NorthSouth, false)
       }
       break
     }
@@ -309,6 +317,12 @@ function getBeltDirection(
           return result(beltDirection.enum.WestEast, true)
       }
       break
+    }
+    case Direction.South: {
+      switch (nextDirection) {
+        case Direction.North:
+          return result(beltDirection.enum.NorthSouth, true)
+      }
     }
   }
 
