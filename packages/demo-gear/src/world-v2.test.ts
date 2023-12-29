@@ -226,6 +226,20 @@ describe('world-v2', () => {
       expect(tryAddEntities(base.right, entities)).toEqual(
         base,
       )
+
+      // occupied tile error
+      expect(
+        tryAddEntities(base.right, [
+          {
+            type: entityType.enum.Gear,
+            angle: 0,
+            layerId: layerId.enum.Layer1,
+            position: [1, 0],
+            size: [2, 2],
+            velocity: 0,
+          },
+        ]),
+      ).toMatchSnapshot()
     })
   })
 })

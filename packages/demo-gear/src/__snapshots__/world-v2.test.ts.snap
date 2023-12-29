@@ -926,6 +926,22 @@ exports[`world-v2 tryAddEntities add gear 1`] = `
 }
 `;
 
+exports[`world-v2 tryAddEntities add gear 2`] = `
+{
+  "left": [
+    {
+      "tileId": "1.0",
+      "type": "occupied-tile",
+    },
+    {
+      "tileId": "1.1",
+      "type": "occupied-tile",
+    },
+  ],
+  "right": null,
+}
+`;
+
 exports[`world-v2 tryAddEntities add inverted east-south belt 1`] = `
 {
   "left": null,
