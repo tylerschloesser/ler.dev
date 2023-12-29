@@ -303,6 +303,8 @@ function getBeltDirection(
           return result(beltDirection.enum.WestEast, false)
         case Direction.North:
           return result(beltDirection.enum.WestNorth, false)
+        case Direction.South:
+          return result(beltDirection.enum.SouthWest, true)
       }
       break
     }
@@ -323,6 +325,8 @@ function getBeltDirection(
           return result(beltDirection.enum.WestEast, true)
         case Direction.North:
           return result(beltDirection.enum.NorthEast, true)
+        case Direction.South:
+          return result(beltDirection.enum.EastSouth, false)
       }
       break
     }
@@ -330,7 +334,12 @@ function getBeltDirection(
       switch (nextDirection) {
         case Direction.North:
           return result(beltDirection.enum.NorthSouth, true)
+        case Direction.East:
+          return result(beltDirection.enum.EastSouth, true)
+        case Direction.West:
+          return result(beltDirection.enum.SouthWest, false)
       }
+      break
     }
   }
 

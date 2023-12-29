@@ -100,6 +100,10 @@ describe('world-v2', () => {
       ['inverted west-north', [[1, -1], [1, 0], [0, 0]]],
       ['north-east', [[0, 0], [0, 1], [1, 1]]],
       ['inverted north-east', [[0, 0], [-1, 0], [-1, -1]]],
+      ['east-south', [[0, 0], [-1, 0], [-1, 1]]],
+      ['inverted east-south', [[0, 0], [0, -1], [1, -1]]],
+      ['south-west', [[0, 0], [1, 0], [1, 1]]],
+      ['inverted south-west', [[0, 0], [0, -1], [-1, -1]]],
     ]
 
     for (const testCase of testCases) {
