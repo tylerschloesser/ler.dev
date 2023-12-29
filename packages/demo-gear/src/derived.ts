@@ -5,6 +5,7 @@ import {
   Either,
 } from './types-common.js'
 import {
+  BeltDirection,
   BeltPath,
   BeltPathEntity,
   Derived,
@@ -207,9 +208,61 @@ function getBeltPath(
         : belts.at(i - 1)
     const next = belts.at(i + 1)
 
+    let direction: BeltDirection | undefined = undefined
+
+    if (prev && next) {
+      const prevDx = belt.position[0] - prev.position[0]
+      const prevDy = belt.position[1] - prev.position[1]
+      invariant(prevDx === 0 || prevDy === 0)
+      // prettier-ignore
+      invariant(prevDx === 1 || prevDx === -1 || prevDy === 1 || prevDy === -1)
+
+      const nextDx = next.position[0] - belt.position[0]
+      const nextDy = next.position[1] - belt.position[1]
+      invariant(nextDx === 0 || nextDy === 0)
+      // prettier-ignore
+      invariant(nextDx === 1 || nextDx === -1 || nextDy === 1 || nextDy === -1)
+
+      // prettier-ignore
+      if ((nextDx === 1 || nextDx === -1) && (prevDx === 1 || prevDx === -1)) {
+        direction = beltDirection.enum.WestEast
+      } else if ((nextDy === 1 || nextDy === -1) && (prevDy === 1 || prevDy === -1)) {
+        direction = beltDirection.enum.NorthSouth
+      }
+    } else if (prev) {
+      const prevDx = belt.position[0] - prev.position[0]
+      const prevDy = belt.position[1] - prev.position[1]
+      invariant(prevDx === 0 || prevDy === 0)
+      // prettier-ignore
+      invariant(prevDx === 1 || prevDx === -1 || prevDy === 1 || prevDy === -1)
+
+      if (prevDx === 1 || prevDx === -1) {
+        direction = beltDirection.enum.WestEast
+      } else {
+        direction = beltDirection.enum.NorthSouth
+      }
+    } else if (next) {
+      const nextDx = next.position[0] - belt.position[0]
+      const nextDy = next.position[1] - belt.position[1]
+      invariant(nextDx === 0 || nextDy === 0)
+      // prettier-ignore
+      invariant(nextDx === 1 || nextDx === -1 || nextDy === 1 || nextDy === -1)
+
+      if (nextDx === 1 || nextDx === -1) {
+        direction = beltDirection.enum.WestEast
+      } else {
+        direction = beltDirection.enum.NorthSouth
+      }
+    } else {
+      // lone belts are horizontal by default
+      direction = beltDirection.enum.WestEast
+    }
+
+    invariant(direction)
+
     entities.push({
       id: belt.id,
-      direction: beltDirection.enum.WestEast,
+      direction,
       invert: false,
     })
   }

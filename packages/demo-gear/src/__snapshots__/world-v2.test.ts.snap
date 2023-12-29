@@ -137,12 +137,12 @@ exports[`world-v2 tryAddEntities add two connected vertical belts 1`] = `
       {
         "entities": [
           {
-            "direction": "WestEast",
+            "direction": "NorthSouth",
             "id": "1",
             "invert": false,
           },
           {
-            "direction": "WestEast",
+            "direction": "NorthSouth",
             "id": "0",
             "invert": false,
           },
