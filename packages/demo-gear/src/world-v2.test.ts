@@ -2,7 +2,7 @@ import { describe, expect, test } from '@jest/globals'
 import { vec2 } from 'gl-matrix'
 import { cloneDeep } from 'lodash-es'
 import invariant from 'tiny-invariant'
-import { Vec2 } from './types-common.js'
+import { Vec2, layerId } from './types-common.js'
 import {
   BuildBeltEntity,
   BuildEntity,
@@ -15,6 +15,7 @@ function newBelt(
 ): BuildBeltEntity {
   return {
     type: entityType.enum.Belt,
+    layerIds: [layerId.enum.Layer1],
     items: [],
     position: [0, 0],
     size: [1, 1],

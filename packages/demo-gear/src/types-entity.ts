@@ -1,5 +1,5 @@
 import * as z from 'zod'
-import { vec2 } from './types-common.js'
+import { layerId, vec2 } from './types-common.js'
 
 export const entityType = z.enum(['Gear', 'Belt'])
 export type EntityType = z.infer<typeof entityType>
@@ -9,6 +9,7 @@ export type EntityId = z.infer<typeof entityId>
 
 export const baseEntity = z.strictObject({
   id: entityId,
+  layerIds: z.array(layerId),
   position: vec2,
   size: vec2,
 })
