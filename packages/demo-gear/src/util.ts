@@ -898,7 +898,8 @@ export function updateBeltPathsForRoots(
       const belt = getBelt(beltId)
       switch (belt.direction) {
         case BeltDirection.enum.NorthWest: {
-          invariant(i !== 0)
+          // if loop, the previous belt is -1
+          invariant(i !== 0 || loop)
           const prevId = beltIds.at(i - 1)
           invariant(prevId)
           const prev = getBelt(prevId)
@@ -920,7 +921,8 @@ export function updateBeltPathsForRoots(
           break
         }
         case BeltDirection.enum.SouthEast: {
-          invariant(i !== 0)
+          // if loop, the previous belt is -1
+          invariant(i !== 0 || loop)
           const prevId = beltIds.at(i - 1)
           invariant(prevId)
           const prev = getBelt(prevId)

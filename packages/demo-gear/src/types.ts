@@ -229,6 +229,7 @@ export type World = z.infer<typeof World>
 
 export enum HandType {
   Build = 'build',
+  BuildV2 = 'build-v2',
   ApplyForce = 'apply-force',
   ApplyFriction = 'apply-friction',
   Configure = 'configure',
@@ -270,6 +271,10 @@ export interface BuildHand {
   // TODO refactor this to not be part of build hand!
   // only applies to gears
   action?: Action
+}
+
+export interface BuildV2Hand {
+  type: HandType.BuildV2
 }
 
 export interface ApplyForceHand {
