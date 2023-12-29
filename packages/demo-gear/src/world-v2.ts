@@ -1,7 +1,6 @@
-import { cloneDeep } from 'lodash-es'
 import invariant from 'tiny-invariant'
 import { Vec2 } from './types-common.js'
-import { Derived } from './types-derived.js'
+import { Derived, BeltPath } from './types-derived.js'
 import { Entity, EntityId } from './types-entity.js'
 import { Origin } from './types-origin.js'
 import { World } from './types-world.js'
@@ -65,15 +64,13 @@ function initOrigin(): Origin {
 }
 
 function initDerived(origin: Origin): Derived {
+  const beltPaths: BeltPath[] = []
+
   return {
-    beltPaths: [],
+    beltPaths,
     tiles: {},
     nextEntityId: 0,
   }
-}
-
-function cloneOrigin(origin: Origin): Origin {
-  return cloneDeep(origin)
 }
 
 function isVec2Equal(a: Vec2, b: Vec2): boolean {

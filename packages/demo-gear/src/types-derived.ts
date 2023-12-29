@@ -34,11 +34,13 @@ export const beltPathEntity = z.strictObject({
   direction: beltDirection,
   invert: z.boolean(),
 })
+export type BeltPathEntity = z.infer<typeof beltPathEntity>
 
 export const beltPath = z.strictObject({
   entities: z.array(beltPathEntity),
   loop: z.boolean(),
 })
+export type BeltPath = z.infer<typeof beltPath>
 
 export const derived = z.strictObject({
   tiles: z.record(tileId, tile),
