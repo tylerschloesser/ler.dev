@@ -5,7 +5,13 @@ exports[`world-v2 addEntities add belt 1`] = `
   "derived": {
     "beltPaths": [],
     "nextEntityId": 0,
-    "tiles": {},
+    "tiles": {
+      "0.0": {
+        "entityIds": [
+          "0",
+        ],
+      },
+    },
   },
   "origin": {
     "entities": {
@@ -47,7 +53,13 @@ exports[`world-v2 addEntities replace belt 1`] = `
   "derived": {
     "beltPaths": [],
     "nextEntityId": 0,
-    "tiles": {},
+    "tiles": {
+      "0.0": {
+        "entityIds": [
+          "0",
+        ],
+      },
+    },
   },
   "origin": {
     "entities": {
