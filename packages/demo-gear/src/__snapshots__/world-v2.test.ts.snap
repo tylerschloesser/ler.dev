@@ -1,5 +1,18 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`world-v2 addEntities empty 1`] = `
+{
+  "derived": {
+    "beltPaths": [],
+    "nextEntityId": 0,
+    "tiles": {},
+  },
+  "origin": {
+    "entities": {},
+  },
+}
+`;
+
 exports[`world-v2 initWorld new world 1`] = `
 {
   "derived": {

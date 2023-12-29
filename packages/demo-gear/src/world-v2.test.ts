@@ -1,6 +1,6 @@
 import { describe, expect, test } from '@jest/globals'
 import { Entity } from './types-entity.js'
-import { initWorld, tryAddEntities } from './world-v2.js'
+import { initWorld, addEntities } from './world-v2.js'
 
 describe('world-v2', () => {
   describe('initWorld', () => {
@@ -10,12 +10,17 @@ describe('world-v2', () => {
     })
   })
 
-  describe('tryAddEntities', () => {
-    test('todo', () => {
+  describe('addEntities', () => {
+    test('empty', () => {
       const world = initWorld()
+      const { origin, derived } = world
       const entities: Entity[] = []
-      const actual = tryAddEntities(world, entities)
-      expect(actual).toBe(true)
+      addEntities(world, entities)
+
+      expect(origin).toBe(world.origin)
+      expect(derived).not.toBe(world.derived)
+
+      expect(world).toMatchSnapshot()
     })
   })
 })
