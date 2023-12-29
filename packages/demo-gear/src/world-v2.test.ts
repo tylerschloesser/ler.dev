@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals'
-import { Entity } from './types-entity.js'
+import { Entity, entityType } from './types-entity.js'
 import { initWorld, addEntities } from './world-v2.js'
 
 describe('world-v2', () => {
@@ -20,6 +20,23 @@ describe('world-v2', () => {
       expect(origin).toBe(world.origin)
       expect(derived).not.toBe(world.derived)
 
+      expect(world).toMatchSnapshot()
+    })
+
+    test('one belt', () => {
+      const world = initWorld()
+      const entities: Entity[] = [
+        {
+          id: '0',
+          type: entityType.enum.Belt,
+          items: [],
+          position: [0, 0],
+          size: [1, 1],
+          velocity: 0,
+          offset: 0,
+        },
+      ]
+      addEntities(world, entities)
       expect(world).toMatchSnapshot()
     })
   })

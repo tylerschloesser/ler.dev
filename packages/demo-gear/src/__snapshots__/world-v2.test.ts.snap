@@ -13,6 +13,35 @@ exports[`world-v2 addEntities empty 1`] = `
 }
 `;
 
+exports[`world-v2 addEntities one belt 1`] = `
+{
+  "derived": {
+    "beltPaths": [],
+    "nextEntityId": 0,
+    "tiles": {},
+  },
+  "origin": {
+    "entities": {
+      "0": {
+        "id": "0",
+        "items": [],
+        "offset": 0,
+        "position": [
+          0,
+          0,
+        ],
+        "size": [
+          1,
+          1,
+        ],
+        "type": "Belt",
+        "velocity": 0,
+      },
+    },
+  },
+}
+`;
+
 exports[`world-v2 initWorld new world 1`] = `
 {
   "derived": {
