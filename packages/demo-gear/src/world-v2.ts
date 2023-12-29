@@ -3,9 +3,11 @@ import { Origin } from './types-origin.js'
 import { World } from './types-world.js'
 
 export function initWorld(): World {
+  const origin = initOrigin()
+  const derived = initDerived(origin)
   return {
-    origin: initOrigin(),
-    derived: initDerived(),
+    origin,
+    derived,
   }
 }
 
@@ -15,7 +17,7 @@ function initOrigin(): Origin {
   }
 }
 
-function initDerived(): Derived {
+function initDerived(origin: Origin): Derived {
   return {
     beltPaths: [],
     tiles: {},
