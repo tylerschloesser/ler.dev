@@ -1,6 +1,10 @@
 import invariant from 'tiny-invariant'
 import { initBeltPaths, initTiles } from './derived.js'
-import { Vec2 } from './types-common.js'
+import {
+  DerivedError,
+  Either,
+  Vec2,
+} from './types-common.js'
 import { Derived } from './types-derived.js'
 import { Entity, EntityId } from './types-entity.js'
 import { Origin } from './types-origin.js'
@@ -9,9 +13,10 @@ import { World } from './types-world.js'
 export function initWorld(): World {
   const origin = initOrigin()
   const derived = initDerived(origin)
+  invariant(derived.right)
   return {
     origin,
-    derived,
+    derived: derived.right,
   }
 }
 
@@ -31,7 +36,9 @@ export function addEntities(
     }
   }
 
-  world.derived = initDerived(origin)
+  const derived = initDerived(origin)
+  invariant(derived.right)
+  world.derived = derived.right
 }
 
 function validateEntitiesToAdd(entities: Entity[]): void {
@@ -64,13 +71,22 @@ function initOrigin(): Origin {
   }
 }
 
-function initDerived(origin: Origin): Derived {
+function initDerived(
+  origin: Origin,
+): Either<DerivedError, Derived> {
   const tiles = initTiles(origin)
   const beltPaths = initBeltPaths(origin, tiles)
+  if (beltPaths.left) {
+    return beltPaths
+  }
+  invariant(beltPaths.right)
   return {
-    beltPaths,
-    tiles,
-    nextEntityId: 0,
+    left: null,
+    right: {
+      beltPaths: beltPaths.right,
+      tiles,
+      nextEntityId: 0,
+    },
   }
 }
 
