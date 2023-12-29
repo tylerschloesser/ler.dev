@@ -6,7 +6,9 @@ import {
 } from './types-entity.js'
 import { initWorld, addEntities } from './world-v2.js'
 
-function newBelt(): BeltEntity {
+function newBelt(
+  args: Partial<BeltEntity> = {},
+): BeltEntity {
   return {
     id: '0',
     type: entityType.enum.Belt,
@@ -15,6 +17,7 @@ function newBelt(): BeltEntity {
     size: [1, 1],
     velocity: 0,
     offset: 0,
+    ...args,
   }
 }
 
@@ -50,6 +53,22 @@ describe('world-v2', () => {
       const world = initWorld()
       const entities: Entity[] = [newBelt()]
       addEntities(world, entities)
+      addEntities(world, entities)
+      expect(world).toMatchSnapshot()
+    })
+
+    test('add two disconnected belts', () => {
+      const world = initWorld()
+      const entities: Entity[] = [
+        newBelt({
+          id: '0',
+          position: [0, 0],
+        }),
+        newBelt({
+          id: '1',
+          position: [2, 0],
+        }),
+      ]
       addEntities(world, entities)
       expect(world).toMatchSnapshot()
     })

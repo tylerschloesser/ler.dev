@@ -50,7 +50,7 @@ export function initBeltPaths(
     }
 
     const beltPath = getBeltPath(origin, tiles, root)
-    for (const entityId of Object.keys(beltPath.entities)) {
+    for (const { id: entityId } of beltPath.entities) {
       invariant(!seen.has(entityId))
       seen.add(entityId)
     }
