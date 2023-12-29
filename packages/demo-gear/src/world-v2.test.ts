@@ -15,7 +15,7 @@ function newBelt(
 ): BuildBeltEntity {
   return {
     type: entityType.enum.Belt,
-    layerIds: [layerId.enum.Layer1],
+    layerId: layerId.enum.Layer1,
     items: [],
     position: [0, 0],
     size: [1, 1],

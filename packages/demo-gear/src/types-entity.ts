@@ -9,7 +9,7 @@ export type EntityId = z.infer<typeof entityId>
 
 export const baseEntity = z.strictObject({
   id: entityId,
-  layerIds: z.array(layerId),
+  layerId,
   position: vec2,
   size: vec2,
 })

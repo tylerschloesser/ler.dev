@@ -42,9 +42,7 @@ exports[`world-v2 tryAddEntities add belt 1`] = `
         "0": {
           "id": "0",
           "items": [],
-          "layerIds": [
-            "Layer1",
-          ],
+          "layerId": "Layer1",
           "offset": 0,
           "position": [
             0,
@@ -124,9 +122,7 @@ exports[`world-v2 tryAddEntities add belt loop 1`] = `
         "0": {
           "id": "0",
           "items": [],
-          "layerIds": [
-            "Layer1",
-          ],
+          "layerId": "Layer1",
           "offset": 0,
           "position": [
             0,
@@ -142,9 +138,7 @@ exports[`world-v2 tryAddEntities add belt loop 1`] = `
         "1": {
           "id": "1",
           "items": [],
-          "layerIds": [
-            "Layer1",
-          ],
+          "layerId": "Layer1",
           "offset": 0,
           "position": [
             1,
@@ -160,9 +154,7 @@ exports[`world-v2 tryAddEntities add belt loop 1`] = `
         "2": {
           "id": "2",
           "items": [],
-          "layerIds": [
-            "Layer1",
-          ],
+          "layerId": "Layer1",
           "offset": 0,
           "position": [
             2,
@@ -178,9 +170,7 @@ exports[`world-v2 tryAddEntities add belt loop 1`] = `
         "3": {
           "id": "3",
           "items": [],
-          "layerIds": [
-            "Layer1",
-          ],
+          "layerId": "Layer1",
           "offset": 0,
           "position": [
             2,
@@ -196,9 +186,7 @@ exports[`world-v2 tryAddEntities add belt loop 1`] = `
         "4": {
           "id": "4",
           "items": [],
-          "layerIds": [
-            "Layer1",
-          ],
+          "layerId": "Layer1",
           "offset": 0,
           "position": [
             2,
@@ -302,9 +290,7 @@ exports[`world-v2 tryAddEntities add belt loop 2`] = `
         "0": {
           "id": "0",
           "items": [],
-          "layerIds": [
-            "Layer1",
-          ],
+          "layerId": "Layer1",
           "offset": 0,
           "position": [
             0,
@@ -320,9 +306,7 @@ exports[`world-v2 tryAddEntities add belt loop 2`] = `
         "1": {
           "id": "1",
           "items": [],
-          "layerIds": [
-            "Layer1",
-          ],
+          "layerId": "Layer1",
           "offset": 0,
           "position": [
             1,
@@ -338,9 +322,7 @@ exports[`world-v2 tryAddEntities add belt loop 2`] = `
         "2": {
           "id": "2",
           "items": [],
-          "layerIds": [
-            "Layer1",
-          ],
+          "layerId": "Layer1",
           "offset": 0,
           "position": [
             2,
@@ -356,9 +338,7 @@ exports[`world-v2 tryAddEntities add belt loop 2`] = `
         "3": {
           "id": "3",
           "items": [],
-          "layerIds": [
-            "Layer1",
-          ],
+          "layerId": "Layer1",
           "offset": 0,
           "position": [
             2,
@@ -374,9 +354,7 @@ exports[`world-v2 tryAddEntities add belt loop 2`] = `
         "4": {
           "id": "4",
           "items": [],
-          "layerIds": [
-            "Layer1",
-          ],
+          "layerId": "Layer1",
           "offset": 0,
           "position": [
             2,
@@ -392,9 +370,7 @@ exports[`world-v2 tryAddEntities add belt loop 2`] = `
         "5": {
           "id": "5",
           "items": [],
-          "layerIds": [
-            "Layer1",
-          ],
+          "layerId": "Layer1",
           "offset": 0,
           "position": [
             1,
@@ -410,9 +386,7 @@ exports[`world-v2 tryAddEntities add belt loop 2`] = `
         "6": {
           "id": "6",
           "items": [],
-          "layerIds": [
-            "Layer1",
-          ],
+          "layerId": "Layer1",
           "offset": 0,
           "position": [
             0,
@@ -428,9 +402,7 @@ exports[`world-v2 tryAddEntities add belt loop 2`] = `
         "7": {
           "id": "7",
           "items": [],
-          "layerIds": [
-            "Layer1",
-          ],
+          "layerId": "Layer1",
           "offset": 0,
           "position": [
             0,
@@ -494,9 +466,7 @@ exports[`world-v2 tryAddEntities add east-south belt 1`] = `
         "0": {
           "id": "0",
           "items": [],
-          "layerIds": [
-            "Layer1",
-          ],
+          "layerId": "Layer1",
           "offset": 0,
           "position": [
             0,
@@ -512,9 +482,7 @@ exports[`world-v2 tryAddEntities add east-south belt 1`] = `
         "1": {
           "id": "1",
           "items": [],
-          "layerIds": [
-            "Layer1",
-          ],
+          "layerId": "Layer1",
           "offset": 0,
           "position": [
             -1,
@@ -530,9 +498,7 @@ exports[`world-v2 tryAddEntities add east-south belt 1`] = `
         "2": {
           "id": "2",
           "items": [],
-          "layerIds": [
-            "Layer1",
-          ],
+          "layerId": "Layer1",
           "offset": 0,
           "position": [
             -1,
@@ -596,9 +562,7 @@ exports[`world-v2 tryAddEntities add inverted east-south belt 1`] = `
         "0": {
           "id": "0",
           "items": [],
-          "layerIds": [
-            "Layer1",
-          ],
+          "layerId": "Layer1",
           "offset": 0,
           "position": [
             0,
@@ -614,9 +578,7 @@ exports[`world-v2 tryAddEntities add inverted east-south belt 1`] = `
         "1": {
           "id": "1",
           "items": [],
-          "layerIds": [
-            "Layer1",
-          ],
+          "layerId": "Layer1",
           "offset": 0,
           "position": [
             0,
@@ -632,9 +594,7 @@ exports[`world-v2 tryAddEntities add inverted east-south belt 1`] = `
         "2": {
           "id": "2",
           "items": [],
-          "layerIds": [
-            "Layer1",
-          ],
+          "layerId": "Layer1",
           "offset": 0,
           "position": [
             1,
@@ -698,9 +658,7 @@ exports[`world-v2 tryAddEntities add inverted north-east belt 1`] = `
         "0": {
           "id": "0",
           "items": [],
-          "layerIds": [
-            "Layer1",
-          ],
+          "layerId": "Layer1",
           "offset": 0,
           "position": [
             0,
@@ -716,9 +674,7 @@ exports[`world-v2 tryAddEntities add inverted north-east belt 1`] = `
         "1": {
           "id": "1",
           "items": [],
-          "layerIds": [
-            "Layer1",
-          ],
+          "layerId": "Layer1",
           "offset": 0,
           "position": [
             -1,
@@ -734,9 +690,7 @@ exports[`world-v2 tryAddEntities add inverted north-east belt 1`] = `
         "2": {
           "id": "2",
           "items": [],
-          "layerIds": [
-            "Layer1",
-          ],
+          "layerId": "Layer1",
           "offset": 0,
           "position": [
             -1,
@@ -800,9 +754,7 @@ exports[`world-v2 tryAddEntities add inverted north-south belt 1`] = `
         "0": {
           "id": "0",
           "items": [],
-          "layerIds": [
-            "Layer1",
-          ],
+          "layerId": "Layer1",
           "offset": 0,
           "position": [
             0,
@@ -818,9 +770,7 @@ exports[`world-v2 tryAddEntities add inverted north-south belt 1`] = `
         "1": {
           "id": "1",
           "items": [],
-          "layerIds": [
-            "Layer1",
-          ],
+          "layerId": "Layer1",
           "offset": 0,
           "position": [
             0,
@@ -836,9 +786,7 @@ exports[`world-v2 tryAddEntities add inverted north-south belt 1`] = `
         "2": {
           "id": "2",
           "items": [],
-          "layerIds": [
-            "Layer1",
-          ],
+          "layerId": "Layer1",
           "offset": 0,
           "position": [
             0,
@@ -902,9 +850,7 @@ exports[`world-v2 tryAddEntities add inverted south-west belt 1`] = `
         "0": {
           "id": "0",
           "items": [],
-          "layerIds": [
-            "Layer1",
-          ],
+          "layerId": "Layer1",
           "offset": 0,
           "position": [
             0,
@@ -920,9 +866,7 @@ exports[`world-v2 tryAddEntities add inverted south-west belt 1`] = `
         "1": {
           "id": "1",
           "items": [],
-          "layerIds": [
-            "Layer1",
-          ],
+          "layerId": "Layer1",
           "offset": 0,
           "position": [
             0,
@@ -938,9 +882,7 @@ exports[`world-v2 tryAddEntities add inverted south-west belt 1`] = `
         "2": {
           "id": "2",
           "items": [],
-          "layerIds": [
-            "Layer1",
-          ],
+          "layerId": "Layer1",
           "offset": 0,
           "position": [
             -1,
@@ -1004,9 +946,7 @@ exports[`world-v2 tryAddEntities add inverted west-east belt 1`] = `
         "0": {
           "id": "0",
           "items": [],
-          "layerIds": [
-            "Layer1",
-          ],
+          "layerId": "Layer1",
           "offset": 0,
           "position": [
             2,
@@ -1022,9 +962,7 @@ exports[`world-v2 tryAddEntities add inverted west-east belt 1`] = `
         "1": {
           "id": "1",
           "items": [],
-          "layerIds": [
-            "Layer1",
-          ],
+          "layerId": "Layer1",
           "offset": 0,
           "position": [
             1,
@@ -1040,9 +978,7 @@ exports[`world-v2 tryAddEntities add inverted west-east belt 1`] = `
         "2": {
           "id": "2",
           "items": [],
-          "layerIds": [
-            "Layer1",
-          ],
+          "layerId": "Layer1",
           "offset": 0,
           "position": [
             0,
@@ -1106,9 +1042,7 @@ exports[`world-v2 tryAddEntities add inverted west-north belt 1`] = `
         "0": {
           "id": "0",
           "items": [],
-          "layerIds": [
-            "Layer1",
-          ],
+          "layerId": "Layer1",
           "offset": 0,
           "position": [
             1,
@@ -1124,9 +1058,7 @@ exports[`world-v2 tryAddEntities add inverted west-north belt 1`] = `
         "1": {
           "id": "1",
           "items": [],
-          "layerIds": [
-            "Layer1",
-          ],
+          "layerId": "Layer1",
           "offset": 0,
           "position": [
             1,
@@ -1142,9 +1074,7 @@ exports[`world-v2 tryAddEntities add inverted west-north belt 1`] = `
         "2": {
           "id": "2",
           "items": [],
-          "layerIds": [
-            "Layer1",
-          ],
+          "layerId": "Layer1",
           "offset": 0,
           "position": [
             0,
@@ -1208,9 +1138,7 @@ exports[`world-v2 tryAddEntities add north-east belt 1`] = `
         "0": {
           "id": "0",
           "items": [],
-          "layerIds": [
-            "Layer1",
-          ],
+          "layerId": "Layer1",
           "offset": 0,
           "position": [
             0,
@@ -1226,9 +1154,7 @@ exports[`world-v2 tryAddEntities add north-east belt 1`] = `
         "1": {
           "id": "1",
           "items": [],
-          "layerIds": [
-            "Layer1",
-          ],
+          "layerId": "Layer1",
           "offset": 0,
           "position": [
             0,
@@ -1244,9 +1170,7 @@ exports[`world-v2 tryAddEntities add north-east belt 1`] = `
         "2": {
           "id": "2",
           "items": [],
-          "layerIds": [
-            "Layer1",
-          ],
+          "layerId": "Layer1",
           "offset": 0,
           "position": [
             1,
@@ -1310,9 +1234,7 @@ exports[`world-v2 tryAddEntities add north-south belt 1`] = `
         "0": {
           "id": "0",
           "items": [],
-          "layerIds": [
-            "Layer1",
-          ],
+          "layerId": "Layer1",
           "offset": 0,
           "position": [
             0,
@@ -1328,9 +1250,7 @@ exports[`world-v2 tryAddEntities add north-south belt 1`] = `
         "1": {
           "id": "1",
           "items": [],
-          "layerIds": [
-            "Layer1",
-          ],
+          "layerId": "Layer1",
           "offset": 0,
           "position": [
             0,
@@ -1346,9 +1266,7 @@ exports[`world-v2 tryAddEntities add north-south belt 1`] = `
         "2": {
           "id": "2",
           "items": [],
-          "layerIds": [
-            "Layer1",
-          ],
+          "layerId": "Layer1",
           "offset": 0,
           "position": [
             0,
@@ -1412,9 +1330,7 @@ exports[`world-v2 tryAddEntities add south-west belt 1`] = `
         "0": {
           "id": "0",
           "items": [],
-          "layerIds": [
-            "Layer1",
-          ],
+          "layerId": "Layer1",
           "offset": 0,
           "position": [
             0,
@@ -1430,9 +1346,7 @@ exports[`world-v2 tryAddEntities add south-west belt 1`] = `
         "1": {
           "id": "1",
           "items": [],
-          "layerIds": [
-            "Layer1",
-          ],
+          "layerId": "Layer1",
           "offset": 0,
           "position": [
             1,
@@ -1448,9 +1362,7 @@ exports[`world-v2 tryAddEntities add south-west belt 1`] = `
         "2": {
           "id": "2",
           "items": [],
-          "layerIds": [
-            "Layer1",
-          ],
+          "layerId": "Layer1",
           "offset": 0,
           "position": [
             1,
@@ -1511,9 +1423,7 @@ exports[`world-v2 tryAddEntities add two disconnected belts 1`] = `
         "0": {
           "id": "0",
           "items": [],
-          "layerIds": [
-            "Layer1",
-          ],
+          "layerId": "Layer1",
           "offset": 0,
           "position": [
             0,
@@ -1529,9 +1439,7 @@ exports[`world-v2 tryAddEntities add two disconnected belts 1`] = `
         "1": {
           "id": "1",
           "items": [],
-          "layerIds": [
-            "Layer1",
-          ],
+          "layerId": "Layer1",
           "offset": 0,
           "position": [
             2,
@@ -1595,9 +1503,7 @@ exports[`world-v2 tryAddEntities add west-east belt 1`] = `
         "0": {
           "id": "0",
           "items": [],
-          "layerIds": [
-            "Layer1",
-          ],
+          "layerId": "Layer1",
           "offset": 0,
           "position": [
             0,
@@ -1613,9 +1519,7 @@ exports[`world-v2 tryAddEntities add west-east belt 1`] = `
         "1": {
           "id": "1",
           "items": [],
-          "layerIds": [
-            "Layer1",
-          ],
+          "layerId": "Layer1",
           "offset": 0,
           "position": [
             1,
@@ -1631,9 +1535,7 @@ exports[`world-v2 tryAddEntities add west-east belt 1`] = `
         "2": {
           "id": "2",
           "items": [],
-          "layerIds": [
-            "Layer1",
-          ],
+          "layerId": "Layer1",
           "offset": 0,
           "position": [
             2,
@@ -1697,9 +1599,7 @@ exports[`world-v2 tryAddEntities add west-north belt 1`] = `
         "0": {
           "id": "0",
           "items": [],
-          "layerIds": [
-            "Layer1",
-          ],
+          "layerId": "Layer1",
           "offset": 0,
           "position": [
             0,
@@ -1715,9 +1615,7 @@ exports[`world-v2 tryAddEntities add west-north belt 1`] = `
         "1": {
           "id": "1",
           "items": [],
-          "layerIds": [
-            "Layer1",
-          ],
+          "layerId": "Layer1",
           "offset": 0,
           "position": [
             1,
@@ -1733,9 +1631,7 @@ exports[`world-v2 tryAddEntities add west-north belt 1`] = `
         "2": {
           "id": "2",
           "items": [],
-          "layerIds": [
-            "Layer1",
-          ],
+          "layerId": "Layer1",
           "offset": 0,
           "position": [
             1,
@@ -1798,9 +1694,7 @@ exports[`world-v2 tryAddEntities replace belt 1`] = `
         "0": {
           "id": "0",
           "items": [],
-          "layerIds": [
-            "Layer1",
-          ],
+          "layerId": "Layer1",
           "offset": 0,
           "position": [
             0,
@@ -1848,9 +1742,7 @@ exports[`world-v2 tryAddEntities replace belt 2`] = `
         "0": {
           "id": "0",
           "items": [],
-          "layerIds": [
-            "Layer1",
-          ],
+          "layerId": "Layer1",
           "offset": 0,
           "position": [
             0,
