@@ -72,5 +72,21 @@ describe('world-v2', () => {
       addEntities(world, entities)
       expect(world).toMatchSnapshot()
     })
+
+    test('add two connected belts', () => {
+      const world = initWorld()
+      const entities: Entity[] = [
+        newBelt({
+          id: '0',
+          position: [0, 0],
+        }),
+        newBelt({
+          id: '1',
+          position: [1, 0],
+        }),
+      ]
+      addEntities(world, entities)
+      expect(world).toMatchSnapshot()
+    })
   })
 })

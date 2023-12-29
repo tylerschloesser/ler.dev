@@ -1,0 +1,10 @@
+{
+  "configurations": [
+  {
+    "request":"attach",
+    "name": "Attach to Remote",
+    "port": 9229,
+    "type": "node"
+  }
+  ]
+}

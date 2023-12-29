@@ -46,6 +46,77 @@ exports[`world-v2 addEntities add belt 1`] = `
 }
 `;
 
+exports[`world-v2 addEntities add two connected belts 1`] = `
+{
+  "derived": {
+    "beltPaths": [
+      {
+        "entities": [
+          {
+            "direction": "WestEast",
+            "id": "1",
+            "invert": false,
+          },
+          {
+            "direction": "WestEast",
+            "id": "0",
+            "invert": false,
+          },
+        ],
+        "loop": false,
+      },
+    ],
+    "nextEntityId": 0,
+    "tiles": {
+      "0.0": {
+        "entityIds": [
+          "0",
+        ],
+      },
+      "1.0": {
+        "entityIds": [
+          "1",
+        ],
+      },
+    },
+  },
+  "origin": {
+    "entities": {
+      "0": {
+        "id": "0",
+        "items": [],
+        "offset": 0,
+        "position": [
+          0,
+          0,
+        ],
+        "size": [
+          1,
+          1,
+        ],
+        "type": "Belt",
+        "velocity": 0,
+      },
+      "1": {
+        "id": "1",
+        "items": [],
+        "offset": 0,
+        "position": [
+          1,
+          0,
+        ],
+        "size": [
+          1,
+          1,
+        ],
+        "type": "Belt",
+        "velocity": 0,
+      },
+    },
+  },
+}
+`;
+
 exports[`world-v2 addEntities add two disconnected belts 1`] = `
 {
   "derived": {
