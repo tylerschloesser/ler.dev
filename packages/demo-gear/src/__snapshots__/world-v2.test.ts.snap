@@ -67,12 +67,17 @@ exports[`world-v2 tryAddEntities add inverted west-east belt 1`] = `
         "entities": [
           {
             "direction": "WestEast",
-            "id": "1",
-            "invert": false,
+            "id": "0",
+            "invert": true,
           },
           {
             "direction": "WestEast",
-            "id": "0",
+            "id": "1",
+            "invert": true,
+          },
+          {
+            "direction": "WestEast",
+            "id": "2",
             "invert": true,
           },
         ],
@@ -83,10 +88,15 @@ exports[`world-v2 tryAddEntities add inverted west-east belt 1`] = `
     "tiles": {
       "0.0": {
         "entityIds": [
-          "1",
+          "2",
         ],
       },
       "1.0": {
+        "entityIds": [
+          "1",
+        ],
+      },
+      "2.0": {
         "entityIds": [
           "0",
         ],
@@ -100,7 +110,7 @@ exports[`world-v2 tryAddEntities add inverted west-east belt 1`] = `
         "items": [],
         "offset": 0,
         "position": [
-          1,
+          2,
           0,
         ],
         "size": [
@@ -112,6 +122,21 @@ exports[`world-v2 tryAddEntities add inverted west-east belt 1`] = `
       },
       "1": {
         "id": "1",
+        "items": [],
+        "offset": 0,
+        "position": [
+          1,
+          0,
+        ],
+        "size": [
+          1,
+          1,
+        ],
+        "type": "Belt",
+        "velocity": 0,
+      },
+      "2": {
+        "id": "2",
         "items": [],
         "offset": 0,
         "position": [
@@ -138,12 +163,12 @@ exports[`world-v2 tryAddEntities add north-south belt 1`] = `
         "entities": [
           {
             "direction": "NorthSouth",
-            "id": "1",
+            "id": "0",
             "invert": false,
           },
           {
             "direction": "NorthSouth",
-            "id": "0",
+            "id": "1",
             "invert": false,
           },
         ],
@@ -208,8 +233,8 @@ exports[`world-v2 tryAddEntities add north-west belt 1`] = `
       {
         "entities": [
           {
-            "direction": "WestEast",
-            "id": "2",
+            "direction": "NorthSouth",
+            "id": "0",
             "invert": false,
           },
           {
@@ -218,9 +243,9 @@ exports[`world-v2 tryAddEntities add north-west belt 1`] = `
             "invert": false,
           },
           {
-            "direction": "NorthSouth",
-            "id": "0",
-            "invert": false,
+            "direction": "WestEast",
+            "id": "2",
+            "invert": true,
           },
         ],
         "loop": false,
@@ -381,12 +406,17 @@ exports[`world-v2 tryAddEntities add west-east belt 1`] = `
         "entities": [
           {
             "direction": "WestEast",
-            "id": "1",
-            "invert": true,
+            "id": "0",
+            "invert": false,
           },
           {
             "direction": "WestEast",
-            "id": "0",
+            "id": "1",
+            "invert": false,
+          },
+          {
+            "direction": "WestEast",
+            "id": "2",
             "invert": false,
           },
         ],
@@ -403,6 +433,11 @@ exports[`world-v2 tryAddEntities add west-east belt 1`] = `
       "1.0": {
         "entityIds": [
           "1",
+        ],
+      },
+      "2.0": {
+        "entityIds": [
+          "2",
         ],
       },
     },
@@ -439,6 +474,21 @@ exports[`world-v2 tryAddEntities add west-east belt 1`] = `
         "type": "Belt",
         "velocity": 0,
       },
+      "2": {
+        "id": "2",
+        "items": [],
+        "offset": 0,
+        "position": [
+          2,
+          0,
+        ],
+        "size": [
+          1,
+          1,
+        ],
+        "type": "Belt",
+        "velocity": 0,
+      },
     },
   },
 }
@@ -451,8 +501,8 @@ exports[`world-v2 tryAddEntities add west-north belt 1`] = `
       {
         "entities": [
           {
-            "direction": "NorthSouth",
-            "id": "2",
+            "direction": "WestEast",
+            "id": "0",
             "invert": false,
           },
           {
@@ -461,8 +511,8 @@ exports[`world-v2 tryAddEntities add west-north belt 1`] = `
             "invert": false,
           },
           {
-            "direction": "WestEast",
-            "id": "0",
+            "direction": "NorthSouth",
+            "id": "2",
             "invert": false,
           },
         ],
