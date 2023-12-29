@@ -74,6 +74,10 @@ function updateEntity(
       invariant(existing.type === entityType.enum.Belt)
       break
     }
+    case entityType.enum.Gear: {
+      invariant(existing.type === entityType.enum.Gear)
+      break
+    }
     default: {
       invariant(false)
     }

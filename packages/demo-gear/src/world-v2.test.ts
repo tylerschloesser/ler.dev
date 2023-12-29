@@ -218,9 +218,13 @@ describe('world-v2', () => {
           velocity: 0,
         },
       ]
-      expect(
-        tryAddEntities(world, entities),
-      ).toMatchSnapshot()
+      const base = tryAddEntities(world, entities)
+      expect(base).toMatchSnapshot()
+      invariant(base.right)
+
+      expect(tryAddEntities(base.right, entities)).toEqual(
+        base,
+      )
     })
   })
 })
