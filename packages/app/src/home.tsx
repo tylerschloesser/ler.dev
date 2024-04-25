@@ -47,11 +47,12 @@ const Hero = styled.div`
 
 enum RaceType {
   Marathon = 'marathon',
+  MarathonDnf = 'marathon-dnf',
   HalfMarathon = 'half-marathon',
 }
 
-interface Race {
-  type: RaceType
+interface MarathonRace {
+  type: RaceType.Marathon
   name: string
   date: string
   time: string
@@ -60,6 +61,35 @@ interface Race {
   links?: string[]
   state: string
 }
+
+enum DnfReason {
+  Injury = 'injury',
+  Cancelled = 'cancelled',
+}
+
+interface MarathonDnfRace {
+  type: RaceType.MarathonDnf
+  name: string
+  date: string
+  state: string
+  reason: DnfReason
+}
+
+interface HalfMarathonRace {
+  type: RaceType.HalfMarathon
+  name: string
+  date: string
+  time: string
+  rank?: number
+  participants?: number
+  links?: string[]
+  state: string
+}
+
+type Race =
+  | MarathonRace
+  | MarathonDnfRace
+  | HalfMarathonRace
 
 const RACES: Race[] = [
   {
@@ -102,17 +132,17 @@ const RACES: Race[] = [
     state: 'WA',
   },
   {
-    type: RaceType.Marathon,
+    type: RaceType.MarathonDnf,
     name: "Rock 'n' Roll Las Vegas",
     date: '2019-11-17',
-    time: 'dnf-injury',
+    reason: DnfReason.Injury,
     state: 'NV',
   },
   {
-    type: RaceType.Marathon,
+    type: RaceType.MarathonDnf,
     name: "Rock 'n' Roll Savannah",
     date: '2021-11-06',
-    time: 'dnf-cancelled',
+    reason: DnfReason.Cancelled,
     state: 'GA',
   },
   {
@@ -160,6 +190,45 @@ const RACES: Race[] = [
     participants: 1053,
     state: 'CA',
   },
+  {
+    type: RaceType.Marathon,
+    name: 'Chicago',
+    date: '2023-10-08',
+    time: '3:36:07',
+    rank: 12376,
+    participants: 48292,
+    state: 'IL',
+    links: [
+      'https://results.chicagomarathon.com/2023/?content=detail&fpid=search&pid=search&idp=9TGG963827C9EC&lang=EN_CAP&event=MAR&search%5Bname%5D=Schloesser&search_event=MAR',
+      'https://archive.is/OJ3bt',
+    ],
+  },
+  {
+    type: RaceType.Marathon,
+    name: 'Seattle',
+    date: '2023-11-25',
+    time: '2:59:10',
+    rank: 52,
+    participants: 1723,
+    state: 'WA',
+    links: [
+      'https://results.raceroster.com/v2/en-US/results/9k4gs2zpyympmtxs/detail/3tandg5sbpnewt5h',
+      'https://archive.is/wzA7H',
+    ],
+  },
+  {
+    type: RaceType.Marathon,
+    name: 'Austin',
+    date: '2024-02-18',
+    time: '2:54:43',
+    rank: 26,
+    participants: 4002,
+    state: 'TX',
+    links: [
+      'https://www.mychiptime.com/searchevent.php?id=15555',
+      'https://archive.ph/omMPM',
+    ],
+  },
 ]
 
 const RaceContainer = styled.div`
@@ -190,8 +259,9 @@ const TableHeader = styled.th`
 
 export function Home() {
   const marathons = RACES.filter(
-    ({ type }) => type === RaceType.Marathon,
-  ).filter(({ time }) => !time.startsWith('dnf'))
+    (race): race is MarathonRace =>
+      race.type === RaceType.Marathon,
+  )
 
   const coloredStates = marathons.reduce<Set<string>>(
     (acc, { state }) => acc.add(state),
