@@ -1,35 +1,10 @@
-import { Link } from 'react-router-dom'
 import { styled } from 'styled-components'
 import { Blob } from './blob/index.js'
-import { PATHS } from './paths.js'
 import { MarathonRace, RACES, RaceType } from './races.js'
 import { UsMap } from './us-map.js'
 
 const HomeContainer = styled.div`
   --color-text: hsl(0, 0%, 80%);
-`
-
-const HomeTitle = styled.h1`
-  display: flex;
-  justify-content: flex-end;
-  font-weight: 700;
-  color: var(--color-text);
-  font-size: 1.25rem;
-  padding: 0.5rem;
-`
-
-const List = styled.ol`
-  display: flex;
-  flex-direction: column;
-  font-size: 1.25rem;
-`
-
-const ListItem = styled.li``
-
-const StyledLink = styled(Link)`
-  display: block;
-  padding: 0.5rem;
-  color: var(--color-text);
 `
 
 const BlobContainer = styled.div`
@@ -95,18 +70,7 @@ export function Home() {
           }}
         />
       </BlobContainer>
-      <Hero>
-        <List>
-          {PATHS.map(({ path, root }, i) => (
-            <ListItem key={i}>
-              <StyledLink to={root ?? path}>
-                {(root ?? path).toUpperCase()}
-              </StyledLink>
-            </ListItem>
-          ))}
-        </List>
-        <HomeTitle>ty.ler.dev</HomeTitle>
-      </Hero>
+      <Hero></Hero>
       <RaceContainer>
         <RaceProgress>
           {
