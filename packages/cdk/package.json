@@ -7,14 +7,8 @@
     "deploy-staging": "cdk deploy LerDev-Staging-*"
   },
   "dependencies": {
-    "@ler.dev/tsconfig": "*",
-    "@types/lodash-es": "^4.17.12",
     "aws-cdk": "^2.114.1",
     "aws-cdk-lib": "^2.114.1",
-    "constructs": "^10.3.0",
-    "lodash-es": "^4.17.21"
-  },
-  "devDependencies": {
-    "esbuild": "^0.19.8"
+    "constructs": "^10.3.0"
   }
 }

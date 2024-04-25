@@ -1,9 +1,0 @@
-{
-  "name": "@ler.dev/common",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "dependencies": {
-    "zod": "^3.22.4"
-  }
-}

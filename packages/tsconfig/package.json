@@ -1,7 +1,0 @@
-{
-  "name": "@ler.dev/tsconfig",
-  "type": "module",
-  "files": [
-    "tsconfig.json"
-  ]
-}

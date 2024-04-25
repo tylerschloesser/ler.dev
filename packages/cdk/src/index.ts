@@ -2,8 +2,7 @@ import { App } from 'aws-cdk-lib'
 import { CdnStack } from './cdn-stack.js'
 import { CertificateStack } from './certificate-stack.js'
 import { DnsStack } from './dns-stack.js'
-import { DrawApiStack } from './draw-api-stack.js'
-import { DomainName, Region, Stage } from './types.js'
+import { DomainName, Region } from './types.js'
 
 const STACK_ID_PREFIX: string = 'LerDev'
 const ACCOUNT_ID: string = '063257577013'
@@ -68,28 +67,6 @@ new CdnStack(
     hostedZones: [zones[DomainName.StagingTyLerDev]],
     certificate: certificates[DomainName.StagingTyLerDev],
     domainNames: [DomainName.StagingTyLerDev],
-    region: Region.US_WEST_2,
-  }),
-)
-
-new DrawApiStack(
-  app,
-  stackId('Prod', 'DrawApi'),
-  stackProps({
-    stage: Stage.Prod,
-    domainName: DomainName.DrawApiTyLerDev,
-    hostedZone: zones[DomainName.DrawApiTyLerDev],
-    region: Region.US_WEST_2,
-  }),
-)
-
-new DrawApiStack(
-  app,
-  stackId('Staging', 'DrawApi'),
-  stackProps({
-    stage: Stage.Staging,
-    domainName: DomainName.DrawApiStagingTyLerDev,
-    hostedZone: zones[DomainName.DrawApiStagingTyLerDev],
     region: Region.US_WEST_2,
   }),
 )
