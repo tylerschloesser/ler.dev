@@ -7,6 +7,5 @@ module.exports = {
   printWidth: 60,
   plugins: [
     '@trivago/prettier-plugin-sort-imports',
-    'prettier-plugin-glsl',
   ],
 }
