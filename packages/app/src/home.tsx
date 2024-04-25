@@ -191,6 +191,19 @@ const RACES: Race[] = [
     state: 'CA',
   },
   {
+    type: RaceType.Marathon,
+    name: 'Boston',
+    date: '2023-04-17',
+    time: '3:29:55',
+    rank: 12233,
+    participants: 30000,
+    state: 'MA',
+    links: [
+      'https://results.baa.org/2023/?content=detail&fpid=search&pid=search&idp=9TGHS6FF17D625&lang=EN_CAP&event=R&event_main_group=runner&pidp=start&search%5Bname%5D=Schloesser&search_event=R',
+      'https://archive.is/puoHU',
+    ],
+  },
+  {
     type: RaceType.MarathonDnf,
     name: 'Twin Cities',
     date: '2023-10-01',
