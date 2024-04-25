@@ -110,12 +110,8 @@ export function Home() {
       <RaceContainer>
         <RaceProgress>
           {
-            marathons
-              .map(({ state }) => state)
-              .reduce<Set<string>>(
-                (acc, state) => acc.add(state),
-                new Set(),
-              ).size
+            new Set(marathons.map(({ state }) => state))
+              .size
           }{' '}
           / 50
         </RaceProgress>
