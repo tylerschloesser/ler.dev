@@ -1,6 +1,6 @@
 import { times } from 'lodash'
 import { createNoise3D } from 'simplex-noise'
-import { Vec2 } from '../common/vec2.js'
+import { Vec2 } from '../vec2.js'
 import { RenderFn } from './config.js'
 
 const noise = createNoise3D()
