@@ -191,6 +191,13 @@ const RACES: Race[] = [
     state: 'CA',
   },
   {
+    type: RaceType.MarathonDnf,
+    name: 'Twin Cities',
+    date: '2023-10-01',
+    reason: DnfReason.Cancelled,
+    state: 'MN',
+  },
+  {
     type: RaceType.Marathon,
     name: 'Chicago',
     date: '2023-10-08',
