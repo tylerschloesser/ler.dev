@@ -1,5 +1,12 @@
 import { curry } from 'lodash'
-import { useEffect, useRef, useState } from 'react'
+import {
+  CanvasHTMLAttributes,
+  DetailedHTMLProps,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
+import invariant from 'tiny-invariant'
 import { Config, RenderFn, RenderMethod } from './config.js'
 import { renderBezier } from './render-bezier.js'
 import { renderSimple } from './render-simple.js'
@@ -48,30 +55,33 @@ function init(
   }
 }
 
-export interface BlobProps {
+export type BlobProps = {
   config: Config
-}
+} & Omit<
+  DetailedHTMLProps<
+    CanvasHTMLAttributes<HTMLCanvasElement>,
+    HTMLCanvasElement
+  >,
+  'children'
+>
 
-export function Blob({ config }: BlobProps) {
-  const [canvas, setCanvas] =
-    useState<HTMLCanvasElement | null>()
-  const configRef = useRef(config)
-  useEffect(() => {
-    Object.assign(configRef.current, config)
-  }, [config])
+export function Blob({ config, ...rest }: BlobProps) {
+  const canvas = useRef<HTMLCanvasElement | null>(null)
   useEffect(() => {
     if (canvas) {
-      return init(canvas, configRef.current).cleanup
+      invariant(canvas.current)
+      return init(canvas.current, config).cleanup
     }
-  }, [canvas])
+  }, [config])
   return (
     <canvas
-      ref={setCanvas}
+      ref={canvas}
       style={{
         display: 'block',
         height: '100%',
         width: '100%',
       }}
+      {...rest}
     />
   )
 }
