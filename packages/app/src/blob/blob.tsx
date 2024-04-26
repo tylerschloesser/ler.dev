@@ -4,7 +4,6 @@ import {
   DetailedHTMLProps,
   useEffect,
   useRef,
-  useState,
 } from 'react'
 import invariant from 'tiny-invariant'
 import { Config, RenderFn, RenderMethod } from './config.js'
@@ -73,15 +72,5 @@ export function Blob({ config, ...rest }: BlobProps) {
       return init(canvas.current, config).cleanup
     }
   }, [config])
-  return (
-    <canvas
-      ref={canvas}
-      style={{
-        display: 'block',
-        height: '100%',
-        width: '100%',
-      }}
-      {...rest}
-    />
-  )
+  return <canvas ref={canvas} {...rest} />
 }

@@ -25,6 +25,7 @@ export function Home() {
   return (
     <>
       <Blob
+        className="h-dvh w-dvw"
         config={{
           parts: 500,
           xScale: 0.6,
