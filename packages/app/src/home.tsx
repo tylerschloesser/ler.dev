@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { styled } from 'styled-components'
 import { Blob } from './blob/index.js'
 import { MarathonRace, RACES, RaceType } from './races.js'
@@ -48,14 +49,22 @@ const TableHeader = styled.th`
 `
 
 export function Home() {
-  const marathons = RACES.filter(
-    (race): race is MarathonRace =>
-      race.type === RaceType.Marathon,
+  const marathons = useMemo(
+    () =>
+      RACES.filter(
+        (race): race is MarathonRace =>
+          race.type === RaceType.Marathon,
+      ),
+    [RACES],
   )
 
-  const coloredStates = marathons.reduce<Set<string>>(
-    (acc, { state }) => acc.add(state),
-    new Set(),
+  const coloredStates = useMemo(
+    () =>
+      marathons.reduce<Set<string>>(
+        (acc, { state }) => acc.add(state),
+        new Set(),
+      ),
+    [marathons],
   )
 
   return (
