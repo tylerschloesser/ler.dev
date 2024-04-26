@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { Fragment, useMemo } from 'react'
 import { Blob } from './blob/index.js'
 import { MarathonRace, RACES, RaceType } from './races.js'
 import { UsMap } from './us-map.js'
@@ -33,33 +33,38 @@ export function Home() {
           zScale: 1 / 5_000,
         }}
       />
-      <p>
-        {new Set(marathons.map(({ state }) => state)).size}{' '}
-        / 50
-      </p>
-      <UsMap coloredStates={coloredStates} />
-      <table>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Date</th>
-            <th>Time</th>
-            <th>State</th>
-          </tr>
-        </thead>
-        <tbody>
-          {marathons.map(
-            ({ name, date, time, state }, i) => (
-              <tr key={i}>
-                <td>{name} Marathon</td>
-                <td>{date}</td>
-                <td>{time}</td>
-                <td>{state}</td>
-              </tr>
-            ),
-          )}
-        </tbody>
-      </table>
+      <div className="flex justify-center min-h-dvh">
+        <div className="max-w-[1024px] p-2">
+          <UsMap coloredStates={coloredStates} />
+          <p>
+            {
+              new Set(marathons.map(({ state }) => state))
+                .size
+            }{' '}
+            / 50
+          </p>
+        </div>
+        <div>
+          <div className="grid grid-cols-3 items-center">
+            {marathons.map(({ name, state, time }, i) => (
+              <Fragment key={i}>
+                <div className="">
+                  <h3 className="text-3xl">{name}</h3>
+                  <p className="text-sm text-gray-400 -mt-2">
+                    Marathon
+                  </p>
+                </div>
+                <div className="font-mono text-2xl justify-self-end">
+                  {state}
+                </div>
+                <div className="font-mono text-2xl justify-self-end">
+                  {time}
+                </div>
+              </Fragment>
+            ))}
+          </div>
+        </div>
+      </div>
     </>
   )
 }
