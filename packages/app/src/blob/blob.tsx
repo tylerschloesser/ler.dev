@@ -1,6 +1,5 @@
 import { curry } from 'lodash'
 import { useEffect, useRef, useState } from 'react'
-import { styled } from 'styled-components'
 import { Config, RenderFn, RenderMethod } from './config.js'
 import { renderBezier } from './render-bezier.js'
 import { renderSimple } from './render-simple.js'
@@ -49,12 +48,6 @@ function init(
   }
 }
 
-const Canvas = styled.canvas`
-  display: block;
-  height: 100%;
-  width: 100%;
-`
-
 export interface BlobProps {
   config: Config
 }
@@ -71,5 +64,14 @@ export function Blob({ config }: BlobProps) {
       return init(canvas, configRef.current).cleanup
     }
   }, [canvas])
-  return <Canvas ref={setCanvas} />
+  return (
+    <canvas
+      ref={setCanvas}
+      style={{
+        display: 'block',
+        height: '100%',
+        width: '100%',
+      }}
+    />
+  )
 }
