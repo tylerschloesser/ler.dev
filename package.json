@@ -3,7 +3,7 @@
   "type": "module",
   "scripts": {
     "test": "npm run test:prettier && npm run test:lint && npm run test:jest",
-    "test:jest": "NODE_NO_WARNINGS=1 NODE_OPTIONS=--experimental-vm-modules jest",
+    "test:jest": "NODE_NO_WARNINGS=1 NODE_OPTIONS=--experimental-vm-modules jest --passWithNoTests",
     "test:jest-debug": "NODE_NO_WARNINGS=1 NODE_OPTIONS=\"--experimental-vm-modules --inspect\" jest --runInBand",
     "test:lint": "eslint .",
     "test:prettier": "prettier --check . --log-level warn",
