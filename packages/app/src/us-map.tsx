@@ -1,6 +1,7 @@
 import Color from 'color'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { styled } from 'styled-components'
+import invariant from 'tiny-invariant'
 
 // https://simplemaps.com/resources/svg-us
 
@@ -88,34 +89,34 @@ export function UsMap({ coloredStates }: UsMapProps) {
     w: 1000,
     h: 589,
   }
-  const [svg, setSvg] = useState<SVGElement | null>(null)
-  const [container, setContainer] =
-    useState<HTMLDivElement | null>(null)
-  useEffect(() => {
-    if (!container || !svg) return
 
+  const svg = useRef<SVGSVGElement>(null)
+  const container = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
     const ro = new ResizeObserver(([entry]) => {
+      invariant(svg.current)
+      invariant(container.current)
       const rect = entry!.contentRect
       const scale = rect.width / size.w
-      container.style.setProperty('--scale', `${scale}`)
-      container.style.setProperty(
-        'height',
-        `${svg.getBoundingClientRect().height}px`,
-      )
+      // prettier-ignore
+      {
+        container.current.style.setProperty('--scale', `${scale}`)
+        container.current.style.setProperty('height', `${svg.current.getBoundingClientRect().height}px`)
+      }
     })
-    console.log('ro observe')
-    ro.observe(container)
+    invariant(container.current)
+    ro.observe(container.current)
     return () => {
-      console.log('ro disconnect')
       ro.disconnect()
     }
-  }, [container, svg])
+  }, [])
 
   useEffect(() => {
-    if (!svg) return
     const controller = new AbortController()
     const { signal } = controller
-    svg.querySelectorAll('path').forEach((path) => {
+    invariant(svg.current)
+    svg.current.querySelectorAll('path').forEach((path) => {
       path.addEventListener(
         'mouseover',
         () => {
@@ -132,8 +133,8 @@ export function UsMap({ coloredStates }: UsMapProps) {
   }, [svg])
 
   useEffect(() => {
-    if (!svg) return
-    svg.querySelectorAll('path').forEach((path) => {
+    invariant(svg.current)
+    svg.current.querySelectorAll('path').forEach((path) => {
       const state = path.dataset['id'] as string
       const colorNumber = STATE_TO_COLOR_NUMBER[state]!
       let fill = COLOR_NUMBER_TO_COLOR[colorNumber]!
@@ -146,7 +147,7 @@ export function UsMap({ coloredStates }: UsMapProps) {
 
   return (
     <Container
-      ref={setContainer}
+      ref={container}
       style={
         {
           '--scale': '1',
@@ -154,7 +155,7 @@ export function UsMap({ coloredStates }: UsMapProps) {
       }
     >
       <Svg
-        ref={setSvg}
+        ref={svg}
         xmlns="http://www.w3.org/2000/svg"
         width={size.w}
         height={size.h}

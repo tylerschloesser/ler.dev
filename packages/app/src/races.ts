@@ -126,6 +126,13 @@ export const RACES: Race[] = [
     state: 'OR',
   },
   {
+    type: RaceType.MarathonDnf,
+    date: '2022-11-26',
+    name: 'Seattle',
+    reason: DnfReason.Injury,
+    state: 'WA',
+  },
+  {
     type: RaceType.Marathon,
     name: 'Chicago',
     date: '2022-10-09',
@@ -145,18 +152,6 @@ export const RACES: Race[] = [
   },
   {
     type: RaceType.Marathon,
-    name: 'Jack & Jill',
-    date: '2023-07-30',
-    time: '2:43:35',
-    rank: 5,
-    participants: 515,
-    state: 'WA',
-    links: [
-      'https://www.athlinks.com/event/379803/results/Event/1055186/Course/2380734/Bib/4003',
-    ],
-  },
-  {
-    type: RaceType.Marathon,
     name: 'Boston',
     date: '2023-04-17',
     time: '3:29:55',
@@ -166,6 +161,18 @@ export const RACES: Race[] = [
     links: [
       'https://results.baa.org/2023/?content=detail&fpid=search&pid=search&idp=9TGHS6FF17D625&lang=EN_CAP&event=R&event_main_group=runner&pidp=start&search%5Bname%5D=Schloesser&search_event=R',
       'https://archive.is/puoHU',
+    ],
+  },
+  {
+    type: RaceType.Marathon,
+    name: 'Jack & Jill',
+    date: '2023-07-30',
+    time: '2:43:35',
+    rank: 5,
+    participants: 515,
+    state: 'WA',
+    links: [
+      'https://www.athlinks.com/event/379803/results/Event/1055186/Course/2380734/Bib/4003',
     ],
   },
   {
