@@ -23,11 +23,6 @@ import { Construct } from 'constructs'
 import { camelCase, upperCase } from 'lodash-es'
 import { DefaultToIndexHtmlFunction } from './default-to-index-html-function.js'
 import { CommonStackProps } from './types.js'
-import {
-  WEBPACK_MANIFEST_FILE_NAME,
-  getDefaultRootObject,
-  getWebpackDistPath,
-} from './webpack-manifest.js'
 
 export interface CdnStackProps extends CommonStackProps {
   certificate: Certificate
@@ -99,7 +94,7 @@ export class CdnStack extends Stack {
             },
           ),
         },
-        defaultRootObject: getDefaultRootObject(),
+        defaultRootObject: 'index.html',
         domainNames,
         certificate,
       },

@@ -3,7 +3,6 @@ import {
   FunctionCode,
 } from 'aws-cdk-lib/aws-cloudfront'
 import { Construct } from 'constructs'
-import { getExtensions } from './webpack-manifest.js'
 
 // If the request doesn't match a list of extensions we
 // get from the webpack manifest, assume it's a client
@@ -26,4 +25,8 @@ export class DefaultToIndexHtmlFunction extends Function {
       `),
     })
   }
+}
+
+function getExtensions(): string[] {
+  return ['js', 'css', 'webmanifest']
 }

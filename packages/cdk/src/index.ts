@@ -1,72 +1,20 @@
+import { Region, WebAppV1 } from '@tyle/cdk'
 import { App } from 'aws-cdk-lib'
-import { CdnStack } from './cdn-stack.js'
-import { CertificateStack } from './certificate-stack.js'
-import { DnsStack } from './dns-stack.js'
-import { DomainName, Region } from './types.js'
-
-const STACK_ID_PREFIX: string = 'LerDev'
-const ACCOUNT_ID: string = '063257577013'
-
-function stackId(...parts: string[]): string {
-  return [STACK_ID_PREFIX, ...parts].join('-')
-}
-
-function stackProps<
-  R extends Region,
-  T extends { region: R },
->({ region, ...props }: T) {
-  return {
-    env: {
-      account: ACCOUNT_ID,
-      region,
-    },
-    crossRegionReferences: true,
-    ...props,
-  }
-}
+import * as path from 'path'
+import * as url from 'url'
 
 const app = new App()
 
-const { zones } = new DnsStack(
-  app,
-  stackId('DNS'),
-  stackProps({
-    region: Region.US_WEST_2,
-  }),
-)
-
-const { certificates } = new CertificateStack(
-  app,
-  stackId('Certificate'),
-  stackProps({
-    zones,
-    region: Region.US_EAST_1,
-  }),
-)
-
-new CdnStack(
-  app,
-  stackId('Prod', 'CDN'),
-  stackProps({
-    bucketName: DomainName.TyLerDev,
-    hostedZones: [
-      zones[DomainName.LerDev],
-      zones[DomainName.TyLerDev],
-    ],
-    certificate: certificates[DomainName.LerDev],
-    domainNames: [DomainName.LerDev, DomainName.TyLerDev],
-    region: Region.US_WEST_2,
-  }),
-)
-
-new CdnStack(
-  app,
-  stackId('Staging', 'CDN'),
-  stackProps({
-    bucketName: DomainName.StagingTyLerDev,
-    hostedZones: [zones[DomainName.StagingTyLerDev]],
-    certificate: certificates[DomainName.StagingTyLerDev],
-    domainNames: [DomainName.StagingTyLerDev],
-    region: Region.US_WEST_2,
-  }),
-)
+new WebAppV1(app, {
+  account: '063257577013',
+  distPath: path.join(
+    url.fileURLToPath(new URL('.', import.meta.url)),
+    '../../app/dist',
+  ),
+  domain: {
+    app: 'ty.ler.dev',
+    root: 'ler.dev',
+  },
+  region: Region.US_WEST_2,
+  stackIdPrefix: 'LerDev',
+})
