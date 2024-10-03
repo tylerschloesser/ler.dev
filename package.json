@@ -12,5 +12,9 @@
   "workspaces": [
     "packages/cdk",
     "packages/app"
-  ]
+  ],
+  "devDependencies": {
+    "@trivago/prettier-plugin-sort-imports": "^4.3.0",
+    "prettier": "^3.3.3"
+  }
 }
