@@ -1,4 +1,8 @@
-import { Region, WebAppV1 } from '@tyle/cdk'
+import {
+  HostedZoneStrategy,
+  Region,
+  WebAppV1,
+} from '@tyle/cdk'
 import { App } from 'aws-cdk-lib'
 import * as path from 'path'
 import * as url from 'url'
@@ -12,7 +16,10 @@ new WebAppV1(app, {
     '../../app/dist',
   ),
   domain: {
-    app: 'ty.ler.dev',
+    app: {
+      strategy: HostedZoneStrategy.Lookup,
+      value: 'ty.ler.dev',
+    },
     root: 'ler.dev',
   },
   region: Region.US_WEST_2,
