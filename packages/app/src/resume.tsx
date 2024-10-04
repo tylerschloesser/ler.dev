@@ -139,6 +139,7 @@ function CanvasSvg({ container, pointer }: CanvasSvgProps) {
           cx={pointer.x}
           cy={pointer.y}
           fill="white"
+          opacity=".5"
           r="10"
         />
       )}
