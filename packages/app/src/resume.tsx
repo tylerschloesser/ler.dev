@@ -67,8 +67,6 @@ function CanvasSvg({ container }: CanvasSvgProps) {
     [container],
   )
 
-  const [rotate, setRotate] = useState(0)
-
   const box = useMemo(() => {
     const size = Math.min(container.x, container.y) / 2
     return new Rect(
@@ -79,6 +77,26 @@ function CanvasSvg({ container }: CanvasSvgProps) {
       new Vec2(size),
     )
   }, [container])
+
+  const rotate = useRotate()
+
+  return (
+    <svg viewBox={viewBox}>
+      <rect
+        className="pointer-events-auto"
+        transform={`rotate(${rotate.toFixed(2)}, ${box.position.x + box.size.x / 2}, ${box.position.y + box.size.y / 2})`}
+        x={box.position.x}
+        y={box.position.y}
+        width={box.size.x}
+        height={box.size.y}
+        fill={`hsla(${rotate.toFixed(2)}, 50%, 50%, 0.5)`}
+      />
+    </svg>
+  )
+}
+
+function useRotate(): number {
+  const [rotate, setRotate] = useState(0)
 
   useEffect(() => {
     let last = performance.now()
@@ -100,17 +118,5 @@ function CanvasSvg({ container }: CanvasSvgProps) {
     }
   }, [])
 
-  return (
-    <svg viewBox={viewBox}>
-      <rect
-        className="pointer-events-auto"
-        transform={`rotate(${rotate.toFixed(2)}, ${box.position.x + box.size.x / 2}, ${box.position.y + box.size.y / 2})`}
-        x={box.position.x}
-        y={box.position.y}
-        width={box.size.x}
-        height={box.size.y}
-        fill={`hsla(${rotate.toFixed(2)}, 50%, 50%, 0.5)`}
-      />
-    </svg>
-  )
+  return rotate
 }
