@@ -82,7 +82,7 @@ function CanvasSvg({ container }: CanvasSvgProps) {
       last = now
 
       setRotate(
-        (prev) => (prev + ((dt / 1000) * 360) / 4) % 360,
+        (prev) => (prev + ((dt / 1000) * 360) / 16) % 360,
       )
 
       handle = self.requestAnimationFrame(callback)
@@ -97,12 +97,12 @@ function CanvasSvg({ container }: CanvasSvgProps) {
     <svg viewBox={viewBox}>
       <rect
         className="pointer-events-auto"
-        transform={`rotate(${rotate}, ${box.position.x + box.size.x / 2}, ${box.position.y + box.size.y / 2})`}
+        transform={`rotate(${rotate.toFixed(2)}, ${box.position.x + box.size.x / 2}, ${box.position.y + box.size.y / 2})`}
         x={box.position.x}
         y={box.position.y}
         width={box.size.x}
         height={box.size.y}
-        fill={`hsla(${rotate % 360}, 50%, 50%, 0.5)`}
+        fill={`hsla(${rotate.toFixed(2)}, 50%, 50%, 0.5)`}
       />
     </svg>
   )
