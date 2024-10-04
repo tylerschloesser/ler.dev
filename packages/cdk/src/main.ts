@@ -1,7 +1,7 @@
 import * as cdk from 'aws-cdk-lib'
 import 'source-map-support/register'
-import { CertificateStack } from './certificate-stack'
-import { MainStack } from './main-stack'
+import { CertificateStack } from './certificate-stack.js'
+import { MainStack } from './main-stack.js'
 
 const app = new cdk.App()
 
