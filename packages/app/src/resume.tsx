@@ -6,7 +6,7 @@ export function Resume() {
   return (
     <>
       <Canvas />
-      <div className="flex justify-center">
+      <div className="relative flex justify-center">
         <div className="flex-1 flex gap-4 p-4 max-w-4xl">
           <div>
             <h3 className="text-lg font-bold">
@@ -58,5 +58,9 @@ function CanvasSvg({ size }: CanvasSvgProps) {
     () => `0 0 ${size.x} ${size.y}`,
     [size],
   )
-  return <svg viewBox={viewBox}></svg>
+  return (
+    <svg viewBox={viewBox}>
+      <rect width={100} height={100} fill="black" />
+    </svg>
+  )
 }

@@ -9,7 +9,12 @@ import {
   ViewerProtocolPolicy,
 } from 'aws-cdk-lib/aws-cloudfront'
 import { S3BucketOrigin } from 'aws-cdk-lib/aws-cloudfront-origins'
-import { PublicHostedZone } from 'aws-cdk-lib/aws-route53'
+import {
+  ARecord,
+  PublicHostedZone,
+  RecordTarget,
+} from 'aws-cdk-lib/aws-route53'
+import { CloudFrontTarget } from 'aws-cdk-lib/aws-route53-targets'
 import { Bucket } from 'aws-cdk-lib/aws-s3'
 import {
   BucketDeployment,
@@ -72,5 +77,13 @@ export class MainStack extends Stack {
         defaultRootObject: 'index.html',
       },
     )
+
+    new ARecord(this, 'ARecord', {
+      target: RecordTarget.fromAlias(
+        new CloudFrontTarget(distribution),
+      ),
+      zone: hostedZone,
+      recordName: 'ty',
+    })
   }
 }
