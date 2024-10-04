@@ -68,13 +68,16 @@ function CanvasSvg({ container }: CanvasSvgProps) {
   )
 
   const box = useMemo(() => {
-    const size = Math.min(container.x, container.y) / 2
+    const size = new Vec2(
+      Math.min(container.x, container.y) / 2,
+      Math.min(container.x, container.y) / 4,
+    )
     return new Rect(
       new Vec2(
-        container.x / 2 - size / 2,
-        container.y / 2 - size / 2,
+        container.x / 2 - size.x / 2,
+        container.y / 2 - size.y / 2,
       ),
-      new Vec2(size),
+      size,
     )
   }, [container])
 
