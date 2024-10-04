@@ -112,10 +112,45 @@ interface CanvasSvgProps {
 }
 
 function useSmooth(next: Vec2) {
-  const prev = useRef<Vec2>(next)
-  const [smooth, setSmooth] = useState(prev.current)
+  const target = useRef<Vec2>(next)
+  const handle = useRef<number | null>(null)
+  const [smooth, setSmooth] = useState(target.current)
+
+  const callback = useRef(() => {
+    setSmooth((current) => {
+      const d = target.current.sub(current)
+      const dist = d.len()
+
+      if (dist === 0) {
+        handle.current = null
+        return target.current
+      }
+
+      // TODO smooth right here
+      handle.current = null
+      return target.current
+
+      // handle.current = self.requestAnimationFrame(
+      //   callback.current,
+      // )
+    })
+  })
+
   useEffect(() => {
-    setSmooth(next)
+    const d = next.sub(target.current)
+    const dist = d.len()
+    if (dist === 0) {
+      if (handle.current) {
+        self.cancelAnimationFrame(handle.current)
+        handle.current = null
+      }
+    }
+    target.current = next
+    if (!handle.current) {
+      handle.current = self.requestAnimationFrame(
+        callback.current,
+      )
+    }
   }, [next])
   return smooth
 }

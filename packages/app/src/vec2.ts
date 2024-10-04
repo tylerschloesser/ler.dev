@@ -15,4 +15,12 @@ export class Vec2 {
   sub(v: Vec2): Vec2 {
     return new Vec2(this.x - v.x, this.y - v.y)
   }
+
+  equals(v: Vec2): boolean {
+    return this.x === v.x && this.y === v.y
+  }
+
+  len(): number {
+    return Math.sqrt(this.x ** 2 + this.y ** 2)
+  }
 }
