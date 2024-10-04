@@ -57,7 +57,7 @@ export class MainStack extends Stack {
     const hostedZone = PublicHostedZone.fromLookup(
       this,
       'HostedZone',
-      { domainName: 'ler.dev' },
+      { domainName: 'ty.ler.dev' },
     )
 
     const distribution = new Distribution(
@@ -83,7 +83,6 @@ export class MainStack extends Stack {
         new CloudFrontTarget(distribution),
       ),
       zone: hostedZone,
-      recordName: 'ty',
     })
   }
 }

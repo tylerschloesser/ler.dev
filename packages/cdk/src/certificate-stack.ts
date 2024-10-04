@@ -19,7 +19,7 @@ export class CertificateStack extends Stack {
     const hostedZone = PublicHostedZone.fromLookup(
       this,
       'HostedZone',
-      { domainName: 'ler.dev' },
+      { domainName: 'ty.ler.dev' },
     )
 
     this.certificate = new Certificate(
