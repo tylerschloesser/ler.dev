@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import invariant from 'tiny-invariant'
+import { Rect } from './rect'
 import { Vec2 } from './vec2'
 
 export function Resume() {
@@ -58,9 +59,17 @@ function CanvasSvg({ size }: CanvasSvgProps) {
     () => `0 0 ${size.x} ${size.y}`,
     [size],
   )
+
+  const box = new Rect(new Vec2(0, 0), size.div(2))
+
   return (
     <svg viewBox={viewBox}>
-      <rect width={100} height={100} fill="black" />
+      <rect
+        x={box.position.x}
+        y={box.position.y}
+        width={box.size.x}
+        height={box.size.y}
+      />
     </svg>
   )
 }
