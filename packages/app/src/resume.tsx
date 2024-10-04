@@ -45,27 +45,33 @@ function Canvas() {
       ref={ref}
       className="fixed top-0 left-0 right-0 bottom-0 pointer-events-none"
     >
-      {size && <CanvasSvg size={size} />}
+      {size && <CanvasSvg container={size} />}
     </div>
   )
 }
 
 interface CanvasSvgProps {
-  size: Vec2
+  container: Vec2
 }
 
-function CanvasSvg({ size }: CanvasSvgProps) {
+function CanvasSvg({ container }: CanvasSvgProps) {
   const viewBox = useMemo(
-    () => `0 0 ${size.x} ${size.y}`,
-    [size],
+    () => `0 0 ${container.x} ${container.y}`,
+    [container],
   )
 
   const [rotate, setRotate] = useState(0)
 
-  const box = new Rect(
-    new Vec2(0, 0),
-    new Vec2(Math.min(size.x, size.y) / 2),
-  )
+  const box = useMemo(() => {
+    const size = Math.min(container.x, container.y) / 2
+    return new Rect(
+      new Vec2(
+        container.x / 2 - size / 2,
+        container.y / 2 - size / 2,
+      ),
+      new Vec2(size),
+    )
+  }, [container])
 
   useEffect(() => {
     let last = performance.now()
