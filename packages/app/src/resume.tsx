@@ -50,7 +50,7 @@ function Canvas() {
   return (
     <div
       ref={ref}
-      className="fixed top-0 left-0 right-0 bottom-0 pointer-events-none"
+      className="absolute top-0 left-0 right-0 bottom-0 pointer-events-none"
     >
       {size && <CanvasSvg container={size} />}
     </div>
