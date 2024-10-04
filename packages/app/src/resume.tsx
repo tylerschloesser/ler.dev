@@ -37,8 +37,15 @@ function Canvas() {
   const [size, setSize] = useState<Vec2 | null>(null)
   useEffect(() => {
     invariant(ref.current)
-    const rect = ref.current.getBoundingClientRect()
-    setSize(new Vec2(rect.width, rect.height))
+    const ro = new ResizeObserver(
+      ([{ contentRect: rect }]) => {
+        setSize(new Vec2(rect.width, rect.height))
+      },
+    )
+    ro.observe(ref.current)
+    return () => {
+      ro.disconnect()
+    }
   }, [])
   return (
     <div
