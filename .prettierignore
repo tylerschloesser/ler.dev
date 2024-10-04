@@ -1,1 +1,2 @@
-cdk.out
+packages/cdk/cdk.out
+packages/app/dist
