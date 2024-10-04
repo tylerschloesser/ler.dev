@@ -93,22 +93,16 @@ function CanvasSvg({ container }: CanvasSvgProps) {
     }
   }, [])
 
-  const [hover, setHover] = useState(false)
-
   return (
     <svg viewBox={viewBox}>
       <rect
         className="pointer-events-auto"
-        onMouseOver={() => setHover(true)}
-        onMouseOut={() => setHover(false)}
         transform={`rotate(${rotate}, ${box.position.x + box.size.x / 2}, ${box.position.y + box.size.y / 2})`}
         x={box.position.x}
         y={box.position.y}
         width={box.size.x}
         height={box.size.y}
         fill={`hsla(${rotate % 360}, 50%, 50%, 0.5)`}
-        strokeWidth="2"
-        stroke={hover ? 'white' : undefined}
       />
     </svg>
   )
