@@ -2,6 +2,9 @@
   "name": "cdk",
   "version": "0.1.0",
   "type": "module",
+  "scripts": {
+    "deploy": "cdk deploy --all --require-approval never"
+  },
   "devDependencies": {
     "@types/node": "^20.16.10",
     "@types/source-map-support": "^0.5.10",
