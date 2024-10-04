@@ -111,6 +111,12 @@ interface CanvasSvgProps {
   pointer: Vec2 | null
 }
 
+function useSmooth(next: Vec2) {
+  const prev = useRef<Vec2>(next)
+  const [smooth, setSmooth] = useState(prev.current)
+  return smooth
+}
+
 function CanvasSvg({ container, pointer }: CanvasSvgProps) {
   const viewBox = useMemo(
     () => `0 0 ${container.x} ${container.y}`,
@@ -140,12 +146,16 @@ function CanvasSvg({ container, pointer }: CanvasSvgProps) {
     if (!pointer) {
       return Vec2.ZERO
     }
-    return pointer.sub(center).div(2)
+    return pointer.sub(center).div(-2)
   }, [pointer, center])
+
+  const translate = useSmooth(v)
 
   return (
     <svg viewBox={viewBox}>
-      <g transform={`translate(${v.x}, ${v.y})`}>
+      <g
+        transform={`translate(${translate.x}, ${translate.y})`}
+      >
         <CanvasRect rect={box} />
       </g>
       <g stroke="white" strokeWidth="2" opacity=".5">
