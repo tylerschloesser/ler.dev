@@ -60,15 +60,42 @@ function CanvasSvg({ size }: CanvasSvgProps) {
     [size],
   )
 
-  const box = new Rect(new Vec2(0, 0), size.div(2))
+  const [rotate, setRotate] = useState(0)
+
+  const box = new Rect(
+    new Vec2(0, 0),
+    new Vec2(Math.min(size.x, size.y) / 2),
+  )
+
+  useEffect(() => {
+    let last = performance.now()
+    let handle: number
+    function callback() {
+      const now = performance.now()
+      const dt = now - last
+      last = now
+
+      setRotate(
+        (prev) => (prev + ((dt / 1000) * 360) / 4) % 360,
+      )
+
+      handle = self.requestAnimationFrame(callback)
+    }
+    handle = self.requestAnimationFrame(callback)
+    return () => {
+      self.cancelAnimationFrame(handle)
+    }
+  }, [])
 
   return (
     <svg viewBox={viewBox}>
       <rect
+        transform={`rotate(${rotate}, ${box.position.x + box.size.x / 2}, ${box.position.y + box.size.y / 2})`}
         x={box.position.x}
         y={box.position.y}
         width={box.size.x}
         height={box.size.y}
+        fill={`hsla(${rotate % 360}, 50%, 50%, 0.5)`}
       />
     </svg>
   )

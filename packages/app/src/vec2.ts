@@ -1,9 +1,9 @@
 export class Vec2 {
   readonly x: number
   readonly y: number
-  constructor(x: number, y: number) {
+  constructor(x: number, y?: number) {
     this.x = x
-    this.y = y
+    this.y = y ?? x
   }
 
   div(scalar: number): Vec2 {
