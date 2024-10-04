@@ -131,18 +131,34 @@ function CanvasSvg({ container, pointer }: CanvasSvgProps) {
     )
   }, [container])
 
+  const center = useMemo(
+    () => container.div(2),
+    [container],
+  )
+
+  const v = useMemo(() => {
+    if (!pointer) {
+      return null
+    }
+    return pointer.sub(center)
+  }, [pointer, center])
+
   return (
     <svg viewBox={viewBox}>
       <CanvasRect rect={box} />
-      {pointer && (
-        <circle
-          cx={pointer.x}
-          cy={pointer.y}
-          fill="white"
-          opacity=".5"
-          r="10"
-        />
-      )}
+      <g stroke="white" strokeWidth="2" opacity=".5">
+        {v && (
+          <line
+            x1={center.x}
+            y1={center.y}
+            x2={center.x + v.x}
+            y2={center.y + v.y}
+          />
+        )}
+        {pointer && (
+          <circle cx={pointer.x} cy={pointer.y} r="10" />
+        )}
+      </g>
     </svg>
   )
 }
