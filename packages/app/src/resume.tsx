@@ -78,20 +78,29 @@ function CanvasSvg({ container }: CanvasSvgProps) {
     )
   }, [container])
 
-  const rotate = useRotate()
-
   return (
     <svg viewBox={viewBox}>
-      <rect
-        className="pointer-events-auto"
-        transform={`rotate(${rotate.toFixed(2)}, ${box.position.x + box.size.x / 2}, ${box.position.y + box.size.y / 2})`}
-        x={box.position.x}
-        y={box.position.y}
-        width={box.size.x}
-        height={box.size.y}
-        fill={`hsla(${rotate.toFixed(2)}, 50%, 50%, 0.5)`}
-      />
+      <CanvasRect rect={box} />
     </svg>
+  )
+}
+
+interface CanvasRectProps {
+  rect: Rect
+}
+
+function CanvasRect({ rect }: CanvasRectProps) {
+  const rotate = useRotate()
+  return (
+    <rect
+      className="pointer-events-auto"
+      transform={`rotate(${rotate.toFixed(2)}, ${rect.position.x + rect.size.x / 2}, ${rect.position.y + rect.size.y / 2})`}
+      x={rect.position.x}
+      y={rect.position.y}
+      width={rect.size.x}
+      height={rect.size.y}
+      fill={`hsla(${rotate.toFixed(2)}, 50%, 50%, 0.5)`}
+    />
   )
 }
 
