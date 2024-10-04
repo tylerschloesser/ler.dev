@@ -138,14 +138,16 @@ function CanvasSvg({ container, pointer }: CanvasSvgProps) {
 
   const v = useMemo(() => {
     if (!pointer) {
-      return null
+      return Vec2.ZERO
     }
     return pointer.sub(center).div(2)
   }, [pointer, center])
 
   return (
     <svg viewBox={viewBox}>
-      <CanvasRect rect={box} />
+      <g transform={`translate(${v.x}, ${v.y})`}>
+        <CanvasRect rect={box} />
+      </g>
       <g stroke="white" strokeWidth="2" opacity=".5">
         {v && (
           <line

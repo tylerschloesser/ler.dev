@@ -6,6 +6,8 @@ export class Vec2 {
     this.y = y ?? x
   }
 
+  static ZERO = new Vec2(0, 0)
+
   div(scalar: number): Vec2 {
     return new Vec2(this.x / scalar, this.y / scalar)
   }
