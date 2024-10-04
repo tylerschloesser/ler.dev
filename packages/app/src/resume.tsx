@@ -140,7 +140,7 @@ function CanvasSvg({ container, pointer }: CanvasSvgProps) {
     if (!pointer) {
       return null
     }
-    return pointer.sub(center)
+    return pointer.sub(center).div(2)
   }, [pointer, center])
 
   return (
