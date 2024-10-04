@@ -1,4 +1,10 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import {
+  RefObject,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 import invariant from 'tiny-invariant'
 import { Rect } from './rect'
 import { Vec2 } from './vec2'
@@ -32,8 +38,7 @@ export function Resume() {
   )
 }
 
-function Canvas() {
-  const ref = useRef<HTMLDivElement>(null)
+function useSize(ref: RefObject<Element>): Vec2 | null {
   const [size, setSize] = useState<Vec2 | null>(null)
   useEffect(() => {
     invariant(ref.current)
@@ -47,6 +52,12 @@ function Canvas() {
       ro.disconnect()
     }
   }, [])
+  return size
+}
+
+function Canvas() {
+  const ref = useRef<HTMLDivElement>(null)
+  const size = useSize(ref)
   return (
     <div
       ref={ref}
