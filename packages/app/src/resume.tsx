@@ -114,6 +114,9 @@ interface CanvasSvgProps {
 function useSmooth(next: Vec2) {
   const prev = useRef<Vec2>(next)
   const [smooth, setSmooth] = useState(prev.current)
+  useEffect(() => {
+    setSmooth(next)
+  }, [next])
   return smooth
 }
 
