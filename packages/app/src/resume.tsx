@@ -58,21 +58,60 @@ function useSize(ref: RefObject<Element>): Vec2 | null {
 function Canvas() {
   const ref = useRef<HTMLDivElement>(null)
   const size = useSize(ref)
+
+  const [pointer, setPointer] = useState<Vec2 | null>(null)
+
+  useEffect(() => {
+    const controller = new AbortController()
+    const { signal } = controller
+
+    document.addEventListener(
+      'pointermove',
+      (ev) => {
+        setPointer(new Vec2(ev.clientX, ev.clientY))
+      },
+      { signal },
+    )
+
+    document.addEventListener(
+      'pointerenter',
+      (ev) => {
+        setPointer(new Vec2(ev.clientX, ev.clientY))
+      },
+      { signal },
+    )
+
+    document.addEventListener(
+      'pointerleave',
+      () => {
+        setPointer(null)
+      },
+      { signal },
+    )
+
+    return () => {
+      controller.abort()
+    }
+  }, [])
+
   return (
     <div
       ref={ref}
       className="absolute top-0 left-0 right-0 bottom-0 pointer-events-none"
     >
-      {size && <CanvasSvg container={size} />}
+      {size && (
+        <CanvasSvg container={size} pointer={pointer} />
+      )}
     </div>
   )
 }
 
 interface CanvasSvgProps {
   container: Vec2
+  pointer: Vec2 | null
 }
 
-function CanvasSvg({ container }: CanvasSvgProps) {
+function CanvasSvg({ container, pointer }: CanvasSvgProps) {
   const viewBox = useMemo(
     () => `0 0 ${container.x} ${container.y}`,
     [container],
@@ -95,6 +134,14 @@ function CanvasSvg({ container }: CanvasSvgProps) {
   return (
     <svg viewBox={viewBox}>
       <CanvasRect rect={box} />
+      {pointer && (
+        <circle
+          cx={pointer.x}
+          cy={pointer.y}
+          fill="white"
+          r="10"
+        />
+      )}
     </svg>
   )
 }
