@@ -108,11 +108,6 @@ function Canvas() {
   )
 }
 
-interface CanvasSvgProps {
-  container: Vec2
-  pointer: Vec2 | null
-}
-
 function useSmooth(next: Vec2) {
   const target = useRef<Vec2>(next)
   const handle = useRef<number | null>(null)
@@ -148,12 +143,15 @@ function useSmooth(next: Vec2) {
   return smooth
 }
 
-function CanvasSvg({ container, pointer }: CanvasSvgProps) {
-  const viewBox = useMemo(
-    () => `0 0 ${container.x} ${container.y}`,
-    [container],
-  )
+interface RotatingSquareProps {
+  container: Vec2
+  pointer: Vec2 | null
+}
 
+function RotatingSquare({
+  container,
+  pointer,
+}: RotatingSquareProps) {
   const box = useMemo(() => {
     const size = new Vec2(
       Math.min(container.x, container.y) / 4,
@@ -186,7 +184,7 @@ function CanvasSvg({ container, pointer }: CanvasSvgProps) {
   const translate = useSmooth(v)
 
   return (
-    <svg viewBox={viewBox}>
+    <>
       <g
         transform={`translate(${translate.x}, ${translate.y})`}
       >
@@ -207,6 +205,27 @@ function CanvasSvg({ container, pointer }: CanvasSvgProps) {
           )}
         </g>
       )}
+    </>
+  )
+}
+
+interface CanvasSvgProps {
+  container: Vec2
+  pointer: Vec2 | null
+}
+
+function CanvasSvg({ container, pointer }: CanvasSvgProps) {
+  const viewBox = useMemo(
+    () => `0 0 ${container.x} ${container.y}`,
+    [container],
+  )
+
+  return (
+    <svg viewBox={viewBox}>
+      <RotatingSquare
+        container={container}
+        pointer={pointer}
+      />
     </svg>
   )
 }
