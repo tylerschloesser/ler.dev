@@ -254,7 +254,6 @@ function Grid({ container }: GridProps) {
         points.push(value)
       }
     }
-    console.log(points)
     return points
   }, [rows, cols])
 
