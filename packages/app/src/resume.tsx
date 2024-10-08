@@ -16,6 +16,7 @@ const noise2d = createNoise3D(rng.next.bind(rng))
 
 const DEBUG: boolean = false
 const SHOW_ROTATING_SQUARE: boolean = false
+const SHOW_GRID: boolean = false
 
 export function Resume() {
   return (
@@ -260,7 +261,7 @@ function Grid({ container }: GridProps) {
   const [time, setTime] = useState(Date.now())
   useEffect(() => {
     function callback() {
-      setTime(Date.now())
+      setTime(Math.floor(Date.now() / 100) * 100)
       handle = self.requestAnimationFrame(callback)
     }
     let handle = self.requestAnimationFrame(callback)
@@ -307,14 +308,20 @@ function GridRect({
     point.y * 1,
     time * 1e-4,
   )
+  if (noise <= 0) {
+    return null
+  }
 
   const scale = useMemo(() => {
-    // return Math.min(
-    //   Math.abs(point.x) / (container.x / 2),
-    //   1,
-    // )
-    return 1
-  }, [container, point])
+    invariant(container.x !== 0)
+    invariant(len !== 0)
+    return (
+      Math.min(
+        Math.abs(point.x) / (container.x / 2 / len),
+        1,
+      ) ** 3
+    )
+  }, [container, point, len])
 
   const opacity = Math.max(noise * scale, 0)
   const stroke =
@@ -346,7 +353,7 @@ function CanvasSvg({ container, pointer }: CanvasSvgProps) {
 
   return (
     <svg viewBox={viewBox}>
-      <Grid container={container} />
+      {SHOW_GRID && <Grid container={container} />}
       {SHOW_ROTATING_SQUARE && (
         <RotatingSquare
           container={container}
