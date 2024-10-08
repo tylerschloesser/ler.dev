@@ -210,6 +210,14 @@ function RotatingSquare({
   )
 }
 
+interface GridProps {
+  container: Vec2
+}
+
+function Grid({ container }: GridProps) {
+  return <g></g>
+}
+
 interface CanvasSvgProps {
   container: Vec2
   pointer: Vec2 | null
@@ -223,6 +231,7 @@ function CanvasSvg({ container, pointer }: CanvasSvgProps) {
 
   return (
     <svg viewBox={viewBox}>
+      <Grid container={container} />
       {SHOW_ROTATING_SQUARE && (
         <RotatingSquare
           container={container}
