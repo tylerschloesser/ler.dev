@@ -4,7 +4,6 @@ import {
   useMemo,
   useRef,
   useState,
-  useTransition,
 } from 'react'
 import { createNoise3D } from 'simplex-noise'
 import invariant from 'tiny-invariant'
@@ -269,19 +268,30 @@ function Grid({ container }: GridProps) {
   const z = time * 2 ** -12
 
   return (
-    <g strokeWidth="1" stroke="white" fill="none">
-      {points.map((point) => (
-        <>
-          <rect
-            opacity={noise2d(point.x, point.y, z) * 0.5}
-            x={point.x}
-            y={point.y}
-            width={len}
-            height={len}
-          />
-        </>
+    <g strokeWidth="1" fill="none">
+      {points.map((point, i) => (
+        <GridRect key={i} point={point} len={len} z={z} />
       ))}
     </g>
+  )
+}
+
+interface GridRectProps {
+  point: Vec2
+  len: number
+  z: number
+}
+
+function GridRect({ point, len, z }: GridRectProps) {
+  return (
+    <rect
+      stroke="white"
+      opacity={noise2d(point.x, point.y, z) * 0.5}
+      x={point.x}
+      y={point.y}
+      width={len}
+      height={len}
+    />
   )
 }
 
