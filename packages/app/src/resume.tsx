@@ -9,7 +9,7 @@ import invariant from 'tiny-invariant'
 import { Rect } from './rect'
 import { Vec2 } from './vec2'
 
-const DEBUG: boolean = true
+const DEBUG: boolean = false
 
 export function Resume() {
   return (
@@ -117,16 +117,19 @@ function useSmooth(next: Vec2) {
   const target = useRef<Vec2>(next)
   const handle = useRef<number | null>(null)
   const [smooth, setSmooth] = useState(target.current)
+  const last = useRef<number | null>(null)
 
   const callback = useRef(() => {
+    const now = self.performance.now()
+    const dt = last.current ? now - last.current : 0
+    last.current = now
     setSmooth((current) => {
       const v = target.current.sub(current)
       const dist = v.len()
       if (dist < 1e-3) {
-        console.log('done', dist)
         return target.current
       }
-      return current.add(v.mul(1 / 100))
+      return current.add(v.mul(dist ** 0.5 * (dt / 1000)))
     })
   })
 
@@ -138,6 +141,7 @@ function useSmooth(next: Vec2) {
       )
     } else {
       handle.current = null
+      last.current = null
     }
   }, [smooth, next])
 
@@ -175,7 +179,7 @@ function CanvasSvg({ container, pointer }: CanvasSvgProps) {
     }
     return pointer.sub(center).map((v) => {
       const dist = v.len()
-      return v.mul(1 / Math.pow(dist, 0.1))
+      return v.mul(-1 / Math.pow(dist, 0.1))
     })
   }, [pointer, center])
 
@@ -238,7 +242,7 @@ function useRotate(): number {
       last = now
 
       setRotate(
-        (prev) => (prev + ((dt / 1000) * 360) / 2) % 360,
+        (prev) => (prev + ((dt / 1000) * 360) / 8) % 360,
       )
 
       handle = self.requestAnimationFrame(callback)
