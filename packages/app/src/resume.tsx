@@ -9,6 +9,8 @@ import invariant from 'tiny-invariant'
 import { Rect } from './rect'
 import { Vec2 } from './vec2'
 
+const DEBUG: boolean = true
+
 export function Resume() {
   return (
     <>
@@ -118,40 +120,27 @@ function useSmooth(next: Vec2) {
 
   const callback = useRef(() => {
     setSmooth((current) => {
-      const d = target.current.sub(current)
-      const dist = d.len()
-
-      if (dist === 0) {
-        handle.current = null
+      const v = target.current.sub(current)
+      const dist = v.len()
+      if (dist < 1e-3) {
+        console.log('done', dist)
         return target.current
       }
-
-      // TODO smooth right here
-      handle.current = null
-      return target.current
-
-      // handle.current = self.requestAnimationFrame(
-      //   callback.current,
-      // )
+      return current.add(v.mul(1 / 100))
     })
   })
 
   useEffect(() => {
-    const d = next.sub(target.current)
-    const dist = d.len()
-    if (dist === 0) {
-      if (handle.current) {
-        self.cancelAnimationFrame(handle.current)
-        handle.current = null
-      }
-    }
-    target.current = next
-    if (!handle.current) {
+    if (!smooth.equals(next)) {
+      target.current = next
       handle.current = self.requestAnimationFrame(
         callback.current,
       )
+    } else {
+      handle.current = null
     }
-  }, [next])
+  }, [smooth, next])
+
   return smooth
 }
 
@@ -163,8 +152,8 @@ function CanvasSvg({ container, pointer }: CanvasSvgProps) {
 
   const box = useMemo(() => {
     const size = new Vec2(
-      Math.min(container.x, container.y) / 8,
-      Math.min(container.x, container.y) / 8,
+      Math.min(container.x, container.y) / 4,
+      Math.min(container.x, container.y) / 4,
     )
     return new Rect(
       new Vec2(
@@ -184,7 +173,10 @@ function CanvasSvg({ container, pointer }: CanvasSvgProps) {
     if (!pointer) {
       return Vec2.ZERO
     }
-    return pointer.sub(center).div(-2)
+    return pointer.sub(center).map((v) => {
+      const dist = v.len()
+      return v.mul(1 / Math.pow(dist, 0.1))
+    })
   }, [pointer, center])
 
   const translate = useSmooth(v)
@@ -196,19 +188,21 @@ function CanvasSvg({ container, pointer }: CanvasSvgProps) {
       >
         <CanvasRect rect={box} />
       </g>
-      <g stroke="white" strokeWidth="2" opacity=".5">
-        {v && (
-          <line
-            x1={center.x}
-            y1={center.y}
-            x2={center.x + v.x}
-            y2={center.y + v.y}
-          />
-        )}
-        {pointer && (
-          <circle cx={pointer.x} cy={pointer.y} r="10" />
-        )}
-      </g>
+      {DEBUG && (
+        <g stroke="white" strokeWidth="2" opacity=".5">
+          {v && (
+            <line
+              x1={center.x}
+              y1={center.y}
+              x2={center.x + v.x}
+              y2={center.y + v.y}
+            />
+          )}
+          {pointer && (
+            <circle cx={pointer.x} cy={pointer.y} r="10" />
+          )}
+        </g>
+      )}
     </svg>
   )
 }
@@ -244,7 +238,7 @@ function useRotate(): number {
       last = now
 
       setRotate(
-        (prev) => (prev + ((dt / 1000) * 360) / 16) % 360,
+        (prev) => (prev + ((dt / 1000) * 360) / 2) % 360,
       )
 
       handle = self.requestAnimationFrame(callback)
