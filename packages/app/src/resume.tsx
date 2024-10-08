@@ -227,10 +227,10 @@ function Grid({ container }: GridProps) {
 
   const { rows, cols } = useMemo(() => {
     const rows = len
-      ? Math.ceil(container.x / 2 / len) * 2
+      ? Math.ceil(container.y / 2 / len) * 2
       : 0
     const cols = len
-      ? Math.ceil(container.y / 2 / len) * 2
+      ? Math.ceil(container.x / 2 / len) * 2
       : 0
     return { rows, cols }
   }, [container, len])
@@ -254,6 +254,7 @@ function Grid({ container }: GridProps) {
         points.push(value)
       }
     }
+    console.log(points)
     return points
   }, [rows, cols])
 
