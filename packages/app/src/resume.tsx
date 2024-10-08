@@ -265,7 +265,7 @@ function Grid({ container }: GridProps) {
     }
   }, [])
 
-  const z = time * 2 ** -12
+  const z = time * 2 ** -13
 
   return (
     <g strokeWidth="1" fill="none">
@@ -283,10 +283,15 @@ interface GridRectProps {
 }
 
 function GridRect({ point, len, z }: GridRectProps) {
+  const noise = noise2d(point.x, point.y, z)
+
+  const opacity = Math.max(noise * 0.5, 0)
+  const stroke =
+    noise > 0 ? `hsl(${noise * 360}, 50%, 50%)` : undefined
   return (
     <rect
-      stroke="white"
-      opacity={noise2d(point.x, point.y, z) * 0.5}
+      opacity={opacity}
+      stroke={stroke}
       x={point.x}
       y={point.y}
       width={len}
