@@ -4,6 +4,7 @@ import {
   useMemo,
   useRef,
   useState,
+  useTransition,
 } from 'react'
 import { createNoise3D } from 'simplex-noise'
 import invariant from 'tiny-invariant'
@@ -253,12 +254,26 @@ function Grid({ container }: GridProps) {
     return points
   }, [container])
 
+  const [time, setTime] = useState(self.performance.now())
+  useEffect(() => {
+    function callback() {
+      setTime(self.performance.now())
+      handle = self.requestAnimationFrame(callback)
+    }
+    let handle = self.requestAnimationFrame(callback)
+    return () => {
+      self.cancelAnimationFrame(handle)
+    }
+  }, [])
+
+  const z = time * 2 ** -12
+
   return (
     <g strokeWidth="1" stroke="white" fill="none">
       {points.map((point) => (
         <>
           <rect
-            opacity={noise2d(point.x, point.y, 1) * 0.5}
+            opacity={noise2d(point.x, point.y, z) * 0.5}
             x={point.x}
             y={point.y}
             width={len}
