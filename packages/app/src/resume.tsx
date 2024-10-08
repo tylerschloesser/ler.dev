@@ -5,9 +5,12 @@ import {
   useRef,
   useState,
 } from 'react'
+import { createNoise3D } from 'simplex-noise'
 import invariant from 'tiny-invariant'
 import { Rect } from './rect'
 import { Vec2 } from './vec2'
+
+const noise2d = createNoise3D()
 
 const DEBUG: boolean = false
 const SHOW_ROTATING_SQUARE: boolean = false
@@ -215,16 +218,41 @@ interface GridProps {
 }
 
 function Grid({ container }: GridProps) {
+  const len = Math.min(container.x, container.y) * 0.1
   const position = container.div(2)
-  const size = container.div(4)
+  const points: Vec2[] = []
+
+  for (
+    let x = 0;
+    x <= Math.ceil(container.x / 2 / len);
+    x++
+  ) {
+    for (
+      let y = 0;
+      y <= Math.ceil(container.y / 2 / len);
+      y++
+    ) {
+      points.push(position.add(new Vec2(x * len, y * len)))
+      points.push(position.add(new Vec2(-x * len, y * len)))
+      points.push(position.add(new Vec2(x * len, -y * len)))
+      points.push(
+        position.add(new Vec2(-x * len, -y * len)),
+      )
+    }
+  }
   return (
-    <g>
-      <rect
-        x={position.x}
-        y={position.y}
-        width={size.x}
-        height={size.y}
-      />
+    <g strokeWidth="1" stroke="white" fill="none">
+      {points.map((point) => (
+        <>
+          <rect
+            opacity={noise2d(point.x, point.y, 1)}
+            x={point.x}
+            y={point.y}
+            width={len}
+            height={len}
+          />
+        </>
+      ))}
     </g>
   )
 }
