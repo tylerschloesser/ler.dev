@@ -8,6 +8,7 @@ import {
 } from 'react'
 import { createNoise3D } from 'simplex-noise'
 import invariant from 'tiny-invariant'
+import { useImmer } from 'use-immer'
 import { Rect } from './rect'
 import { Vec2 } from './vec2'
 
@@ -219,41 +220,67 @@ interface GridProps {
   container: Vec2
 }
 
+function getInitialPoints({
+  rows,
+  cols,
+  len,
+}: {
+  rows: number
+  cols: number
+  len: number
+}): Map<string, Vec2> {
+  invariant(rows % 2 === 0)
+  invariant(cols % 2 === 0)
+
+  const points = new Map<string, Vec2>()
+
+  for (let row = -(rows / 2); row < rows / 2; row++) {
+    for (let col = -(cols / 2); col < cols / 2; col++) {
+      const id = `${row}.${col}`
+      invariant(!points.has(id))
+      points.set(id, new Vec2(col, row))
+    }
+  }
+  return points
+}
+
 function Grid({ container }: GridProps) {
   const len = useMemo(
     () => Math.min(container.x, container.y) * 0.1,
     [container],
   )
 
+  const { rows, cols } = useMemo(() => {
+    const rows = len
+      ? Math.ceil(container.x / 2 / len) * 2
+      : 0
+    const cols = len
+      ? Math.ceil(container.y / 2 / len) * 2
+      : 0
+    return { rows, cols }
+  }, [container, len])
+
+  const cache = useRef(new Map<string, Vec2>())
+
   const points = useMemo(() => {
-    const position = container.div(2)
-    const points: Vec2[] = []
-    for (
-      let x = 0;
-      x <= Math.ceil(container.x / 2 / len);
-      x++
-    ) {
-      for (
-        let y = 0;
-        y <= Math.ceil(container.y / 2 / len);
-        y++
-      ) {
-        points.push(
-          position.add(new Vec2(x * len, y * len)),
-        )
-        points.push(
-          position.add(new Vec2(-x * len, y * len)),
-        )
-        points.push(
-          position.add(new Vec2(x * len, -y * len)),
-        )
-        points.push(
-          position.add(new Vec2(-x * len, -y * len)),
-        )
+    invariant(rows % 2 === 0)
+    invariant(cols % 2 === 0)
+
+    const points = new Map<string, Vec2>()
+
+    for (let row = -(rows / 2); row < rows / 2; row++) {
+      for (let col = -(cols / 2); col < cols / 2; col++) {
+        const key = `${row}.${col}`
+        let value = cache.current.get(key)
+        if (!value) {
+          value = new Vec2(col, row)
+          cache.current.set(key, value)
+        }
+        points.set(key, value)
       }
     }
     return points
-  }, [container])
+  }, [rows, cols])
 
   const [time, setTime] = useState(Date.now())
   useEffect(() => {
@@ -269,10 +296,10 @@ function Grid({ container }: GridProps) {
 
   return (
     <g strokeWidth="1" fill="none">
-      {points.map((point, i) => (
+      {[...points].map(([key, point]) => (
         <GridRect
+          key={key}
           container={container}
-          key={i}
           point={point}
           len={len}
           time={time}
