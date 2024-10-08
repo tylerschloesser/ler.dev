@@ -294,8 +294,13 @@ function Grid({ container }: GridProps) {
     }
   }, [])
 
+  const transform = useMemo(() => {
+    const { x, y } = container.div(2)
+    return `translate(${x}, ${y})`
+  }, [container])
+
   return (
-    <g strokeWidth="1" fill="none">
+    <g strokeWidth="1" fill="none" transform={transform}>
       {[...points].map(([key, point]) => (
         <GridRect
           key={key}
