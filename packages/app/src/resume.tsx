@@ -215,7 +215,18 @@ interface GridProps {
 }
 
 function Grid({ container }: GridProps) {
-  return <g></g>
+  const position = container.div(2)
+  const size = container.div(4)
+  return (
+    <g>
+      <rect
+        x={position.x}
+        y={position.y}
+        width={size.x}
+        height={size.y}
+      />
+    </g>
+  )
 }
 
 interface CanvasSvgProps {
