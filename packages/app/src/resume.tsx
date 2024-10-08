@@ -1,3 +1,4 @@
+import Prando from 'prando'
 import {
   RefObject,
   useEffect,
@@ -10,7 +11,8 @@ import invariant from 'tiny-invariant'
 import { Rect } from './rect'
 import { Vec2 } from './vec2'
 
-const noise2d = createNoise3D()
+const rng = new Prando(0)
+const noise2d = createNoise3D(rng.next.bind(rng))
 
 const DEBUG: boolean = false
 const SHOW_ROTATING_SQUARE: boolean = false
@@ -253,10 +255,10 @@ function Grid({ container }: GridProps) {
     return points
   }, [container])
 
-  const [time, setTime] = useState(self.performance.now())
+  const [time, setTime] = useState(Date.now())
   useEffect(() => {
     function callback() {
-      setTime(self.performance.now())
+      setTime(Date.now())
       handle = self.requestAnimationFrame(callback)
     }
     let handle = self.requestAnimationFrame(callback)
@@ -265,27 +267,48 @@ function Grid({ container }: GridProps) {
     }
   }, [])
 
-  const z = time * 2 ** -13
-
   return (
     <g strokeWidth="1" fill="none">
       {points.map((point, i) => (
-        <GridRect key={i} point={point} len={len} z={z} />
+        <GridRect
+          container={container}
+          key={i}
+          point={point}
+          len={len}
+          time={time}
+        />
       ))}
     </g>
   )
 }
 
 interface GridRectProps {
+  container: Vec2
   point: Vec2
   len: number
-  z: number
+  time: number
 }
 
-function GridRect({ point, len, z }: GridRectProps) {
-  const noise = noise2d(point.x, point.y, z)
+function GridRect({
+  container,
+  point,
+  len,
+  time,
+}: GridRectProps) {
+  const noise = noise2d(
+    point.x * 1e-2,
+    point.y * 1e-2,
+    time * 1e-4,
+  )
 
-  const opacity = Math.max(noise * 0.5, 0)
+  const scale = useMemo(() => {
+    return Math.min(
+      Math.abs(point.x) / (container.x / 2),
+      1,
+    )
+  }, [container, point])
+
+  const opacity = Math.max(noise * scale, 0)
   const stroke =
     noise > 0 ? `hsl(${noise * 360}, 50%, 50%)` : undefined
   return (
