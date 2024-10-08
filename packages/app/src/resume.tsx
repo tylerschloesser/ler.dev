@@ -8,7 +8,6 @@ import {
 } from 'react'
 import { createNoise3D } from 'simplex-noise'
 import invariant from 'tiny-invariant'
-import { useImmer } from 'use-immer'
 import { Rect } from './rect'
 import { Vec2 } from './vec2'
 
@@ -220,30 +219,6 @@ interface GridProps {
   container: Vec2
 }
 
-function getInitialPoints({
-  rows,
-  cols,
-  len,
-}: {
-  rows: number
-  cols: number
-  len: number
-}): Map<string, Vec2> {
-  invariant(rows % 2 === 0)
-  invariant(cols % 2 === 0)
-
-  const points = new Map<string, Vec2>()
-
-  for (let row = -(rows / 2); row < rows / 2; row++) {
-    for (let col = -(cols / 2); col < cols / 2; col++) {
-      const id = `${row}.${col}`
-      invariant(!points.has(id))
-      points.set(id, new Vec2(col, row))
-    }
-  }
-  return points
-}
-
 function Grid({ container }: GridProps) {
   const len = useMemo(
     () => Math.min(container.x, container.y) * 0.1,
@@ -266,7 +241,7 @@ function Grid({ container }: GridProps) {
     invariant(rows % 2 === 0)
     invariant(cols % 2 === 0)
 
-    const points = new Map<string, Vec2>()
+    const points: Vec2[] = []
 
     for (let row = -(rows / 2); row < rows / 2; row++) {
       for (let col = -(cols / 2); col < cols / 2; col++) {
@@ -276,7 +251,7 @@ function Grid({ container }: GridProps) {
           value = new Vec2(col, row)
           cache.current.set(key, value)
         }
-        points.set(key, value)
+        points.push(value)
       }
     }
     return points
@@ -301,9 +276,9 @@ function Grid({ container }: GridProps) {
 
   return (
     <g strokeWidth="1" fill="none" transform={transform}>
-      {[...points].map(([key, point]) => (
+      {points.map((point) => (
         <GridRect
-          key={key}
+          key={`${point.x}.${point.y}`}
           container={container}
           point={point}
           len={len}
@@ -328,29 +303,32 @@ function GridRect({
   time,
 }: GridRectProps) {
   const noise = noise2d(
-    point.x * 1e-2,
-    point.y * 1e-2,
+    point.x * 1,
+    point.y * 1,
     time * 1e-4,
   )
 
   const scale = useMemo(() => {
-    return Math.min(
-      Math.abs(point.x) / (container.x / 2),
-      1,
-    )
+    // return Math.min(
+    //   Math.abs(point.x) / (container.x / 2),
+    //   1,
+    // )
+    return 1
   }, [container, point])
 
   const opacity = Math.max(noise * scale, 0)
   const stroke =
-    noise > 0 ? `hsl(${noise * 360}, 50%, 50%)` : undefined
+    noise > 0
+      ? `hsl(${(noise * 360).toFixed(2)}, 50%, 50%)`
+      : undefined
   return (
     <rect
-      opacity={opacity}
+      opacity={opacity.toFixed(2)}
       stroke={stroke}
-      x={point.x}
-      y={point.y}
-      width={len}
-      height={len}
+      x={(point.x * len).toFixed(2)}
+      y={(point.y * len).toFixed(2)}
+      width={len.toFixed(2)}
+      height={len.toFixed(2)}
     />
   )
 }
