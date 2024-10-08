@@ -1,5 +1,6 @@
 import Prando from 'prando'
 import {
+  Fragment,
   RefObject,
   useEffect,
   useMemo,
@@ -16,13 +17,13 @@ const noise2d = createNoise3D(rng.next.bind(rng))
 
 const DEBUG: boolean = false
 const SHOW_ROTATING_SQUARE: boolean = false
-const SHOW_GRID: boolean = false
+const SHOW_GRID: boolean = true
 
 export function Resume() {
   return (
     <>
       <Canvas />
-      <div className="relative flex justify-center">
+      <div className="relative flex justify-center min-h-dvh">
         <div className="flex-1 flex gap-4 p-4 max-w-4xl">
           <div>
             <h3 className="text-lg font-bold">
@@ -43,6 +44,7 @@ export function Resume() {
           </div>
         </div>
       </div>
+      <div className="min-h-dvh">TODO</div>
     </>
   )
 }
@@ -221,20 +223,20 @@ interface GridProps {
 }
 
 function Grid({ container }: GridProps) {
-  const len = useMemo(
-    () => Math.min(container.x, container.y) * 0.1,
-    [container],
+  const size = useMemo(
+    () => new Vec2(container.y / 16),
+    [container.y],
   )
 
   const { rows, cols } = useMemo(() => {
-    const rows = len
-      ? Math.ceil(container.y / 2 / len) * 2
+    const rows = size
+      ? Math.ceil(container.y / 2 / size.y) * 2
       : 0
-    const cols = len
-      ? Math.ceil(container.x / 2 / len) * 2
+    const cols = size
+      ? Math.ceil(container.x / 2 / size.x) * 2
       : 0
     return { rows, cols }
-  }, [container, len])
+  }, [container, size])
 
   const cache = useRef(new Map<string, Vec2>())
 
@@ -262,6 +264,7 @@ function Grid({ container }: GridProps) {
   useEffect(() => {
     function callback() {
       setTime(Math.floor(Date.now() / 100) * 100)
+      // setTime(Date.now())
       handle = self.requestAnimationFrame(callback)
     }
     let handle = self.requestAnimationFrame(callback)
@@ -278,13 +281,14 @@ function Grid({ container }: GridProps) {
   return (
     <g strokeWidth="1" fill="none" transform={transform}>
       {points.map((point) => (
-        <GridRect
-          key={`${point.x}.${point.y}`}
-          container={container}
-          point={point}
-          len={len}
-          time={time}
-        />
+        <Fragment key={`${point.x}.${point.y}`}>
+          {GridRect({
+            container,
+            point,
+            size,
+            time,
+          })}
+        </Fragment>
       ))}
     </g>
   )
@@ -293,14 +297,14 @@ function Grid({ container }: GridProps) {
 interface GridRectProps {
   container: Vec2
   point: Vec2
-  len: number
+  size: Vec2
   time: number
 }
 
 function GridRect({
   container,
   point,
-  len,
+  size,
   time,
 }: GridRectProps) {
   const noise = noise2d(
@@ -308,34 +312,31 @@ function GridRect({
     point.y * 1,
     time * 1e-4,
   )
-  if (noise <= 0) {
-    return null
-  }
 
   const scale = useMemo(() => {
     invariant(container.x !== 0)
-    invariant(len !== 0)
+    invariant(size.x !== 0)
     return (
       Math.min(
-        Math.abs(point.x) / (container.x / 2 / len),
+        Math.abs(point.x) / (container.x / 2 / size.x),
         1,
       ) ** 3
     )
-  }, [container, point, len])
+  }, [container, point, size.x])
 
   const opacity = Math.max(noise * scale, 0)
   const stroke =
     noise > 0
       ? `hsl(${(noise * 360).toFixed(2)}, 50%, 50%)`
-      : undefined
+      : 'transparent'
   return (
     <rect
       opacity={opacity.toFixed(2)}
       stroke={stroke}
-      x={(point.x * len).toFixed(2)}
-      y={(point.y * len).toFixed(2)}
-      width={len.toFixed(2)}
-      height={len.toFixed(2)}
+      x={(point.x * size.x).toFixed(2)}
+      y={(point.y * size.y).toFixed(2)}
+      width={size.x.toFixed(2)}
+      height={size.y.toFixed(2)}
     />
   )
 }
