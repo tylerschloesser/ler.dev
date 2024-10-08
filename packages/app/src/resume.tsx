@@ -218,34 +218,47 @@ interface GridProps {
 }
 
 function Grid({ container }: GridProps) {
-  const len = Math.min(container.x, container.y) * 0.1
-  const position = container.div(2)
-  const points: Vec2[] = []
+  const len = useMemo(
+    () => Math.min(container.x, container.y) * 0.1,
+    [container],
+  )
 
-  for (
-    let x = 0;
-    x <= Math.ceil(container.x / 2 / len);
-    x++
-  ) {
+  const points = useMemo(() => {
+    const position = container.div(2)
+    const points: Vec2[] = []
     for (
-      let y = 0;
-      y <= Math.ceil(container.y / 2 / len);
-      y++
+      let x = 0;
+      x <= Math.ceil(container.x / 2 / len);
+      x++
     ) {
-      points.push(position.add(new Vec2(x * len, y * len)))
-      points.push(position.add(new Vec2(-x * len, y * len)))
-      points.push(position.add(new Vec2(x * len, -y * len)))
-      points.push(
-        position.add(new Vec2(-x * len, -y * len)),
-      )
+      for (
+        let y = 0;
+        y <= Math.ceil(container.y / 2 / len);
+        y++
+      ) {
+        points.push(
+          position.add(new Vec2(x * len, y * len)),
+        )
+        points.push(
+          position.add(new Vec2(-x * len, y * len)),
+        )
+        points.push(
+          position.add(new Vec2(x * len, -y * len)),
+        )
+        points.push(
+          position.add(new Vec2(-x * len, -y * len)),
+        )
+      }
     }
-  }
+    return points
+  }, [container])
+
   return (
     <g strokeWidth="1" stroke="white" fill="none">
       {points.map((point) => (
         <>
           <rect
-            opacity={noise2d(point.x, point.y, 1)}
+            opacity={noise2d(point.x, point.y, 1) * 0.5}
             x={point.x}
             y={point.y}
             width={len}
