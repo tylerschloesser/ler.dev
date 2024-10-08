@@ -10,6 +10,7 @@ import { Rect } from './rect'
 import { Vec2 } from './vec2'
 
 const DEBUG: boolean = false
+const SHOW_ROTATING_SQUARE: boolean = false
 
 export function Resume() {
   return (
@@ -222,10 +223,12 @@ function CanvasSvg({ container, pointer }: CanvasSvgProps) {
 
   return (
     <svg viewBox={viewBox}>
-      <RotatingSquare
-        container={container}
-        pointer={pointer}
-      />
+      {SHOW_ROTATING_SQUARE && (
+        <RotatingSquare
+          container={container}
+          pointer={pointer}
+        />
+      )}
     </svg>
   )
 }
