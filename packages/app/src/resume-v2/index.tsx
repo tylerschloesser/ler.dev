@@ -1,64 +1,67 @@
 import * as PIXI from 'pixi.js'
-import { useEffect, useMemo, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import invariant from 'tiny-invariant'
 import { Vec2 } from './vec2'
 
-export function ResumeV2() {
-  const size = useMemo(
-    () => new Vec2(window.innerWidth, window.innerHeight),
-    [],
+async function init() {
+  const canvas = document.createElement('canvas')
+  const app = new PIXI.Application()
+  const size = new Vec2(
+    window.innerWidth,
+    window.innerHeight,
   )
+  await app.init({
+    canvas,
+    width: size.x,
+    height: size.y,
+    autoStart: false,
+  })
+  return { canvas, app }
+}
 
-  const canvasRef = useRef<HTMLCanvasElement>(null)
-  const appRef = useRef<PIXI.Application | null>(null)
+type State = Awaited<ReturnType<typeof init>>
 
+// @refresh reset
+//
+export function ResumeV2() {
+  const container = useRef<HTMLDivElement>(null)
+  const [state, setState] = useState<State | null>(null)
   useEffect(() => {
-    const controller = new AbortController()
-    const app = new PIXI.Application()
-
-    // controller.signal.addEventListener('abort', () => {
-    //   try {
-    //     app.stop()
-    //     app.destroy()
-    //   } catch (_e) {
-    //     console.debug('Swallowing error')
-    //   }
-    // })
-    ;(async () => {
-      invariant(canvasRef.current)
-      await app.init({
-        canvas: canvasRef.current,
-        width: size.x,
-        height: size.y,
-        autoStart: false,
-      })
-
+    init().then((_state) => {
       const rect = new PIXI.Graphics()
       rect.rect(0, 0, 100, 100)
-      rect.fill('blue')
-      app.stage.addChild(rect)
-
-      if (!controller.signal.aborted) {
-        app.start()
-        appRef.current = app
-      }
-
-      // app.ticker.add((ticker) => {
-      //   // console.log(ticker.deltaTime)
-      // })
-    })()
-    return () => {
-      if (appRef.current) {
-        appRef.current.destroy()
-      }
-    }
+      rect.fill('green')
+      _state.app.stage.addChild(rect)
+      _state.app.start()
+      setState(_state)
+    })
   }, [])
 
-  return (
-    <canvas
-      ref={canvasRef}
-      width={size.x}
-      height={size.y}
-    />
-  )
+  useEffect(() => {
+    if (!state) {
+      return
+    }
+
+    invariant(container.current)
+    container.current.append(state.canvas)
+
+    return () => {
+      state.app.destroy(
+        {
+          removeView: true,
+        },
+        {
+          children: true,
+          context: true,
+        },
+      )
+      if (container.current) {
+        container.current.removeChild(state.canvas)
+      } else {
+        console.debug(`container is ${container.current}`)
+      }
+    }
+  }, [state])
+
+  return <div ref={container} />
 }
