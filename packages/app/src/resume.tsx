@@ -223,10 +223,11 @@ interface GridProps {
 }
 
 function Grid({ container }: GridProps) {
-  const size = useMemo(
-    () => new Vec2(container.y / 16),
-    [container.y],
-  )
+  const size = useMemo(() => {
+    const y = container.y / 16
+    const x = Math.round(container.x / y)
+    return new Vec2(x, y)
+  }, [container])
 
   const { rows, cols } = useMemo(() => {
     const rows = size
