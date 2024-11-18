@@ -31,13 +31,14 @@ export function ResumeV2() {
   useEffect(() => {
     init().then((_state) => {
       const rect = new PIXI.Graphics()
-      rect.rect(0, 0, 100, 100)
+      const size = new Vec2(200)
+      rect.rect(0, 0, size.x, size.y)
       rect.fill('red')
       rect.position.set(
         _state.canvas.width / 2,
         _state.canvas.height / 2,
       )
-      rect.pivot.set(50, 50)
+      rect.pivot.set(size.x / 2, size.y / 2)
 
       _state.app.stage.addChild(rect)
       _state.app.start()
