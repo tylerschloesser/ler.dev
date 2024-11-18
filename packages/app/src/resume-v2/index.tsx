@@ -5,11 +5,13 @@ import { Vec2 } from './vec2'
 
 async function init() {
   const canvas = document.createElement('canvas')
+  canvas.style.width = `${window.innerWidth}px`
+  canvas.style.height = `${window.innerHeight}px`
   const app = new PIXI.Application()
   const size = new Vec2(
     window.innerWidth,
     window.innerHeight,
-  )
+  ).mul(window.devicePixelRatio)
   await app.init({
     canvas,
     width: size.x,
