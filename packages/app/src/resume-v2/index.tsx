@@ -1,5 +1,6 @@
 import * as PIXI from 'pixi.js'
-import { useMemo } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
+import invariant from 'tiny-invariant'
 import { Vec2 } from './vec2'
 
 export function ResumeV2() {
@@ -8,5 +9,26 @@ export function ResumeV2() {
     [],
   )
 
-  return <canvas width={size.x} height={size.y} />
+  const canvas = useRef<HTMLCanvasElement>(null)
+
+  useEffect(() => {
+    ;(async () => {
+      invariant(canvas.current)
+      const app = new PIXI.Application()
+      await app.init({
+        canvas: canvas.current,
+        width: size.x,
+        height: size.y,
+      })
+
+      const rect = new PIXI.Graphics()
+      rect.rect(0, 0, 100, 100)
+      rect.fill('blue')
+      app.stage.addChild(rect)
+    })()
+  }, [])
+
+  return (
+    <canvas ref={canvas} width={size.x} height={size.y} />
+  )
 }
