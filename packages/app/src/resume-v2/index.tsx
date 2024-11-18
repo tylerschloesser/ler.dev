@@ -9,26 +9,56 @@ export function ResumeV2() {
     [],
   )
 
-  const canvas = useRef<HTMLCanvasElement>(null)
+  const canvasRef = useRef<HTMLCanvasElement>(null)
+  const appRef = useRef<PIXI.Application | null>(null)
 
   useEffect(() => {
+    const controller = new AbortController()
+    const app = new PIXI.Application()
+
+    // controller.signal.addEventListener('abort', () => {
+    //   try {
+    //     app.stop()
+    //     app.destroy()
+    //   } catch (_e) {
+    //     console.debug('Swallowing error')
+    //   }
+    // })
     ;(async () => {
-      invariant(canvas.current)
-      const app = new PIXI.Application()
+      invariant(canvasRef.current)
       await app.init({
-        canvas: canvas.current,
+        canvas: canvasRef.current,
         width: size.x,
         height: size.y,
+        autoStart: false,
       })
 
       const rect = new PIXI.Graphics()
       rect.rect(0, 0, 100, 100)
       rect.fill('blue')
       app.stage.addChild(rect)
+
+      if (!controller.signal.aborted) {
+        app.start()
+        appRef.current = app
+      }
+
+      // app.ticker.add((ticker) => {
+      //   // console.log(ticker.deltaTime)
+      // })
     })()
+    return () => {
+      if (appRef.current) {
+        appRef.current.destroy()
+      }
+    }
   }, [])
 
   return (
-    <canvas ref={canvas} width={size.x} height={size.y} />
+    <canvas
+      ref={canvasRef}
+      width={size.x}
+      height={size.y}
+    />
   )
 }
