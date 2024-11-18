@@ -30,9 +30,20 @@ export function ResumeV2() {
     init().then((_state) => {
       const rect = new PIXI.Graphics()
       rect.rect(0, 0, 100, 100)
-      rect.fill('green')
+      rect.fill('red')
+      rect.position.set(
+        _state.canvas.width / 2,
+        _state.canvas.height / 2,
+      )
+      rect.pivot.set(50, 50)
+
       _state.app.stage.addChild(rect)
       _state.app.start()
+
+      _state.app.ticker.add((ticker) => {
+        rect.rotation += ticker.deltaTime * 1e-2
+      })
+
       setState(_state)
     })
   }, [])
