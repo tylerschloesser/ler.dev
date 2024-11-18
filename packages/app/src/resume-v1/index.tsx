@@ -19,7 +19,7 @@ const DEBUG: boolean = false
 const SHOW_ROTATING_SQUARE: boolean = false
 const SHOW_GRID: boolean = true
 
-export function Resume() {
+export function ResumeV1() {
   return (
     <>
       <Canvas />
