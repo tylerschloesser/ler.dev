@@ -4,9 +4,8 @@ import { createNoise3D } from 'simplex-noise'
 import invariant from 'tiny-invariant'
 
 self.addEventListener('message', async (ev) => {
-  const { canvas, size } = ev.data
+  const { canvas, viewport } = ev.data
   invariant(canvas instanceof OffscreenCanvas)
-  // invariant(size instanceof Vec2)
 
   const app = new PIXI.Application()
   const rng = new Prando(0)
@@ -16,8 +15,8 @@ self.addEventListener('message', async (ev) => {
 
   await app.init({
     canvas,
-    width: size.x,
-    height: size.y,
+    width: viewport.x,
+    height: viewport.y,
   })
 
   const rect = new PIXI.Graphics()

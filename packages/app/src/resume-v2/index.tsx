@@ -2,15 +2,14 @@ import { useEffect, useRef } from 'react'
 import invariant from 'tiny-invariant'
 import { Vec2 } from './vec2'
 
-// @refresh reset
-//
 export function ResumeV2() {
   const container = useRef<HTMLDivElement>(null)
   useEffect(() => {
     const canvas = document.createElement('canvas')
     canvas.style.width = `${window.innerWidth}px`
     canvas.style.height = `${window.innerHeight}px`
-    const size = new Vec2(
+
+    const viewport = new Vec2(
       window.innerWidth,
       window.innerHeight,
     ).mul(window.devicePixelRatio)
@@ -24,7 +23,7 @@ export function ResumeV2() {
 
     const offscreen = canvas.transferControlToOffscreen()
 
-    worker.postMessage({ canvas: offscreen, size }, [
+    worker.postMessage({ canvas: offscreen, viewport }, [
       offscreen,
     ])
 
