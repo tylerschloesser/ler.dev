@@ -15,6 +15,7 @@ export type InitMessage = z.infer<typeof InitMessage>
 
 export const ViewportMessage = z.strictObject({
   type: z.literal(MessageType.enum.Viewport),
+  viewport: ZodVec2,
 })
 export type ViewportMessage = z.infer<
   typeof ViewportMessage
