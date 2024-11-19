@@ -63,7 +63,7 @@ function Background() {
     }
   }, [])
 
-  return <div ref={container} />
+  return <div className="opacity-10" ref={container} />
 }
 
 function getViewport() {
