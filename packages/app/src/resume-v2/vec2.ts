@@ -1,9 +1,20 @@
+import { z } from 'zod'
+
 export class Vec2 {
   readonly x: number
   readonly y: number
-  constructor(x: number, y?: number) {
-    this.x = x
-    this.y = y ?? x
+
+  constructor(v: ZodVec2)
+  constructor(v: number)
+  constructor(x: number, y: number)
+  constructor(v: number | ZodVec2, y?: number) {
+    if (typeof v === 'number') {
+      this.x = v
+      this.y = y ?? v
+    } else {
+      this.x = v.x
+      this.y = v.y
+    }
   }
 
   static ZERO = new Vec2(0, 0)
@@ -36,3 +47,9 @@ export class Vec2 {
     return fn(this)
   }
 }
+
+export const ZodVec2 = z.strictObject({
+  x: z.number(),
+  y: z.number(),
+})
+export type ZodVec2 = z.infer<typeof ZodVec2>
