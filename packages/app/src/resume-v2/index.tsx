@@ -7,11 +7,11 @@ import {
 } from './message'
 import { Vec2 } from './vec2'
 
-function getViewport() {
-  return new Vec2(window.innerWidth, window.innerHeight)
+export function ResumeV2() {
+  return <Background />
 }
 
-export function ResumeV2() {
+function Background() {
   const container = useRef<HTMLDivElement>(null)
   useEffect(() => {
     const canvas = document.createElement('canvas')
@@ -64,4 +64,8 @@ export function ResumeV2() {
   }, [])
 
   return <div ref={container} />
+}
+
+function getViewport() {
+  return new Vec2(window.innerWidth, window.innerHeight)
 }
