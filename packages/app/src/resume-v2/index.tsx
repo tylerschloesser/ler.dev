@@ -9,6 +9,7 @@ import {
 } from '@fortawesome/pro-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import clsx from 'clsx'
+import qrResume from '../qr-resume.svg'
 
 export function ResumeV2() {
   return (
@@ -56,6 +57,14 @@ export function ResumeV2() {
           </p>
         </div>
       </div>
+      <section className="hidden sm:flex">
+        <a href="https://ty.ler.dev/qr/resume">
+          <img
+            src={qrResume}
+            className="w-48 aspect-square"
+          />
+        </a>
+      </section>
       <section className="p-2">
         <div className="grid grid-cols-[auto_1fr] gap-1">
           <div
