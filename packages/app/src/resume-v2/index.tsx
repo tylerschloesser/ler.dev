@@ -127,42 +127,69 @@ export function ResumeV2() {
               <FontAwesomeIcon icon={faBriefcase} />{' '}
               Experience
             </h3>
-            <h3 className="font-bold">
-              Principal Engineer
-            </h3>
-            <div>RPI Print &middot; 2024 - Present</div>
-            <ul>
-              <li>
-                &bull; Launched BookWright Online in Nov
-                2024
-              </li>
-              <li>&bull; Migrated to AWS and TeamCity</li>
-            </ul>
-            <h3 className="font-bold">Indie GameDev</h3>
-            <div>2023 - 2024</div>
-            <ul>
-              <li>
-                &bull; Hacked on mobile game prototypes
-              </li>
-            </ul>
-            <h3 className="font-bold">
-              Senior Frontend Engineer
-            </h3>
-            <div>AWS Supply Chain &middot; 2022 - 2023</div>
-            <ul>
-              <li>
-                &bull; Launched AWS Supply Chain in Nov 2023
-              </li>
-            </ul>
-            <h3 className="font-bold">
-              Senior Software Engineer
-            </h3>
-            <div>Kindle Vella &middot; 2020 - 2022</div>
-            <ul>
-              <li>
-                &bull; Launched Kindle Vella in June 2021
-              </li>
-            </ul>
+            <div className="flex flex-col gap-2">
+              <div>
+                <h3 className="font-bold">
+                  Principal Engineer
+                </h3>
+                <div>RPI Print &middot; 2024 - Present</div>
+                <ul>
+                  <li>
+                    &bull; Launched BookWright Online in Nov
+                    2024
+                  </li>
+                  <li>
+                    &bull; Migrated to AWS and TeamCity
+                  </li>
+                </ul>
+              </div>
+              <div>
+                <h3 className="font-bold">Indie GameDev</h3>
+                <div>2023 - 2024</div>
+                <ul>
+                  <li>
+                    &bull; Hacked on mobile game prototypes
+                  </li>
+                </ul>
+              </div>
+              <div>
+                <h3 className="font-bold">
+                  Senior Frontend Engineer
+                </h3>
+                <div>
+                  AWS Supply Chain &middot; 2022 - 2023
+                </div>
+                <ul>
+                  <li>
+                    &bull; Launched AWS Supply Chain in Nov
+                    2023
+                  </li>
+                </ul>
+              </div>
+              <div>
+                <h3 className="font-bold">
+                  Senior Software Engineer
+                </h3>
+                <div>Kindle Vella &middot; 2019 - 2022</div>
+                <ul>
+                  <li>
+                    &bull; Launched Kindle Vella in June
+                    2021
+                  </li>
+                </ul>
+              </div>
+              <div>
+                <h3 className="font-bold">
+                  Software Engineer
+                </h3>
+                <div>
+                  Amazon Publishing &middot; 2014 - 2019
+                </div>
+                <ul>
+                  <li>&bull; TODO</li>
+                </ul>
+              </div>
+            </div>
           </section>
           <section>
             <h3 className="text-lg font-bold uppercase">
