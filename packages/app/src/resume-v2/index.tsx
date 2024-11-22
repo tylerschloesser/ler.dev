@@ -3,8 +3,8 @@ import {
   faLinkedin,
 } from '@fortawesome/free-brands-svg-icons'
 import {
-  faBrowser,
   faCode,
+  faEnvelope,
   faGlobe,
 } from '@fortawesome/pro-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -56,7 +56,7 @@ export function ResumeV2() {
           </p>
         </div>
       </div>
-      <section>
+      <section className="p-2">
         <div className="grid grid-cols-[auto_1fr] gap-1">
           <div
             className="flex items-center justify-center text-xl"
@@ -96,6 +96,18 @@ export function ResumeV2() {
             aria-label="Link to my LinkedIn profile"
           >
             linkedin.com/in/tyler-schloesser
+          </a>
+          <div
+            className="flex items-center justify-center text-xl"
+            aria-hidden
+          >
+            <FontAwesomeIcon icon={faEnvelope} />
+          </div>
+          <a
+            className="text-blue-600 underline"
+            href="mailto:tyler.schloesser+resume@gmail.com"
+          >
+            tyler.schloesser+resume@gmail.com
           </a>
         </div>
       </section>
