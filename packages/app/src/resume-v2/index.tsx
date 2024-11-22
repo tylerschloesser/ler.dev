@@ -50,7 +50,7 @@ export function ResumeV2() {
           </section>
         </div>
         <div className="flex-[3] p-2">
-          <h3 className="text-lg font-bold">
+          <h3 className="text-lg font-bold uppercase">
             <FontAwesomeIcon icon={faHeadSideGear} /> About
           </h3>
           <p>
@@ -123,36 +123,56 @@ export function ResumeV2() {
             </div>
           </section>
           <section>
-            <h3 className="text-lg font-bold">
+            <h3 className="text-lg font-bold uppercase">
               <FontAwesomeIcon icon={faBriefcase} />{' '}
               Experience
             </h3>
-            <h3>RPI Print</h3>
-            <div>Principal Engineer</div>
-            <div>2024 - Present</div>
+            <h3 className="font-bold">
+              Principal Engineer
+            </h3>
+            <div>RPI Print &middot; 2024 - Present</div>
             <ul>
               <li>
-                Launched BookWright Online in Nov 2024
+                &bull; Launched BookWright Online in Nov
+                2024
               </li>
-              <li>Migrated to AWS and TeamCity</li>
+              <li>&bull; Migrated to AWS and TeamCity</li>
             </ul>
-            <h3>GameDev</h3>
+            <h3 className="font-bold">Indie GameDev</h3>
             <div>2023 - 2024</div>
             <ul>
-              <li>Hacked on mobile game prototypes</li>
+              <li>
+                &bull; Hacked on mobile game prototypes
+              </li>
             </ul>
-            <h3>Amazon</h3>
-            <div>Senior Frontend Engineer</div>
-            <div>2014 - 2023</div>
+            <h3 className="font-bold">
+              Senior Frontend Engineer
+            </h3>
+            <div>AWS Supply Chain &middot; 2022 - 2023</div>
             <ul>
-              <li>Launched AWS Supply Chain in Nov 2023</li>
-              <li>Launched Kindle Vella in June 2021</li>
+              <li>
+                &bull; Launched AWS Supply Chain in Nov 2023
+              </li>
+            </ul>
+            <h3 className="font-bold">
+              Senior Software Engineer
+            </h3>
+            <div>Kindle Vella &middot; 2020 - 2022</div>
+            <ul>
+              <li>
+                &bull; Launched Kindle Vella in June 2021
+              </li>
             </ul>
           </section>
           <section>
-            <h3 className="text-lg font-bold">
+            <h3 className="text-lg font-bold uppercase">
               <FontAwesomeIcon icon={faDiploma} /> Education
             </h3>
+            <div className="font-bold">
+              University of Minnesota - Twin Cities
+            </div>
+            <div>B.S. Computer Science</div>
+            <div>2010 - 2014</div>
           </section>
         </div>
       </div>
