@@ -1,3 +1,5 @@
+import { faCode } from '@fortawesome/pro-regular-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import clsx from 'clsx'
 
 export function ResumeV2() {
@@ -19,6 +21,7 @@ export function ResumeV2() {
           <h2 className="text-4xl">
             <span className="font-bold">Tyler</span>{' '}
             <span className="font-thin">Schloesser</span>
+            <FontAwesomeIcon icon={faCode} />
           </h2>
           <h2 className="text-lg flex flex-col">
             <span>Frontend</span>
