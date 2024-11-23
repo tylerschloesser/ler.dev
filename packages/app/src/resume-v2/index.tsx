@@ -212,6 +212,49 @@ export function ResumeV2() {
           </section>
           <section>
             <h3 className="text-lg font-bold uppercase">
+              Skills
+            </h3>
+            <div className="grid grid-cols-[auto_1fr] gap-1">
+              {[
+                {
+                  label: 'React',
+                  value: 10,
+                },
+                {
+                  label: 'TypeScript',
+                  value: 10,
+                },
+                {
+                  label: 'CSS',
+                  value: 9,
+                },
+                {
+                  label: 'Testing',
+                  value: 8,
+                },
+                {
+                  label: 'AWS',
+                  value: 8,
+                },
+              ].map(({ label, value }, i) => (
+                <Fragment key={i}>
+                  <span>{label}</span>
+                  <div className="flex items-center">
+                    <span className="relative flex border-2 border-slate-600 w-32 h-4">
+                      <span
+                        className="absolute inset-0 bg-blue-600"
+                        style={{
+                          width: `${value * 10}%`,
+                        }}
+                      />
+                    </span>
+                  </div>
+                </Fragment>
+              ))}
+            </div>
+          </section>
+          <section>
+            <h3 className="text-lg font-bold uppercase">
               <FontAwesomeIcon icon={faDiploma} /> Education
             </h3>
             <div className="font-bold">
