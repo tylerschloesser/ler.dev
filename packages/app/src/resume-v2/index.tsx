@@ -12,6 +12,7 @@ import {
 } from '@fortawesome/pro-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import clsx from 'clsx'
+import { Fragment } from 'react/jsx-runtime'
 import qrResume from '../qr-resume.svg'
 
 export function ResumeV2() {
@@ -69,57 +70,52 @@ export function ResumeV2() {
           </p>
           <section className="p-2">
             <div className="grid grid-cols-[auto_1fr] gap-1">
-              <div
-                className="flex items-center justify-center text-xl"
-                aria-hidden
-              >
-                <FontAwesomeIcon icon={faGlobe} />
-              </div>
-              <a
-                className="text-blue-600 underline"
-                href="https://ty.ler.dev"
-                aria-label="Link to my website"
-              >
-                ty.ler.dev
-              </a>
-              <div
-                className="flex items-center justify-center text-xl"
-                aria-hidden
-              >
-                <FontAwesomeIcon icon={faGithub} />
-              </div>
-              <a
-                className="text-blue-600 underline"
-                href="https://github.com/tylerschloesser"
-                aria-label="Link to my GitHub profile"
-              >
-                github.com/tylerschloesser
-              </a>
-              <div
-                className="flex items-center justify-center text-xl"
-                aria-hidden
-              >
-                <FontAwesomeIcon icon={faLinkedin} />
-              </div>
-              <a
-                className="text-blue-600 underline"
-                href="https://linkedin.com/in/tyler-schloesser"
-                aria-label="Link to my LinkedIn profile"
-              >
-                linkedin.com/in/tyler-schloesser
-              </a>
-              <div
-                className="flex items-center justify-center text-xl"
-                aria-hidden
-              >
-                <FontAwesomeIcon icon={faEnvelope} />
-              </div>
-              <a
-                className="text-blue-600 underline"
-                href="mailto:tyler.schloesser+resume@gmail.com"
-              >
-                tyler.schloesser+resume@gmail.com
-              </a>
+              {[
+                {
+                  icon: faGlobe,
+                  href: 'https://ty.ler.dev',
+                  ariaLabel: 'Link to my website',
+                  label: 'ty.ler.dev',
+                },
+                {
+                  icon: faGithub,
+                  href: 'https://github.com/tylerschloesser',
+                  ariaLabel: 'Link to my GitHub profile',
+                  label: 'github.com/tylerschloesser',
+                },
+                {
+                  icon: faLinkedin,
+                  href: 'https://linkedin.com/in/tyler-schloesser',
+                  ariaLabel: 'Link to my LinkedIn profile',
+                  label: 'linkedin.com/in/tyler-schloesser',
+                },
+                {
+                  icon: faEnvelope,
+                  href: 'mailto:tyler.schloesser+resume@gmail.com',
+                  ariaLabel: 'Send me an email',
+                  label: 'tyler.schloesser@gmail.com',
+                },
+              ].map(
+                ({ icon, href, ariaLabel, label }, i) => (
+                  <Fragment key={i}>
+                    <div
+                      className="flex items-center justify-center text-xl"
+                      aria-hidden
+                    >
+                      <FontAwesomeIcon icon={icon} />
+                    </div>
+                    <div>
+                      <a
+                        className="text-blue-600 underline"
+                        href={href}
+                        aria-label={ariaLabel}
+                      >
+                        {label}
+                      </a>
+                    </div>
+                  </Fragment>
+                ),
+              )}
             </div>
           </section>
           <section>
@@ -164,6 +160,14 @@ export function ResumeV2() {
                     &bull; Launched AWS Supply Chain in Nov
                     2023
                   </li>
+                  <li>
+                    &bull; Led micro-frontend development
+                    across 3 teams
+                  </li>
+                  <li>
+                    &bull; React, TypeScript, Single SPA,
+                    Cypress, AppSync, ...
+                  </li>
                 </ul>
               </div>
               <div>
@@ -175,6 +179,21 @@ export function ResumeV2() {
                   <li>
                     &bull; Launched Kindle Vella in June
                     2021
+                  </li>
+                  <li>
+                    &bull; Founding member. Led frontend
+                    development across 2 teams. Led
+                    microcurrency development. teams
+                  </li>
+                  <li>
+                    &bull; React, Redux, GraphQL, Cypress,
+                    ...
+                  </li>
+                  <li>
+                    &bull; Led microcurrency development
+                  </li>
+                  <li>
+                    &bull; Java, Spring, DynamoDB, SQS, ...
                   </li>
                 </ul>
               </div>
