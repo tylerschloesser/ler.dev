@@ -11,45 +11,30 @@ import {
   faHeadSideGear,
 } from '@fortawesome/pro-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import clsx from 'clsx'
+import QRCode from 'react-qr-code'
 import { Fragment } from 'react/jsx-runtime'
 import qrResume from '../qr-resume.svg'
 
 export function ResumeV2() {
   return (
-    <div className="min-h-dvh flex flex-col">
-      <div
-        className={clsx(
-          'bg-slate-800 text-white',
-          'uppercase tracking-widest',
-        )}
-      >
-        <div
-          className={clsx(
-            'flex',
-            'max-w-screen-sm mx-auto',
-            'p-4 flex gap-2',
-          )}
-        >
-          <h2 className="text-4xl">
-            <span className="font-bold">Tyler</span>{' '}
-            <span className="font-thin">Schloesser</span>
-            <FontAwesomeIcon icon={faCode} />
-          </h2>
-          <h2 className="text-lg flex flex-col">
-            <span>Frontend</span>
-            <span>Engineer</span>
-          </h2>
-        </div>
+    <div className="min-h-dvh grid grid-cols-[1fr_3fr]">
+      <div className="bg-white flex justify-end">
+        <a href="https://ty.ler.dev/qr/resume">
+          <QRCode
+            value="https://ty.ler.dev/qr/resume"
+            className="h-32 w-32 p-2"
+          />
+        </a>
       </div>
+      <div className="bg-black text-white flex items-center">
+        <h2 className="text-4xl p-10">
+          <span className="font-bold">Tyler</span>{' '}
+          <span className="font-thin">Schloesser</span>{' '}
+          <FontAwesomeIcon icon={faCode} />
+        </h2>
+      </div>
+      <div className="bg-black" />
       <div className="self-center flex-1 flex max-w-screen-lg">
-        <div className="hidden sm:flex flex-1 p-2 border-r border-dashed border-slate-500">
-          <section>
-            <a href="https://ty.ler.dev/qr/resume">
-              <img src={qrResume} />
-            </a>
-          </section>
-        </div>
         <div className="flex-[3] p-2">
           <h3 className="text-lg font-bold uppercase">
             <FontAwesomeIcon icon={faHeadSideGear} /> About
