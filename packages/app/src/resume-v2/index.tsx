@@ -32,7 +32,7 @@ export function ResumeV2() {
           'border-x border-dashed border-white',
         )}
       >
-        <h2 className="text-4xl p-10">
+        <h2 className="text-4xl p-10 uppercase tracking-wider">
           <span className="font-bold">Tyler</span>{' '}
           <span className="font-thin">Schloesser</span>{' '}
           <FontAwesomeIcon icon={faCode} />
