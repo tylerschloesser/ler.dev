@@ -4,6 +4,17 @@ import { Vec2 } from './vec2'
 
 export function Canvas() {
   const canvas = useRef<HTMLCanvasElement>(null)
+  const viewport = useViewport(canvas)
+  useEffect(() => {
+    if (!viewport || !canvas.current) return
+    console.log(viewport)
+  }, [viewport])
+  return <canvas ref={canvas} className="w-full h-full" />
+}
+
+function useViewport(
+  canvas: React.RefObject<HTMLCanvasElement>,
+) {
   const [viewport, setViewport] = useState<Vec2 | null>(
     null,
   )
@@ -18,9 +29,5 @@ export function Canvas() {
       ro.disconnect()
     }
   }, [])
-  useEffect(() => {
-    if (!viewport || !canvas.current) return
-    console.log(viewport)
-  }, [viewport])
-  return <canvas ref={canvas} className="w-full h-full" />
+  return viewport
 }
