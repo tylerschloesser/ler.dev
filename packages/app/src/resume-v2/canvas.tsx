@@ -64,12 +64,12 @@ function useCells(viewport: Vec2, cellSize: number) {
 const O1_WEIGHT = 0.7
 const O1_SCALE_V = 1
 const O1_SCALE_XY = 0.1
-const O1_SCALE_Z = 0.1
+const O1_SCALE_Z = 0.01
 
 const O2_WEIGHT = 0.3
 const O2_SCALE_V = 0
 const O2_SCALE_XY = 1
-const O2_SCALE_Z = 0.5
+const O2_SCALE_Z = 0.05
 
 function Inner({ container, viewport }: InnerProps) {
   const [initialViewport] = useState(viewport)
