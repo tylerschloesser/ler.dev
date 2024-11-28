@@ -61,8 +61,8 @@ function useCells(viewport: Vec2, cellSize: number) {
   }, [sx, sy])
 }
 
-const SCALE_XY = 0.2
-const SCALE_Z = 0.05
+const O1_SCALE_XY = 0.2
+const O1_SCALE_Z = 0.05
 
 function Inner({ container, viewport }: InnerProps) {
   const [initialViewport] = useState(viewport)
@@ -93,9 +93,9 @@ function Inner({ container, viewport }: InnerProps) {
       for (const cell of cells.values()) {
         const p = cell.p.add(d)
         let n = noise(
-          p.x * SCALE_XY,
-          p.y * SCALE_XY,
-          t * SCALE_Z,
+          p.x * O1_SCALE_XY,
+          p.y * O1_SCALE_XY,
+          t * O1_SCALE_Z,
         )
 
         if (n < 0) {
