@@ -1,5 +1,6 @@
 import * as PIXI from 'pixi.js'
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { createNoise3D } from 'simplex-noise'
 import invariant from 'tiny-invariant'
 import { Vec2 } from './vec2'
 
@@ -60,6 +61,9 @@ function useCells(viewport: Vec2, cellSize: number) {
   }, [sx, sy])
 }
 
+const SCALE_XY = 0.2
+const SCALE_Z = 0.05
+
 function Inner({ container, viewport }: InnerProps) {
   const [initialViewport] = useState(viewport)
   const [state, setState] = useState<InnerState | null>(
@@ -68,7 +72,7 @@ function Inner({ container, viewport }: InnerProps) {
 
   const [cellSize] = useState(
     () =>
-      Math.min(initialViewport.x, initialViewport.y) / 10,
+      Math.min(initialViewport.x, initialViewport.y) / 16,
   )
   const cells = useCells(viewport, cellSize)
 
@@ -80,13 +84,37 @@ function Inner({ container, viewport }: InnerProps) {
       state.app.stage.addChild(cell.g)
     }
 
-    const interval = self.setInterval(() => {
+    let handle: number | undefined
+    const noise = createNoise3D()
+    const v = new Vec2(1, 1).normalize()
+    function step() {
+      const t = self.performance.now() / 1000
+      const d = v.mul(t)
       for (const cell of cells.values()) {
-        cell.g.tint = Math.random() * 0xffffff
+        const p = cell.p.add(d)
+        let n = noise(
+          p.x * SCALE_XY,
+          p.y * SCALE_XY,
+          t * SCALE_Z,
+        )
+
+        if (n < 0) {
+          cell.g.tint = 0x000000
+        } else {
+          const a = (n * 0xff) << 0
+          const b = (n * 0xff) << 8
+          const c = (n * 0xff) << 16
+
+          cell.g.tint = a | b | c
+        }
       }
-    }, 100)
+      handle = self.requestAnimationFrame(step)
+    }
+    handle = self.requestAnimationFrame(step)
     return () => {
-      self.clearInterval(interval)
+      if (handle) {
+        self.cancelAnimationFrame(handle)
+      }
     }
   }, [state])
 

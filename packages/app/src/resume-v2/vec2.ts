@@ -46,6 +46,10 @@ export class Vec2 {
   map(fn: (v: Vec2) => Vec2): Vec2 {
     return fn(this)
   }
+
+  normalize(): Vec2 {
+    return this.div(this.len())
+  }
 }
 
 export const ZodVec2 = z.strictObject({
