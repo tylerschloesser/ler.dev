@@ -18,7 +18,7 @@ import { Canvas } from './canvas'
 
 export function ResumeV2() {
   return (
-    <div className="min-h-dvh grid grid-cols-[1fr_2fr_1fr]">
+    <div className="min-h-dvh grid grid-cols-[1fr_2fr_1fr] grid-rows-[min-content_1fr]">
       <div className="bg-white flex justify-end">
         <a href="https://ty.ler.dev/qr/resume">
           <QRCode
