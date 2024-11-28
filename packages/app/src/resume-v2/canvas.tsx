@@ -1,5 +1,5 @@
 import * as PIXI from 'pixi.js'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import invariant from 'tiny-invariant'
 import { Vec2 } from './vec2'
 
@@ -15,11 +15,80 @@ interface InnerProps {
   viewport: Vec2
 }
 
+interface Cell {
+  id: string
+  p: Vec2
+  g: PIXI.Graphics
+}
+
+function* iterateViewport(
+  sx: number,
+  sy: number,
+): Generator<Vec2> {
+  for (let x = 0; x < sx; x += 1) {
+    for (let y = 0; y < sy; y += 1) {
+      yield new Vec2(x, y)
+    }
+  }
+}
+
+function useCells(viewport: Vec2, cellSize: number) {
+  const sx = useMemo(
+    () => Math.ceil(viewport.x / cellSize),
+    [viewport.x, cellSize],
+  )
+  const sy = useMemo(
+    () => Math.ceil(viewport.y / cellSize),
+    [viewport.y, cellSize],
+  )
+
+  return useMemo(() => {
+    const cells = new Map<string, Cell>()
+    for (const p of iterateViewport(sx, sy)) {
+      const id = `${p.x}.${p.y}`
+      const g = new PIXI.Graphics()
+      g.rect(
+        p.x * cellSize,
+        p.y * cellSize,
+        cellSize,
+        cellSize,
+      )
+      g.fill('blue')
+      cells.set(id, { id, p, g })
+    }
+    return cells
+  }, [sx, sy])
+}
+
 function Inner({ container, viewport }: InnerProps) {
   const [initialViewport] = useState(viewport)
   const [state, setState] = useState<InnerState | null>(
     null,
   )
+
+  const [cellSize] = useState(
+    () =>
+      Math.min(initialViewport.x, initialViewport.y) / 10,
+  )
+  const cells = useCells(viewport, cellSize)
+
+  useEffect(() => {
+    if (!state) return
+
+    state.app.stage.removeChildren()
+    for (const cell of cells.values()) {
+      state.app.stage.addChild(cell.g)
+    }
+
+    const interval = self.setInterval(() => {
+      for (const cell of cells.values()) {
+        cell.g.tint = Math.random() * 0xffffff
+      }
+    }, 100)
+    return () => {
+      self.clearInterval(interval)
+    }
+  }, [state])
 
   useEffect(() => {
     const canvas = document.createElement('canvas')
@@ -30,7 +99,6 @@ function Inner({ container, viewport }: InnerProps) {
     container.current.appendChild(canvas)
 
     const app = new PIXI.Application()
-    let interval: number | undefined
     app
       .init({
         backgroundAlpha: 0,
@@ -39,19 +107,10 @@ function Inner({ container, viewport }: InnerProps) {
         height: initialViewport.y,
       })
       .then(() => {
-        interval = self.setInterval(() => {
-          console.log('internval!')
-          const g = new PIXI.Graphics()
-          app.stage.addChild(g)
-          g.rect(0, 0, 100, 100)
-          g.fill('blue')
-        }, 100)
+        setState({ canvas, app })
       })
 
-    setState({ canvas, app })
-
     return () => {
-      self.clearInterval(interval)
       if (typeof app.destroy === 'function') {
         app.destroy()
       }
