@@ -61,8 +61,15 @@ function useCells(viewport: Vec2, cellSize: number) {
   }, [sx, sy])
 }
 
-const O1_SCALE_XY = 0.2
-const O1_SCALE_Z = 0.05
+const O1_WEIGHT = 0.7
+const O1_SCALE_V = 1
+const O1_SCALE_XY = 0.1
+const O1_SCALE_Z = 0.1
+
+const O2_WEIGHT = 0.3
+const O2_SCALE_V = 0
+const O2_SCALE_XY = 1
+const O2_SCALE_Z = 0.5
 
 function Inner({ container, viewport }: InnerProps) {
   const [initialViewport] = useState(viewport)
@@ -89,14 +96,23 @@ function Inner({ container, viewport }: InnerProps) {
     const v = new Vec2(1, 1).normalize()
     function step() {
       const t = self.performance.now() / 1000
-      const d = v.mul(t)
+      const d1 = v.mul(t * O1_SCALE_V)
+      const d2 = v.mul(t * O2_SCALE_V)
       for (const cell of cells.values()) {
-        const p = cell.p.add(d)
-        let n = noise(
-          p.x * O1_SCALE_XY,
-          p.y * O1_SCALE_XY,
+        const p1 = cell.p.add(d1)
+        const o1 = noise(
+          p1.x * O1_SCALE_XY,
+          p1.y * O1_SCALE_XY,
           t * O1_SCALE_Z,
         )
+        const p2 = cell.p.add(d2)
+        const o2 = noise(
+          p2.x * O2_SCALE_XY,
+          p2.y * O2_SCALE_XY,
+          t * O2_SCALE_Z,
+        )
+
+        const n = o1 * O1_WEIGHT + o2 * O2_WEIGHT
 
         if (n < 0) {
           cell.g.tint = 0x000000
