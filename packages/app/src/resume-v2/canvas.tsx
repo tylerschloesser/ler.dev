@@ -5,67 +5,86 @@ import { Vec2 } from './vec2'
 
 // @refresh reset
 
-export function Canvas() {
-  const container = useRef<HTMLDivElement>(null)
-  const [canvas, setCanvas] =
-    useState<HTMLCanvasElement | null>(null)
-  const app = useRef<PIXI.Application | null>(null)
-  const viewport = useViewport(container)
+interface InnerState {
+  canvas: HTMLCanvasElement
+  app: PIXI.Application
+}
+
+interface InnerProps {
+  container: React.RefObject<HTMLDivElement>
+  viewport: Vec2
+}
+
+function Inner({ container, viewport }: InnerProps) {
+  const [initialViewport] = useState(viewport)
+  const [state, setState] = useState<InnerState | null>(
+    null,
+  )
 
   useEffect(() => {
-    if (!container.current) return
     const canvas = document.createElement('canvas')
+    canvas.style.position = 'absolute'
+    canvas.style.width = '100%'
+    canvas.style.height = '100%'
+    invariant(container.current)
     container.current.appendChild(canvas)
-    setCanvas(canvas)
-    return () => {
-      canvas.remove()
-      setCanvas(null)
-    }
-  }, [])
 
-  useEffect(() => {
-    if (canvas && viewport) {
-      canvas.width = viewport.x
-      canvas.height = viewport.y
-      if (typeof app.current?.resize === 'function') {
-        app.current.resize()
-      }
-    }
-  }, [canvas, viewport])
-
-  useEffect(() => {
-    if (!canvas) return
-
+    const app = new PIXI.Application()
     let interval: number | undefined
-    app.current = new PIXI.Application()
-    app.current
+    app
       .init({
         backgroundAlpha: 0,
         canvas,
+        width: initialViewport.x,
+        height: initialViewport.y,
       })
       .then(() => {
         interval = self.setInterval(() => {
-          console.log('hi3')
+          console.log('internval!')
+          const g = new PIXI.Graphics()
+          app.stage.addChild(g)
+          g.rect(0, 0, 100, 100)
+          g.fill('blue')
         }, 100)
       })
+
+    setState({ canvas, app })
+
     return () => {
       self.clearInterval(interval)
-      if (typeof app.current?.destroy === 'function') {
-        app.current.destroy()
+      if (typeof app.destroy === 'function') {
+        app.destroy()
       }
-      app.current = null
+      canvas.remove()
+      setState(null)
     }
-  }, [canvas])
+  }, [initialViewport])
 
   useEffect(() => {
-    if (
-      typeof app.current?.resize === 'function' &&
-      viewport
-    ) {
-      app.current.resize()
+    if (!state) return
+    state.canvas.width = viewport.x
+    state.canvas.height = viewport.y
+    if (typeof state.app.resize === 'function') {
+      state.app.resize()
     }
-  }, [viewport])
-  return <div ref={container} className="w-full h-full" />
+  }, [viewport, state])
+
+  return null
+}
+
+export function Canvas() {
+  const container = useRef<HTMLDivElement>(null)
+  const viewport = useViewport(container)
+  return (
+    <div
+      ref={container}
+      className="w-full h-full relative overflow-hidden"
+    >
+      {viewport && (
+        <Inner container={container} viewport={viewport} />
+      )}
+    </div>
+  )
 }
 
 function useViewport(
