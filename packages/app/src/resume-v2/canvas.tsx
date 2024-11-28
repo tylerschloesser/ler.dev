@@ -1,6 +1,6 @@
 import * as PIXI from 'pixi.js'
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { createNoise3D } from 'simplex-noise'
+import { createNoise4D } from 'simplex-noise'
 import invariant from 'tiny-invariant'
 import { Vec2 } from './vec2'
 
@@ -61,15 +61,15 @@ function useCells(viewport: Vec2, cellSize: number) {
   }, [sx, sy])
 }
 
-const O1_WEIGHT = 0.7
-const O1_SCALE_V = 1
-const O1_SCALE_XY = 0.1
-const O1_SCALE_Z = 0.01
+const O1_WEIGHT = 0.2
+const O1_SCALE_V = 0
+const O1_SCALE_XY = 0.7
+const O1_SCALE_Z = 0.5
 
-const O2_WEIGHT = 0.3
-const O2_SCALE_V = 0
-const O2_SCALE_XY = 1
-const O2_SCALE_Z = 0.05
+const O2_WEIGHT = 0.8
+const O2_SCALE_V = 0.5
+const O2_SCALE_XY = 0.09
+const O2_SCALE_Z = 0.1
 
 function Inner({ container, viewport }: InnerProps) {
   const [initialViewport] = useState(viewport)
@@ -92,7 +92,7 @@ function Inner({ container, viewport }: InnerProps) {
     }
 
     let handle: number | undefined
-    const noise = createNoise3D()
+    const noise = createNoise4D()
     const v = new Vec2(1, 1).normalize()
     function step() {
       const t = self.performance.now() / 1000
@@ -104,13 +104,16 @@ function Inner({ container, viewport }: InnerProps) {
           p1.x * O1_SCALE_XY,
           p1.y * O1_SCALE_XY,
           t * O1_SCALE_Z,
+          1,
         )
         const p2 = cell.p.add(d2)
-        const o2 = noise(
-          p2.x * O2_SCALE_XY,
-          p2.y * O2_SCALE_XY,
-          t * O2_SCALE_Z,
-        )
+        const o2 =
+          noise(
+            p2.x * O2_SCALE_XY,
+            p2.y * O2_SCALE_XY,
+            t * O2_SCALE_Z,
+            2,
+          ) ** 0.8
 
         const n = o1 * O1_WEIGHT + o2 * O2_WEIGHT
 
