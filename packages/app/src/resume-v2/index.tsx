@@ -14,6 +14,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import clsx from 'clsx'
 import QRCode from 'react-qr-code'
 import { Fragment } from 'react/jsx-runtime'
+import { Canvas } from './canvas'
 
 export function ResumeV2() {
   return (
@@ -39,7 +40,9 @@ export function ResumeV2() {
         </h2>
       </div>
       <div className="bg-black" />
-      <div className="bg-black" />
+      <div className="bg-black">
+        <Canvas />
+      </div>
       <div
         className={clsx(
           'p-8 border-x border-dashed border-black',
@@ -207,7 +210,6 @@ export function ResumeV2() {
       <div className="p-8">
         <Links />
       </div>
-      <div />
     </div>
   )
 }
