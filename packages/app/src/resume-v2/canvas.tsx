@@ -3,39 +3,60 @@ import { useEffect, useRef, useState } from 'react'
 import invariant from 'tiny-invariant'
 import { Vec2 } from './vec2'
 
+// @refresh reset
+
 export function Canvas() {
   const container = useRef<HTMLDivElement>(null)
-  const interval = useRef<number | null>(null)
+  const [canvas, setCanvas] =
+    useState<HTMLCanvasElement | null>(null)
   const app = useRef<PIXI.Application | null>(null)
   const viewport = useViewport(container)
+
   useEffect(() => {
     if (!container.current) return
-
     const canvas = document.createElement('canvas')
     container.current.appendChild(canvas)
+    setCanvas(canvas)
+    return () => {
+      canvas.remove()
+      setCanvas(null)
+    }
+  }, [])
 
+  useEffect(() => {
+    if (canvas && viewport) {
+      canvas.width = viewport.x
+      canvas.height = viewport.y
+      if (typeof app.current?.resize === 'function') {
+        app.current.resize()
+      }
+    }
+  }, [canvas, viewport])
+
+  useEffect(() => {
+    if (!canvas) return
+
+    let interval: number | undefined
     app.current = new PIXI.Application()
-    invariant(container.current)
     app.current
       .init({
         backgroundAlpha: 0,
         canvas,
       })
       .then(() => {
-        interval.current = self.setInterval(() => {
-          console.log('hi2')
+        interval = self.setInterval(() => {
+          console.log('hi3')
         }, 100)
       })
     return () => {
-      if (interval.current) {
-        self.clearInterval(interval.current)
-      }
+      self.clearInterval(interval)
       if (typeof app.current?.destroy === 'function') {
         app.current.destroy()
       }
-      canvas.remove()
+      app.current = null
     }
-  }, [])
+  }, [canvas])
+
   useEffect(() => {
     if (
       typeof app.current?.resize === 'function' &&
