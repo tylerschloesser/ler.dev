@@ -50,6 +50,15 @@ export class Vec2 {
   normalize(): Vec2 {
     return this.div(this.len())
   }
+
+  rotate(angle: number): Vec2 {
+    const c = Math.cos(angle)
+    const s = Math.sin(angle)
+    return new Vec2(
+      this.x * c - this.y * s,
+      this.x * s + this.y * c,
+    )
+  }
 }
 
 export const ZodVec2 = z.strictObject({

@@ -37,20 +37,40 @@ function Index() {
       invariant(container.current)
       container.current.appendChild(canvas)
 
+      const viewport = new Vec2(
+        app.canvas.width,
+        app.canvas.height,
+      )
+
       const circles: {
         g: Graphics
         p: Vec2
         v: Vec2
       }[] = []
 
-      for (let i = 0; i < 10; i++) {
+      const numCircles = Math.floor(
+        Math.pow(viewport.x * viewport.y, 1 / 4),
+      )
+
+      for (let i = 0; i < numCircles; i++) {
         const g = new Graphics()
         app.stage.addChild(g)
-        g.circle(0, 0, 100)
-        g.fill('blue')
+
+        const x = Math.random() * viewport.x
+        const y = Math.random() * viewport.y
+        const r = 50 + Math.random() * 50
+
+        g.circle(x, y, r)
+        const h = 120
+        const s = 50
+        const l = Math.floor(25 + Math.random() * 50)
+        g.fill(`hsl(${h}, ${s}%, ${l}%)`)
 
         const p = new Vec2(0, 0)
-        const v = new Vec2(1, 1).normalize().mul(10)
+        const speed = 5 + Math.random() * 5
+        const v = new Vec2(1, 0)
+          .rotate(Math.random() * Math.PI * 2)
+          .mul(speed)
 
         circles.push({ g, p, v })
       }
@@ -80,7 +100,10 @@ function Index() {
 
   return (
     <div className="relative">
-      <div ref={container} className="absolute inset-0" />
+      <div
+        ref={container}
+        className="absolute inset-0 blur-sm"
+      />
       <div className="relative">
         <div className="w-dvw h-dvh flex items-center justify-center">
           <div className="flex flex-col gap-2">
