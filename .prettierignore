@@ -1,2 +1,3 @@
 packages/cdk/cdk.out
 packages/app/dist
+packages/app/src/routeTree.gen.ts
