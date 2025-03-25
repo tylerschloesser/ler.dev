@@ -47,13 +47,11 @@ function Index() {
 interface Circle {
   g: Graphics
   p: Vec2
+  z: number
   v: Vec2
 }
 
-function initCircles(
-  viewport: Vec2,
-  container: Container,
-): Circle[] {
+function initCircles(viewport: Vec2): Circle[] {
   const circles: Circle[] = []
 
   const numCircles = Math.floor(
@@ -62,10 +60,10 @@ function initCircles(
 
   for (let i = 0; i < numCircles; i++) {
     const g = new Graphics()
-    container.addChild(g)
 
     const x = Math.random() * viewport.x
     const y = Math.random() * viewport.y
+    const z = Math.random()
     const r = 50 + Math.random() * 50
 
     g.circle(x, y, r)
@@ -80,8 +78,11 @@ function initCircles(
       .rotate(Math.random() * Math.PI * 2)
       .mul(speed)
 
-    circles.push({ g, p, v })
+    circles.push({ g, p, z, v })
   }
+
+  circles.sort((a, b) => b.z - a.z)
+
   return circles
 }
 
@@ -119,7 +120,10 @@ function useBackground(
         app.canvas.height,
       )
 
-      const circles = initCircles(viewport, app.stage)
+      const circles = initCircles(viewport)
+      for (const circle of circles) {
+        app.stage.addChild(circle.g)
+      }
 
       let pointer: Vec2 | null = null
 
@@ -141,12 +145,12 @@ function useBackground(
         lastFrame = now
 
         const adjust = pointer
-          ? pointer.sub(new Vec2(0.5)).mul(-10)
+          ? pointer.mul(2).sub(new Vec2(1, 1)).mul(-1)
           : Vec2.ZERO
 
         for (const circle of circles) {
           circle.p = circle.p.add(circle.v.mul(dt / 1000))
-          const p = circle.p.add(adjust)
+          const p = circle.p.add(adjust.mul(circle.z * 100))
           circle.g.position.set(p.x, p.y)
         }
 
