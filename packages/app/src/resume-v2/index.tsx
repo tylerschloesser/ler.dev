@@ -114,9 +114,9 @@ function ExperienceSection() {
                 <span className="font-light">{date}</span>
               </h3>
               <div>{company}</div>
-              <ul>
+              <ul className="list-disc list-outside pl-4">
                 {bullets.map((bullet, j) => (
-                  <li key={j}>&bull; {bullet}</li>
+                  <li key={j}>{bullet}</li>
                 ))}
               </ul>
             </div>
@@ -130,15 +130,24 @@ function ExperienceSection() {
 function KeywordSection() {
   return (
     <section>
-      <div className="grid grid-cols-3">
+      <div className="flex flex-col gap-2">
         {DATA.keywords.map(({ title, bullets }, i) => (
-          <div key={i} className="flex flex-col gap-2">
-            <div className="font-bold">{title}</div>
-            <ul>
-              {bullets.map((content, j) => (
-                <li key={j}>{content}</li>
-              ))}
-            </ul>
+          <div key={i} className="flex flex-col gap-1">
+            <div className="font-bold text-sm italic">
+              {title}
+            </div>
+            <div className="text-sm">
+              <ul className="flex flex-wrap gap-1">
+                {bullets.map((content, j) => (
+                  <li
+                    key={j}
+                    className="py-0.5 px-2.5 rounded-full border-2 border-gray-400"
+                  >
+                    {content}
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         ))}
       </div>
@@ -161,9 +170,13 @@ function EducationSection() {
 export function ResumeV2() {
   return (
     <div className="p-8">
-      <ExperienceSection />
-      <KeywordSection />
-      <EducationSection />
+      <div className="grid grid-cols-[3fr_1fr] gap-4">
+        <ExperienceSection />
+        <div>
+          <KeywordSection />
+          <EducationSection />
+        </div>
+      </div>
     </div>
   )
 }
