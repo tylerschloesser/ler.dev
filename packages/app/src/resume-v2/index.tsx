@@ -185,21 +185,27 @@ function EducationSection() {
   )
 }
 
+const SHOW_QR_CODE = false
+
 function Hero() {
   return (
     <div className="bg-black text-white relative">
       <div className="p-8">
-        <h1 className="text-2xl">Tyler Schloesser</h1>
+        <h1 className="text-2xl font-bold tracking-wider font-mono text-center">
+          {'<h1>Tyler Schloesser</h1>'}
+        </h1>
       </div>
-      <div className="absolute top-0 right-0 h-full p-2">
-        <div className="h-full border-2 border-white">
-          <QRCode
-            size={256}
-            value="hey"
-            className="w-auto max-h-full h-full"
-          />
+      {SHOW_QR_CODE && (
+        <div className="absolute top-0 right-0 h-full p-2">
+          <div className="h-full">
+            <QRCode
+              size={256}
+              value="hey"
+              className="w-auto max-h-full h-full"
+            />
+          </div>
         </div>
-      </div>
+      )}
     </div>
   )
 }
@@ -208,11 +214,11 @@ function AboutSection() {
   return (
     <Section title="About">
       <p>
-        Frontend Engineer with 11 years of experience.
-        Aspiring indie game dev.{' '}
-        <br className="not-print:hidden" /> I love to craft
-        delightful user experiences. Able and eager to solve
-        hard problems. Let's build something.
+        <span className="font-bold">Frontend Engineer</span>{' '}
+        with 11 years of experience. Aspiring indie game
+        dev. <br className="not-print:hidden" /> I love to
+        craft delightful user experiences. Able and eager to
+        solve hard problems. Let's build something.
       </p>
     </Section>
   )
