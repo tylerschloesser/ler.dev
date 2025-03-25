@@ -4,7 +4,7 @@ import {
   invariant,
 } from '@tanstack/react-router'
 import clsx from 'clsx'
-import { Application, Graphics } from 'pixi.js'
+import { Application, Container, Graphics } from 'pixi.js'
 import { useEffect, useRef } from 'react'
 import { Vec2 } from '../resume/vec2'
 
@@ -16,6 +16,41 @@ interface Circle {
   g: Graphics
   p: Vec2
   v: Vec2
+}
+
+function initCircles(
+  viewport: Vec2,
+  container: Container,
+): Circle[] {
+  const circles: Circle[] = []
+
+  const numCircles = Math.floor(
+    Math.pow(viewport.x * viewport.y, 1 / 4),
+  )
+
+  for (let i = 0; i < numCircles; i++) {
+    const g = new Graphics()
+    container.addChild(g)
+
+    const x = Math.random() * viewport.x
+    const y = Math.random() * viewport.y
+    const r = 50 + Math.random() * 50
+
+    g.circle(x, y, r)
+    const h = 120
+    const s = 50
+    const l = Math.floor(25 + Math.random() * 50)
+    g.fill(`hsl(${h}, ${s}%, ${l}%)`)
+
+    const p = new Vec2(0, 0)
+    const speed = 5 + Math.random() * 5
+    const v = new Vec2(1, 0)
+      .rotate(Math.random() * Math.PI * 2)
+      .mul(speed)
+
+    circles.push({ g, p, v })
+  }
+  return circles
 }
 
 function Index() {
@@ -48,34 +83,7 @@ function Index() {
         app.canvas.height,
       )
 
-      const circles: Circle[] = []
-
-      const numCircles = Math.floor(
-        Math.pow(viewport.x * viewport.y, 1 / 4),
-      )
-
-      for (let i = 0; i < numCircles; i++) {
-        const g = new Graphics()
-        app.stage.addChild(g)
-
-        const x = Math.random() * viewport.x
-        const y = Math.random() * viewport.y
-        const r = 50 + Math.random() * 50
-
-        g.circle(x, y, r)
-        const h = 120
-        const s = 50
-        const l = Math.floor(25 + Math.random() * 50)
-        g.fill(`hsl(${h}, ${s}%, ${l}%)`)
-
-        const p = new Vec2(0, 0)
-        const speed = 5 + Math.random() * 5
-        const v = new Vec2(1, 0)
-          .rotate(Math.random() * Math.PI * 2)
-          .mul(speed)
-
-        circles.push({ g, p, v })
-      }
+      const circles = initCircles(viewport, app.stage)
 
       let lastFrame = self.performance.now()
       const callback: FrameRequestCallback = () => {
