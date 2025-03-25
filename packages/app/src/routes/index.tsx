@@ -121,6 +121,7 @@ function useBackground(
       }
 
       let pointer: Vec2 | null = null
+      let smooth = Vec2.ZERO
 
       document.addEventListener(
         'pointermove',
@@ -139,8 +140,19 @@ function useBackground(
         const dt = now - lastFrame
         lastFrame = now
 
-        const adjust = pointer
-          ? pointer.mul(2).sub(new Vec2(1, 1)).mul(-1)
+        if (pointer && smooth !== pointer) {
+          const d = pointer.sub(smooth)
+          const l = d.len()
+          const s = Math.pow(1 + l * (dt / 1000), 1.5) - 1
+          if (s > l || l < 0.01) {
+            smooth = pointer
+          } else {
+            smooth = smooth.add(d.normalize().mul(s))
+          }
+        }
+
+        const adjust = smooth
+          ? smooth.mul(2).sub(new Vec2(1, 1)).mul(-1)
           : Vec2.ZERO
 
         for (const circle of circles) {
