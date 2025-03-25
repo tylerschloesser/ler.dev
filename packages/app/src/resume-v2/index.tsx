@@ -4,225 +4,166 @@ import {
 } from '@fortawesome/free-brands-svg-icons'
 import {
   faBriefcase,
-  faCode,
   faDiploma,
   faEnvelope,
   faGlobe,
-  faHeadSideGear,
+  faSearch,
 } from '@fortawesome/pro-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import clsx from 'clsx'
-import QRCode from 'react-qr-code'
 import { Fragment } from 'react/jsx-runtime'
-import { Canvas } from './canvas'
+
+interface Data {
+  experience: {
+    company: string
+    title: string
+    date: string
+    bullets: string[]
+  }[]
+  keywords: {
+    title: string
+    bullets: string[]
+  }[]
+}
+
+const DATA: Data = {
+  experience: [
+    {
+      company: 'RPI Print',
+      title: 'Principal Engineer',
+      date: '2024 - Present',
+      bullets: [
+        'Led migration to AWS, eliminating website downtime and lead time in spinning up new new services.',
+        'Led migration to CI/CD, reducing release cadence from weeks to days.',
+        'Introduced operations metrics and processes, reducing error rates by 90% and MTTR from days to hours.',
+        'Re-focused engineering org from re-building to re-purposing, eliminating 6 months of calendar time allocated to re-building systems with minimal business impact.',
+        'Led network architecture redesign to allow legacy on-prem services to co-exist with newer AWS services.',
+        'Led design system implementation in collaboration with design team. Reduced design review and QA tickets by 90%.',
+      ],
+    },
+    {
+      company: 'AWS Supply Chain (Amazon)',
+      title: 'Senior Frontend Engineer',
+      date: '2022 - 2023',
+      bullets: [
+        'Launched AWS Supply Chain at 2022 re:Invent.',
+        'Led refactoring of shared micro-frontend dependencies in order to unblock major version upgrades.',
+        'Led effort to ensure UI consistency across 3 micro-frontend teams by re:Invent launch.',
+        'Led e2e test coverage, eliminating need for manual QA during prod release.',
+        'Led migration to Backend for Frontend, mitigating cross team dependencies and reducing API latency by 50%.',
+      ],
+    },
+    {
+      company: 'Kindle Vella (Amazon)',
+      title: 'Senior Software Engineer',
+      date: '2019 - 2022',
+      bullets: [
+        'Launched Kindle Vella in 2020.',
+        'Designed and built virtual currency, Amazon’s first to be available via Android and iOS in-app purchase.',
+        'Led frontend development across web and mobile via web-views.',
+      ],
+    },
+  ],
+  keywords: [
+    {
+      title: "I'm exceptional at",
+      bullets: [
+        'TypeScript',
+        'React',
+        'HTML & CSS',
+        'AWS & CDK',
+        'Testing',
+        'CI/CD',
+      ],
+    },
+    {
+      title: "I'm very good at",
+      bullets: [
+        'Playwright',
+        'Redux',
+        'GraphQL',
+        'Java',
+        'Spring',
+        'Tailwind',
+      ],
+    },
+    {
+      title: "I'd love to get better at",
+      bullets: [
+        'UX Design',
+        'A/B Testing',
+        'Telemetry',
+        'Realtime',
+        'Microinteractions',
+      ],
+    },
+  ],
+}
+
+function ExperienceSection() {
+  return (
+    <section>
+      <div className="flex flex-col gap-2">
+        {DATA.experience.map(
+          ({ company, title, date, bullets }, i) => (
+            <div key={i}>
+              <h3 className="text-lg">
+                <span className="font-semibold">
+                  {title}
+                </span>{' '}
+                &middot;{' '}
+                <span className="font-light">{date}</span>
+              </h3>
+              <div>{company}</div>
+              <ul>
+                {bullets.map((bullet, j) => (
+                  <li key={j}>&bull; {bullet}</li>
+                ))}
+              </ul>
+            </div>
+          ),
+        )}
+      </div>
+    </section>
+  )
+}
+
+function KeywordSection() {
+  return (
+    <section>
+      <div className="grid grid-cols-3">
+        {DATA.keywords.map(({ title, bullets }, i) => (
+          <div key={i} className="flex flex-col gap-2">
+            <div className="font-bold">{title}</div>
+            <ul>
+              {bullets.map((content, j) => (
+                <li key={j}>{content}</li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </section>
+  )
+}
+
+function EducationSection() {
+  return (
+    <section>
+      <div className="font-bold">
+        University of Minnesota - Twin Cities
+      </div>
+      <div>B.S. Computer Science</div>
+      <div>2010 - 2014</div>
+    </section>
+  )
+}
 
 export function ResumeV2() {
   return (
-    <div className="min-h-dvh grid grid-cols-[1fr_2fr_1fr] grid-rows-[min-content_1fr]">
-      <div className="bg-white flex justify-end">
-        <a href="https://ty.ler.dev/qr/resume">
-          <QRCode
-            value="https://ty.ler.dev/qr/resume"
-            className="h-32 w-32 p-2"
-          />
-        </a>
-      </div>
-      <div
-        className={clsx(
-          'bg-black text-white flex items-center',
-          'border-x border-dashed border-white',
-        )}
-      >
-        <h2 className="text-4xl p-10 uppercase tracking-wider">
-          <span className="font-bold">Tyler</span>{' '}
-          <span className="font-thin">Schloesser</span>{' '}
-          <FontAwesomeIcon icon={faCode} />
-        </h2>
-      </div>
-      <div className="bg-black" />
-      <div className="bg-black">
-        <Canvas />
-      </div>
-      <div
-        className={clsx(
-          'p-8 border-x border-dashed border-black',
-        )}
-      >
-        <h3 className="text-lg font-bold uppercase">
-          <FontAwesomeIcon icon={faHeadSideGear} /> About
-        </h3>
-        <p>
-          I'm a frontend engineer with a passion for
-          building user interfaces that are both beautiful
-          and functional. I have experience with a variety
-          of technologies and am always looking to learn
-          more.
-        </p>
-        <p>
-          I'm a frontend engineer with a passion for
-          building user interfaces that are both beautiful
-          and functional. I have experience with a variety
-          of technologies and am always looking to learn
-          more.
-        </p>
-        <section>
-          <div className="pb-2">
-            <h3 className="text-lg font-bold uppercase inline border-b pb-2 pr-4 border-dashed border-black">
-              <FontAwesomeIcon icon={faBriefcase} />{' '}
-              Experience
-            </h3>
-          </div>
-          <div className="flex flex-col gap-2">
-            <div>
-              <h3 className="font-bold">
-                Principal Engineer
-              </h3>
-              <div>
-                RPI Print &middot; June 2024 - Present
-              </div>
-              <ul>
-                <li>
-                  &bull; Migrated several services and
-                  applications from on-prem to AWS
-                </li>
-                <li>&bull; Introduced CI/CD on TeamCity</li>
-                <li>
-                  &bull; Added interoperability between new
-                  and legacy systems to deliver new systems
-                  6 months faster
-                </li>
-                <li>
-                  &bull; Led design system development and
-                  adoption
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="font-bold">Indie GameDev</h3>
-              <div>2023 - 2024</div>
-              <ul>
-                <li>
-                  &bull; Hacked on mobile game prototypes
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="font-bold">
-                Senior Frontend Engineer
-              </h3>
-              <div>
-                AWS Supply Chain &middot; 2022 - 2023
-              </div>
-              <ul>
-                <li>
-                  &bull; Launched AWS Supply Chain in Nov
-                  2023
-                </li>
-                <li>
-                  &bull; Led micro-frontend development
-                  across 3 teams
-                </li>
-                <li>
-                  &bull; React, TypeScript, Single SPA,
-                  Cypress, AppSync, ...
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="font-bold">
-                Senior Software Engineer
-              </h3>
-              <div>Kindle Vella &middot; 2019 - 2022</div>
-              <ul>
-                <li>
-                  &bull; Launched Kindle Vella in June 2021
-                </li>
-                <li>
-                  &bull; Founding member. Led frontend
-                  development across 2 teams. Led
-                  microcurrency development. teams
-                </li>
-                <li>
-                  &bull; React, Redux, GraphQL, Cypress, ...
-                </li>
-                <li>
-                  &bull; Led microcurrency development
-                </li>
-                <li>
-                  &bull; Java, Spring, DynamoDB, SQS, ...
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="font-bold">
-                Software Engineer
-              </h3>
-              <div>
-                Amazon Publishing &middot; 2014 - 2019
-              </div>
-              <ul>
-                <li>&bull; TODO</li>
-              </ul>
-            </div>
-          </div>
-        </section>
-        <section>
-          <h3 className="text-lg font-bold uppercase">
-            Skills
-          </h3>
-          <div className="grid grid-cols-[auto_1fr] gap-1">
-            {[
-              {
-                label: 'React',
-                value: 10,
-              },
-              {
-                label: 'TypeScript',
-                value: 10,
-              },
-              {
-                label: 'CSS',
-                value: 9,
-              },
-              {
-                label: 'Testing',
-                value: 8,
-              },
-              {
-                label: 'AWS',
-                value: 8,
-              },
-            ].map(({ label, value }, i) => (
-              <Fragment key={i}>
-                <span>{label}</span>
-                <div className="flex items-center">
-                  <span className="relative flex border-2 border-slate-600 w-32 h-4">
-                    <span
-                      className="absolute inset-0 bg-blue-600"
-                      style={{
-                        width: `${value * 10}%`,
-                      }}
-                    />
-                  </span>
-                </div>
-              </Fragment>
-            ))}
-          </div>
-        </section>
-        <section>
-          <h3 className="text-lg font-bold uppercase">
-            <FontAwesomeIcon icon={faDiploma} /> Education
-          </h3>
-          <div className="font-bold">
-            University of Minnesota - Twin Cities
-          </div>
-          <div>B.S. Computer Science</div>
-          <div>2010 - 2014</div>
-        </section>
-      </div>
-      <div className="p-8">
-        <Links />
-      </div>
+    <div className="p-8">
+      <ExperienceSection />
+      <KeywordSection />
+      <EducationSection />
     </div>
   )
 }
