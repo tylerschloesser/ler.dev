@@ -6,6 +6,7 @@ import {
 import clsx from 'clsx'
 import { Application, Graphics } from 'pixi.js'
 import { useEffect, useRef } from 'react'
+import { Vec2 } from '../resume/vec2'
 
 export const Route = createFileRoute('/')({
   component: Index,
@@ -26,6 +27,9 @@ function Index() {
       resizeTo: container.current,
     })
     const controller = new AbortController()
+
+    let handle: number
+
     promise.then(() => {
       if (controller.signal.aborted) {
         return
@@ -33,13 +37,42 @@ function Index() {
       invariant(container.current)
       container.current.appendChild(canvas)
 
-      const g = new Graphics()
-      app.stage.addChild(g)
-      g.rect(0, 0, 100, 100)
-      g.fill('blue')
+      const circles: {
+        g: Graphics
+        p: Vec2
+        v: Vec2
+      }[] = []
+
+      for (let i = 0; i < 10; i++) {
+        const g = new Graphics()
+        app.stage.addChild(g)
+        g.circle(0, 0, 100)
+        g.fill('blue')
+
+        const p = new Vec2(0, 0)
+        const v = new Vec2(1, 1).normalize().mul(10)
+
+        circles.push({ g, p, v })
+      }
+
+      let lastFrame = self.performance.now()
+      const callback: FrameRequestCallback = () => {
+        const now = self.performance.now()
+        const dt = now - lastFrame
+        lastFrame = now
+
+        for (const circle of circles) {
+          circle.p = circle.p.add(circle.v.mul(dt / 1000))
+          circle.g.position.set(circle.p.x, circle.p.y)
+        }
+
+        handle = self.requestAnimationFrame(callback)
+      }
+      handle = self.requestAnimationFrame(callback)
     })
     return () => {
       controller.abort()
+      self.cancelAnimationFrame(handle)
       promise.then(() => app.destroy())
       canvas.remove()
     }
