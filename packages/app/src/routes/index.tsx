@@ -4,12 +4,7 @@ import {
   invariant,
 } from '@tanstack/react-router'
 import clsx from 'clsx'
-import {
-  Application,
-  BlurFilter,
-  Container,
-  Graphics,
-} from 'pixi.js'
+import { Application, BlurFilter, Graphics } from 'pixi.js'
 import { RefObject, useEffect, useRef } from 'react'
 import { Vec2 } from '../resume/vec2'
 
@@ -54,9 +49,9 @@ interface Circle {
 function initCircles(viewport: Vec2): Circle[] {
   const circles: Circle[] = []
 
-  const numCircles = Math.floor(
-    Math.pow(viewport.x * viewport.y, 1 / 4),
-  )
+  const numCircles =
+    Math.floor(viewport.x * viewport.y) /
+    (Math.PI * 100 ** 2)
 
   for (let i = 0; i < numCircles; i++) {
     const g = new Graphics()
