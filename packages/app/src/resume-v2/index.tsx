@@ -193,10 +193,9 @@ function AboutSection() {
     <Section title="About">
       <p>
         Frontend Engineer with 10 years of experience.
-        Aspiring indie game dev.
-        <br className="not-print:hidden" />I love to craft
-        delightful user experiences. Able and eager to solve
-        hard problems. Let's build something.
+        Aspiring indie game dev. I love to craft delightful
+        user experiences. Able and eager to solve hard
+        problems. Let's build something.
       </p>
     </Section>
   )
@@ -260,7 +259,7 @@ function LinkSection() {
   }[]
   return (
     <Section title="Links">
-      <div className="grid grid-cols-[auto,1fr] gap-2 text-sm">
+      <div className="grid grid-cols-[auto_1fr] gap-2 text-sm">
         {links.map(
           ({ icon, href, ariaLabel, label }, i) => (
             <Fragment key={i}>
