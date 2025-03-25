@@ -8,12 +8,13 @@ import {
   faGlobe,
 } from '@fortawesome/pro-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import clsx from 'clsx'
 import React from 'react'
 import QRCode from 'react-qr-code'
 import { Fragment } from 'react/jsx-runtime'
 
-function Divider() {
-  return <hr className="text-gray-400" />
+function Divider({ className }: { className?: string }) {
+  return <hr className={clsx(className, 'text-gray-400')} />
 }
 
 interface Data {
@@ -177,7 +178,8 @@ function EducationSection() {
   return (
     <Section title="Education">
       <div className="font-bold">
-        University of Minnesota - Twin Cities
+        University of Minnesota -{' '}
+        <span className="text-nowrap">Twin Cities</span>
       </div>
       <div>B.S. Computer Science</div>
       <div>2010 - 2014</div>
@@ -190,7 +192,7 @@ const SHOW_QR_CODE = false
 function Hero() {
   return (
     <div className="bg-black text-white relative">
-      <div className="p-8">
+      <div className="p-4 md:p-8">
         <h1 className="text-2xl font-bold tracking-wider font-mono text-center">
           {'<h1>Tyler Schloesser</h1>'}
         </h1>
@@ -228,13 +230,14 @@ export function Resume() {
   return (
     <>
       <Hero />
-      <div className="p-8">
-        <div className="grid grid-cols-[3fr_1fr] gap-4">
+      <div className="p-4 md:p-8">
+        <div className="flex flex-col md:grid grid-cols-[3fr_1fr] gap-4">
           <div className="flex flex-col gap-4">
             <AboutSection />
             <Divider />
             <ExperienceSection />
           </div>
+          <Divider className="md:hidden" />
           <div className="flex flex-col gap-4">
             <KeywordSection />
             <Divider />
