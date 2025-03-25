@@ -151,8 +151,8 @@ function KeywordSection() {
       <div className="flex flex-col gap-2">
         {DATA.keywords.map(({ title, bullets }, i) => (
           <div key={i} className="flex flex-col gap-2">
-            <div className="font-bold text-sm italic">
-              {title}
+            <div className="font-bold text-xs">
+              {title}:
             </div>
             <div className="text-sm">
               <ul className="flex flex-wrap gap-1">

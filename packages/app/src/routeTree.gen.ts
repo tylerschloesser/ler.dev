@@ -13,25 +13,25 @@ import { createFileRoute } from '@tanstack/react-router'
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as IndexImport } from './routes/index'
 
 // Create Virtual Routes
 
-const ResumeV2LazyImport = createFileRoute('/resume-v2')()
-const IndexLazyImport = createFileRoute('/')()
+const ResumeLazyImport = createFileRoute('/resume')()
 
 // Create/Update Routes
 
-const ResumeV2LazyRoute = ResumeV2LazyImport.update({
-  id: '/resume-v2',
-  path: '/resume-v2',
+const ResumeLazyRoute = ResumeLazyImport.update({
+  id: '/resume',
+  path: '/resume',
   getParentRoute: () => rootRoute,
-} as any).lazy(() => import('./routes/resume-v2.lazy').then((d) => d.Route))
+} as any).lazy(() => import('./routes/resume.lazy').then((d) => d.Route))
 
-const IndexLazyRoute = IndexLazyImport.update({
+const IndexRoute = IndexImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRoute,
-} as any).lazy(() => import('./routes/index.lazy').then((d) => d.Route))
+} as any)
 
 // Populate the FileRoutesByPath interface
 
@@ -41,14 +41,14 @@ declare module '@tanstack/react-router' {
       id: '/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexLazyImport
+      preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
-    '/resume-v2': {
-      id: '/resume-v2'
-      path: '/resume-v2'
-      fullPath: '/resume-v2'
-      preLoaderRoute: typeof ResumeV2LazyImport
+    '/resume': {
+      id: '/resume'
+      path: '/resume'
+      fullPath: '/resume'
+      preLoaderRoute: typeof ResumeLazyImport
       parentRoute: typeof rootRoute
     }
   }
@@ -57,38 +57,38 @@ declare module '@tanstack/react-router' {
 // Create and export the route tree
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexLazyRoute
-  '/resume-v2': typeof ResumeV2LazyRoute
+  '/': typeof IndexRoute
+  '/resume': typeof ResumeLazyRoute
 }
 
 export interface FileRoutesByTo {
-  '/': typeof IndexLazyRoute
-  '/resume-v2': typeof ResumeV2LazyRoute
+  '/': typeof IndexRoute
+  '/resume': typeof ResumeLazyRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
-  '/': typeof IndexLazyRoute
-  '/resume-v2': typeof ResumeV2LazyRoute
+  '/': typeof IndexRoute
+  '/resume': typeof ResumeLazyRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/resume-v2'
+  fullPaths: '/' | '/resume'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/resume-v2'
-  id: '__root__' | '/' | '/resume-v2'
+  to: '/' | '/resume'
+  id: '__root__' | '/' | '/resume'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
-  IndexLazyRoute: typeof IndexLazyRoute
-  ResumeV2LazyRoute: typeof ResumeV2LazyRoute
+  IndexRoute: typeof IndexRoute
+  ResumeLazyRoute: typeof ResumeLazyRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexLazyRoute: IndexLazyRoute,
-  ResumeV2LazyRoute: ResumeV2LazyRoute,
+  IndexRoute: IndexRoute,
+  ResumeLazyRoute: ResumeLazyRoute,
 }
 
 export const routeTree = rootRoute
@@ -102,14 +102,14 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
-        "/resume-v2"
+        "/resume"
       ]
     },
     "/": {
-      "filePath": "index.lazy.tsx"
+      "filePath": "index.tsx"
     },
-    "/resume-v2": {
-      "filePath": "resume-v2.lazy.tsx"
+    "/resume": {
+      "filePath": "resume.lazy.tsx"
     }
   }
 }
