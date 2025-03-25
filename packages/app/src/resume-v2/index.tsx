@@ -10,6 +10,7 @@ import {
   faSearch,
 } from '@fortawesome/pro-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import React from 'react'
 import { Fragment } from 'react/jsx-runtime'
 
 interface Data {
@@ -101,7 +102,7 @@ const DATA: Data = {
 
 function ExperienceSection() {
   return (
-    <section>
+    <Section title="Experience">
       <div className="flex flex-col gap-2">
         {DATA.experience.map(
           ({ company, title, date, bullets }, i) => (
@@ -123,13 +124,26 @@ function ExperienceSection() {
           ),
         )}
       </div>
+    </Section>
+  )
+}
+
+type SectionProps = React.PropsWithChildren<{
+  title: string
+}>
+
+function Section({ title, children }: SectionProps) {
+  return (
+    <section>
+      <h2 className="text-lg font-bold">{title}</h2>
+      {children}
     </section>
   )
 }
 
 function KeywordSection() {
   return (
-    <section>
+    <Section title="Keywords">
       <div className="flex flex-col gap-2">
         {DATA.keywords.map(({ title, bullets }, i) => (
           <div key={i} className="flex flex-col gap-1">
@@ -151,19 +165,19 @@ function KeywordSection() {
           </div>
         ))}
       </div>
-    </section>
+    </Section>
   )
 }
 
 function EducationSection() {
   return (
-    <section>
+    <Section title="Education">
       <div className="font-bold">
         University of Minnesota - Twin Cities
       </div>
       <div>B.S. Computer Science</div>
       <div>2010 - 2014</div>
-    </section>
+    </Section>
   )
 }
 
@@ -172,8 +186,9 @@ export function ResumeV2() {
     <div className="p-8">
       <div className="grid grid-cols-[3fr_1fr] gap-4">
         <ExperienceSection />
-        <div>
+        <div className="flex flex-col gap-4">
           <KeywordSection />
+          <hr className="bg-black" />
           <EducationSection />
         </div>
       </div>
