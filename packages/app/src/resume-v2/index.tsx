@@ -112,7 +112,7 @@ function ExperienceSection() {
                 <span className="text-sm">{date}</span>
               </h3>
               <div className="font-semibold">{company}</div>
-              <ul className="list-disc list-outside pl-4">
+              <ul className="list-disc list-outside pl-4 text-sm">
                 {bullets.map((bullet, j) => (
                   <li key={j}>{bullet}</li>
                 ))}
@@ -188,13 +188,31 @@ function Hero() {
   )
 }
 
+function AboutSection() {
+  return (
+    <Section title="About">
+      <p>
+        Frontend Engineer with 10 years of experience.
+        Aspiring indie game dev.
+        <br className="not-print:hidden" />I love to craft
+        delightful user experiences. Able and eager to solve
+        hard problems. Let's build something.
+      </p>
+    </Section>
+  )
+}
+
 export function ResumeV2() {
   return (
     <>
       <Hero />
       <div className="p-8">
         <div className="grid grid-cols-[3fr_1fr] gap-4">
-          <ExperienceSection />
+          <div className="flex flex-col gap-4">
+            <AboutSection />
+            <hr />
+            <ExperienceSection />
+          </div>
           <div className="flex flex-col gap-4">
             <KeywordSection />
             <hr />
