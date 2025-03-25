@@ -5,12 +5,42 @@ import {
 } from '@tanstack/react-router'
 import clsx from 'clsx'
 import { Application, Container, Graphics } from 'pixi.js'
-import { useEffect, useRef } from 'react'
+import { RefObject, useEffect, useRef } from 'react'
 import { Vec2 } from '../resume/vec2'
 
 export const Route = createFileRoute('/')({
   component: Index,
 })
+
+function Index() {
+  const container = useRef<HTMLDivElement>(null)
+  useBackground(container)
+  return (
+    <div className="relative">
+      <div
+        ref={container}
+        className="absolute inset-0 blur-sm"
+      />
+      <div className="relative">
+        <div className="w-dvw h-dvh flex items-center justify-center">
+          <div className="flex flex-col gap-2">
+            <h1 className="text-center">ty.ler.dev</h1>
+            <Link
+              to="/resume"
+              className={clsx(
+                'block border p-2 rounded min-w-40 text-center shadow',
+                'hover:bg-black hover:text-white hover:border-black',
+                'transition-colors',
+              )}
+            >
+              Resume
+            </Link>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
 
 interface Circle {
   g: Graphics
@@ -53,9 +83,9 @@ function initCircles(
   return circles
 }
 
-function Index() {
-  const container = useRef<HTMLDivElement>(null)
-
+function useBackground(
+  container: RefObject<HTMLDivElement>,
+) {
   useEffect(() => {
     const canvas = document.createElement('canvas')
     const app = new Application()
@@ -107,30 +137,4 @@ function Index() {
       canvas.remove()
     }
   }, [])
-
-  return (
-    <div className="relative">
-      <div
-        ref={container}
-        className="absolute inset-0 blur-sm"
-      />
-      <div className="relative">
-        <div className="w-dvw h-dvh flex items-center justify-center">
-          <div className="flex flex-col gap-2">
-            <h1 className="text-center">ty.ler.dev</h1>
-            <Link
-              to="/resume"
-              className={clsx(
-                'block border p-2 rounded min-w-40 text-center shadow',
-                'hover:bg-black hover:text-white hover:border-black',
-                'transition-colors',
-              )}
-            >
-              Resume
-            </Link>
-          </div>
-        </div>
-      </div>
-    </div>
-  )
 }
