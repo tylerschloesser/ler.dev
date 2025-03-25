@@ -1,10 +1,10 @@
 import { createLazyFileRoute } from '@tanstack/react-router'
-import { ResumeV2 } from '../resume'
+import { Resume } from '../resume'
 
 export const Route = createLazyFileRoute('/resume')({
   component: RouteComponent,
 })
 
 function RouteComponent() {
-  return <ResumeV2 />
+  return <Resume />
 }
