@@ -11,6 +11,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React from 'react'
 import { Fragment } from 'react/jsx-runtime'
 
+function Divider() {
+  return <hr className="text-gray-400" />
+}
+
 interface Data {
   experience: {
     company: string
@@ -192,10 +196,11 @@ function AboutSection() {
   return (
     <Section title="About">
       <p>
-        Frontend Engineer with 10 years of experience.
-        Aspiring indie game dev. I love to craft delightful
-        user experiences. Able and eager to solve hard
-        problems. Let's build something.
+        Frontend Engineer with 11 years of experience.
+        Aspiring indie game dev.{' '}
+        <br className="not-print:hidden" /> I love to craft
+        delightful user experiences. Able and eager to solve
+        hard problems. Let's build something.
       </p>
     </Section>
   )
@@ -209,14 +214,14 @@ export function ResumeV2() {
         <div className="grid grid-cols-[3fr_1fr] gap-4">
           <div className="flex flex-col gap-4">
             <AboutSection />
-            <hr />
+            <Divider />
             <ExperienceSection />
           </div>
           <div className="flex flex-col gap-4">
             <KeywordSection />
-            <hr />
+            <Divider />
             <EducationSection />
-            <hr />
+            <Divider />
             <LinkSection />
           </div>
         </div>
