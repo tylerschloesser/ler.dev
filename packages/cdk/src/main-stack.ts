@@ -42,18 +42,6 @@ export class MainStack extends Stack {
       removalPolicy: RemovalPolicy.DESTROY,
     })
 
-    new BucketDeployment(this, 'AssetDeployment', {
-      destinationBucket: assetBucket,
-      sources: [
-        Source.asset(
-          join(
-            dirname(fileURLToPath(import.meta.url)),
-            '../../app/dist',
-          ),
-        ),
-      ],
-    })
-
     const hostedZone = PublicHostedZone.fromLookup(
       this,
       'HostedZone',
@@ -83,6 +71,20 @@ export class MainStack extends Stack {
         new CloudFrontTarget(distribution),
       ),
       zone: hostedZone,
+    })
+
+    new BucketDeployment(this, 'AssetDeployment', {
+      destinationBucket: assetBucket,
+      distribution,
+      distributionPaths: ['/index.html'],
+      sources: [
+        Source.asset(
+          join(
+            dirname(fileURLToPath(import.meta.url)),
+            '../../app/dist',
+          ),
+        ),
+      ],
     })
   }
 }
