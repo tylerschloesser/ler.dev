@@ -2,6 +2,7 @@ import {
   RouterProvider,
   createRouter,
 } from '@tanstack/react-router'
+import React from 'react'
 import ReactDOM from 'react-dom/client'
 import invariant from 'tiny-invariant'
 import './index.css'
@@ -19,4 +20,8 @@ const container = document.getElementById('root')
 invariant(container)
 
 const root = ReactDOM.createRoot(container)
-root.render(<RouterProvider router={router} />)
+root.render(
+  <React.StrictMode>
+    <RouterProvider router={router} />
+  </React.StrictMode>,
+)
