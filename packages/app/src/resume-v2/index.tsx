@@ -1,13 +1,11 @@
 import {
+  IconDefinition,
   faGithub,
   faLinkedin,
 } from '@fortawesome/free-brands-svg-icons'
 import {
-  faBriefcase,
-  faDiploma,
   faEnvelope,
   faGlobe,
-  faSearch,
 } from '@fortawesome/pro-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React from 'react'
@@ -103,7 +101,7 @@ const DATA: Data = {
 function ExperienceSection() {
   return (
     <Section title="Experience">
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-4">
         {DATA.experience.map(
           ({ company, title, date, bullets }, i) => (
             <div key={i}>
@@ -134,9 +132,11 @@ type SectionProps = React.PropsWithChildren<{
 
 function Section({ title, children }: SectionProps) {
   return (
-    <section>
-      <h2 className="text-lg font-bold">{title}</h2>
-      {children}
+    <section className="flex flex-col gap-2">
+      <h2 className="text-xl font-serif font-light tracking-wider">
+        {title}
+      </h2>
+      <div>{children}</div>
     </section>
   )
 }
@@ -146,7 +146,7 @@ function KeywordSection() {
     <Section title="Keywords">
       <div className="flex flex-col gap-2">
         {DATA.keywords.map(({ title, bullets }, i) => (
-          <div key={i} className="flex flex-col gap-1">
+          <div key={i} className="flex flex-col gap-2">
             <div className="font-bold text-sm italic">
               {title}
             </div>
@@ -181,68 +181,91 @@ function EducationSection() {
   )
 }
 
-export function ResumeV2() {
+function Hero() {
   return (
-    <div className="p-8">
-      <div className="grid grid-cols-[3fr_1fr] gap-4">
-        <ExperienceSection />
-        <div className="flex flex-col gap-4">
-          <KeywordSection />
-          <hr className="bg-black" />
-          <EducationSection />
-        </div>
-      </div>
+    <div className="bg-black text-white p-8">
+      <h1 className="text-2xl">Tyler Schloesser</h1>
     </div>
   )
 }
 
-function Links() {
+export function ResumeV2() {
   return (
-    <div className="grid grid-cols-[auto_1fr] gap-2">
-      {[
-        {
-          icon: faGlobe,
-          href: 'https://ty.ler.dev',
-          ariaLabel: 'Link to my website',
-          label: 'ty.ler.dev',
-        },
-        {
-          icon: faGithub,
-          href: 'https://github.com/tylerschloesser',
-          ariaLabel: 'Link to my GitHub profile',
-          label: 'github.com/tylerschloesser',
-        },
-        {
-          icon: faLinkedin,
-          href: 'https://linkedin.com/in/tyler-schloesser',
-          ariaLabel: 'Link to my LinkedIn profile',
-          label: 'linkedin.com/in/tyler-schloesser',
-        },
-        {
-          icon: faEnvelope,
-          href: 'mailto:tyler.schloesser+resume@gmail.com',
-          ariaLabel: 'Send me an email',
-          label: 'tyler.schloesser@gmail.com',
-        },
-      ].map(({ icon, href, ariaLabel, label }, i) => (
-        <Fragment key={i}>
-          <div
-            className="flex items-center justify-center text-xl"
-            aria-hidden
-          >
-            <FontAwesomeIcon icon={icon} />
+    <>
+      <Hero />
+      <div className="p-8">
+        <div className="grid grid-cols-[3fr_1fr] gap-4">
+          <ExperienceSection />
+          <div className="flex flex-col gap-4">
+            <KeywordSection />
+            <hr />
+            <EducationSection />
+            <hr />
+            <LinkSection />
           </div>
-          <div>
-            <a
-              className="text-blue-600 underline"
-              href={href}
-              aria-label={ariaLabel}
-            >
-              {label}
-            </a>
-          </div>
-        </Fragment>
-      ))}
-    </div>
+        </div>
+      </div>
+    </>
+  )
+}
+
+function LinkSection() {
+  const links = [
+    {
+      icon: faGlobe,
+      href: 'https://ty.ler.dev',
+      ariaLabel: 'Link to my website',
+      label: 'ty.ler.dev',
+    },
+    {
+      icon: faGithub,
+      href: 'https://github.com/tylerschloesser',
+      ariaLabel: 'Link to my GitHub profile',
+      label: 'github.com/tylerschloesser',
+    },
+    {
+      icon: faLinkedin,
+      href: 'https://linkedin.com/in/tyler-schloesser',
+      ariaLabel: 'Link to my LinkedIn profile',
+      label: 'linkedin.com/in/tyler-schloesser',
+    },
+    {
+      icon: faEnvelope,
+      href: 'mailto:tyler.schloesser+resume@gmail.com',
+      ariaLabel: 'Send me an email',
+      label: 'tyler.schloesser@gmail.com',
+    },
+  ] satisfies {
+    icon: IconDefinition
+    href: string
+    ariaLabel: string
+    label: string
+  }[]
+  return (
+    <Section title="Links">
+      <div className="grid grid-cols-[auto,1fr] gap-2 text-sm">
+        {links.map(
+          ({ icon, href, ariaLabel, label }, i) => (
+            <Fragment key={i}>
+              <div
+                className="flex items-center justify-center"
+                aria-hidden
+              >
+                <FontAwesomeIcon icon={icon} />
+              </div>
+              <div>
+                <a
+                  className="underline"
+                  href={href}
+                  aria-label={ariaLabel}
+                >
+                  {label}
+                </a>
+              </div>
+            </Fragment>
+          ),
+        )}
+      </div>
+    </Section>
   )
 }
