@@ -12,6 +12,12 @@ export const Route = createFileRoute('/')({
   component: Index,
 })
 
+interface Circle {
+  g: Graphics
+  p: Vec2
+  v: Vec2
+}
+
 function Index() {
   const container = useRef<HTMLDivElement>(null)
 
@@ -42,11 +48,7 @@ function Index() {
         app.canvas.height,
       )
 
-      const circles: {
-        g: Graphics
-        p: Vec2
-        v: Vec2
-      }[] = []
+      const circles: Circle[] = []
 
       const numCircles = Math.floor(
         Math.pow(viewport.x * viewport.y, 1 / 4),
