@@ -137,7 +137,10 @@ function useBackground(
       let lastFrame = self.performance.now()
       const callback: FrameRequestCallback = () => {
         const now = self.performance.now()
-        const dt = now - lastFrame
+        const dt = Math.min(
+          now - lastFrame,
+          (1 / 30) * 1000,
+        )
         lastFrame = now
 
         if (pointer && smooth !== pointer) {
