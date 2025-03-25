@@ -224,7 +224,7 @@ function AboutSection() {
   )
 }
 
-export function ResumeV2() {
+export function Resume() {
   return (
     <>
       <Hero />

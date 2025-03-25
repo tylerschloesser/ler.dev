@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { ResumeV2 } from '../resume-v2'
+import { Resume } from '../resume'
 
 export const Route = createFileRoute('/')({
   component: Index,
@@ -8,7 +8,7 @@ export const Route = createFileRoute('/')({
 function Index() {
   return (
     <>
-      <ResumeV2 />
+      <Resume />
     </>
   )
 }
