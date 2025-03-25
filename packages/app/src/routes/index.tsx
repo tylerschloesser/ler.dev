@@ -4,7 +4,12 @@ import {
   invariant,
 } from '@tanstack/react-router'
 import clsx from 'clsx'
-import { Application, Container, Graphics } from 'pixi.js'
+import {
+  Application,
+  BlurFilter,
+  Container,
+  Graphics,
+} from 'pixi.js'
 import { RefObject, useEffect, useRef } from 'react'
 import { Vec2 } from '../resume/vec2'
 
@@ -17,10 +22,7 @@ function Index() {
   useBackground(container)
   return (
     <div className="relative">
-      <div
-        ref={container}
-        className="absolute inset-0 blur-sm"
-      />
+      <div ref={container} className="absolute inset-0" />
       <div className="relative">
         <div className="w-dvw h-dvh flex items-center justify-center">
           <div className="flex flex-col gap-2">
@@ -107,6 +109,9 @@ function useBackground(
       }
       invariant(container.current)
       container.current.appendChild(canvas)
+
+      const blurFilter = new BlurFilter()
+      app.stage.filters = [blurFilter]
 
       const viewport = new Vec2(
         app.canvas.width,
