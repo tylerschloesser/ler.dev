@@ -104,7 +104,8 @@ function useBackground(
     let handle: number
 
     promise.then(() => {
-      if (controller.signal.aborted) {
+      const { signal } = controller
+      if (signal.aborted) {
         return
       }
       invariant(container.current)
@@ -120,15 +121,33 @@ function useBackground(
 
       const circles = initCircles(viewport, app.stage)
 
+      let pointer: Vec2 | null = null
+
+      document.addEventListener(
+        'pointermove',
+        (ev) => {
+          pointer = new Vec2(
+            ev.clientX / viewport.x,
+            ev.clientY / viewport.y,
+          )
+        },
+        { signal },
+      )
+
       let lastFrame = self.performance.now()
       const callback: FrameRequestCallback = () => {
         const now = self.performance.now()
         const dt = now - lastFrame
         lastFrame = now
 
+        const adjust = pointer
+          ? pointer.sub(new Vec2(0.5)).mul(-10)
+          : Vec2.ZERO
+
         for (const circle of circles) {
           circle.p = circle.p.add(circle.v.mul(dt / 1000))
-          circle.g.position.set(circle.p.x, circle.p.y)
+          const p = circle.p.add(adjust)
+          circle.g.position.set(p.x, p.y)
         }
 
         handle = self.requestAnimationFrame(callback)
