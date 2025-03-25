@@ -9,6 +9,7 @@ import {
 } from '@fortawesome/pro-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React from 'react'
+import QRCode from 'react-qr-code'
 import { Fragment } from 'react/jsx-runtime'
 
 function Divider() {
@@ -186,8 +187,19 @@ function EducationSection() {
 
 function Hero() {
   return (
-    <div className="bg-black text-white p-8">
-      <h1 className="text-2xl">Tyler Schloesser</h1>
+    <div className="bg-black text-white relative">
+      <div className="p-8">
+        <h1 className="text-2xl">Tyler Schloesser</h1>
+      </div>
+      <div className="absolute top-0 right-0 h-full p-2">
+        <div className="h-full border-2 border-white">
+          <QRCode
+            size={256}
+            value="hey"
+            className="w-auto max-h-full h-full"
+          />
+        </div>
+      </div>
     </div>
   )
 }
