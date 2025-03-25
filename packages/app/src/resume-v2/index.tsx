@@ -40,7 +40,7 @@ const DATA: Data = {
       ],
     },
     {
-      company: 'AWS Supply Chain (Amazon)',
+      company: 'AWS Supply Chain',
       title: 'Senior Frontend Engineer',
       date: '2022 - 2023',
       bullets: [
@@ -52,9 +52,9 @@ const DATA: Data = {
       ],
     },
     {
-      company: 'Kindle Vella (Amazon)',
+      company: 'Kindle Vella',
       title: 'Senior Software Engineer',
-      date: '2019 - 2022',
+      date: '2018 - 2022',
       bullets: [
         'Launched Kindle Vella in 2020.',
         'Designed and built virtual currency, Amazon’s first to be available via Android and iOS in-app purchase.',
@@ -104,15 +104,14 @@ function ExperienceSection() {
       <div className="flex flex-col gap-4">
         {DATA.experience.map(
           ({ company, title, date, bullets }, i) => (
-            <div key={i}>
-              <h3 className="text-lg">
-                <span className="font-semibold">
+            <div key={i} className="flex flex-col gap-0.5">
+              <h3 className="flex items-center justify-between">
+                <span className="font-bold text-lg">
                   {title}
-                </span>{' '}
-                &middot;{' '}
-                <span className="font-light">{date}</span>
+                </span>
+                <span className="text-sm">{date}</span>
               </h3>
-              <div>{company}</div>
+              <div className="font-semibold">{company}</div>
               <ul className="list-disc list-outside pl-4">
                 {bullets.map((bullet, j) => (
                   <li key={j}>{bullet}</li>
