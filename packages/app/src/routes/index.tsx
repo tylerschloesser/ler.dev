@@ -3,6 +3,7 @@ import {
   createFileRoute,
   invariant,
 } from '@tanstack/react-router'
+import clsx from 'clsx'
 import { Application, Graphics } from 'pixi.js'
 import { useEffect, useRef } from 'react'
 
@@ -53,7 +54,11 @@ function Index() {
             <h1 className="text-center">ty.ler.dev</h1>
             <Link
               to="/resume"
-              className="block border p-2 rounded min-w-40 text-center shadow"
+              className={clsx(
+                'block border p-2 rounded min-w-40 text-center shadow',
+                'hover:bg-black hover:text-white hover:border-black',
+                'transition-colors',
+              )}
             >
               Resume
             </Link>
