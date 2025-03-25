@@ -66,22 +66,35 @@ export function ResumeV2() {
           more.
         </p>
         <section>
-          <h3 className="text-lg font-bold uppercase">
-            <FontAwesomeIcon icon={faBriefcase} />{' '}
-            Experience
-          </h3>
+          <div className="pb-2">
+            <h3 className="text-lg font-bold uppercase inline border-b pb-2 pr-4 border-dashed border-black">
+              <FontAwesomeIcon icon={faBriefcase} />{' '}
+              Experience
+            </h3>
+          </div>
           <div className="flex flex-col gap-2">
             <div>
               <h3 className="font-bold">
                 Principal Engineer
               </h3>
-              <div>RPI Print &middot; 2024 - Present</div>
+              <div>
+                RPI Print &middot; June 2024 - Present
+              </div>
               <ul>
                 <li>
-                  &bull; Launched BookWright Online in Nov
-                  2024
+                  &bull; Migrated several services and
+                  applications from on-prem to AWS
                 </li>
-                <li>&bull; Migrated to AWS and TeamCity</li>
+                <li>&bull; Introduced CI/CD on TeamCity</li>
+                <li>
+                  &bull; Added interoperability between new
+                  and legacy systems to deliver new systems
+                  6 months faster
+                </li>
+                <li>
+                  &bull; Led design system development and
+                  adoption
+                </li>
               </ul>
             </div>
             <div>
