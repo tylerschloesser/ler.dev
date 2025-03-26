@@ -7,7 +7,7 @@ import {
   useRef,
   useState,
 } from 'react'
-import { Vec2 } from './resume/vec2'
+import { Vec2 } from './vec2'
 
 interface Circle {
   g: Graphics
