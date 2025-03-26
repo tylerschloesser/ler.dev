@@ -84,7 +84,7 @@ function initCircles(viewport: Vec2): Circle[] {
     circles.push({ g, p, z, v })
   }
 
-  circles.sort((a, b) => b.z - a.z)
+  circles.sort((a, b) => a.z - b.z)
 
   return circles
 }
