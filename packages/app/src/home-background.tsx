@@ -1,6 +1,12 @@
 import { invariant } from '@tanstack/react-router'
+import clsx from 'clsx'
 import { Application, BlurFilter, Graphics } from 'pixi.js'
-import { RefObject, useEffect, useRef } from 'react'
+import {
+  RefObject,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 import { Vec2 } from './resume/vec2'
 
 interface Circle {
@@ -12,15 +18,23 @@ interface Circle {
 
 export default function HomeBackground() {
   const container = useRef<HTMLDivElement>(null)
-  useBackground(container)
+  const { ready } = useBackground(container)
   return (
-    <div ref={container} className="absolute inset-0" />
+    <div
+      ref={container}
+      className={clsx(
+        'absolute inset-0',
+        'transition-opacity duration-1000 ease-out',
+        ready ? 'opacity-100' : 'opacity-0',
+      )}
+    />
   )
 }
 
 function useBackground(
   container: RefObject<HTMLDivElement>,
-) {
+): { ready: boolean } {
+  const [ready, setReady] = useState(false)
   useEffect(() => {
     const canvas = document.createElement('canvas')
     const app = new Application()
@@ -111,6 +125,8 @@ function useBackground(
         handle = self.requestAnimationFrame(callback)
       }
       handle = self.requestAnimationFrame(callback)
+
+      setReady(true)
     })
     return () => {
       controller.abort()
@@ -119,6 +135,7 @@ function useBackground(
       canvas.remove()
     }
   }, [])
+  return { ready }
 }
 
 function initCircles(viewport: Vec2): Circle[] {
