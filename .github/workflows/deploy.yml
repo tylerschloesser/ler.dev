@@ -5,6 +5,9 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
+    concurrency:
+      group: deploy
+      cancel-in-progress: false
     env:
       FONTAWESOME_PACKAGE_TOKEN: ${{ secrets.FONTAWESOME_PACKAGE_TOKEN }}
     steps:
@@ -21,7 +24,6 @@ jobs:
       - run: |
           echo '@fortawesome:registry=https://npm.fontawesome.com/' >> .npmrc
           echo '//npm.fontawesome.com/:_authToken=${FONTAWESOME_PACKAGE_TOKEN}' >> .npmrc
-          cat .npmrc
           npm ci
           npm run test
           npm run build
