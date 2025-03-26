@@ -15,6 +15,14 @@ export const Route = createFileRoute('/')({
 function Index() {
   const container = useRef<HTMLDivElement>(null)
   useBackground(container)
+
+  useEffect(() => {
+    document.body.classList.add('overscroll-none')
+    return () => {
+      document.body.classList.remove('overscroll-none')
+    }
+  }, [])
+
   return (
     <div className="relative">
       <div ref={container} className="absolute inset-0" />
@@ -123,14 +131,21 @@ function useBackground(
       let pointer: Vec2 | null = null
       let smooth = Vec2.ZERO
 
+      function handlePointer(ev: PointerEvent) {
+        pointer = new Vec2(
+          ev.clientX / viewport.x,
+          ev.clientY / viewport.y,
+        )
+      }
+
       document.addEventListener(
         'pointermove',
-        (ev) => {
-          pointer = new Vec2(
-            ev.clientX / viewport.x,
-            ev.clientY / viewport.y,
-          )
-        },
+        handlePointer,
+        { signal },
+      )
+      document.addEventListener(
+        'pointerdown',
+        handlePointer,
         { signal },
       )
 
