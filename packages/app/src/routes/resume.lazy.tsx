@@ -10,7 +10,7 @@ function RouteComponent() {
     <>
       <div className="print:hidden">
         <div className="md:p-8 flex justify-center">
-          <div className="border-2 shadow-xl">
+          <div className="md:border-2 md:shadow-xl">
             <div className="max-w-4xl">
               <Resume />
             </div>
