@@ -1,5 +1,5 @@
 import clsx from 'clsx'
-import { Application, Graphics } from 'pixi.js'
+import { Application, Container, Graphics } from 'pixi.js'
 import {
   RefObject,
   useEffect,
@@ -56,17 +56,21 @@ function useBackground(
         app.canvas.height,
       )
 
-      const g = app.stage.addChild(new Graphics())
-      g.rect(0, 0, 100, 100)
-      g.fill('blue')
-
       const cellSize = Math.ceil(
         Math.min(viewport.x, viewport.y) * 0.2,
       )
       const numRows = Math.ceil(viewport.y / cellSize)
       const numCols = Math.ceil(viewport.x / cellSize)
+      const cellContainer = app.stage.addChild(
+        new Container(),
+      )
+
       for (let y = 0; y < numRows; y++) {
         for (let x = 0; x < numCols; x++) {
+          if (Math.random() < 0.5) {
+            continue
+          }
+          const g = cellContainer.addChild(new Graphics())
           g.rect(
             x * cellSize,
             y * cellSize,
