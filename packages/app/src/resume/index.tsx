@@ -10,7 +10,6 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import clsx from 'clsx'
 import React from 'react'
-import QRCode from 'react-qr-code'
 import { Fragment } from 'react/jsx-runtime'
 
 function Divider({ className }: { className?: string }) {
@@ -191,8 +190,6 @@ function EducationSection() {
   )
 }
 
-const SHOW_QR_CODE = false
-
 function Hero() {
   return (
     <div className="bg-black text-white relative">
@@ -201,17 +198,6 @@ function Hero() {
           {'<h1>Tyler Schloesser</h1>'}
         </h1>
       </div>
-      {SHOW_QR_CODE && (
-        <div className="absolute top-0 right-0 h-full p-2">
-          <div className="h-full">
-            <QRCode
-              size={256}
-              value="hey"
-              className="w-auto max-h-full h-full"
-            />
-          </div>
-        </div>
-      )}
     </div>
   )
 }
