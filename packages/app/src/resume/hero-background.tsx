@@ -51,10 +51,13 @@ function useBackground(
       invariant(container.current)
       container.current.appendChild(canvas)
 
-      const viewport = new Vec2(
-        app.canvas.width,
-        app.canvas.height,
-      )
+      const rect = container.current.getBoundingClientRect()
+      const viewport = new Vec2(rect.width, rect.height)
+
+      // edge case...
+      if (viewport.x === 0 || viewport.y === 0) {
+        return
+      }
 
       const cellSize = Math.ceil(
         Math.min(viewport.x, viewport.y) * 0.2,
@@ -62,7 +65,14 @@ function useBackground(
       const numRows = Math.ceil(viewport.y / cellSize)
       const numCols = Math.ceil(viewport.x / cellSize)
       const cellContainer = app.stage.addChild(
-        new Container(),
+        new Container({
+          position: new Vec2(
+            numCols * cellSize,
+            numRows * cellSize,
+          )
+            .sub(viewport)
+            .mul(-0.5),
+        }),
       )
 
       for (let y = 0; y < numRows; y++) {
