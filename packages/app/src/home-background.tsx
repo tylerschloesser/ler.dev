@@ -105,7 +105,7 @@ function useBackground(
           const d = pointer.sub(smooth)
           const l = d.len()
           const s = Math.pow(1 + l * (dt / 1000), 1.5) - 1
-          if (s > l || l < 0.01) {
+          if (s > l || l < 0.001) {
             smooth = pointer
           } else {
             smooth = smooth.add(d.normalize().mul(s))
