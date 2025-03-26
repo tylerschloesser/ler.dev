@@ -19,6 +19,16 @@ declare module '@tanstack/react-router' {
 const container = document.getElementById('root')
 invariant(container)
 
+const message = 'Howdy, stranger.'
+const chars = message.split('')
+console.log(
+  chars.map((c) => `%c${c}`).join(''),
+  ...chars.map(
+    (_, i) =>
+      `color: hsl(${Math.floor((i / chars.length) * 360)}, 80%, 80%)`,
+  ),
+)
+
 const root = ReactDOM.createRoot(container)
 root.render(
   <React.StrictMode>
