@@ -115,7 +115,9 @@ function ExperienceSection() {
                 <span className="font-bold text-lg">
                   {title}
                 </span>
-                <span className="text-sm">{date}</span>
+                <span className="text-sm text-nowrap">
+                  {date}
+                </span>
               </h3>
               <div className="font-semibold">{company}</div>
               <ul className="list-disc list-outside pl-4 text-sm">
@@ -195,7 +197,7 @@ function Hero() {
   return (
     <div className="bg-black text-white relative">
       <div className="p-4 md:p-8">
-        <h1 className="text-2xl font-bold tracking-wider font-mono text-center">
+        <h1 className="text-xl md:text-2xl font-bold tracking-wider font-mono text-center">
           {'<h1>Tyler Schloesser</h1>'}
         </h1>
       </div>
