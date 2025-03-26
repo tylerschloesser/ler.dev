@@ -135,7 +135,7 @@ function useBackground(
         pointer = new Vec2(
           ev.clientX / viewport.x,
           ev.clientY / viewport.y,
-        )
+        ).sub(new Vec2(0.5, 0.5))
       }
 
       document.addEventListener(
@@ -170,7 +170,7 @@ function useBackground(
         }
 
         const adjust = smooth
-          ? smooth.mul(2).sub(new Vec2(1, 1)).mul(-1)
+          ? smooth.mul(-1).mul(2)
           : Vec2.ZERO
 
         for (const circle of circles) {
