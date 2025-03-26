@@ -51,7 +51,6 @@ function useBackground(
       invariant(container.current)
       container.current.appendChild(canvas)
 
-      // @ts-expect-error
       const viewport = new Vec2(
         app.canvas.width,
         app.canvas.height,
@@ -60,6 +59,23 @@ function useBackground(
       const g = app.stage.addChild(new Graphics())
       g.rect(0, 0, 100, 100)
       g.fill('blue')
+
+      const cellSize = Math.ceil(
+        Math.min(viewport.x, viewport.y) * 0.2,
+      )
+      const numRows = Math.ceil(viewport.y / cellSize)
+      const numCols = Math.ceil(viewport.x / cellSize)
+      for (let y = 0; y < numRows; y++) {
+        for (let x = 0; x < numCols; x++) {
+          g.rect(
+            x * cellSize,
+            y * cellSize,
+            cellSize,
+            cellSize,
+          )
+          g.fill(`hsl(0, 50%, ${50 + Math.random() * 50}%)`)
+        }
+      }
 
       let lastFrame = self.performance.now()
       const callback: FrameRequestCallback = () => {
