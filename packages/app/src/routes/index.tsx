@@ -16,9 +16,12 @@ function Index() {
   const container = useRef<HTMLDivElement>(null)
   useBackground(container)
 
+  // prettier-ignore
   useEffect(() => {
+    document.documentElement.classList.add('overscroll-none')
     document.body.classList.add('overscroll-none')
     return () => {
+      document.documentElement.classList.remove('overscroll-none')
       document.body.classList.remove('overscroll-none')
     }
   }, [])
