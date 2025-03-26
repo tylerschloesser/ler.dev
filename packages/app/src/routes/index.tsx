@@ -15,17 +15,7 @@ export const Route = createFileRoute('/')({
 function Index() {
   const container = useRef<HTMLDivElement>(null)
   useBackground(container)
-
-  // prettier-ignore
-  useEffect(() => {
-    document.documentElement.classList.add('overscroll-none')
-    document.body.classList.add('overscroll-none')
-    return () => {
-      document.documentElement.classList.remove('overscroll-none')
-      document.body.classList.remove('overscroll-none')
-    }
-  }, [])
-
+  useDisableOverscroll()
   return (
     <div className="relative">
       <div ref={container} className="absolute inset-0" />
@@ -191,6 +181,18 @@ function useBackground(
       self.cancelAnimationFrame(handle)
       promise.then(() => app.destroy())
       canvas.remove()
+    }
+  }, [])
+}
+
+function useDisableOverscroll() {
+  // prettier-ignore
+  useEffect(() => {
+    document.documentElement.classList.add('overscroll-none')
+    document.body.classList.add('overscroll-none')
+    return () => {
+      document.documentElement.classList.remove('overscroll-none')
+      document.body.classList.remove('overscroll-none')
     }
   }, [])
 }
