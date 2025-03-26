@@ -181,8 +181,10 @@ function EducationSection() {
         University of Minnesota -{' '}
         <span className="text-nowrap">Twin Cities</span>
       </div>
-      <div>B.S. Computer Science</div>
-      <div>2010 - 2014</div>
+      <div className="text-sm">
+        <div>B.S. Computer Science</div>
+        <div>2010 - 2014</div>
+      </div>
     </Section>
   )
 }
@@ -215,7 +217,7 @@ function Hero() {
 function AboutSection() {
   return (
     <Section title="About">
-      <p>
+      <p className="text-sm">
         <span className="font-bold">Frontend Engineer</span>{' '}
         with 11 years of experience. Aspiring indie game
         dev. <br className="not-print:hidden" /> I love to

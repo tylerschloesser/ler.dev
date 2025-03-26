@@ -6,6 +6,9 @@ import {
 import { ICertificate } from 'aws-cdk-lib/aws-certificatemanager'
 import {
   Distribution,
+  Function,
+  FunctionCode,
+  FunctionEventType,
   ViewerProtocolPolicy,
 } from 'aws-cdk-lib/aws-cloudfront'
 import { S3BucketOrigin } from 'aws-cdk-lib/aws-cloudfront-origins'
@@ -48,6 +51,26 @@ export class MainStack extends Stack {
       { domainName: 'ty.ler.dev' },
     )
 
+    const defaultToIndexHtmlFunction = new Function(
+      this,
+      'DefaultToIndexHtmlFunction',
+      {
+        code: FunctionCode.fromInline(`
+        function handler(event) {
+          var request = event.request;
+          var uri = request.uri;
+
+          if (!uri.startsWith('/assets/')) {
+            request.uri = '/index.html';
+          }
+
+          return request;
+        }
+      `),
+        functionName: 'default-to-index-html',
+      },
+    )
+
     const distribution = new Distribution(
       this,
       'Distribution',
@@ -59,10 +82,15 @@ export class MainStack extends Stack {
             ),
           viewerProtocolPolicy:
             ViewerProtocolPolicy.HTTPS_ONLY,
+          functionAssociations: [
+            {
+              eventType: FunctionEventType.VIEWER_REQUEST,
+              function: defaultToIndexHtmlFunction,
+            },
+          ],
         },
         domainNames: ['ty.ler.dev'],
         certificate,
-        defaultRootObject: 'index.html',
       },
     )
 
