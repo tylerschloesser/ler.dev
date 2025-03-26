@@ -87,7 +87,7 @@ function useBackground(
             cellSize,
             cellSize,
           )
-          g.fill(`hsl(0, 50%, ${50 + Math.random() * 50}%)`)
+          g.fill(`hsl(0, 50%, ${0 + Math.random() * 20}%)`)
         }
       }
 
