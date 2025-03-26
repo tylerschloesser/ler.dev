@@ -17,11 +17,9 @@ function Index() {
   useDisableOverscroll()
   return (
     <div className="relative">
-      <div className="absolute inset-0">
-        <Suspense>
-          <HomeBackground />
-        </Suspense>
-      </div>
+      <Suspense>
+        <HomeBackground />
+      </Suspense>
       <div className="relative">
         <div className="w-dvw h-dvh flex items-center justify-center">
           <div className="flex flex-col gap-2">

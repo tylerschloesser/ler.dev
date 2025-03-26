@@ -9,8 +9,12 @@ import {
 } from '@fortawesome/pro-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import clsx from 'clsx'
-import React from 'react'
+import React, { Suspense } from 'react'
 import { Fragment } from 'react/jsx-runtime'
+
+const HeroBackground = React.lazy(
+  () => import('./hero-background.tsx'),
+)
 
 function Divider({ className }: { className?: string }) {
   return <hr className={clsx(className, 'text-gray-400')} />
@@ -192,11 +196,18 @@ function EducationSection() {
 
 function Hero() {
   return (
-    <div className="bg-black text-white relative">
-      <div className="p-4 md:p-8">
-        <h1 className="text-xl md:text-2xl font-bold tracking-wider font-mono text-center">
-          {'<h1>Tyler Schloesser</h1>'}
-        </h1>
+    <div className="relative bg-black text-white overflow-hidden">
+      <Suspense>
+        <HeroBackground />
+      </Suspense>
+      <div className="relative">
+        <div className="p-4 md:p-8">
+          <span className="flex justify-center">
+            <h1 className="text-xl md:text-2xl font-bold tracking-wider font-mono text-center">
+              {'<h1>Tyler Schloesser</h1>'}
+            </h1>
+          </span>
+        </div>
       </div>
     </div>
   )
