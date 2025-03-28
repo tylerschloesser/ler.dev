@@ -11,7 +11,7 @@ function RouteComponent() {
   return (
     <>
       <div className="print:hidden">
-        <div className="bg-gradient-to-b from-green-900 to-black">
+        <div className="bg-gradient-to-b from-green-900 to-black min-h-screen">
           <div className="md:p-8 flex justify-center">
             <div className="md:border-2 md:shadow-xl">
               <div className="max-w-4xl bg-white">
