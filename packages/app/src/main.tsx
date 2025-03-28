@@ -28,6 +28,8 @@ console.log(
       `color: hsl(${Math.floor((i / chars.length) * 360)}, 80%, 80%)`,
   ),
 )
+console.log('https://github.com/tylerschloesser/ler.dev')
+console.log('Yes, I publish source maps.')
 
 const root = ReactDOM.createRoot(container)
 root.render(
