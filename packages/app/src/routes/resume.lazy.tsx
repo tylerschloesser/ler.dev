@@ -1,8 +1,7 @@
 import { createLazyFileRoute } from '@tanstack/react-router'
 import clsx from 'clsx'
+import { SHOW_GAME } from '../const'
 import { Resume } from '../resume'
-
-const SHOW_GAME = window.location.hostname === 'localhost'
 
 export const Route = createLazyFileRoute('/resume')({
   component: RouteComponent,
