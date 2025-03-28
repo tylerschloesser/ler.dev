@@ -6,8 +6,17 @@ import {
   useRef,
   useState,
 } from 'react'
+import { createNoise3D } from 'simplex-noise'
 import invariant from 'tiny-invariant'
 import { Vec2 } from '../vec2'
+
+const noise3D = createNoise3D()
+
+const SCALE_X = 0.4
+const SCALE_Y = 0.4
+const SCALE_Z = 0.1
+
+const TICK_DURATION = 1000
 
 export default function HeroBackground() {
   const container = useRef<HTMLDivElement>(null)
@@ -24,17 +33,11 @@ export default function HeroBackground() {
   )
 }
 
-interface CellAnimation {
-  direction: 'forwards' | 'backwards'
-  duration: number
-  current: number
-  fromOpacity: number
-  toOpacity: number
-}
-
 interface Cell {
   g: Graphics
-  animation?: CellAnimation
+  position: Vec2
+  fromOpacity: number
+  toOpacity: number
 }
 
 function useBackground(
@@ -87,73 +90,34 @@ function useBackground(
             .mul(-0.5),
         }),
       )
-
-      const cells: Cell[] = []
-      for (let y = 0; y < numRows; y++) {
-        for (let x = 0; x < numCols; x++) {
-          if (Math.random() < 0.5) {
-            continue
-          }
-          const g = cellContainer.addChild(new Graphics())
-          let animation: CellAnimation | undefined
-          if (Math.random() < 0.5) {
-            const duration = 1000 + Math.random() * 1000
-            animation = {
-              direction:
-                Math.random() < 0.5
-                  ? 'forwards'
-                  : 'backwards',
-              duration,
-              current: Math.random() * duration,
-              fromOpacity: 0,
-              toOpacity: 1,
-            }
-          }
-          cells.push({ g, animation })
-          g.rect(
-            x * cellSize,
-            y * cellSize,
-            cellSize,
-            cellSize,
-          )
-          g.fill(`hsl(0, 50%, ${0 + Math.random() * 20}%)`)
-        }
-      }
+      const cells = initCells({
+        numRows,
+        numCols,
+        cellSize,
+        cellContainer,
+      })
 
       let lastFrame = self.performance.now()
+      let lastTick = lastFrame
+      let tick = 0
       const callback: FrameRequestCallback = () => {
         const now = self.performance.now()
+        // @ts-expect-error
         const dt = Math.min(
           now - lastFrame,
           (1 / 30) * 1000,
         )
         lastFrame = now
 
-        for (const cell of cells) {
-          if (!cell.animation) {
-            continue
-          }
-          const { animation } = cell
-          if (animation.direction === 'forwards') {
-            animation.current += dt
-            if (animation.current > animation.duration) {
-              animation.current = animation.duration
-              animation.direction = 'backwards'
-            }
-          } else {
-            invariant(animation.direction === 'backwards')
-            animation.current -= dt
-            if (animation.current < 0) {
-              animation.current = 0
-              animation.direction = 'forwards'
-            }
-          }
-
-          cell.g.alpha =
-            animation.fromOpacity +
-            (animation.toOpacity - animation.fromOpacity) *
-              (animation.current / animation.duration)
+        if (now - lastTick > TICK_DURATION) {
+          lastTick = now
+          tickCells(cells, ++tick)
         }
+
+        const tickProgress =
+          (now - lastTick) / TICK_DURATION
+        invariant(tickProgress >= 0 && tickProgress <= 1)
+        updateCells(cells, tickProgress)
 
         handle = self.requestAnimationFrame(callback)
       }
@@ -169,4 +133,62 @@ function useBackground(
     }
   }, [])
   return { ready }
+}
+
+interface InitCellsArgs {
+  numRows: number
+  numCols: number
+  cellSize: number
+  cellContainer: Container
+}
+
+function initCells({
+  numRows,
+  numCols,
+  cellSize,
+  cellContainer,
+}: InitCellsArgs): Cell[] {
+  const cells: Cell[] = []
+  for (let y = 0; y < numRows; y++) {
+    for (let x = 0; x < numCols; x++) {
+      const g = cellContainer.addChild(new Graphics())
+      const position = new Vec2(x, y)
+      const fromOpacity = 0
+      const toOpacity = 0
+      cells.push({ g, position, fromOpacity, toOpacity })
+      g.rect(x * cellSize, y * cellSize, cellSize, cellSize)
+      g.fill(`hsl(120, 50%, 20%)`)
+    }
+  }
+  tickCells(cells, 0)
+  return cells
+}
+
+function tickCells(cells: Cell[], tick: number) {
+  for (const cell of cells) {
+    cell.fromOpacity = cell.toOpacity
+    cell.toOpacity = Math.max(
+      0,
+      noise3D(
+        cell.position.x * SCALE_X,
+        cell.position.y * SCALE_Y,
+        tick * SCALE_Z,
+      ),
+    )
+  }
+}
+
+function updateCells(cells: Cell[], tickProgress: number) {
+  for (const cell of cells) {
+    const opacity = lerp(
+      cell.fromOpacity,
+      cell.toOpacity,
+      tickProgress,
+    )
+    cell.g.alpha = opacity
+  }
+}
+
+function lerp(a: number, b: number, t: number) {
+  return a + (b - a) * t
 }
