@@ -24,6 +24,19 @@ export default function HeroBackground() {
   )
 }
 
+interface CellAnimation {
+  direction: 'forwards' | 'backwards'
+  duration: number
+  current: number
+  fromOpacity: number
+  toOpacity: number
+}
+
+interface Cell {
+  g: Graphics
+  animation?: CellAnimation
+}
+
 function useBackground(
   container: RefObject<HTMLDivElement>,
 ): { ready: boolean } {
@@ -75,12 +88,28 @@ function useBackground(
         }),
       )
 
+      const cells: Cell[] = []
       for (let y = 0; y < numRows; y++) {
         for (let x = 0; x < numCols; x++) {
           if (Math.random() < 0.5) {
             continue
           }
           const g = cellContainer.addChild(new Graphics())
+          let animation: CellAnimation | undefined
+          if (Math.random() < 0.5) {
+            const duration = 1000 + Math.random() * 1000
+            animation = {
+              direction:
+                Math.random() < 0.5
+                  ? 'forwards'
+                  : 'backwards',
+              duration,
+              current: Math.random() * duration,
+              fromOpacity: 0,
+              toOpacity: 1,
+            }
+          }
+          cells.push({ g, animation })
           g.rect(
             x * cellSize,
             y * cellSize,
@@ -94,12 +123,37 @@ function useBackground(
       let lastFrame = self.performance.now()
       const callback: FrameRequestCallback = () => {
         const now = self.performance.now()
-        // @ts-expect-error
         const dt = Math.min(
           now - lastFrame,
           (1 / 30) * 1000,
         )
         lastFrame = now
+
+        for (const cell of cells) {
+          if (!cell.animation) {
+            continue
+          }
+          const { animation } = cell
+          if (animation.direction === 'forwards') {
+            animation.current += dt
+            if (animation.current > animation.duration) {
+              animation.current = animation.duration
+              animation.direction = 'backwards'
+            }
+          } else {
+            invariant(animation.direction === 'backwards')
+            animation.current -= dt
+            if (animation.current < 0) {
+              animation.current = 0
+              animation.direction = 'forwards'
+            }
+          }
+
+          cell.g.alpha =
+            animation.fromOpacity +
+            (animation.toOpacity - animation.fromOpacity) *
+              (animation.current / animation.duration)
+        }
 
         handle = self.requestAnimationFrame(callback)
       }
