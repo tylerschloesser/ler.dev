@@ -102,11 +102,6 @@ function useBackground(
       let tick = 0
       const callback: FrameRequestCallback = () => {
         const now = self.performance.now()
-        // @ts-expect-error
-        const dt = Math.min(
-          now - lastFrame,
-          (1 / 30) * 1000,
-        )
         lastFrame = now
 
         if (now - lastTick > TICK_DURATION) {
@@ -131,7 +126,7 @@ function useBackground(
       promise.then(() => app.destroy())
       canvas.remove()
     }
-  }, [])
+  }, [container])
   return { ready }
 }
 

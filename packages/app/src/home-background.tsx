@@ -134,7 +134,7 @@ function useBackground(
       promise.then(() => app.destroy())
       canvas.remove()
     }
-  }, [])
+  }, [container])
   return { ready }
 }
 
