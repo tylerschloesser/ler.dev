@@ -1,5 +1,8 @@
 import { createLazyFileRoute } from '@tanstack/react-router'
+import clsx from 'clsx'
 import { Resume } from '../resume'
+
+const SHOW_GAME = window.location.hostname === 'localhost'
 
 export const Route = createLazyFileRoute('/resume')({
   component: RouteComponent,
@@ -19,6 +22,22 @@ function RouteComponent() {
           </div>
         </div>
       </div>
+      {SHOW_GAME && (
+        <div className="relative">
+          <div className="bg-black h-screen flex items-center justify-center">
+            <button
+              className={clsx(
+                'border border-white min-w-40 p-2 rounded',
+                'cursor-pointer',
+                'text-white',
+                'hover:bg-white hover:text-black',
+              )}
+            >
+              <span>I'm bored</span>
+            </button>
+          </div>
+        </div>
+      )}
       <div className="not-print:hidden">
         <Resume />
       </div>
