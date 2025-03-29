@@ -12,7 +12,6 @@ export const Route = createLazyFileRoute('/resume')({
 function RouteComponent() {
   const context = useContext(AppContext)
   const [fadeIn] = useState(!context.isFirstLoad.current)
-  console.log({ fadeIn })
   return (
     <>
       <div
