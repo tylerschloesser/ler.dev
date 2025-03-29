@@ -118,7 +118,9 @@ function ExperienceSection() {
                 <span className="font-bold text-lg">
                   {title}
                 </span>
-                <span className="text-nowrap">{date}</span>
+                <span className="text-nowrap text-sm">
+                  {date}
+                </span>
               </h3>
               <div className="font-semibold text-base">
                 {company}
@@ -164,7 +166,7 @@ function KeywordSection() {
               {bullets.map((content, j) => (
                 <li
                   key={j}
-                  className="py-0.5 px-2.5 rounded-full border-2 border-gray-400"
+                  className="py-0.5 px-2.5 rounded-full border border-gray-400 shadow"
                 >
                   {content}
                 </li>
