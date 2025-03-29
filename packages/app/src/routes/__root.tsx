@@ -21,8 +21,8 @@ function RouteComponent() {
   const isFirstLoad = useIsFirstLoad()
   return (
     <AppContext.Provider value={{ isFirstLoad }}>
-      <div className="relative">
-        <div className="print:hidden absolute w-screen h-screen">
+      <div className="relative overflow-hidden">
+        <div className="print:hidden absolute w-dvw h-dvh">
           <Suspense>
             <HomeBackground />
           </Suspense>
