@@ -118,12 +118,12 @@ function ExperienceSection() {
                 <span className="font-bold text-lg">
                   {title}
                 </span>
-                <span className="text-sm text-nowrap">
-                  {date}
-                </span>
+                <span className="text-nowrap">{date}</span>
               </h3>
-              <div className="font-semibold">{company}</div>
-              <ul className="list-disc list-outside pl-4 text-sm">
+              <div className="font-semibold text-base">
+                {company}
+              </div>
+              <ul className="list-disc list-outside pl-4">
                 {bullets.map((bullet, j) => (
                   <li key={j}>{bullet}</li>
                 ))}
@@ -160,18 +160,16 @@ function KeywordSection() {
             <div className="font-bold text-xs">
               {title}:
             </div>
-            <div className="text-sm">
-              <ul className="flex flex-wrap gap-1">
-                {bullets.map((content, j) => (
-                  <li
-                    key={j}
-                    className="py-0.5 px-2.5 rounded-full border-2 border-gray-400"
-                  >
-                    {content}
-                  </li>
-                ))}
-              </ul>
-            </div>
+            <ul className="flex flex-wrap gap-1 text-sm">
+              {bullets.map((content, j) => (
+                <li
+                  key={j}
+                  className="py-0.5 px-2.5 rounded-full border-2 border-gray-400"
+                >
+                  {content}
+                </li>
+              ))}
+            </ul>
           </div>
         ))}
       </div>
@@ -186,10 +184,8 @@ function EducationSection() {
         University of Minnesota -{' '}
         <span className="text-nowrap">Twin Cities</span>
       </div>
-      <div className="text-sm">
-        <div>B.S. Computer Science</div>
-        <div>2010 - 2014</div>
-      </div>
+      <div>B.S. Computer Science</div>
+      <div>2010 - 2014</div>
     </Section>
   )
 }
@@ -216,7 +212,7 @@ function Hero() {
 function AboutSection() {
   return (
     <Section title="About">
-      <p className="text-sm">
+      <p>
         <span className="font-bold">Frontend Engineer</span>{' '}
         with 11 years of experience. Aspiring indie game
         dev. <br className="not-print:hidden" /> I love to
@@ -231,7 +227,7 @@ export function Resume() {
   return (
     <>
       <Hero />
-      <div className="p-4 md:p-8">
+      <div className="p-4 md:p-8 print:text-sm">
         <div className="flex flex-col md:grid grid-cols-[3fr_1fr] gap-4">
           <div className="flex flex-col gap-4">
             <AboutSection />

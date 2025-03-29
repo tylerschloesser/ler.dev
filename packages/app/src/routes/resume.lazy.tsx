@@ -12,10 +12,23 @@ function RouteComponent() {
     <>
       <div className="print:hidden">
         <div className="bg-gradient-to-b from-green-900 to-black min-h-screen">
-          <div className="md:p-8 flex justify-center">
-            <div className="md:border-2 md:shadow-xl">
-              <div className="max-w-4xl bg-white">
-                <Resume />
+          <div className="md:p-8 flex justify-center items-center min-h-screen">
+            <div className="relative p-0.5 overflow-hidden">
+              <div
+                className={clsx(
+                  'motion-reduce:hidden',
+                  'absolute -inset-full',
+                  'bg-conic-180 from-black from-25% via-white to-75% to-black',
+                  'animate-spin',
+                  'rotate-270',
+                )}
+                style={{ animationDuration: '20s' }}
+              />
+
+              <div className="relative">
+                <div className="max-w-4xl bg-white">
+                  <Resume />
+                </div>
               </div>
             </div>
           </div>
