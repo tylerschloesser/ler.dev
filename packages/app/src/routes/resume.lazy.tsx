@@ -14,7 +14,7 @@ function RouteComponent() {
         <div className="min-h-screen">
           <div className="md:p-8 flex justify-center items-center min-h-screen">
             <div className="shadow-2xl">
-              <div className="relative p-0.5 overflow-hidden bg-black">
+              <div className="relative md:p-0.5 overflow-hidden bg-black">
                 <div
                   className={clsx(
                     'motion-reduce:hidden',
