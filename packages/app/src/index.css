@@ -1,5 +1,21 @@
 @import 'tailwindcss';
 
+@theme {
+  --animate-fade-in-resume: fade-in-resume 0.5s
+    cubic-bezier(0.08, 0.82, 0.17, 1);
+
+  @keyframes fade-in-resume {
+    from {
+      transform: rotate(0) scale(0.97);
+      opacity: 0;
+    }
+    to {
+      transform: rotate(0) scale(1);
+      opacity: 1;
+    }
+  }
+}
+
 @media print {
   @page {
     margin: 0;

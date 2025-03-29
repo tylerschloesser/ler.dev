@@ -1,6 +1,6 @@
 import { createLazyFileRoute } from '@tanstack/react-router'
 import clsx from 'clsx'
-import { useContext, useEffect } from 'react'
+import { useContext, useState } from 'react'
 import { AppContext } from '../app-context'
 import { SHOW_GAME } from '../const'
 import { Resume } from '../resume'
@@ -11,15 +11,16 @@ export const Route = createLazyFileRoute('/resume')({
 
 function RouteComponent() {
   const context = useContext(AppContext)
-  useEffect(() => {
-    const isFirstLoad = context.isFirstLoad.current
-    if (isFirstLoad) {
-      console.log('first load!')
-    }
-  }, [])
+  const [fadeIn] = useState(!context.isFirstLoad.current)
+  console.log({ fadeIn })
   return (
     <>
-      <div className="print:hidden">
+      <div
+        className={clsx(
+          'print:hidden',
+          fadeIn && 'animate-fade-in-resume',
+        )}
+      >
         <div className="min-h-screen">
           <div className="md:p-8 flex justify-center items-center min-h-screen">
             <div className="shadow-2xl">
