@@ -14,25 +14,27 @@ const HomeBackground = React.lazy(
 )
 
 export const Route = createRootRoute({
-  component: () => {
-    const isFirstLoad = useIsFirstLoad()
-    return (
-      <AppContext.Provider value={{ isFirstLoad }}>
-        <div className="relative">
-          <div className="print:hidden absolute w-screen h-screen">
-            <Suspense>
-              <HomeBackground />
-            </Suspense>
-          </div>
-          <div className="relative">
-            <Outlet />
-          </div>
-          {DEV_MODE && <TanStackRouterDevtools />}
-        </div>
-      </AppContext.Provider>
-    )
-  },
+  component: RouteComponent,
 })
+
+function RouteComponent() {
+  const isFirstLoad = useIsFirstLoad()
+  return (
+    <AppContext.Provider value={{ isFirstLoad }}>
+      <div className="relative">
+        <div className="print:hidden absolute w-screen h-screen">
+          <Suspense>
+            <HomeBackground />
+          </Suspense>
+        </div>
+        <div className="relative">
+          <Outlet />
+        </div>
+        {DEV_MODE && <TanStackRouterDevtools />}
+      </div>
+    </AppContext.Provider>
+  )
+}
 
 function useIsFirstLoad(): React.RefObject<boolean> {
   const isFirstLoad = React.useRef(true)
