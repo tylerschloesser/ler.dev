@@ -184,8 +184,10 @@ function EducationSection() {
         University of Minnesota -{' '}
         <span className="text-nowrap">Twin Cities</span>
       </div>
-      <div>B.S. Computer Science</div>
-      <div>2010 - 2014</div>
+      <div className="text-sm">
+        <div>B.S. Computer Science</div>
+        <div>2010 - 2014</div>
+      </div>
     </Section>
   )
 }
