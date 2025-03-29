@@ -39,7 +39,7 @@ function useIsFirstLoad(): React.RefObject<boolean> {
   const router = useRouter()
   useEffect(() => {
     const unsubscribe = router.subscribe(
-      'onResolved',
+      'onBeforeNavigate',
       () => {
         isFirstLoad.current = false
       },
