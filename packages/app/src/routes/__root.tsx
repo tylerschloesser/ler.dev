@@ -22,7 +22,7 @@ function RouteComponent() {
   return (
     <AppContext.Provider value={{ isFirstLoad }}>
       <div className="relative overflow-hidden">
-        <div className="print:hidden absolute w-dvw h-dvh">
+        <div className="print:hidden fixed w-dvw h-dvh">
           <Suspense>
             <HomeBackground />
           </Suspense>
