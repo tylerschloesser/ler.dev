@@ -10,5 +10,9 @@ export default defineConfig({
     baseURL: process.env.BASE_URL ?? 'https://ty.ler.dev',
     trace: 'retain-on-failure',
   },
-  projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
+  projects: [
+    { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
+    // Infra checks (redirects, RUM, 404s) don't depend on the viewport.
+    { name: 'mobile', use: { ...devices['Pixel 7'] }, grepInvert: /@desktop-only/ },
+  ],
 })
