@@ -151,6 +151,11 @@ export function Globe({ activeLocationId, activeShape, highlightedLocationId, on
     const dy = e.clientY - drag.y
     if (!drag.moved) {
       if (Math.hypot(dx, dy) <= DRAG_THRESHOLD) return
+      if (drag.lockTilt && Math.abs(dy) > Math.abs(dx)) {
+        // A vertical touch gesture is a page scroll, not a drag.
+        dragRef.current = null
+        return
+      }
       drag.moved = true
       e.currentTarget.dataset.dragging = 'true'
       // Captured lazily so that a plain tap still clicks the marker under it.
