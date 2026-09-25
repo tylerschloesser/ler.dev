@@ -1,0 +1,83 @@
+.figure {
+  height: 100%;
+}
+
+.svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: grab;
+}
+
+.svg[data-dragging='true'] {
+  cursor: grabbing;
+}
+
+.shadeLight {
+  stop-color: var(--globe-ocean);
+}
+
+.shadeDark {
+  stop-color: var(--globe-ocean-shade);
+}
+
+.sphere {
+  fill: url(#globe-shade);
+}
+
+.graticule {
+  fill: none;
+  stroke: var(--globe-graticule);
+  stroke-width: 0.75;
+}
+
+.land {
+  fill: var(--globe-land);
+}
+
+.marker {
+  cursor: pointer;
+}
+
+.hit {
+  fill: transparent;
+}
+
+.dot {
+  fill: var(--globe-marker);
+  stroke: var(--color-bg);
+  stroke-width: 1.5;
+  transition: fill 150ms ease;
+}
+
+.marker[data-shape='ring'] .dot {
+  fill: var(--globe-ocean);
+  stroke: var(--globe-dnf);
+  stroke-width: 2;
+}
+
+.marker[data-active='true'] .dot,
+.marker[data-highlighted='true'] .dot {
+  fill: var(--globe-marker-active);
+}
+
+.marker[data-shape='ring'][data-active='true'] .dot,
+.marker[data-shape='ring'][data-highlighted='true'] .dot {
+  fill: var(--globe-ocean);
+  stroke: var(--globe-marker-active);
+  stroke-width: 3;
+}
+
+.label {
+  fill: var(--color-text);
+  stroke: var(--color-bg);
+  stroke-width: 4;
+  stroke-linejoin: round;
+  paint-order: stroke;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  pointer-events: none;
+}

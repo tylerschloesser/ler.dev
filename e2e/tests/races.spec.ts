@@ -26,3 +26,37 @@ for (const colorScheme of ['light', 'dark'] as const) {
     expect(results.violations).toEqual([])
   })
 }
+
+test('globe has one marker per location', async ({ page }) => {
+  await expect(page.locator('figure svg [data-location-id]')).toHaveCount(13)
+  await expect(page.locator('figure svg')).toHaveAttribute('data-rotation', /^-?\d+\.\d,-?\d+\.\d$/)
+})
+
+test('mouse drag rotates the globe', { tag: '@desktop-only' }, async ({ page }) => {
+  const svg = page.locator('figure svg')
+  const before = await svg.getAttribute('data-rotation')
+  const box = (await svg.boundingBox())!
+  const x = box.x + box.width / 2
+  const y = box.y + box.height / 2
+  await page.mouse.move(x, y)
+  await page.mouse.down()
+  await page.mouse.move(x + 100, y, { steps: 10 })
+  await page.mouse.up()
+  await expect(svg).not.toHaveAttribute('data-rotation', before!)
+})
+
+test('vertical swipe on the mobile globe scrolls the page', async ({ page, isMobile }) => {
+  test.skip(!isMobile, 'touch only')
+  const svg = page.locator('figure svg')
+  const before = await svg.getAttribute('data-rotation')
+  const box = (await svg.boundingBox())!
+  const cdp = await page.context().newCDPSession(page)
+  await cdp.send('Input.synthesizeScrollGesture', {
+    x: box.x + box.width / 2,
+    y: box.y + box.height / 2,
+    yDistance: -300,
+    gestureSourceType: 'touch',
+  })
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(100)
+  await expect(svg).toHaveAttribute('data-rotation', before!)
+})
