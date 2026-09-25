@@ -1,0 +1,12 @@
+node_modules/
+dist/
+cdk.out/
+cdk-outputs.json
+*.tsbuildinfo
+test-results/
+playwright-report/
+.playwright-cli/
+.DS_Store
+.env*
+.claude/scheduled_tasks.lock
+.claude/settings.local.json
