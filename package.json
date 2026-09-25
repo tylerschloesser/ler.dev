@@ -10,6 +10,7 @@
     "build": "pnpm --filter web build",
     "lint": "pnpm -r --if-present lint",
     "typecheck": "pnpm -r --if-present typecheck",
+    "test": "pnpm --filter web test",
     "e2e": "pnpm --filter e2e test",
     "infra:synth": "pnpm --filter infra cdk synth",
     "infra:diff": "pnpm --filter infra cdk diff",
