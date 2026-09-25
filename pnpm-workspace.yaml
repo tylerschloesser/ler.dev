@@ -5,3 +5,6 @@ packages:
 
 allowBuilds:
   esbuild: true
+
+minimumReleaseAgeExclude:
+  - aws-cdk-lib@2.271.0
