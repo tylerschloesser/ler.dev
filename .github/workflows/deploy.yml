@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: deploy
+  group: ler-dev-deploy
   cancel-in-progress: false
 
 permissions:
