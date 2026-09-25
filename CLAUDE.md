@@ -8,7 +8,7 @@ Blank Vite + React + TS page served from S3 + CloudFront (us-east-1), with Cloud
 - `apps/web/` — Vite + React + TS site. No runtime libs or CSS unless asked.
 - `infra/` — AWS CDK app. Stacks: `LerDevSite` (bucket, cert, CloudFront, DNS, RUM) and `LerDevGithubOidc` (GitHub Actions deploy role).
 - `e2e/` — Playwright tests that run against the live site.
-- `.github/workflows/deploy.yml` — build + deploy + e2e on every push to `main`.
+- `.github/workflows/site.yml` — build + deploy + e2e on every push to `main`. Do not rename it to `deploy.yml`: that path has a stale Actions registration from the repo's pre-reset history and never runs.
 
 ## Commands
 
