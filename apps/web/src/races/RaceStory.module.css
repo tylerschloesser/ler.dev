@@ -32,9 +32,7 @@
     z-index: 1;
     background: var(--color-bg);
   }
-}
 
-@media (max-width: 47.99rem) {
   /* Centre scrolled-to cards in the part of the screen the globe doesn't cover. */
   :global(html) {
     scroll-padding-top: 40svh;
