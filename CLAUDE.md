@@ -6,6 +6,13 @@ Vite + React + TS site served from S3 + CloudFront (us-east-1), with CloudWatch 
 ## Layout (pnpm monorepo)
 
 - `apps/web/` — Vite + React + TS site. Styling is CSS modules plus CSS-variable tokens (`src/styles/tokens.css`, light + dark); no UI library. Runtime deps are React, `d3-geo`, `topojson-client` and `world-atlas` only — ask before adding more. Race data lives in `src/data/races.ts`.
+  Watch recordings (summary, laps, km/mi splits, 50 m series of pace/HR/cadence/elevation/route) live in
+  `src/data/activities/<race-id>.json`, referenced by `race.activity`. They are not imported by the UI yet;
+  load them lazily with `import()` so they stay out of the main bundle.
+- `scripts/import-garmin.py <garmin-export.zip>` — regenerates the activity JSONs (Python 3 + `fitparse`).
+  The `RACE_ACTIVITIES` map (race id → Garmin activityId, timezone) is the only hand-maintained input.
+  Garmin covers Dec 2024 onward; earlier races are in Apple Health (WorkOutDoors), whose importer is not
+  built yet (phase 2: `scripts/import-apple-health.py`, same JSON schema with `source: 'apple'`).
 - `infra/` — AWS CDK app. Stacks: `LerDevSite` (bucket, cert, CloudFront, DNS, RUM) and `LerDevGithubOidc` (GitHub Actions deploy role).
 - `e2e/` — Playwright tests that run against the live site.
 - `.github/workflows/site.yml` — build + deploy + e2e on every push to `main`. Do not rename it to `deploy.yml`: that path has a stale Actions registration from the repo's pre-reset history and never runs.

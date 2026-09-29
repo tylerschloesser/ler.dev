@@ -24,7 +24,7 @@ test.beforeEach(async ({ page }) => {
 
 test('lists every race, with DNFs marked', async ({ page }) => {
   const articles = page.getByRole('list', { name: 'Races' }).locator('article')
-  await expect(articles).toHaveCount(18)
+  await expect(articles).toHaveCount(26)
   await expect(articles.filter({ hasText: 'DNF' })).toHaveCount(4)
 })
 
@@ -45,7 +45,7 @@ for (const colorScheme of ['light', 'dark'] as const) {
 }
 
 test('globe has one marker per location', async ({ page }) => {
-  await expect(page.locator('figure svg [data-location-id]')).toHaveCount(13)
+  await expect(page.locator('figure svg [data-location-id]')).toHaveCount(18)
   await expect(page.locator('figure svg')).toHaveAttribute('data-rotation', /^-?\d+\.\d,-?\d+\.\d$/)
 })
 

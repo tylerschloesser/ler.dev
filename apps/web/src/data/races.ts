@@ -1,12 +1,30 @@
 export type Distance = 'marathon' | 'half-marathon'
 
+export type Split = { label: string; time: string }
+
 export type Outcome =
-  | { status: 'finished'; time: string; rank?: number; participants?: number }
+  | {
+      status: 'finished'
+      /** Official chip time. */
+      time: string
+      gunTime?: string
+      bib?: string
+      /** Overall place. */
+      rank?: number
+      participants?: number
+      genderRank?: number
+      genderParticipants?: number
+      division?: string
+      divisionRank?: number
+      divisionParticipants?: number
+      /** Official timing-mat splits (cumulative chip time). */
+      splits?: Split[]
+    }
   | { status: 'dnf'; reason: 'injury' | 'cancelled' }
 
 export type Link = { label: string; url: string }
 
-export type Location = { city: string; region: string; lat: number; lng: number }
+export type Location = { city: string; region: string; country?: string; lat: number; lng: number }
 
 export const LOCATIONS = {
   minneapolis: { city: 'Minneapolis', region: 'MN', lat: 44.97, lng: -93.26 },
@@ -22,6 +40,11 @@ export const LOCATIONS = {
   carlsbad: { city: 'Carlsbad', region: 'CA', lat: 33.16, lng: -117.35 },
   boston: { city: 'Boston', region: 'MA', lat: 42.35, lng: -71.08 },
   austin: { city: 'Austin', region: 'TX', lat: 30.27, lng: -97.74 },
+  'salt-lake-city': { city: 'Salt Lake City', region: 'UT', lat: 40.76, lng: -111.89 },
+  'port-angeles': { city: 'Port Angeles', region: 'WA', lat: 48.12, lng: -123.43 },
+  arlington: { city: 'Arlington', region: 'VA', lat: 38.88, lng: -77.07 },
+  'chiang-mai': { city: 'Chiang Mai', region: 'Chiang Mai', country: 'Thailand', lat: 18.79, lng: 98.99 },
+  fargo: { city: 'Fargo', region: 'ND', lat: 46.88, lng: -96.79 },
 } satisfies Record<string, Location>
 
 export type LocationId = keyof typeof LOCATIONS
@@ -33,7 +56,10 @@ export type Race = {
   distance: Distance
   outcome: Outcome
   locationId: LocationId
+  website?: string
   links?: Link[]
+  /** Watch recording; the data lives in `activities/<id>.json`. */
+  activity?: { source: 'garmin' | 'apple'; id: string; partial?: true }
 }
 
 // Oldest first.
@@ -213,5 +239,271 @@ export const RACES: Race[] = [
       { label: 'Results', url: 'https://www.mychiptime.com/searchevent.php?id=15555' },
       { label: 'Archived', url: 'https://archive.ph/omMPM' },
     ],
+  },
+  {
+    id: '2024-12-01-seattle',
+    name: 'Seattle',
+    date: '2024-12-01',
+    distance: 'marathon',
+    outcome: {
+      status: 'finished',
+      time: '2:58:28',
+      gunTime: '2:58:35',
+      bib: '2229',
+      rank: 54,
+      participants: 1999,
+      genderRank: 54,
+      genderParticipants: 1389,
+      division: 'M30-34',
+      divisionRank: 11,
+      divisionParticipants: 256,
+      splits: [
+        { label: '5K', time: '0:22:18' },
+        { label: '10K', time: '0:43:05' },
+        { label: '15K', time: '1:04:21' },
+        { label: '20K', time: '1:25:09' },
+        { label: 'Half', time: '1:29:50' },
+        { label: '25K', time: '1:46:18' },
+        { label: '30K', time: '2:07:02' },
+        { label: '35K', time: '2:27:55' },
+        { label: '40K', time: '2:49:30' },
+      ],
+    },
+    locationId: 'seattle',
+    website: 'https://www.seattlemarathon.org',
+    links: [
+      {
+        label: 'Results',
+        url: 'https://results.raceroster.com/v3/events/5bjn59ncvpdzwy97/race/220438/participant/ag2q295kkqscwqvq',
+      },
+    ],
+    activity: { source: 'garmin', id: '17666283983', partial: true },
+  },
+  {
+    id: '2025-02-08-mesa',
+    name: 'Mesa',
+    date: '2025-02-08',
+    distance: 'marathon',
+    outcome: {
+      status: 'finished',
+      time: '3:11:49',
+      gunTime: '3:12:53',
+      bib: '13667',
+      rank: 369,
+      participants: 3624,
+      genderRank: 327,
+      genderParticipants: 2286,
+      division: 'M30-34',
+      divisionRank: 74,
+      divisionParticipants: 360,
+      splits: [
+        { label: '5K', time: '0:23:47' },
+        { label: '10K', time: '0:46:04' },
+        { label: '15K', time: '1:08:31' },
+        { label: '20K', time: '1:30:38' },
+        { label: 'Half', time: '1:35:14' },
+        { label: '25K', time: '1:52:05' },
+        { label: '30K', time: '2:14:35' },
+        { label: '35K', time: '2:37:37' },
+        { label: '40K', time: '3:01:44' },
+      ],
+    },
+    locationId: 'mesa',
+    website: 'https://mesamarathon.com',
+    links: [
+      { label: 'Results', url: 'https://mesamarathon.com/results?pk=8031429' },
+      {
+        label: 'Archived',
+        url: 'https://web.archive.org/web/20260929162341/https://mesamarathon.com/results?pk=8031429',
+      },
+    ],
+    activity: { source: 'garmin', id: '18224164606' },
+  },
+  {
+    id: '2025-04-21-boston',
+    name: 'Boston',
+    date: '2025-04-21',
+    distance: 'marathon',
+    outcome: {
+      status: 'finished',
+      time: '3:06:26',
+      bib: '4008',
+      rank: 6105,
+      participants: 28_407,
+      genderRank: 5390,
+      genderParticipants: 16_106,
+      division: 'M18-39',
+      divisionRank: 3334,
+      divisionParticipants: 5642,
+    },
+    locationId: 'boston',
+    website: 'https://www.baa.org/races/boston-marathon',
+    links: [
+      { label: 'Results', url: 'https://www.athlinks.com/event/20238/results/Event/1110118/Course/2599724/Bib/4008' },
+    ],
+    activity: { source: 'garmin', id: '18894486037' },
+  },
+  {
+    id: '2025-04-26-salt-lake-city',
+    name: 'Salt Lake City',
+    date: '2025-04-26',
+    distance: 'marathon',
+    outcome: {
+      status: 'finished',
+      time: '3:06:19',
+      gunTime: '3:06:38',
+      bib: '233',
+      rank: 32,
+      participants: 1699,
+      genderRank: 28,
+      genderParticipants: 1142,
+      division: 'M30-34',
+      divisionRank: 3,
+      divisionParticipants: 174,
+      splits: [
+        { label: '5 mi', time: '0:34:05' },
+        { label: '9.6 mi', time: '1:28:51' },
+        { label: '16.8 mi', time: '1:54:39' },
+      ],
+    },
+    locationId: 'salt-lake-city',
+    website: 'https://www.saltlakecitymarathon.com/',
+    links: [{ label: 'Results', url: 'https://sites.chronotrack.com/event/79806/results/entry/72996917' }],
+    activity: { source: 'garmin', id: '18942541414' },
+  },
+  {
+    id: '2025-06-08-north-olympic-discovery',
+    name: 'North Olympic Discovery',
+    date: '2025-06-08',
+    distance: 'marathon',
+    outcome: {
+      status: 'finished',
+      time: '3:18:07',
+      gunTime: '3:18:12',
+      bib: '220',
+      rank: 8,
+      participants: 282,
+      genderRank: 5,
+      genderParticipants: 154,
+      division: 'M30-34',
+      divisionRank: 2,
+      divisionParticipants: 24,
+      splits: [{ label: 'Half', time: '1:28:14' }],
+    },
+    locationId: 'port-angeles',
+    website: 'https://www.nodm.com/',
+    links: [
+      {
+        label: 'Results',
+        url: 'https://runsignup.com/Race/Results/80382/IndividualResult/cPJs?resultSetId=557153#U56089818',
+      },
+    ],
+    activity: { source: 'garmin', id: '19400741204' },
+  },
+  {
+    id: '2025-10-26-marine-corps',
+    name: 'Marine Corps',
+    date: '2025-10-26',
+    distance: 'marathon',
+    outcome: {
+      status: 'finished',
+      time: '4:32:32',
+      gunTime: '4:41:58',
+      bib: '7678',
+      rank: 12_819,
+      participants: 30_085,
+      genderRank: 8558,
+      genderParticipants: 17_758,
+      division: 'M30-34',
+      divisionRank: 1416,
+      divisionParticipants: 2616,
+      splits: [
+        { label: '5K', time: '0:21:56' },
+        { label: '10K', time: '0:41:54' },
+        { label: 'Rock Creek', time: '0:50:02' },
+        { label: '15K', time: '1:01:24' },
+        { label: 'Half', time: '1:25:43' },
+        { label: '25K', time: '1:41:19' },
+        { label: '30K', time: '2:01:53' },
+        { label: '35K', time: '2:30:44' },
+        { label: '40K', time: '4:14:56' },
+      ],
+    },
+    locationId: 'arlington',
+    website: 'https://www.marinemarathon.com/',
+    links: [{ label: 'Results', url: 'https://track.rtrt.me/e/MCM-2025#/dash/RVBF7KCX' }],
+    activity: { source: 'garmin', id: '20804532372' },
+  },
+  {
+    id: '2025-12-21-chiang-mai',
+    name: 'Chiang Mai',
+    date: '2025-12-21',
+    distance: 'marathon',
+    outcome: {
+      status: 'finished',
+      time: '4:25:55',
+      gunTime: '4:26:48',
+      bib: '1113',
+      rank: 364,
+      participants: 809,
+      genderRank: 303,
+      genderParticipants: 633,
+      division: 'M18-39',
+      divisionRank: 96,
+      divisionParticipants: 188,
+      splits: [
+        { label: '8K', time: '0:50:57' },
+        { label: '18.4K', time: '1:57:22' },
+        { label: '23K', time: '2:24:44' },
+        { label: '39K', time: '4:05:26' },
+      ],
+    },
+    locationId: 'chiang-mai',
+    website: 'https://www.chiangmaimarathon.com/',
+    links: [{ label: 'Results', url: 'https://my.raceresult.com/374698/results' }],
+    activity: { source: 'garmin', id: '21310384175' },
+  },
+  {
+    id: '2026-05-30-fargo',
+    name: 'Fargo',
+    date: '2026-05-30',
+    distance: 'marathon',
+    outcome: {
+      status: 'finished',
+      time: '3:56:24',
+      bib: '2746',
+      rank: 337,
+      participants: 1315,
+      genderRank: 261,
+      genderParticipants: 837,
+      division: 'M30-34',
+      divisionRank: 44,
+      divisionParticipants: 115,
+      splits: [
+        { label: '5K', time: '0:21:46' },
+        { label: '10K', time: '0:43:11' },
+        { label: '6.8 mi', time: '0:47:16' },
+        { label: '8 mi', time: '0:55:32' },
+        { label: '10.6 mi', time: '1:12:01' },
+        { label: '11 mi', time: '1:16:32' },
+        { label: 'Half', time: '1:32:00' },
+        { label: '15.1 mi', time: '1:47:40' },
+        { label: '16 mi', time: '1:54:02' },
+        { label: '18 mi', time: '2:12:19' },
+        { label: '20 mi', time: '2:32:34' },
+        { label: '22.6 mi', time: '3:02:31' },
+        { label: '24.8 mi', time: '3:35:13' },
+        { label: '25.2 mi', time: '3:41:32' },
+      ],
+    },
+    locationId: 'fargo',
+    website: 'https://fargomarathon.com/',
+    links: [
+      {
+        label: 'Results',
+        url: 'https://gallery.us.runnertag.site/events/2026-essentia-health-fargo-marathon/search/participants/2746',
+      },
+    ],
+    activity: { source: 'garmin', id: '23069844309' },
   },
 ]

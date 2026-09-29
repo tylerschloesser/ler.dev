@@ -1,4 +1,4 @@
-import { LOCATIONS, type Race } from '../data/races.ts'
+import { LOCATIONS, type Location, type Race } from '../data/races.ts'
 
 const dateFormat = new Intl.DateTimeFormat('en-US', {
   year: 'numeric',
@@ -13,6 +13,6 @@ export const formatDate = (date: string) => dateFormat.format(new Date(`${date}T
 export const formatNumber = (n: number) => numberFormat.format(n)
 
 export const formatPlace = (location: Race['locationId']) => {
-  const { city, region } = LOCATIONS[location]
-  return `${city}, ${region}`
+  const loc: Location = LOCATIONS[location]
+  return `${loc.city}, ${loc.country ?? loc.region}`
 }
