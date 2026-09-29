@@ -33,6 +33,7 @@ export function RaceCard({ race, active, highlighted, onHover }: Props) {
       <h2 id={headingId} className={styles.name} tabIndex={-1}>
         {race.name}
         {race.distance === 'half-marathon' && <span className={styles.badge}>Half</span>}
+        {race.distance === '50k' && <span className={styles.badge}>50K</span>}
       </h2>
       {outcome.status === 'finished' ? (
         <dl className={styles.result}>

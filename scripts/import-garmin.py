@@ -7,16 +7,16 @@ Writes apps/web/src/data/activities/<race-id>.json for every race in
 RACE_ACTIVITIES. Needs `fitparse` (pip install fitparse); no other deps.
 """
 
-import bisect
 import datetime as dt
 import io
 import json
 import sys
 import zipfile
-from pathlib import Path
 from zoneinfo import ZoneInfo
 
 import fitparse
+
+from activity import MARATHON_M, REPORT_HEADER, build_doc, r1, write
 
 # The only hand-maintained input: race id -> (Garmin activityId, IANA timezone).
 RACE_ACTIVITIES = {
@@ -30,11 +30,9 @@ RACE_ACTIVITIES = {
     '2026-05-30-fargo': (23069844309, 'America/Chicago'),
 }
 
-OUT_DIR = Path(__file__).resolve().parent.parent / 'apps/web/src/data/activities'
-SERIES_STEP_M = 50
-MARATHON_M = 42195
 SEMICIRCLE = 180 / 2**31
-MILE_M = 1609.344
+# A recording shorter than this share of the race distance is marked partial.
+PARTIAL_BELOW = 0.95
 
 
 def load_export(path):
@@ -82,102 +80,19 @@ def spm(cadence, fractional=0):
     return None if cadence is None else round((cadence + (fractional or 0)) * 2)
 
 
-def interp(xs, ys, x):
-    """Linear interpolation of ys at x, skipping None values in ys."""
-    pts = [(a, b) for a, b in zip(xs, ys) if b is not None]
-    if not pts:
-        return None
-    px = [p[0] for p in pts]
-    i = bisect.bisect_left(px, x)
-    if i == 0:
-        return pts[0][1]
-    if i == len(pts):
-        return pts[-1][1]
-    (x0, y0), (x1, y1) = pts[i - 1], pts[i]
-    return y0 if x1 == x0 else y0 + (y1 - y0) * (x - x0) / (x1 - x0)
-
-
-class Track:
-    """1 Hz-ish FIT records as columns, indexed by cumulative distance."""
-
-    def __init__(self, records, start):
-        rows = [r for r in records if r.get('distance') is not None]
-        # Keep distance strictly increasing so it can be an interpolation axis.
-        cleaned = []
-        for r in rows:
-            if cleaned and r['distance'] <= cleaned[-1]['distance']:
-                continue
-            cleaned.append(r)
-        self.d = [r['distance'] for r in cleaned]
-        self.t = [(r['timestamp'] - start).total_seconds() for r in cleaned]
-        self.lat = [r['position_lat'] * SEMICIRCLE if 'position_lat' in r else None for r in cleaned]
-        self.lng = [r['position_long'] * SEMICIRCLE if 'position_long' in r else None for r in cleaned]
-        self.ele = [r.get('enhanced_altitude', r.get('altitude')) for r in cleaned]
-        self.hr = [r.get('heart_rate') for r in cleaned]
-        self.cad = [spm(r.get('cadence'), r.get('fractional_cadence')) for r in cleaned]
-        self.extra = {}
-        for src, key in [('power', 'power'), ('step_length', 'stride'), ('stance_time', 'gct')]:
-            col = [r.get(src) for r in cleaned]
-            if any(v is not None for v in col):
-                self.extra[key] = col
-
-    def at(self, col, d):
-        return interp(self.d, col, d)
-
-    def mean(self, col, d0, d1):
-        """Time-weighted mean of col between distances d0 and d1."""
-        total = weight = 0.0
-        for i in range(1, len(self.d)):
-            if self.d[i] <= d0 or self.d[i - 1] >= d1 or col[i] is None:
-                continue
-            w = self.t[i] - self.t[i - 1]
-            total += col[i] * w
-            weight += w
-        return round(total / weight) if weight else None
-
-
-def r1(x):
-    return None if x is None else round(x, 1)
-
-
-def splits(track, unit_m):
-    out = []
-    end = track.d[-1]
-    prev_d, prev_t = 0.0, 0.0
-    k = 1
-    while prev_d < end - 1:
-        d = min(k * unit_m, end)
-        t = track.at(track.t, d)
-        out.append({
-            'n': k,
-            'distanceM': round(d - prev_d),
-            'cumulativeS': round(t),
-            'timeS': round(t - prev_t),
-            'avgHr': track.mean(track.hr, prev_d, d),
-            'avgCadence': track.mean(track.cad, prev_d, d),
-            'eleDeltaM': r1(track.at(track.ele, d) - track.at(track.ele, prev_d)) if track.ele[0] is not None else None,
-        })
-        prev_d, prev_t = d, t
-        k += 1
-    return out
-
-
-def series(track):
-    cols = {'d': [], 't': [], 'lat': [], 'lng': [], 'ele': [], 'hr': [], 'cad': []}
-    cols.update({k: [] for k in track.extra})
-    stops = list(range(0, int(track.d[-1]), SERIES_STEP_M)) + [track.d[-1]]
-    for d in stops:
-        cols['d'].append(round(d))
-        cols['t'].append(round(track.at(track.t, d)))
-        lat, lng = track.at(track.lat, d), track.at(track.lng, d)
-        cols['lat'].append(None if lat is None else round(lat, 5))
-        cols['lng'].append(None if lng is None else round(lng, 5))
-        cols['ele'].append(r1(track.at(track.ele, d)))
-        for key in ['hr', 'cad', *track.extra]:
-            src = getattr(track, key) if key in ('hr', 'cad') else track.extra[key]
-            v = track.at(src, d)
-            cols[key].append(None if v is None else round(v))
-    return cols
+def fit_rows(records, start):
+    return [{
+        't': (r['timestamp'] - start).total_seconds(),
+        'd': r.get('distance'),
+        'lat': r['position_lat'] * SEMICIRCLE if 'position_lat' in r else None,
+        'lng': r['position_long'] * SEMICIRCLE if 'position_long' in r else None,
+        'ele': r.get('enhanced_altitude', r.get('altitude')),
+        'hr': r.get('heart_rate'),
+        'cad': spm(r.get('cadence'), r.get('fractional_cadence')),
+        'power': r.get('power'),
+        'stride': r.get('step_length'),
+        'gct': r.get('stance_time'),
+    } for r in records]
 
 
 def build(race_id, activity_id, tz_name, activity, devices, fit_data):
@@ -195,7 +110,6 @@ def build(race_id, activity_id, tz_name, activity, devices, fit_data):
     if garmin_offset_h != tz_offset_h:
         sys.exit(f'{race_id}: {tz_name} is UTC{tz_offset_h:+}, Garmin says UTC{garmin_offset_h:+}')
 
-    track = Track(records, session['start_time'])
     zones = [activity.get(f'hrTimeInZone_{i}') for i in range(6)]
     device = devices.get(activity.get('deviceId'), {})
 
@@ -236,7 +150,7 @@ def build(race_id, activity_id, tz_name, activity, devices, fit_data):
         # Index 0 is time below zone 1.
         'hrZonesS': [round(z / 1000) for z in zones] if all(z is not None for z in zones) else None,
     }
-    if distance < 0.95 * MARATHON_M:
+    if distance < PARTIAL_BELOW * MARATHON_M:
         summary['partial'] = True
 
     lap_rows = []
@@ -252,49 +166,20 @@ def build(race_id, activity_id, tz_name, activity, devices, fit_data):
             'lossM': lap.get('total_descent'),
         })
 
-    return {
-        'id': race_id,
-        'summary': {k: v for k, v in summary.items() if v is not None},
-        'laps': lap_rows,
-        'splits': {'km': splits(track, 1000), 'mi': splits(track, MILE_M)},
-        'series': series(track),
-    }
-
-
-def dump(doc):
-    """Indented JSON, but each series column on one line so the file stays small."""
-    series_cols = doc['series']
-    head = json.dumps({**doc, 'series': '__SERIES__'}, indent=2)
-    cols = ',\n'.join(f'    {json.dumps(k)}: {json.dumps(v, separators=(",", ":"))}' for k, v in series_cols.items())
-    return head.replace('"__SERIES__"', '{\n' + cols + '\n  }') + '\n'
-
-
-def fmt(seconds):
-    s = round(seconds)
-    return f'{s // 3600}:{s % 3600 // 60:02}:{s % 60:02}'
+    return build_doc(race_id, summary, lap_rows, fit_rows(records, session['start_time']))
 
 
 def main():
     if len(sys.argv) != 2:
         sys.exit(__doc__)
     activities, devices, fits = load_export(sys.argv[1])
-    OUT_DIR.mkdir(parents=True, exist_ok=True)
-    print(f'{"race":38} {"dist km":>8} {"timer":>8} {"elapsed":>8} {"proj 42.195":>11} {"points":>6} {"KB":>5}')
+    print(REPORT_HEADER)
     for race_id, (activity_id, tz_name) in RACE_ACTIVITIES.items():
         activity = activities[activity_id]
         fit_data = fits.get(activity['beginTimestamp'])
         if fit_data is None:
             sys.exit(f'{race_id}: no FIT file with start {activity["beginTimestamp"]}')
-        doc = build(race_id, activity_id, tz_name, activity, devices, fit_data)
-        text = dump(doc)
-        (OUT_DIR / f'{race_id}.json').write_text(text)
-        s = doc['summary']
-        flag = ''
-        if abs(s['distanceM'] - MARATHON_M) / MARATHON_M > 0.05:
-            flag = '  (partial)' if s.get('partial') else '  <-- distance off by >5%'
-        print(f'{race_id:38} {s["distanceM"] / 1000:8.2f} {fmt(s["timerS"]):>8} {fmt(s["elapsedS"]):>8} '
-              f'{fmt(s["timerS"] * MARATHON_M / s["distanceM"]):>11} {len(doc["series"]["d"]):6} '
-              f'{len(text) / 1024:5.0f}{flag}')
+        print(write(build(race_id, activity_id, tz_name, activity, devices, fit_data)))
 
 
 if __name__ == '__main__':

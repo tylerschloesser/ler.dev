@@ -278,7 +278,7 @@
         "timeS": 248,
         "avgHr": 144,
         "avgCadence": 154,
-        "eleDeltaM": null
+        "eleDeltaM": 38.4
       },
       {
         "n": 2,
@@ -287,7 +287,7 @@
         "timeS": 248,
         "avgHr": 144,
         "avgCadence": 155,
-        "eleDeltaM": null
+        "eleDeltaM": 3.2
       },
       {
         "n": 3,
@@ -296,7 +296,7 @@
         "timeS": 249,
         "avgHr": 143,
         "avgCadence": 154,
-        "eleDeltaM": null
+        "eleDeltaM": -40.1
       },
       {
         "n": 4,
@@ -305,7 +305,7 @@
         "timeS": 240,
         "avgHr": 141,
         "avgCadence": 156,
-        "eleDeltaM": null
+        "eleDeltaM": 28.5
       },
       {
         "n": 5,
@@ -314,7 +314,7 @@
         "timeS": 255,
         "avgHr": 149,
         "avgCadence": 154,
-        "eleDeltaM": null
+        "eleDeltaM": 17.0
       },
       {
         "n": 6,
@@ -323,7 +323,7 @@
         "timeS": 240,
         "avgHr": 152,
         "avgCadence": 156,
-        "eleDeltaM": null
+        "eleDeltaM": 16.3
       },
       {
         "n": 7,
@@ -332,7 +332,7 @@
         "timeS": 239,
         "avgHr": 141,
         "avgCadence": 155,
-        "eleDeltaM": null
+        "eleDeltaM": -15.9
       },
       {
         "n": 8,
@@ -341,7 +341,7 @@
         "timeS": 253,
         "avgHr": 150,
         "avgCadence": 154,
-        "eleDeltaM": null
+        "eleDeltaM": -22.7
       },
       {
         "n": 9,
@@ -350,7 +350,7 @@
         "timeS": 249,
         "avgHr": 151,
         "avgCadence": 155,
-        "eleDeltaM": null
+        "eleDeltaM": -2.0
       },
       {
         "n": 10,
@@ -359,7 +359,7 @@
         "timeS": 252,
         "avgHr": 146,
         "avgCadence": 153,
-        "eleDeltaM": null
+        "eleDeltaM": 6.2
       },
       {
         "n": 11,
@@ -368,7 +368,7 @@
         "timeS": 262,
         "avgHr": 152,
         "avgCadence": 153,
-        "eleDeltaM": null
+        "eleDeltaM": 19.3
       },
       {
         "n": 12,
@@ -377,7 +377,7 @@
         "timeS": 254,
         "avgHr": 153,
         "avgCadence": 154,
-        "eleDeltaM": null
+        "eleDeltaM": 1.2
       },
       {
         "n": 13,
@@ -386,7 +386,7 @@
         "timeS": 254,
         "avgHr": 151,
         "avgCadence": 159,
-        "eleDeltaM": null
+        "eleDeltaM": -21.1
       },
       {
         "n": 14,
@@ -395,7 +395,7 @@
         "timeS": 247,
         "avgHr": 148,
         "avgCadence": 156,
-        "eleDeltaM": null
+        "eleDeltaM": -9.8
       },
       {
         "n": 15,
@@ -404,7 +404,7 @@
         "timeS": 247,
         "avgHr": 152,
         "avgCadence": 154,
-        "eleDeltaM": null
+        "eleDeltaM": -2.5
       },
       {
         "n": 16,
@@ -413,7 +413,7 @@
         "timeS": 257,
         "avgHr": 153,
         "avgCadence": 153,
-        "eleDeltaM": null
+        "eleDeltaM": -11.4
       },
       {
         "n": 17,
@@ -422,7 +422,7 @@
         "timeS": 251,
         "avgHr": 150,
         "avgCadence": 154,
-        "eleDeltaM": null
+        "eleDeltaM": 3.5
       },
       {
         "n": 18,
@@ -431,7 +431,7 @@
         "timeS": 258,
         "avgHr": 153,
         "avgCadence": 154,
-        "eleDeltaM": null
+        "eleDeltaM": 23.3
       },
       {
         "n": 19,
@@ -440,7 +440,7 @@
         "timeS": 263,
         "avgHr": 155,
         "avgCadence": 154,
-        "eleDeltaM": null
+        "eleDeltaM": 34.7
       },
       {
         "n": 20,
@@ -449,7 +449,7 @@
         "timeS": 254,
         "avgHr": 156,
         "avgCadence": 155,
-        "eleDeltaM": null
+        "eleDeltaM": 20.7
       },
       {
         "n": 21,
@@ -458,7 +458,7 @@
         "timeS": 239,
         "avgHr": 157,
         "avgCadence": 156,
-        "eleDeltaM": null
+        "eleDeltaM": -30.4
       },
       {
         "n": 22,
@@ -467,7 +467,7 @@
         "timeS": 248,
         "avgHr": 158,
         "avgCadence": 155,
-        "eleDeltaM": null
+        "eleDeltaM": -4.9
       },
       {
         "n": 23,
@@ -476,7 +476,7 @@
         "timeS": 248,
         "avgHr": 157,
         "avgCadence": 155,
-        "eleDeltaM": null
+        "eleDeltaM": -2.3
       },
       {
         "n": 24,
@@ -485,7 +485,7 @@
         "timeS": 245,
         "avgHr": 158,
         "avgCadence": 156,
-        "eleDeltaM": null
+        "eleDeltaM": -1.1
       },
       {
         "n": 25,
@@ -494,7 +494,7 @@
         "timeS": 250,
         "avgHr": 156,
         "avgCadence": 155,
-        "eleDeltaM": null
+        "eleDeltaM": 3.4
       },
       {
         "n": 26,
@@ -503,7 +503,7 @@
         "timeS": 251,
         "avgHr": 155,
         "avgCadence": 155,
-        "eleDeltaM": null
+        "eleDeltaM": 2.2
       },
       {
         "n": 27,
@@ -512,7 +512,7 @@
         "timeS": 246,
         "avgHr": 155,
         "avgCadence": 154,
-        "eleDeltaM": null
+        "eleDeltaM": -4.7
       },
       {
         "n": 28,
@@ -521,7 +521,7 @@
         "timeS": 253,
         "avgHr": 155,
         "avgCadence": 154,
-        "eleDeltaM": null
+        "eleDeltaM": 3.2
       },
       {
         "n": 29,
@@ -530,7 +530,7 @@
         "timeS": 250,
         "avgHr": 155,
         "avgCadence": 154,
-        "eleDeltaM": null
+        "eleDeltaM": -3.6
       },
       {
         "n": 30,
@@ -539,7 +539,7 @@
         "timeS": 249,
         "avgHr": 154,
         "avgCadence": 154,
-        "eleDeltaM": null
+        "eleDeltaM": 2.4
       },
       {
         "n": 31,
@@ -548,7 +548,7 @@
         "timeS": 260,
         "avgHr": 154,
         "avgCadence": 153,
-        "eleDeltaM": null
+        "eleDeltaM": 13.6
       },
       {
         "n": 32,
@@ -557,7 +557,7 @@
         "timeS": 281,
         "avgHr": 152,
         "avgCadence": 152,
-        "eleDeltaM": null
+        "eleDeltaM": 42.1
       },
       {
         "n": 33,
@@ -566,7 +566,7 @@
         "timeS": 246,
         "avgHr": 154,
         "avgCadence": 154,
-        "eleDeltaM": null
+        "eleDeltaM": -27.4
       },
       {
         "n": 34,
@@ -575,7 +575,7 @@
         "timeS": 248,
         "avgHr": 154,
         "avgCadence": 154,
-        "eleDeltaM": null
+        "eleDeltaM": -23.0
       },
       {
         "n": 35,
@@ -584,7 +584,7 @@
         "timeS": 258,
         "avgHr": 154,
         "avgCadence": 154,
-        "eleDeltaM": null
+        "eleDeltaM": 16.4
       },
       {
         "n": 36,
@@ -593,7 +593,7 @@
         "timeS": 246,
         "avgHr": 153,
         "avgCadence": 154,
-        "eleDeltaM": null
+        "eleDeltaM": -22.2
       },
       {
         "n": 37,
@@ -602,7 +602,7 @@
         "timeS": 245,
         "avgHr": 155,
         "avgCadence": 154,
-        "eleDeltaM": null
+        "eleDeltaM": -20.3
       },
       {
         "n": 38,
@@ -611,7 +611,7 @@
         "timeS": 157,
         "avgHr": 155,
         "avgCadence": 157,
-        "eleDeltaM": null
+        "eleDeltaM": -8.4
       }
     ],
     "mi": [
@@ -622,7 +622,7 @@
         "timeS": 403,
         "avgHr": 145,
         "avgCadence": 154,
-        "eleDeltaM": null
+        "eleDeltaM": 51.8
       },
       {
         "n": 2,
@@ -631,7 +631,7 @@
         "timeS": 398,
         "avgHr": 143,
         "avgCadence": 154,
-        "eleDeltaM": null
+        "eleDeltaM": -96.6
       },
       {
         "n": 3,
@@ -640,7 +640,7 @@
         "timeS": 393,
         "avgHr": 144,
         "avgCadence": 155,
-        "eleDeltaM": null
+        "eleDeltaM": 97.1
       },
       {
         "n": 4,
@@ -649,7 +649,7 @@
         "timeS": 390,
         "avgHr": 149,
         "avgCadence": 156,
-        "eleDeltaM": null
+        "eleDeltaM": -10.9
       },
       {
         "n": 5,
@@ -658,7 +658,7 @@
         "timeS": 399,
         "avgHr": 147,
         "avgCadence": 154,
-        "eleDeltaM": null
+        "eleDeltaM": -21.0
       },
       {
         "n": 6,
@@ -667,7 +667,7 @@
         "timeS": 401,
         "avgHr": 149,
         "avgCadence": 154,
-        "eleDeltaM": null
+        "eleDeltaM": 13.4
       },
       {
         "n": 7,
@@ -676,7 +676,7 @@
         "timeS": 417,
         "avgHr": 151,
         "avgCadence": 154,
-        "eleDeltaM": null
+        "eleDeltaM": 8.7
       },
       {
         "n": 8,
@@ -685,7 +685,7 @@
         "timeS": 409,
         "avgHr": 153,
         "avgCadence": 157,
-        "eleDeltaM": null
+        "eleDeltaM": -11.1
       },
       {
         "n": 9,
@@ -694,7 +694,7 @@
         "timeS": 400,
         "avgHr": 149,
         "avgCadence": 155,
-        "eleDeltaM": null
+        "eleDeltaM": 3.3
       },
       {
         "n": 10,
@@ -703,7 +703,7 @@
         "timeS": 405,
         "avgHr": 153,
         "avgCadence": 154,
-        "eleDeltaM": null
+        "eleDeltaM": -30.6
       },
       {
         "n": 11,
@@ -712,7 +712,7 @@
         "timeS": 406,
         "avgHr": 151,
         "avgCadence": 154,
-        "eleDeltaM": null
+        "eleDeltaM": 9.1
       },
       {
         "n": 12,
@@ -721,7 +721,7 @@
         "timeS": 425,
         "avgHr": 154,
         "avgCadence": 154,
-        "eleDeltaM": null
+        "eleDeltaM": 70.1
       },
       {
         "n": 13,
@@ -730,7 +730,7 @@
         "timeS": 391,
         "avgHr": 157,
         "avgCadence": 156,
-        "eleDeltaM": null
+        "eleDeltaM": -23.0
       },
       {
         "n": 14,
@@ -739,7 +739,7 @@
         "timeS": 397,
         "avgHr": 158,
         "avgCadence": 155,
-        "eleDeltaM": null
+        "eleDeltaM": -6.7
       },
       {
         "n": 15,
@@ -748,7 +748,7 @@
         "timeS": 399,
         "avgHr": 158,
         "avgCadence": 155,
-        "eleDeltaM": null
+        "eleDeltaM": -3.2
       },
       {
         "n": 16,
@@ -757,7 +757,7 @@
         "timeS": 407,
         "avgHr": 155,
         "avgCadence": 155,
-        "eleDeltaM": null
+        "eleDeltaM": 1.1
       },
       {
         "n": 17,
@@ -766,7 +766,7 @@
         "timeS": 395,
         "avgHr": 155,
         "avgCadence": 154,
-        "eleDeltaM": null
+        "eleDeltaM": -4.3
       },
       {
         "n": 18,
@@ -775,7 +775,7 @@
         "timeS": 406,
         "avgHr": 155,
         "avgCadence": 154,
-        "eleDeltaM": null
+        "eleDeltaM": 1.8
       },
       {
         "n": 19,
@@ -784,7 +784,7 @@
         "timeS": 411,
         "avgHr": 154,
         "avgCadence": 154,
-        "eleDeltaM": null
+        "eleDeltaM": 6.0
       },
       {
         "n": 20,
@@ -793,7 +793,7 @@
         "timeS": 438,
         "avgHr": 152,
         "avgCadence": 153,
-        "eleDeltaM": null
+        "eleDeltaM": 48.9
       },
       {
         "n": 21,
@@ -802,7 +802,7 @@
         "timeS": 391,
         "avgHr": 154,
         "avgCadence": 154,
-        "eleDeltaM": null
+        "eleDeltaM": -53.5
       },
       {
         "n": 22,
@@ -811,7 +811,7 @@
         "timeS": 410,
         "avgHr": 153,
         "avgCadence": 154,
-        "eleDeltaM": null
+        "eleDeltaM": -4.8
       },
       {
         "n": 23,
@@ -820,7 +820,7 @@
         "timeS": 397,
         "avgHr": 155,
         "avgCadence": 154,
-        "eleDeltaM": null
+        "eleDeltaM": -15.4
       },
       {
         "n": 24,
@@ -829,7 +829,7 @@
         "timeS": 153,
         "avgHr": 155,
         "avgCadence": 157,
-        "eleDeltaM": null
+        "eleDeltaM": -8.4
       }
     ]
   },

@@ -10,11 +10,12 @@ const activityFiles = import.meta.glob<ActivityFile>('./activities/*.json', { ea
 const toSeconds = (time: string) => time.split(':').reduce((acc, part) => acc * 60 + Number(part), 0)
 
 describe('RACES', () => {
-  it('has 21 marathon finishes, 1 half and 4 DNFs', () => {
-    expect(RACES).toHaveLength(26)
+  it('has 24 marathon finishes, 2 halves, 1 50K and 4 DNFs', () => {
+    expect(RACES).toHaveLength(31)
     const finished = RACES.filter((r) => r.outcome.status === 'finished')
-    expect(finished.filter((r) => r.distance === 'marathon')).toHaveLength(21)
-    expect(RACES.filter((r) => r.distance === 'half-marathon')).toHaveLength(1)
+    expect(finished.filter((r) => r.distance === 'marathon')).toHaveLength(24)
+    expect(RACES.filter((r) => r.distance === 'half-marathon')).toHaveLength(2)
+    expect(RACES.filter((r) => r.distance === '50k')).toHaveLength(1)
     expect(RACES.filter((r) => r.outcome.status === 'dnf')).toHaveLength(4)
   })
 

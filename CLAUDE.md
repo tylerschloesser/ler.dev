@@ -9,10 +9,12 @@ Vite + React + TS site served from S3 + CloudFront (us-east-1), with CloudWatch 
   Watch recordings (summary, laps, km/mi splits, 50 m series of pace/HR/cadence/elevation/route) live in
   `src/data/activities/<race-id>.json`, referenced by `race.activity`. They are not imported by the UI yet;
   load them lazily with `import()` so they stay out of the main bundle.
-- `scripts/import-garmin.py <garmin-export.zip>` — regenerates the activity JSONs (Python 3 + `fitparse`).
-  The `RACE_ACTIVITIES` map (race id → Garmin activityId, timezone) is the only hand-maintained input.
-  Garmin covers Dec 2024 onward; earlier races are in Apple Health (WorkOutDoors), whose importer is not
-  built yet (phase 2: `scripts/import-apple-health.py`, same JSON schema with `source: 'apple'`).
+- `scripts/` — activity importers (Python 3; the Garmin one needs `fitparse`). Both write the same JSON
+  schema via `scripts/activity.py`, and each has one hand-maintained map of race id → source workout:
+  - `import-garmin.py <garmin-export.zip>` — Dec 2024 onward (Garmin watch), `RACE_ACTIVITIES`.
+  - `import-apple-health.py <export.zip> [--list]` — 2022 through Nov 2024 (Apple Watch Workout app, then
+    WorkOutDoors), `RACE_WORKOUTS`. `--list` prints every run ≥ 20 km to spot races. Earlier races have no
+    recording.
 - `infra/` — AWS CDK app. Stacks: `LerDevSite` (bucket, cert, CloudFront, DNS, RUM) and `LerDevGithubOidc` (GitHub Actions deploy role).
 - `e2e/` — Playwright tests that run against the live site.
 - `.github/workflows/site.yml` — build + deploy + e2e on every push to `main`. Do not rename it to `deploy.yml`: that path has a stale Actions registration from the repo's pre-reset history and never runs.
