@@ -4,8 +4,9 @@ import { expect, test } from './fixtures.ts'
 
 const CHICAGO_2023 = '[data-race-id="2023-10-08-chicago"]'
 const CHIANG_MAI = '[data-race-id="2025-12-21-chiang-mai"]'
-/** Zoomed into the US, the globe stays centred on the lower 48 and only pans. */
-const US_ROTATION: [number, number] = [98, -39]
+const CHICAGO: [number, number] = [-87.63, 41.88]
+/** Zoomed into the US, the camera rests on the lower 48 and turns a little towards the race. */
+const US_CENTER: [number, number] = [-98, 39]
 
 // Puts the card's top edge just above the scroll spy's reading band.
 async function scrollToBand(card: Locator, isMobile: boolean) {
@@ -19,6 +20,15 @@ function expectRotationNear(rotation: string | null, [λ, φ]: [number, number])
   const [actualλ, actualφ] = rotation!.split(',').map(Number)
   expect(Math.abs(actualλ - λ)).toBeLessThanOrEqual(1)
   expect(Math.abs(actualφ - φ)).toBeLessThanOrEqual(1)
+}
+
+function expectNudgedTowards(rotation: string | null, [lng, lat]: [number, number]) {
+  const [λ, φ] = rotation!.split(',').map(Number)
+  const [centerLng, centerLat] = [-λ, -φ]
+  const between = (value: number, a: number, b: number) => value > Math.min(a, b) && value < Math.max(a, b)
+  expect(between(centerLng, US_CENTER[0], lng)).toBe(true)
+  expect(between(centerLat, US_CENTER[1], lat)).toBe(true)
+  expect(Math.hypot(centerLng - US_CENTER[0], centerLat - US_CENTER[1])).toBeGreaterThanOrEqual(0.5)
 }
 
 async function expectInside(inner: Locator, outer: Locator) {
@@ -108,7 +118,7 @@ test('scrolling to a US race zooms the globe to the US', async ({ page, isMobile
   await expect(svg).toHaveAttribute('data-animating', 'false')
   await expect(svg).toHaveAttribute('data-view', 'us')
   await expect(marker).toHaveAttribute('data-visible', 'true')
-  expectRotationNear(await svg.getAttribute('data-rotation'), US_ROTATION)
+  expectNudgedTowards(await svg.getAttribute('data-rotation'), CHICAGO)
   await expectInside(marker, page.locator('figure'))
 })
 
@@ -156,7 +166,7 @@ test('reduced motion jumps straight to the race', async ({ page, isMobile }) => 
   await scrollToBand(card, isMobile)
   await expect(card).toHaveAttribute('aria-current', 'true')
   await expect(page.locator('figure svg')).toHaveAttribute('data-view', 'us')
-  expectRotationNear(await page.locator('figure svg').getAttribute('data-rotation'), US_ROTATION)
+  expectNudgedTowards(await page.locator('figure svg').getAttribute('data-rotation'), CHICAGO)
   expect(await page.evaluate(() => (window as { sawAnimating?: boolean }).sawAnimating)).toBe(false)
 })
 

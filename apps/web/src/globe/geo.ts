@@ -14,8 +14,10 @@ export const rotationFor = ([lng, lat]: LngLat): Rotation => [-lng, -clamp(lat, 
 
 export const centerOf = ([λ, φ]: Rotation): LngLat => [-λ, -φ]
 
-/** Continental US. */
-export const DEFAULT_ROTATION = rotationFor([-98, 39])
+/** Centre of the lower 48: the camera's resting point in US view. */
+export const US_CENTER: LngLat = [-98, 39]
+
+export const DEFAULT_ROTATION = rotationFor(US_CENTER)
 
 /** Wraps λ into [-180, 180). */
 export const normalizeLng = (lng: number) => ((((lng + 180) % 360) + 360) % 360) - 180
@@ -83,10 +85,10 @@ export const US_OUTLINE: LngLat[] = [
 
 /** Share of the frame left empty on each side of the fitted US. */
 export const US_MARGIN = 0.1
-/** Share of the distance to the frame centre that the active race pans by. */
-export const US_PAN = 0.25
-/** The US never pans closer than this to the frame edge. */
-export const US_MIN_MARGIN = 0.02
+/** Zoom on top of the fit; 1 fits the lower 48 with US_MARGIN on each side, > 1 zooms closer. */
+export const US_ZOOM = 1
+/** A race d° from US_CENTER turns the camera US_NUDGE·√d degrees towards it (never past it). */
+export const US_NUDGE = 0.8
 
 const unitProjection = geoOrthographic().rotate(DEFAULT_ROTATION).scale(1).translate([0, 0])
 const project = (coords: LngLat): [number, number] => unitProjection(coords) ?? [0, 0]
@@ -98,25 +100,17 @@ const usBounds = (() => {
   return { x0: Math.min(...xs), x1: Math.max(...xs), y0: Math.min(...ys), y1: Math.max(...ys) }
 })()
 
-/** The lower 48 filling the frame, nudged towards `location`. */
+/** The lower 48 filling the frame, turned a little towards `location`. */
 export const usView = (location: LngLat, { x, y, w, h }: Frame): View => {
   const { x0, x1, y0, y1 } = usBounds
-  const scale = Math.max(0, Math.min((w * (1 - 2 * US_MARGIN)) / (x1 - x0), (h * (1 - 2 * US_MARGIN)) / (y1 - y0)))
+  const fit = Math.min((w * (1 - 2 * US_MARGIN)) / (x1 - x0), (h * (1 - 2 * US_MARGIN)) / (y1 - y0))
+  const scale = Math.max(0, fit * US_ZOOM)
   const fitX = w / 2 - (scale * (x0 + x1)) / 2
   const fitY = h / 2 - (scale * (y0 + y1)) / 2
-  const [px, py] = project(location)
-  // Pan towards the race, but keep every edge of the US at least US_MIN_MARGIN in.
-  const panX = clamp(
-    US_PAN * (w / 2 - (fitX + scale * px)),
-    w * US_MIN_MARGIN - (fitX + scale * x0),
-    w * (1 - US_MIN_MARGIN) - (fitX + scale * x1),
-  )
-  const panY = clamp(
-    US_PAN * (h / 2 - (fitY + scale * py)),
-    h * US_MIN_MARGIN - (fitY + scale * y0),
-    h * (1 - US_MIN_MARGIN) - (fitY + scale * y1),
-  )
-  return { rotation: DEFAULT_ROTATION, scale, translate: [x + fitX + panX, y + fitY + panY] }
+  const d = (geoDistance(US_CENTER, location) * 180) / Math.PI
+  const nudge = Math.min(d, US_NUDGE * Math.sqrt(d))
+  const rotation = d > 0 ? rotationFor(geoInterpolate(US_CENTER, location)(nudge / d)) : DEFAULT_ROTATION
+  return { rotation, scale, translate: [x + fitX, y + fitY] }
 }
 
 export const viewModeFor = (id: LocationId | null): ViewMode => (id && !('country' in LOCATIONS[id]) ? 'us' : 'globe')
@@ -149,10 +143,10 @@ const pans = (a: View, b: View) => Math.hypot(b.translate[0] - a.translate[0], b
 
 export const sameView = (a: View, b: View) => rotationDistance(a, b) < 1e-3 && !zooms(a, b) && !pans(a, b)
 
-/** Like flyDuration, but zooms and pans get enough time to read as motion. */
+/** Like flyDuration, but zooms and small nudges get enough time to read as motion. */
 export const viewDuration = (from: View, to: View) => {
   const fly = flyDuration(rotationDistance(from, to))
   if (zooms(from, to)) return Math.max(fly, 800)
-  if (pans(from, to)) return Math.max(fly, 500)
+  if (!sameView(from, to)) return Math.max(fly, 500)
   return fly
 }

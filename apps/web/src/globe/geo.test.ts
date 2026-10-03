@@ -1,8 +1,9 @@
-import { geoOrthographic } from 'd3-geo'
+import { geoDistance, geoOrthographic } from 'd3-geo'
 import { describe, expect, it } from 'vitest'
 import { LOCATIONS, type LocationId } from '../data/races.ts'
 import {
-  US_MIN_MARGIN,
+  US_CENTER,
+  US_NUDGE,
   US_OUTLINE,
   globeView,
   interpolateView,
@@ -125,26 +126,26 @@ describe('usView', () => {
   for (const [name, frame] of FRAMES) {
     const { x: fx, y: fy, w, h } = frame
     describe(`${name} ${w}×${h} at ${fx},${fy}`, () => {
-      it.each(US_IDS)('keeps the whole lower 48 framed for %s', (id) => {
+      it.each(US_IDS)('keeps the whole lower 48 inside the frame for %s', (id) => {
         const view = targetView(id, frame)
         for (const point of US_OUTLINE) {
           const [x, y] = projectWith(view, point)
-          expect(x).toBeGreaterThanOrEqual(fx + w * US_MIN_MARGIN - 1e-6)
-          expect(x).toBeLessThanOrEqual(fx + w * (1 - US_MIN_MARGIN) + 1e-6)
-          expect(y).toBeGreaterThanOrEqual(fy + h * US_MIN_MARGIN - 1e-6)
-          expect(y).toBeLessThanOrEqual(fy + h * (1 - US_MIN_MARGIN) + 1e-6)
+          expect(x).toBeGreaterThanOrEqual(fx)
+          expect(x).toBeLessThanOrEqual(fx + w)
+          expect(y).toBeGreaterThanOrEqual(fy)
+          expect(y).toBeLessThanOrEqual(fy + h)
         }
       })
 
-      it.each(US_IDS)('pans %s towards the centre', (id) => {
+      it.each(US_IDS)('turns towards %s', (id) => {
         const { lat, lng } = LOCATIONS[id]
-        const panned = usView([lng, lat], frame)
-        const fit = usView([-98, 39], frame)
-        const distance = (view: View) => {
-          const [x, y] = projectWith(view, [lng, lat])
-          return Math.hypot(x - (fx + w / 2), y - (fy + h / 2))
-        }
-        expect(distance(panned)).toBeLessThanOrEqual(distance(fit) + 1e-6)
+        const race: LngLat = [lng, lat]
+        const center = centerOf(usView(race, frame).rotation)
+        const d = geoDistance(US_CENTER, race)
+        expect(geoDistance(center, race)).toBeLessThan(d)
+        const degrees = (d * 180) / Math.PI
+        const turned = (geoDistance(US_CENTER, center) * 180) / Math.PI
+        expect(turned).toBeCloseTo(Math.min(degrees, US_NUDGE * Math.sqrt(degrees)), 3)
       })
 
       it('zooms in past the globe', () => {
@@ -157,9 +158,12 @@ describe('usView', () => {
     })
   }
 
-  it('never rotates between US races', () => {
-    expect(targetView('boston', DESKTOP).rotation).toEqual(DEFAULT_ROTATION)
-    expect(targetView('eugene', DESKTOP).rotation).toEqual(DEFAULT_ROTATION)
+  it('keeps zoom and position between US races', () => {
+    const boston = targetView('boston', DESKTOP)
+    const eugene = targetView('eugene', DESKTOP)
+    expect(boston.scale).toEqual(eugene.scale)
+    expect(boston.translate).toEqual(eugene.translate)
+    expect(boston.rotation).not.toEqual(eugene.rotation)
   })
 })
 
