@@ -46,11 +46,14 @@ export const dragRotation = (start: Rotation, dx: number, dy: number, radius: nu
 export type View = { rotation: Rotation; scale: number; translate: [number, number] }
 export type ViewMode = 'us' | 'globe'
 
-/** The whole globe, centred on a location (or the US), filling the container. */
-export const globeView = (location: LngLat | null, w: number, h: number): View => ({
+/** The focus box, in svg coordinates: views fit inside it, though the svg may be larger. */
+export type Frame = { x: number; y: number; w: number; h: number }
+
+/** The whole globe, centred on a location (or the US), filling the frame. */
+export const globeView = (location: LngLat | null, { x, y, w, h }: Frame): View => ({
   rotation: location ? rotationFor(location) : DEFAULT_ROTATION,
   scale: Math.max(0, Math.min(w, h) / 2 - 8),
-  translate: [w / 2, h / 2],
+  translate: [x + w / 2, y + h / 2],
 })
 
 /**
@@ -78,11 +81,11 @@ export const US_OUTLINE: LngLat[] = [
   [-123, 49],
 ]
 
-/** Share of the container left empty on each side of the fitted US. */
+/** Share of the frame left empty on each side of the fitted US. */
 export const US_MARGIN = 0.1
-/** Share of the distance to the container centre that the active race pans by. */
+/** Share of the distance to the frame centre that the active race pans by. */
 export const US_PAN = 0.25
-/** The US never pans closer than this to the container edge. */
+/** The US never pans closer than this to the frame edge. */
 export const US_MIN_MARGIN = 0.02
 
 const unitProjection = geoOrthographic().rotate(DEFAULT_ROTATION).scale(1).translate([0, 0])
@@ -95,8 +98,8 @@ const usBounds = (() => {
   return { x0: Math.min(...xs), x1: Math.max(...xs), y0: Math.min(...ys), y1: Math.max(...ys) }
 })()
 
-/** The lower 48 filling the container, nudged towards `location`. */
-export const usView = (location: LngLat, w: number, h: number): View => {
+/** The lower 48 filling the frame, nudged towards `location`. */
+export const usView = (location: LngLat, { x, y, w, h }: Frame): View => {
   const { x0, x1, y0, y1 } = usBounds
   const scale = Math.max(0, Math.min((w * (1 - 2 * US_MARGIN)) / (x1 - x0), (h * (1 - 2 * US_MARGIN)) / (y1 - y0)))
   const fitX = w / 2 - (scale * (x0 + x1)) / 2
@@ -113,16 +116,16 @@ export const usView = (location: LngLat, w: number, h: number): View => {
     h * US_MIN_MARGIN - (fitY + scale * y0),
     h * (1 - US_MIN_MARGIN) - (fitY + scale * y1),
   )
-  return { rotation: DEFAULT_ROTATION, scale, translate: [fitX + panX, fitY + panY] }
+  return { rotation: DEFAULT_ROTATION, scale, translate: [x + fitX + panX, y + fitY + panY] }
 }
 
 export const viewModeFor = (id: LocationId | null): ViewMode => (id && !('country' in LOCATIONS[id]) ? 'us' : 'globe')
 
-/** Where the globe should be for the active location in a w × h container. */
-export const targetView = (id: LocationId | null, w: number, h: number): View => {
-  if (!id) return globeView(null, w, h)
+/** Where the globe should be for the active location, fitted to `frame`. */
+export const targetView = (id: LocationId | null, frame: Frame): View => {
+  if (!id) return globeView(null, frame)
   const { lat, lng } = LOCATIONS[id]
-  return viewModeFor(id) === 'us' ? usView([lng, lat], w, h) : globeView([lng, lat], w, h)
+  return viewModeFor(id) === 'us' ? usView([lng, lat], frame) : globeView([lng, lat], frame)
 }
 
 /** Fly along the great circle, zoom geometrically, pan linearly. */

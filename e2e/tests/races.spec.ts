@@ -64,7 +64,8 @@ test('globe has one marker per location', async ({ page }) => {
 test('mouse drag rotates the globe', { tag: '@desktop-only' }, async ({ page }) => {
   const svg = page.locator('figure svg')
   const before = await svg.getAttribute('data-rotation')
-  const box = (await svg.boundingBox())!
+  // The svg covers the whole viewport; its centre is under the list.
+  const box = (await page.locator('figure').boundingBox())!
   const x = box.x + box.width / 2
   const y = box.y + box.height / 2
   await page.mouse.move(x, y)
@@ -108,12 +109,26 @@ test('scrolling to a US race zooms the globe to the US', async ({ page, isMobile
   await expect(svg).toHaveAttribute('data-view', 'us')
   await expect(marker).toHaveAttribute('data-visible', 'true')
   expectRotationNear(await svg.getAttribute('data-rotation'), US_ROTATION)
-  await expectInside(marker, svg)
+  await expectInside(marker, page.locator('figure'))
 })
 
-test('state borders load once a US race is active', async ({ page, isMobile }) => {
+test('borders and lakes load once a US race is active', async ({ page, isMobile }) => {
   await scrollToBand(page.locator(CHICAGO_2023), isMobile)
-  await expect(page.locator('figure svg [data-layer="states"]')).toHaveAttribute('d', /^M/)
+  for (const layer of ['states', 'countries', 'lakes']) {
+    await expect(page.locator(`figure svg [data-layer="${layer}"]`)).toHaveAttribute('d', /^M/)
+  }
+})
+
+test('desktop map fills the left column behind the list', { tag: '@desktop-only' }, async ({ page }) => {
+  const viewport = page.viewportSize()!
+  const figure = (await page.locator('figure').boundingBox())!
+  const title = (await page.getByRole('heading', { level: 1 }).boundingBox())!
+  const svg = (await page.locator('figure svg').boundingBox())!
+  expect(title.x).toBeGreaterThanOrEqual(figure.x + figure.width)
+  expect(figure.y).toBe(0)
+  expect(figure.height).toBeCloseTo(viewport.height, 0)
+  expect(svg.x).toBe(0)
+  expect(svg.width).toBeCloseTo(viewport.width, 0)
 })
 
 test('scrolling to a race abroad flies the whole globe there', async ({ page, isMobile }) => {

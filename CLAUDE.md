@@ -6,7 +6,10 @@ Vite + React + TS site served from S3 + CloudFront (us-east-1), with CloudWatch 
 ## Layout (pnpm monorepo)
 
 - `apps/web/` — Vite + React + TS site. Styling is CSS modules plus CSS-variable tokens (`src/styles/tokens.css`, light + dark); no UI library. Runtime deps are React, `d3-geo`, `topojson-client`, `world-atlas` and `us-atlas` only — ask before adding more.
-  `us-atlas` (state borders, shown while the globe is zoomed into the US) is lazy-loaded with `import()` to keep it out of the main bundle. Race data lives in `src/data/races.ts`.
+  While the globe is zoomed into the US it shows state borders (`us-atlas`) plus international borders and large lakes
+  (`src/globe/north-america.json`); both are lazy-loaded with `import()` to keep them out of the main bundle.
+  On desktop the globe's svg is full bleed (fixed behind the list); views fit the left-column `<figure>`, not the svg.
+  Race data lives in `src/data/races.ts`.
   Watch recordings (summary, laps, km/mi splits, 50 m series of pace/HR/cadence/elevation/route) live in
   `src/data/activities/<race-id>.json`, referenced by `race.activity`. They are not imported by the UI yet;
   load them lazily with `import()` so they stay out of the main bundle.
@@ -16,6 +19,8 @@ Vite + React + TS site served from S3 + CloudFront (us-east-1), with CloudWatch 
   - `import-apple-health.py <export.zip> [--list]` — 2022 through Nov 2024 (Apple Watch Workout app, then
     WorkOutDoors), `RACE_WORKOUTS`. `--list` prints every run ≥ 20 km to spot races. Earlier races have no
     recording.
+  - `build-north-america.mjs` (Node) — regenerates `apps/web/src/globe/north-america.json` from world-atlas
+    `countries-50m` and Natural Earth `ne_50m_lakes` (downloaded). Run it after `pnpm install`.
 - `infra/` — AWS CDK app. Stacks: `LerDevSite` (bucket, cert, CloudFront, DNS, RUM) and `LerDevGithubOidc` (GitHub Actions deploy role).
 - `e2e/` — Playwright tests that run against the live site.
 - `.github/workflows/site.yml` — build + deploy + e2e on every push to `main`. Do not rename it to `deploy.yml`: that path has a stale Actions registration from the repo's pre-reset history and never runs.

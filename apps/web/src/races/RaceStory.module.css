@@ -3,11 +3,27 @@
   margin-inline: auto;
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: var(--space-6);
+  grid-template-areas:
+    'globe header'
+    'globe list';
+  grid-template-rows: auto 1fr;
+  column-gap: var(--space-6);
   padding-inline: var(--space-4);
 }
 
+.header {
+  grid-area: header;
+  padding-block: var(--space-6) var(--space-4);
+}
+
+.title {
+  font-size: var(--text-xl);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
 .globe {
+  grid-area: globe;
   position: sticky;
   top: 0;
   align-self: start;
@@ -15,16 +31,31 @@
 }
 
 .list {
+  grid-area: list;
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
   padding-block: var(--space-4) 50dvh;
 }
 
+/* The globe's svg covers the viewport; the header and cards float above it. */
+@media (min-width: 48rem) {
+  .header,
+  .list {
+    position: relative;
+    z-index: 1;
+  }
+}
+
 @media (max-width: 47.99rem) {
   .story {
     grid-template-columns: 1fr;
-    gap: 0;
+    grid-template-areas:
+      'header'
+      'globe'
+      'list';
+    grid-template-rows: auto;
+    column-gap: 0;
   }
 
   .globe {

@@ -12,7 +12,7 @@ const shapeOf = (race: Race): MarkerShape =>
 // Safari has no scrollend.
 const SCROLL_UNLOCK_FALLBACK_MS = 1000
 
-export function RaceStory({ labelledBy }: { labelledBy: string }) {
+export function RaceStory() {
   const reducedMotion = useReducedMotion()
   const listRef = useRef<HTMLOListElement>(null)
   const spyLockedRef = useRef(false)
@@ -51,7 +51,12 @@ export function RaceStory({ labelledBy }: { labelledBy: string }) {
   }
 
   return (
-    <section className={styles.story} aria-labelledby={labelledBy}>
+    <section className={styles.story} aria-labelledby="page-title">
+      <header className={styles.header}>
+        <h1 id="page-title" className={styles.title}>
+          Marathons
+        </h1>
+      </header>
       <div className={styles.globe}>
         <Globe
           activeLocationId={activeRace?.locationId ?? null}

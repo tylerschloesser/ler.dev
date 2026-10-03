@@ -13,6 +13,7 @@
   --globe-ocean-shade: #c5d2de;
   --globe-land: #b9c4b3;
   --globe-state-border: #e3e9df;
+  --globe-country-border: #f6f8f4;
   --globe-graticule: #c3cfda;
   --globe-marker: #14202b;
   --globe-marker-active: #1f5fd1;
@@ -51,6 +52,7 @@
     --globe-ocean-shade: #0b141b;
     --globe-land: #2e3f4a;
     --globe-state-border: #4a5e6a;
+    --globe-country-border: #6a808d;
     --globe-graticule: #1d2c37;
     --globe-marker: #e6ecf1;
     --globe-marker-active: #7aa7ff;
