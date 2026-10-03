@@ -3,6 +3,9 @@ import type { Locator } from '@playwright/test'
 import { expect, test } from './fixtures.ts'
 
 const CHICAGO_2023 = '[data-race-id="2023-10-08-chicago"]'
+const CHIANG_MAI = '[data-race-id="2025-12-21-chiang-mai"]'
+/** Zoomed into the US, the globe stays centred on the lower 48 and only pans. */
+const US_ROTATION: [number, number] = [98, -39]
 
 // Puts the card's top edge just above the scroll spy's reading band.
 async function scrollToBand(card: Locator, isMobile: boolean) {
@@ -16,6 +19,15 @@ function expectRotationNear(rotation: string | null, [λ, φ]: [number, number])
   const [actualλ, actualφ] = rotation!.split(',').map(Number)
   expect(Math.abs(actualλ - λ)).toBeLessThanOrEqual(1)
   expect(Math.abs(actualφ - φ)).toBeLessThanOrEqual(1)
+}
+
+async function expectInside(inner: Locator, outer: Locator) {
+  const a = (await inner.boundingBox())!
+  const b = (await outer.boundingBox())!
+  expect(a.x).toBeGreaterThanOrEqual(b.x)
+  expect(a.y).toBeGreaterThanOrEqual(b.y)
+  expect(a.x + a.width).toBeLessThanOrEqual(b.x + b.width)
+  expect(a.y + a.height).toBeLessThanOrEqual(b.y + b.height)
 }
 
 test.beforeEach(async ({ page }) => {
@@ -85,7 +97,7 @@ test('vertical swipe on the mobile globe scrolls the page', async ({ page, isMob
   expect(await page.evaluate(() => (window as { sawDrag?: boolean }).sawDrag)).toBe(false)
 })
 
-test('scrolling to a race flies the globe to it', async ({ page, isMobile }) => {
+test('scrolling to a US race zooms the globe to the US', async ({ page, isMobile }) => {
   const card = page.locator(CHICAGO_2023)
   const svg = page.locator('figure svg')
   await scrollToBand(card, isMobile)
@@ -93,8 +105,26 @@ test('scrolling to a race flies the globe to it', async ({ page, isMobile }) => 
   const marker = svg.locator('[data-location-id="chicago"]')
   await expect(marker).toHaveAttribute('data-active', 'true')
   await expect(svg).toHaveAttribute('data-animating', 'false')
+  await expect(svg).toHaveAttribute('data-view', 'us')
   await expect(marker).toHaveAttribute('data-visible', 'true')
-  expectRotationNear(await svg.getAttribute('data-rotation'), [87.6, -41.9])
+  expectRotationNear(await svg.getAttribute('data-rotation'), US_ROTATION)
+  await expectInside(marker, svg)
+})
+
+test('state borders load once a US race is active', async ({ page, isMobile }) => {
+  await scrollToBand(page.locator(CHICAGO_2023), isMobile)
+  await expect(page.locator('figure svg [data-layer="states"]')).toHaveAttribute('d', /^M/)
+})
+
+test('scrolling to a race abroad flies the whole globe there', async ({ page, isMobile }) => {
+  const card = page.locator(CHIANG_MAI)
+  const svg = page.locator('figure svg')
+  await scrollToBand(card, isMobile)
+  await expect(card).toHaveAttribute('aria-current', 'true')
+  await expect(svg).toHaveAttribute('data-animating', 'false')
+  await expect(svg).toHaveAttribute('data-view', 'globe')
+  await expect(svg.locator('[data-location-id="chiang-mai"]')).toHaveAttribute('data-visible', 'true')
+  expectRotationNear(await svg.getAttribute('data-rotation'), [-99, -18.8])
 })
 
 test('reduced motion jumps straight to the race', async ({ page, isMobile }) => {
@@ -110,7 +140,8 @@ test('reduced motion jumps straight to the race', async ({ page, isMobile }) => 
   const card = page.locator(CHICAGO_2023)
   await scrollToBand(card, isMobile)
   await expect(card).toHaveAttribute('aria-current', 'true')
-  expectRotationNear(await page.locator('figure svg').getAttribute('data-rotation'), [87.6, -41.9])
+  await expect(page.locator('figure svg')).toHaveAttribute('data-view', 'us')
+  expectRotationNear(await page.locator('figure svg').getAttribute('data-rotation'), US_ROTATION)
   expect(await page.evaluate(() => (window as { sawAnimating?: boolean }).sawAnimating)).toBe(false)
 })
 

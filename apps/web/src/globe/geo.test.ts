@@ -1,5 +1,15 @@
+import { geoOrthographic } from 'd3-geo'
 import { describe, expect, it } from 'vitest'
+import { LOCATIONS, type LocationId } from '../data/races.ts'
 import {
+  US_MIN_MARGIN,
+  US_OUTLINE,
+  globeView,
+  interpolateView,
+  targetView,
+  usView,
+  viewDuration,
+  type View,
   DEFAULT_ROTATION,
   MAX_TILT,
   centerOf,
@@ -93,5 +103,89 @@ describe('normalizeLng', () => {
     expect(normalizeLng(190)).toBe(-170)
     expect(normalizeLng(-190)).toBe(170)
     expect(normalizeLng(87.6)).toBeCloseTo(87.6)
+  })
+})
+
+const SIZES: [string, number, number][] = [
+  ['desktop', 720, 900],
+  ['mobile', 412, 360],
+  ['wide', 1400, 600],
+]
+
+const US_IDS = (Object.keys(LOCATIONS) as LocationId[]).filter((id) => !('country' in LOCATIONS[id]))
+
+const projectWith = (view: View, coords: LngLat) =>
+  geoOrthographic().rotate(view.rotation).scale(view.scale).translate(view.translate)(coords)!
+
+describe('usView', () => {
+  for (const [name, w, h] of SIZES) {
+    describe(`${name} ${w}×${h}`, () => {
+      it.each(US_IDS)('keeps the whole lower 48 framed for %s', (id) => {
+        const view = targetView(id, w, h)
+        for (const point of US_OUTLINE) {
+          const [x, y] = projectWith(view, point)
+          expect(x).toBeGreaterThanOrEqual(w * US_MIN_MARGIN - 1e-6)
+          expect(x).toBeLessThanOrEqual(w * (1 - US_MIN_MARGIN) + 1e-6)
+          expect(y).toBeGreaterThanOrEqual(h * US_MIN_MARGIN - 1e-6)
+          expect(y).toBeLessThanOrEqual(h * (1 - US_MIN_MARGIN) + 1e-6)
+        }
+      })
+
+      it.each(US_IDS)('pans %s towards the centre', (id) => {
+        const { lat, lng } = LOCATIONS[id]
+        const panned = usView([lng, lat], w, h)
+        const fit = usView([-98, 39], w, h)
+        const distance = (view: View) => {
+          const [x, y] = projectWith(view, [lng, lat])
+          return Math.hypot(x - w / 2, y - h / 2)
+        }
+        expect(distance(panned)).toBeLessThanOrEqual(distance(fit) + 1e-6)
+      })
+
+      it('zooms in past the globe', () => {
+        expect(targetView('chicago', w, h).scale).toBeGreaterThan(globeView(null, w, h).scale * 1.5)
+      })
+    })
+  }
+
+  it('never rotates between US races', () => {
+    expect(targetView('boston', 720, 900).rotation).toEqual(DEFAULT_ROTATION)
+    expect(targetView('eugene', 720, 900).rotation).toEqual(DEFAULT_ROTATION)
+  })
+})
+
+describe('targetView', () => {
+  it('shows the whole globe for races abroad', () => {
+    expect(targetView('chiang-mai', 720, 900)).toEqual(globeView([98.99, 18.79], 720, 900))
+  })
+
+  it('shows the whole globe with nothing active', () => {
+    expect(targetView(null, 720, 900)).toEqual(globeView(null, 720, 900))
+  })
+})
+
+describe('interpolateView', () => {
+  it('starts at from and ends at to', () => {
+    const from = targetView('chiang-mai', 720, 900)
+    const to = targetView('boston', 720, 900)
+    const interpolate = interpolateView(from, to)
+    for (const [t, view] of [
+      [0, from],
+      [1, to],
+    ] as const) {
+      const actual = interpolate(t)
+      expect(actual.rotation[0]).toBeCloseTo(view.rotation[0])
+      expect(actual.rotation[1]).toBeCloseTo(view.rotation[1])
+      expect(actual.scale).toBeCloseTo(view.scale)
+      expect(actual.translate[0]).toBeCloseTo(view.translate[0])
+      expect(actual.translate[1]).toBeCloseTo(view.translate[1])
+    }
+  })
+})
+
+describe('viewDuration', () => {
+  it('gives pans and zooms time to read', () => {
+    expect(viewDuration(targetView('boston', 720, 900), targetView('eugene', 720, 900))).toBeGreaterThanOrEqual(500)
+    expect(viewDuration(targetView(null, 720, 900), targetView('fargo', 720, 900))).toBeGreaterThanOrEqual(800)
   })
 })

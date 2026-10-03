@@ -5,7 +5,8 @@ Vite + React + TS site served from S3 + CloudFront (us-east-1), with CloudWatch 
 
 ## Layout (pnpm monorepo)
 
-- `apps/web/` — Vite + React + TS site. Styling is CSS modules plus CSS-variable tokens (`src/styles/tokens.css`, light + dark); no UI library. Runtime deps are React, `d3-geo`, `topojson-client` and `world-atlas` only — ask before adding more. Race data lives in `src/data/races.ts`.
+- `apps/web/` — Vite + React + TS site. Styling is CSS modules plus CSS-variable tokens (`src/styles/tokens.css`, light + dark); no UI library. Runtime deps are React, `d3-geo`, `topojson-client`, `world-atlas` and `us-atlas` only — ask before adding more.
+  `us-atlas` (state borders, shown while the globe is zoomed into the US) is lazy-loaded with `import()` to keep it out of the main bundle. Race data lives in `src/data/races.ts`.
   Watch recordings (summary, laps, km/mi splits, 50 m series of pace/HR/cadence/elevation/route) live in
   `src/data/activities/<race-id>.json`, referenced by `race.activity`. They are not imported by the UI yet;
   load them lazily with `import()` so they stay out of the main bundle.

@@ -38,6 +38,26 @@
   fill: var(--globe-land);
 }
 
+.states {
+  fill: none;
+  stroke: var(--globe-state-border);
+  stroke-width: 0.75;
+  stroke-linejoin: round;
+  opacity: 0;
+  transition: opacity 400ms ease;
+  pointer-events: none;
+}
+
+.svg[data-view='us'] .states {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .states {
+    transition: none;
+  }
+}
+
 .marker {
   cursor: pointer;
 }
